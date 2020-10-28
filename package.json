@@ -1,0 +1,42 @@
+{
+  "name": "adr-manager",
+  "version": "1.0.0",
+  "description": "A Vue.js project",
+  "private": true,
+  "main": "./src/index.js",
+  "config": {
+    "env": "development",
+    "serverHost": "127.0.0.1",
+    "serverPort": 3000,
+    "publicPath": "/"
+  },
+  "scripts": {
+    "build": "npm run build:client; npm run build:server",
+    "build:client": "node --harmony ./scripts/build.js client",
+    "build:server": "node --harmony ./scripts/build.js server",
+    "start": "node --harmony ./scripts/start"
+  },
+  "author": "Kristijan Sedlak (Xpepermint)",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.0.0-alpha.2",
+    "express-vue-builder": "^2.15.1",
+    "vue": "^2.1.8",
+    "vue-builder": "^1.7.1",
+    "vue-server-renderer": "^2.1.8"
+  },
+  "devDependencies": {
+    "babel-core": "^6.21.0",
+    "babel-loader": "^6.2.10",
+    "babel-polyfill": "^6.20.0",
+    "babel-preset-latest": "^6.16.0",
+    "css-loader": "^0.26.1",
+    "express-vue-dev": "^1.12.2",
+    "extract-text-webpack-plugin": "^2.0.0-beta.5",
+    "file-loader": "^0.9.0",
+    "inline-environment-variables-webpack-plugin": "^1.1.0",
+    "vue-loader": "^10.0.2",
+    "vue-template-compiler": "^2.1.8",
+    "webpack": "^2.2.0-rc.4"
+  }
+}
