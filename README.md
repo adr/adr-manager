@@ -1,4 +1,4 @@
-# vue-tut
+# ADR-Manager
 
 ## Project setup
 ```
