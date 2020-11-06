@@ -1,7 +1,5 @@
 <template>
-  <v-container fluid class="editor text-center">
-      <MockUpMain />
-  </v-container>
+  <MockUpMain style="height: 100%;"/>
 </template>
 
 <script>

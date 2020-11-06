@@ -1,7 +1,10 @@
 <template>
   <v-container fluid class="register text-center">
+    <h1>
+      ADR Manager
+    </h1>
     <h2>
-      Register
+      Log In
     </h2>
     <GitLogIn />
   </v-container>

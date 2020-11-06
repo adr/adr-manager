@@ -1,138 +1,206 @@
 <template>
-  <v-container fluid class="editor text-center">
-    <splitpanes class="default-theme">
-      <pane size="20%">
+  <v-sheet class="editor text-center mx-auto d-flex flex-column">
 
-        <v-row no-gutters dense
-               class="d-flex align-content-space-around flex-wrap">
-          <v-col cols="1"
-                 style="max-width: 100%;"
-                 class="flex-grow-0 flex-shrink-0">
-            <v-dialog v-model="dialog"
-                      width="500">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn v-bind="attrs"
-                       v-on="on">
-                  Commit changes
-                </v-btn>
-              </template>
-
-              <v-card>
-                <v-card-title class="headline grey lighten-2">
-                  Commit changes
-                </v-card-title>
-
-                <v-card-text>
-                  The following files were changed:
-                  <ul>
-                    <li>1234 Adr X</li>
-                    <li>3456 Adr Y</li>
-                  </ul>
-                  Do you want to push to a new branch?
-                  <v-switch v-model="dialogSwitch">
-                    <template v-slot:label>
-                      <div>
-                        <div>
-                          <div v-if="dialogSwitch"> Push to new branch '{{ currentBranch }}-adr-update'.</div>
-                          <div v-else>Push to {{ currentBranch }}.</div>
-                        </div>
-                      </div>
-                    </template>
-                  </v-switch>
-                </v-card-text>
-                <v-divider></v-divider>
-
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn @click="dialog = false">
-                    Commit and push!
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </v-col>
-          <v-col cols="2"
-                 style="min-width: 175px; max-width: 100%;"
-                 class="flex-grow-1 flex-shrink-0 text-right">
-            <v-autocomplete dense class="px-4  pt-2" label="Current branch"
-                            v-model="currentBranch"
-                            :items="[branchName, 'master', 'branch 1', 'branch 2']"></v-autocomplete>
-          </v-col>
-        </v-row>
-        <GitRepoTree v-on:select-file="updateMd" v-bind:repo="repoName" v-bind:branch="branchName" />
-        <v-btn v-on:click="createNewAdr">New ADR</v-btn>
-
-      </pane>
-
-      <pane>
-        <v-tabs v-model="tab"
-                background-color="primary"
-                dark>
-          <v-menu offset-y>
+    <v-tabs v-model="tab"
+            background-color="primary"
+            dark style="-webkit-flex: 0; flex: 0;">
+      <slot name="menu-buttons"></slot>
+      
+      <v-menu offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn class="align-self-center ml-4"
+                 dark text
+                 v-bind="attrs"
+                 v-on="on">
+            File
+          </v-btn>
+        </template>
+        <v-list>
+          <v-dialog v-model="dialog"
+                    width="500">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn class="align-self-center mr-4"
-                     dark
-                     v-bind="attrs"
-                     v-on="on">
-                File
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item v-for="(item, index) in ['Save locally', 'Commit and Push', 'Delete ADR', 'Create new ADR']"
-                           :key="index"
-            link>
-                <v-list-item-title>{{ item }}</v-list-item-title>
+              <v-list-item v-bind="attrs"
+                           v-on="on">
+                Commit and Push
               </v-list-item>
-            </v-list>
-          </v-menu>
-          <v-spacer></v-spacer>
-          <v-tab v-for="item in tabs"
-                 :key="item.tabName">
-            {{ item.tabName }}
-          </v-tab>
-          <!--<v-checkbox text
-              v-if="tab.tabName !== 'Markdown Preview' !== 'Markdown Preview'"
-              v-model="alwaysShowMarkdownPreview"
-              class="align-self-center mr-4"
-              label="Show Markdown Preview">
-  </v-checkbox>-->
-        </v-tabs>
+            </template>
 
-        <v-tabs-items v-model="tab">
-          <v-tab-item :key="'MADR Editor'">
-            <v-card flat>
-              <splitpanes class="default-theme">
-                <pane>
-                  <AdrRepresentation v-model="adr" v-on:input="updateAdr" />
-                </pane>
-                <pane v-if="alwaysShowMarkdownPreview">
-                  <MarkdownPreview v-model="dValue"></MarkdownPreview>
-                </pane>
-              </splitpanes>
+            <v-card>
+              <v-card-title class="headline grey lighten-2">
+                Commit changes
+              </v-card-title>
+
+              <v-card-text>
+                The following files were changed:
+                <ul>
+                  <li>1234 Adr X</li>
+                  <li>3456 Adr Y</li>
+                </ul>
+                Do you want to push to a new branch?
+                <v-switch v-model="dialogSwitch">
+                  <template v-slot:label>
+                    <div>
+                      <div>
+                        <div v-if="dialogSwitch"> Push to new branch '{{ currentBranch }}-adr-update'.</div>
+                        <div v-else>Push to {{ currentBranch }}.</div>
+                      </div>
+                    </div>
+                  </template>
+                </v-switch>
+              </v-card-text>
+              <v-divider></v-divider>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn @click="dialog = false">
+                  Commit and push!
+                </v-btn>
+              </v-card-actions>
             </v-card>
-          </v-tab-item>
-          <v-tab-item :key="'Raw Markdown'">
-            <v-card flat>
-              <splitpanes class="default-theme">
-                <pane>
-                  <v-textarea v-model="dValue" v-on:input="updateMd"
-                              auto-grow style="max-width: 100%; min-width: 100%"></v-textarea>
-                </pane>
-                <pane v-if="alwaysShowMarkdownPreview">
-                  <MarkdownPreview v-model="dValue"></MarkdownPreview>
-                </pane>
-              </splitpanes>
-            </v-card>
-          </v-tab-item>
-          <v-tab-item :key="'Markdown Preview'">
-            <v-card flat>
-              <MarkdownPreview v-model="dValue"></MarkdownPreview>
-            </v-card>
-          </v-tab-item>
-        </v-tabs-items>
-      </pane>
-    </splitpanes>
-</v-container>
+          </v-dialog>
+          <v-list-item v-for="(item, index) in ['Delete ADR', 'Create new ADR']"
+                       :key="index"
+                       link>
+            <v-list-item-title>{{ item }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+      <v-menu offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn class="align-self-center ml-4"
+                 dark text
+                 v-bind="attrs"
+                 v-on="on">
+            Mode
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item link>
+            <v-list-item-title>Basic</v-list-item-title>
+          </v-list-item>
+          <v-list-item link>
+            <v-list-item-title>Advanced</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+      <v-spacer></v-spacer>
+
+      <v-menu offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn class="align-self-center ml-4"
+                 dark text
+                 v-bind="attrs"
+                 v-on="on">
+            <v-icon>mdi-hamburger</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item link
+                       v-for="opt in adr.consideredOptions"
+                       :key="opt.title">
+            <v-list-item-title v-text="opt.title"></v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-tabs>
+
+    <v-card-text class="mx-0 my-0 px-0 py-0" style="-webkit-flex: 1; flex: 1; position: relative;">
+      <splitpanes class="default-theme" style="overflow: auto; position: absolute; height: 100%; width: 100%; ">
+        <pane size="20%" style="overflow: auto;">
+
+          <v-row no-gutters dense
+                 class="d-flex align-content-space-around flex-wrap">
+            <v-col cols="1"
+                   style="max-width: 100%;"
+                   class="flex-grow-0 flex-shrink-0">
+            </v-col>
+            <v-col cols="2"
+                   style="min-width: 175px; max-width: 100%;"
+                   class="flex-grow-1 flex-shrink-0 text-right">
+            </v-col>
+          </v-row>
+          <GitRepoTree v-on:select-file="updateMd" v-bind:repo="repoName" v-bind:branch="branchName" v-bind:user="userName" />
+
+          <v-row no-gutters dense
+                 class="d-flex align-content-space-around flex-wrap">
+            <v-col cols="1"
+                   style="max-width: 100%;"
+                   class="flex-grow-1 flex-shrink-0 text-right">
+              <v-btn v-on:click="addRepository">Add Repository</v-btn>
+            </v-col>
+          </v-row>
+
+        </pane> <!--end File Explorer Pane -->
+
+        <pane style="height: 100%; display: flex; flex-direction: column;">
+          <v-card-text class="px-0 py-0" style="-webkit-flex: 1; flex: 1; position: relative;">
+
+            <v-tabs-items v-model="tab" style="position: absolute; height: 100%; width: 100%; ">
+              <v-tab-item :key="tabs.indexOf(tabs.find((el) => (el.tabName === 'MADR Editor')))" style="height: 100%; ">
+                <splitpanes class="mx-auto default-theme">
+                  <pane class="overflow-y-auto">
+                    <v-card-text class="mx-auto">
+                      <AdrRepresentation v-model="adr" v-on:input="updateAdr" v-bind:show-optional-fields="showOptionalFields" />
+                    </v-card-text>
+                  </pane>
+                  <pane class="mx-auto overflow-y-auto" v-if="alwaysShowMarkdownPreview">
+                    <v-card-text class="mx-auto">
+                      <MarkdownPreview v-model="dValue"></MarkdownPreview>
+                    </v-card-text>
+                  </pane>
+                </splitpanes>
+              </v-tab-item> <!--end 'MADR Editor'-->
+              <v-tab-item :key="tabs.indexOf(tabs.find((el) => (el.tabName === 'Markdown Preview')))" style="height: 100%;" class="mx-auto overflow-y-auto">
+                <MarkdownPreview v-model="dValue"></MarkdownPreview>
+              </v-tab-item> <!--end 'Markdown Preview'-->
+              <v-tab-item :key="tabs.indexOf(tabs.find((el) => (el.tabName === 'Raw Markdown')))" style="height: 100%;">
+                <splitpanes class="default-theme">
+                  <pane class="mx-auto overflow-y-auto">
+                    <v-textarea v-model="dValue" v-on:input="updateMd"
+                                auto-grow style="max-width: 100%; min-width: 100%"></v-textarea>
+                  </pane>
+                  <pane v-if="alwaysShowMarkdownPreview" class="mx-auto overflow-y-auto">
+                    <MarkdownPreview v-model="dValue"></MarkdownPreview>
+                  </pane>
+                </splitpanes>
+              </v-tab-item> <!--end 'Raw Editor'-->
+            </v-tabs-items>
+          </v-card-text>
+
+          <v-tabs v-model="tab"
+                  background-color="primary"
+                  dark
+                  class="pt-0 mt-0 align-self-end"
+                  style="-webkit-flex: 0; flex: 0;">
+            <v-checkbox v-if="tabs[tab].tabName !== 'Markdown Preview'"
+                        v-model="alwaysShowMarkdownPreview"
+                        class="align-self-center mx-4"
+                        label="Show Markdown Preview">
+            </v-checkbox>
+            <v-checkbox v-if="tabs[tab].tabName === 'MADR Editor'"
+                        v-model="showOptionalFields"
+                        class="align-self-center mx-4"
+                        label="Show Optional Fields"></v-checkbox>
+            <v-spacer></v-spacer>
+            <v-tab v-for="(item, i) in tabs"
+                   :key="i">
+              {{ item.tabName }}
+            </v-tab>
+          </v-tabs>
+        </pane>
+      </splitpanes>
+    </v-card-text>
+      <v-system-bar>
+        Aktuelle Repo: {{ repoName }}
+        <v-spacer></v-spacer>
+        Current Branch:
+        <v-autocomplete dense class="px-4  pt-2"
+                        v-model="currentBranch"
+                        :items="[branchName, 'branch 1', 'branch 2']"></v-autocomplete>
+      </v-system-bar>
+  </v-sheet>
 </template>
 
 <script>
@@ -157,13 +225,14 @@
     data: () => ({
       adr: {},
       dValue: "# Default ADR Editor heading",
-      tab: 'MADR Editor',
+      tab: 0,
       tabs: [
         { tabName: 'MADR Editor' },
-        { tabName: 'Raw Markdown' },
-        { tabName: 'Markdown Preview' }
+        { tabName: 'Markdown Preview' },
+        { tabName: 'Raw Markdown' }
       ],
       alwaysShowMarkdownPreview: false,
+      showOptionalFields: true,
       dialog: false,
       dialogSwitch: false,
       currentBranch: '',
@@ -173,6 +242,10 @@
       value: {
         type: String,
         default: adr2md(new ArchitecturalDecisionRecord())
+      },
+      userName: {
+        type: String,
+        default: 'adr'
       },
       repoName: {
         type: String,
@@ -203,7 +276,10 @@
         this.adr = new ArchitecturalDecisionRecord();
         this.dValue = adr2md(this.adr);
         this.$emit('new-adr', this.dValue);
-      }, 300)
+      }, 300),
+      addRepository() {
+        console.log('ToDo: Add a Repository.')
+      }
     }
   };
 </script>
@@ -229,5 +305,9 @@
 
   code {
     color: #f66;
+  }
+
+  .v-select__selections input {
+    display: none
   }
 </style>

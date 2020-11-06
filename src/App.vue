@@ -1,6 +1,6 @@
 <template>
-  <v-app id="app">
-    <v-main>
+  <v-app id="app"  style="height: 100%;">
+    <v-main style="height: 100%;">
       <router-view />
     </v-main>
   </v-app>
@@ -9,9 +9,16 @@
 <script>
   export default {
     name: 'App',
-    
+
     data: () => ({
       //
     }),
   };
 </script>
+
+
+<style>
+html, body {
+height: 100%;
+}
+</style>

@@ -8,12 +8,8 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'Register',
-    component: Register
-  },
-  {
-    path: '/register',
+    path: '/login',
+    alias: ['/register', '/'],
     name: 'Register',
     component: Register
   },

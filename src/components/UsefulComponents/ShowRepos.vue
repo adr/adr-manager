@@ -1,18 +1,22 @@
 <template>
-  <div>
+  <div class="overflow-y-auto">
     <v-list shaped
-                class="text-left">
+            class="text-left">
       <v-subheader>Your Repositories</v-subheader>
       <v-list-item-group>
         <v-list-item v-for="(item, i) in repositoryList"
                      :key="i"
                      v-on:click="selectRepo(item)">
           <v-list-item-icon></v-list-item-icon>
-          <v-list-item-content>
             <v-list-item-title v-text="item.name"></v-list-item-title>
-          </v-list-item-content>
         </v-list-item>
       </v-list-item-group>
+      <v-list-item>
+        <v-list-item-icon></v-list-item-icon>
+        <v-list-item-content>
+          <v-btn>Add Repository</v-btn>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
   </div>
 </template>

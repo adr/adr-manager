@@ -1,18 +1,5 @@
 <template>
   <v-container fluid class="editor text-left">
-    <v-row no-gutters dense
-           class="d-flex align-content-space-around flex-wrap">
-      <!--<v-col cols="3"
-         style="max-width: 100%;"
-         class="flex-grow-1 flex-shrink-0">
-    <v-btn label="Update" v-on:click="update">Update MD</v-btn>
-  </v-col>-->
-      <v-col cols="3"
-             style="min-width: 225px; max-width: 100%;"
-             class="flex-grow-0 flex-shrink-0 text-right">
-        <v-checkbox class="mt-0" label="Show Optional Fields" v-model="showOptionalFields"></v-checkbox>
-      </v-col>
-    </v-row>
     <h1><v-text-field label="Titel" hint="Changing this field, changes the file name. Do not use special characters." v-model="adr.title" 
       @input="(val) => {adr.title=val; update()}"></v-text-field></h1>
     <div v-if="showOptionalFields">
@@ -26,7 +13,7 @@
           <v-row no-gutters dense
                  class="d-flex align-content-space-around flex-wrap">
             <v-col cols="3"
-                   :style="{ 'min-width': adr .status === 'superseded by' ? '125px' : '225px', 'max-width': '100%' }"
+                   :style="{ 'min-width': adr.status === 'superseded by' ? '125px' : '225px', 'max-width': '100%' }"
                    class="flex-grow-1 flex-shrink-0">
               <v-combobox dense v-model="adr.status" :items="['proposed', 'rejected', 'superseded by']"></v-combobox>
             </v-col>
@@ -75,7 +62,7 @@
           </v-list-item-icon>
         </v-list-item>
         <v-list-item>
-          <v-btn v-on:click="adr.decisionDrivers.push('')">Add</v-btn>
+          <v-btn v-on:click="adr.decisionDrivers.push('')"><v-icon>mdi-plus</v-icon></v-btn>
         </v-list-item>
       </v-list>
     </div>
@@ -92,7 +79,7 @@
         </v-list-item-icon>
       </v-list-item>
       <v-list-item>
-        <v-btn v-on:click="adr.addOption()">Add</v-btn>
+        <v-btn v-on:click="adr.addOption()"><v-icon>mdi-plus</v-icon></v-btn>
       </v-list-item>
     </v-list>
 
@@ -115,7 +102,7 @@
           </v-list-item-icon>
         </v-list-item>
         <v-list-item>
-          <v-btn v-on:click="adr.decisionOutcome.positiveConsequences.push('')">Add</v-btn>
+          <v-btn v-on:click="adr.decisionOutcome.positiveConsequences.push('')"><v-icon>mdi-plus</v-icon></v-btn>
         </v-list-item>
       </v-list>
       <h4>Negative Consequences</h4>
@@ -129,7 +116,7 @@
           </v-list-item-icon>
         </v-list-item>
         <v-list-item>
-          <v-btn v-on:click="adr.decisionOutcome.negativeConsequences.push('')">Add</v-btn>
+          <v-btn v-on:click="adr.decisionOutcome.negativeConsequences.push('')"><v-icon>mdi-plus</v-icon></v-btn>
         </v-list-item>
       </v-list>
     </div>
@@ -138,9 +125,9 @@
       <div v-for="(option, i) in adr.consideredOptions"
            v-bind:key="i"
            v-bind:id="'considered-option-' + i">
-        <h4> Option: {{ option.title }} </h4>
+        <h4> {{ option.title }} </h4>
         <v-textarea dense auto-grow rows="1" hint="Description of the option" v-model="option.description"></v-textarea>
-        <h4> Pros </h4>
+        <h5> Pros </h5>
         <v-list>
           <v-list-item dense
                        v-for="(arg, i) in option.pros"
@@ -152,11 +139,11 @@
             </v-list-item-icon>
           </v-list-item>
           <v-list-item>
-            <v-btn v-on:click="option.pros.push('')">Add</v-btn>
+            <v-btn v-on:click="option.pros.push('')"><v-icon>mdi-plus</v-icon></v-btn>
           </v-list-item>
         </v-list>
 
-        <h4> Cons </h4>
+        <h5> Cons </h5>
 
         <v-list>
           <v-list-item dense
@@ -169,7 +156,7 @@
             </v-list-item-icon>
           </v-list-item>
           <v-list-item>
-            <v-btn v-on:click="option.cons.push('')">Add</v-btn>
+            <v-btn v-on:click="option.cons.push('')"><v-icon>mdi-plus</v-icon></v-btn>
           </v-list-item>
         </v-list>
       </div>
@@ -188,7 +175,7 @@
           </v-list-item-icon>
         </v-list-item>
         <v-list-item>
-          <v-btn v-on:click="adr.links.push('')">Add</v-btn>
+          <v-btn v-on:click="adr.links.push('')"><v-icon>mdi-plus</v-icon></v-btn>
         </v-list-item>
       </v-list>
     </div>
@@ -205,10 +192,9 @@
       DatePickerMenu
     },
     data: () => ({
-      adr: {},
-      showOptionalFields: true
+      adr: {}
     }),
-    props: ['value'],
+    props: ['value', 'showOptionalFields'],
     watch: {
       value() {
         this.adr = this.value

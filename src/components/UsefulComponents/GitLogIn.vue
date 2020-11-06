@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-btn :href="githubAuthorizeUrl">
-      Log In to GitHub
+      Log In with GitHub
     </v-btn>
   </div>
 </template>
