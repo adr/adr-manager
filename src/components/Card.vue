@@ -1,15 +1,12 @@
 <template>
-    <div>
-    </div>
+  <div></div>
 </template>
 
 <script>
 export default {
-  name: 'Card',
-  props: ['release', 'index'],
-}
+  name: "Card",
+  props: ["release", "index"]
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
