@@ -32,8 +32,10 @@
                                :key="`item-${index}`"
                                :value="item">
                     <template v-slot:default="{ active }">
+
                       <v-list-item-content>
                         <v-list-item-title v-text="item.name"></v-list-item-title>
+                        <v-list-item-subtitle v-text="item.description"></v-list-item-subtitle>
                       </v-list-item-content>
 
                       <v-list-item-action>
@@ -93,7 +95,7 @@
       loadRepositoriesOf(organization) {
         return loadRepositoriesOfUser(organization)
           .then((data) => {
-            this.repositoriesDisplayed = data.map((el) => ({ name: el.name }))
+            this.repositoriesDisplayed = data.map((el) => ({ name: el.name, description: el.description }))
           })
       },
       addRepositories() {

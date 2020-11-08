@@ -5,9 +5,7 @@
                 open-on-click
                 activatable
                 item-key="path"
-                @update:active="(activeKeyArray) => { 
-                if (activeKeyArray[0].fileType === 'adr') openFileByPath({ path: activeKeyArray[0] 
-                }) }">
+                @update:active="(activeKeyArray) => { openFileByPath({ path: activeKeyArray[0] }) }">
 
       <template v-slot:prepend="{ item }">
         <v-icon v-if="item.fileType==='repo'" v-text="fileTypeIconMapping[item.fileType]"></v-icon>
