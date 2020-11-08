@@ -1,8 +1,8 @@
 <template>
   <v-sheet class="editor text-center mx-auto d-flex flex-column">
-
-    <v-tabs v-model="tab"
-            background-color="primary"
+    
+    <v-toolbar v-model="tab" dense
+            color="primary" 
             dark style="-webkit-flex: 0; flex: 0;">
       <slot name="menu-buttons"></slot>
       
@@ -104,34 +104,20 @@
           </v-list-item>
         </v-list>
       </v-menu>
-    </v-tabs>
+
+    </v-toolbar>
 
     <v-card-text class="mx-0 my-0 px-0 py-0" style="-webkit-flex: 1; flex: 1; position: relative;">
       <splitpanes class="default-theme" style="overflow: auto; position: absolute; height: 100%; width: 100%; ">
         <pane size="20%" style="overflow: auto;">
-
-          <v-row no-gutters dense
-                 class="d-flex align-content-space-around flex-wrap">
-            <v-col cols="1"
-                   style="max-width: 100%;"
-                   class="flex-grow-0 flex-shrink-0">
-            </v-col>
-            <v-col cols="2"
-                   style="min-width: 175px; max-width: 100%;"
-                   class="flex-grow-1 flex-shrink-0 text-right">
-            </v-col>
-          </v-row>
-          <GitRepoTree v-on:select-file="updateMd" v-bind:repo="repoName" v-bind:branch="branchName" v-bind:user="userName" />
-
-          <v-row no-gutters dense
-                 class="d-flex align-content-space-around flex-wrap">
-            <v-col cols="1"
-                   style="max-width: 100%;"
-                   class="flex-grow-1 flex-shrink-0 text-right">
-              <v-btn v-on:click="addRepository">Add Repository</v-btn>
-            </v-col>
-          </v-row>
-
+          <FileExplorer v-on:open-file="updateMd" v-bind:repo="repoName" v-bind:branch="branchName" v-bind:user="userName" />
+          
+              <AddRepositoriesDialog>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn v-bind="attrs"
+                         v-on="on">Add Repository</v-btn>
+                </template>
+              </AddRepositoriesDialog>
         </pane> <!--end File Explorer Pane -->
 
         <pane style="height: 100%; display: flex; flex-direction: column;">
@@ -142,7 +128,7 @@
                 <splitpanes class="mx-auto default-theme">
                   <pane class="overflow-y-auto">
                     <v-card-text class="mx-auto">
-                      <AdrRepresentation v-model="adr" v-on:input="updateAdr" v-bind:show-optional-fields="showOptionalFields" />
+                      <EditorMadr v-model="adr" v-on:input="updateAdr" v-bind:show-optional-fields="showOptionalFields" />
                     </v-card-text>
                   </pane>
                   <pane class="mx-auto overflow-y-auto" v-if="alwaysShowMarkdownPreview">
@@ -196,9 +182,9 @@
         Aktuelle Repo: {{ repoName }}
         <v-spacer></v-spacer>
         Current Branch:
-        <v-autocomplete dense class="px-4  pt-2"
-                        v-model="currentBranch"
-                        :items="[branchName, 'branch 1', 'branch 2']"></v-autocomplete>
+          <v-autocomplete dense class="px-4  pt-3 pb-0 my-0"
+                          v-model="currentBranch"
+                          :items="[branchName, 'branch 1', 'branch 2']"></v-autocomplete>
       </v-system-bar>
   </v-sheet>
 </template>
@@ -210,17 +196,19 @@
   import { Splitpanes, Pane } from 'splitpanes'
   import 'splitpanes/dist/splitpanes.css'
 
-  import AdrRepresentation from './MadrRepresentation.vue'
-  import GitRepoTree from '../UsefulComponents/GitRepoTree.vue'
+  import EditorMadr from './EditorMadr.vue'
+  import AddRepositoriesDialog from './EditorAddRepositoriesDialog.vue'
+  import FileExplorer from './EditorFileExplorer.vue'
   import MarkdownPreview from '../UsefulComponents/MarkdownPreview.vue'
 
   export default {
-    name: 'AdrEditor',
+    name: 'Editor',
     components: {
       Splitpanes, Pane,
-      AdrRepresentation,
-      GitRepoTree,
-      MarkdownPreview
+      FileExplorer,
+      AddRepositoriesDialog,
+      EditorMadr,
+      MarkdownPreview,
     },
     data: () => ({
       adr: {},

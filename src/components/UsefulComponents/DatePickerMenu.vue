@@ -5,11 +5,9 @@
             transition="scale-transition"
             offset-y
             max-width="290px"
-            min-width="290px"
-            dense>
+            min-width="290px">
       <template v-slot:activator="{ on, attrs }">
-        <v-text-field dense
-                      v-model="date"
+        <v-text-field v-model="date"
                       v-bind="attrs"
                       v-on="on"
                       ></v-text-field>
@@ -62,7 +60,6 @@
       },
       update(e) {
         this.menu = false; // Close menu
-        console.log('update ' + e)
         this.$emit('input', e)
       },
     },

@@ -1,29 +1,25 @@
 <template>
   <div class="text-left">
-
-    <!--<Teatree :roots="folderStructure">
-      <template slot="node-toggle" slot-scope="{ node }">
-        <NodeToggle :node="node" />
-      </template>
-      <template slot="node-name" slot-scope="{ node }">
-        <NodeName :node="node"
-                  :handleNodeLeftClick="(node) => {selectFile(node.data.path)}"
-                  :handleNodeRightClick="() => {}" />
-      </template>
-    </Teatree>-->
     <v-treeview :items="folderStructure"
                 dense
                 open-on-click
+                activatable
                 item-key="path"
-                @update:active="selectFile">
+                @update:active="(activeKeyArray) => { 
+                if (activeKeyArray[0].fileType === 'adr') openFileByPath({ path: activeKeyArray[0] 
+                }) }">
 
       <template v-slot:prepend="{ item }">
-        <v-icon v-text="fileTypeIconMapping[item.fileType]"></v-icon>
+        <v-icon v-if="item.fileType==='repo'" v-text="fileTypeIconMapping[item.fileType]"></v-icon>
+      </template>
+
+      <template slot="label" slot-scope="{ item }">
+        <a>{{ item.name }}</a>
       </template>
       <template v-slot:append="{ item }">
 
         <span v-if="item.fileType==='repo'">
-          <span v-if="folderContainsPath(item, ['docs', 'adr'])">
+          <span v-if="folderContainsPath({ folder: item, path: 'docs/adr' })">
             docs/adr
           </span>
           <span v-else>
@@ -31,13 +27,13 @@
           </span>
         </span>
 
-        <v-menu offset-y v-if="item.fileType==='adr'">
+        <v-menu offset-x v-if="item.fileType==='adr'">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn class="align-self-center ml-4" dense text
+            <v-btn class="align-self-center ml-0" dense text
                    v-bind="attrs"
                    v-on="on">
-              <v-icon v-if="attrs['aria-expanded'] === 'true'">mdi-chevron-down</v-icon> <!--Menu is opened.-->
-              <v-icon v-else>mdi-chevron-right</v-icon>
+              <v-icon v-if="attrs['aria-expanded'] === 'true'">mdi-chevron-right</v-icon> <!--Menu is opened.-->
+              <v-icon v-else>mdi-chevron-down</v-icon>
             </v-btn>
           </template>
 
@@ -58,15 +54,14 @@
 </template>
 
 <script>
-  // import _ from 'lodash'
-  import axios from 'axios'
-
-  //import { Teatree, NodeName, NodeToggle } from "vue-teatree";
-  import { snakeCase2naturalCase } from '@/plugins/utilities'
-
+  import {
+    snakeCase2naturalCase,
+    loadRepositoriesOfUser,
+    loadFileTreeOfRepository,
+    loadRawFile
+  } from '@/plugins/utilities'
   export default {
     components: {
-      //Teatree, NodeName, NodeToggle
     },
     props: {
       user: String,
@@ -74,7 +69,6 @@
       branch: String
     },
     data: () => ({
-      fetchedData: [],
       repositoryList: [],
       folderStructure: [
         {
@@ -84,17 +78,17 @@
           children: [
             {
               name: 'docs',
-              path: 'docs',
+              path: 'madr/docs',
               fileType: 'folder',
               children: [
                 {
                   name: 'adr',
-                  path: 'docs/adr',
+                  path: 'madr/docs/adr',
                   fileType: 'folder',
                   children: [
                     {
                       name: 'file',
-                      path: 'docs/adr/file.md',
+                      path: 'madr/docs/adr/file.md',
                       fileType: 'md',
                       children: []
                     }
@@ -254,69 +248,47 @@
         folder: 'mdi-folder'
       },
     }),
-    computed: {
-      githubAPITree() {
-        return 'https://api.github.com/repos/' + this.repo + '/git/trees/' + this.branch + '?recursive=4'
-      },
-      githubAPIContents() {
-        return 'https://raw.githubusercontent.com/' + this.repo + '/' + this.branch + '/'
-      },
-      githubAPIRepos() {
-        return 'https://api.github.com/users/' + this.user + '/repos'
-      }
-    },
     created() {
-      console.log('Created ' + (this.githubAPIRepos))
-      this.loadRepositories(this.githubAPIRepos)
+      this.loadRepositories()
     },
     methods: {
-      loadRepositories(repoApi) {
-        return axios.get(repoApi)
-          .then(({ data }) => {
-            console.log('Load Repositories')
-            this.fetchedData = data
-            this.repositoryList = this.computeRepositoryListFromData(data)
-                                      .slice(0, 3) // For testing to reduce number of requests
-            this.loadContentsForAllRepositories(this.repositoryList)
+      loadRepositories() {
+        console.log('Load Repositories for user ' + this.user)
+        return loadRepositoriesOfUser(this.user)
+          .then((data) => {
             console.log('Loaded Repositories')
+            this.repositoryList = this.computeRepositoryListFromData(data)
           })
-          .catch((err) => {
-            console.log(err)
+          .then(() => {
+            this.loadFileTreeOfAllRepositories(this.repositoryList)
           })
       },
       computeRepositoryListFromData(fetchedData) {
         var repos = []
-        // var getGithubContentsAPI = this.getGithubContentsAPI
         fetchedData.forEach(function addToStructure(dataEntry) {
           repos.push({
             id: dataEntry.id,
             name: dataEntry.name,
             fullName: dataEntry.full_name,
             defaultBranch: dataEntry.default_branch,
-            // treeApi: dataEntry.trees_url.replace('{/sha}', '') + '/' + dataEntry.default_branch,
             data: dataEntry
           })
         })
         return repos
       },
 
-      loadContentsForAllRepositories: function (repositoryList) {
-        console.log('Load Contents For All Repositories in')
-        console.log(repositoryList)
-        var getGithubContentsAPI = this.getGithubContentsAPI
-        var getGithubTreeAPI = this.getGithubTreeAPI
+      loadFileTreeOfAllRepositories: function (repositoryList) {
         this.folderStructure = repositoryList.map((repo) => ({
           name: repo.fullName,
-          path: getGithubContentsAPI(repo.fullName, repo.defaultBranch),
+          path: repo.fullName,
           fileType: 'repo',
-          treeApi: getGithubTreeAPI(repo.fullName, repo.defaultBranch),
+          branch: repo.defaultBranch,
           children: []
         }))
         this.folderStructure.forEach((repo) => {
-          axios.get(repo.treeApi)
-            .then(({ data }) => {
-              this.fetchedData = data
-              repo.children = this.computeFolderStructureFromData(data)
+          loadFileTreeOfRepository(repo.name, repo.branch)
+            .then((data) => {
+              repo.children = this.computeFolderStructureFromData({ data, basePath: repo.name, repository: repo })
             })
             .catch((err) => {
               console.log(err)
@@ -326,9 +298,9 @@
       },
 
       // For one repository
-      computeFolderStructureFromData(fetchedData) {
+      computeFolderStructureFromData({ data, basePath, repository }) {
         var fS = []
-        fetchedData.tree.forEach(function addToStructure(dataEntry) {
+        data.forEach(function addToStructure(dataEntry) {
           var path = dataEntry.path.split('/')
           var last = path.pop()
           var parent = fS
@@ -340,10 +312,12 @@
           parent.push({
             name: last.match("\\d{4}-.*[.]md") ? snakeCase2naturalCase(last).replace('.md', '') : last,
             children: [],
-            path: dataEntry.path,
-            fileType: last.includes('.') ? (last.match("\\d{4}-.*[.]md") ? 'adr' : last.split('.')[-1]) : 'folder'
+            path: basePath + '/' + dataEntry.path,
+            fileType: last.includes('.') ? (last.match("\\d{4}-.*[.]md") ? 'adr' : last.split('.')[-1]) : 'folder',
+            repository
           })
         })
+
         let adrFolder = fS.find((folder) => (folder.name === 'docs'))
         if (adrFolder) adrFolder = adrFolder.children.find((folder) => (folder.name === 'adr'))
         if (adrFolder) {
@@ -352,52 +326,75 @@
         return fS
       },
 
-      folderContainsPath(folder, path) {
-        let searchedDirectory;
-        searchedDirectory =
-          (folder.children[0] && folder.children[0].path.startsWith(path.join('/'))) ||
-          path.reduce((folder, name) => (
-          folder && folder.children &&
-          folder.children.find((file) => (file.name === name))
-          ), folder)
-        console.log(folder)
-        console.log(searchedDirectory)
-        console.log(typeof searchedDirectory !== 'undefined')
-        return typeof searchedDirectory !== 'undefined'
-      },
+      folderContainsPath({ folder, path }) {
+        let searchedDirectory = getFileByPath({ folder: folder, path: folder.path + '/' + path });
+        return typeof searchedDirectory !== 'undefined';
+      }, 
 
       selectRepo(repository) {
         console.log('select repo')
         this.$emit('select-repo', repository.data)
       },
-      selectFile(filePath) {
-        console.log('select file')
-        console.log(filePath)
-        console.log(this.folderStructure)
 
-        axios.get(filePath)
-          .then(({ data }) => {
-            this.$emit('select-file', data);
-          })
-          .catch((err) => {
-            console.log(err)
-          })
+      openFileByPath({ path }) {
+        if (typeof path === 'undefined') {
+          console.log('Can\'t open file at an undefined path.')
+          return 
+        }
+        console.log('Open file by path: ' + path)
+        let file = getFileByPath({ folder: this.folderStructure, path })
+        this.openFile({ repoFullName: file.repository.name, branch: file.repository.branch, filePath: file.path.replace(file.repository.name, '') })
       },
 
-      getGithubTreeAPI(repoFullName, branch) {
-        return 'https://api.github.com/repos/' + repoFullName + '/git/trees/' + branch + '?recursive=4'
-      },
-      getGithubContentsAPI(repoFullName, branch) {
-        return 'https://raw.githubusercontent.com/' + repoFullName + '/' + branch + '/'
-      },
-      getGithubReposAPI(userName) {
-        return 'https://api.github.com/users/' + userName + '/repos'
+      openFile({ repoFullName, branch, filePath }) {
+        if (typeof repoFullName === 'string' && typeof branch === 'string' && typeof filePath === 'string') {
+          loadRawFile(repoFullName, branch, filePath)
+            .then(({ data }) => {
+              this.$emit('open-file', data);
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+        } else {
+          console.log('Open File Failed :(')
+        }
       },
 
     }
   }
+  // Private methods
+
+  function getFileByPath({ folder, path }) {
+    if (typeof path !== 'string') {
+      console.log('A file path must be a string, but this isn\'t: ')
+      console.log(path)
+      return
+    }
+
+    let searchedFile = folder ? folder : this.folderStructure
+    if (!searchedFile.path) {
+      searchedFile = searchedFile.find((file) => (path.startsWith(file.path))) //= this.folderStructure.find((repo) => (remainingPath.startsWith(repo.name)))
+    }
+
+    let found = false
+    while (!found) {
+      if (searchedFile) {
+        if (searchedFile.path === path) {
+          return searchedFile
+        } else if (searchedFile.path.startsWith(path)) {
+          // The file path of the searched file can be longer, iff paths are skipped in the folder structure. 
+          // E.g. if a folder or repository 'adr/madr' directly contains 'adr/madr/docs/adr/XXXX-...md'.
+          return searchedFile
+        }
+        searchedFile = searchedFile.children.find((file) => (path.startsWith(file.path) || file.path.startsWith(path)))
+      } else {
+        return searchedFile
+      }
+    }
+
+    return searchedFile
+  }
 </script>
 
 <style scoped>
-  /* @import "~vue-teatree/build/Teatree.css"; */
 </style>

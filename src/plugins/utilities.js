@@ -1,47 +1,8 @@
 /* eslint-disable */
 import parser from 'md-2-json'
+import axios from 'axios'
 
-function md2json(md) {
-  let json = parser.parse(md);
-  function removeTrailingLinebreaks(json) {
-    for (var entry in json) {
-      if (entry === 'raw') {
-        while (json.raw.endsWith('\n')) {
-          json.raw = json.raw.substring(0, json.raw.length - 1) // Remove line breaks
-        }
-        if (json.raw.startsWith('- ')) {
-          json.raw = '*' + json.raw.substring(1);
-        }
-        json.raw = json.raw.replace(/\n- /g, '\n* ')
-      } else {
-        removeTrailingLinebreaks(json[entry])
-      }
-    }
-  }
-  removeTrailingLinebreaks(json)
-  return json
-}
-
-function json2md(json) {
-  function appendLinebreaks(json) {
-    for (var entry in json) {
-      if (entry === 'raw') {
-        while (!json.raw.endsWith('\n\n')) {
-          json[entry] = json[entry].concat('\n') // Add line breaks, so the following heading is in new line
-        }
-        if (json.raw.startsWith('- ')) {
-          json.raw = '*' + json.raw.substring(1);
-        }
-        json.raw = json.raw.replace(/\n- /g, '\n* ')
-      } else {
-        appendLinebreaks(json[entry])
-      }
-    }
-  }
-  appendLinebreaks(json)
-  return parser.toMd(json);
-}
-
+// MADR-Type Definition
 class ArchitecturalDecisionRecord {
   constructor({ id, title, status, deciders,
     date, technicalStory, contextAndProblemStatement,
@@ -95,6 +56,57 @@ class ArchitecturalDecisionRecord {
   }
 }
 
+// General Utilities
+function hasOwnPropertyCaseInsensitive(obj, property) {
+  var props = [];
+  for (var i in obj) if (obj.hasOwnProperty(i)) props.push(i);
+  var prop;
+  while (prop = props.pop()) if (prop.toLowerCase() === property.toLowerCase()) return prop;
+  return false;
+}
+
+// Parser
+function md2json(md) {
+  let json = parser.parse(md);
+  function removeTrailingLinebreaks(json) {
+    for (var entry in json) {
+      if (entry === 'raw') {
+        while (json.raw.endsWith('\n')) {
+          json.raw = json.raw.substring(0, json.raw.length - 1) // Remove line breaks
+        }
+        if (json.raw.startsWith('- ')) {
+          json.raw = '*' + json.raw.substring(1);
+        }
+        json.raw = json.raw.replace(/\n- /g, '\n* ')
+      } else {
+        removeTrailingLinebreaks(json[entry])
+      }
+    }
+  }
+  removeTrailingLinebreaks(json)
+  return json
+}
+
+function json2md(json) {
+  function appendLinebreaks(json) {
+    for (var entry in json) {
+      if (entry === 'raw') {
+        while (!json.raw.endsWith('\n\n')) {
+          json[entry] = json[entry].concat('\n') // Add line breaks, so the following heading is in new line
+        }
+        if (json.raw.startsWith('- ')) {
+          json.raw = '*' + json.raw.substring(1);
+        }
+        json.raw = json.raw.replace(/\n- /g, '\n* ')
+      } else {
+        appendLinebreaks(json[entry])
+      }
+    }
+  }
+  appendLinebreaks(json)
+  return parser.toMd(json);
+}
+
 function mdListToArray(md) {
   let arr = md.split('\n* ')
   if (arr[0].startsWith('* ')) {
@@ -113,14 +125,6 @@ function removeOptionalAnnotationsFromJsonHeaders(json) {
     res[newKey] = removeOptionalAnnotationsFromJsonHeaders(json[key])
   }
   return res
-}
-
-function hasOwnPropertyCaseInsensitive(obj, property) {
-  var props = [];
-  for (var i in obj) if (obj.hasOwnProperty(i)) props.push(i);
-  var prop;
-  while (prop = props.pop()) if (prop.toLowerCase() === property.toLowerCase()) return prop;
-  return false;
 }
 
 function json2adr(json, id = 'unknown') {
@@ -333,8 +337,61 @@ function naturalCase2snakeCase(natural) {
   )
 }
 
+// API-URLs
+function getGithubTreeApiUrl(repoFullName, branch) {
+  return 'https://api.github.com/repos/' + repoFullName + '/git/trees/' + branch + '?recursive=4'
+}
+
+function getGithubReposApiUrl(userName) {
+  return 'https://api.github.com/users/' + userName + '/repos'
+}
+function getGithubRawApiUrl(repoFullName, branch, filePath) {
+  return 'https://raw.githubusercontent.com/' + repoFullName + '/' + branch + '/' + filePath
+}
+
+// API-Calls (functions return promises)
+function loadRepositoriesOfUser(userName) {
+  console.log('Load Repositories ' + getGithubReposApiUrl(userName))
+  return axios.get(getGithubReposApiUrl(userName))
+    .then(({ data }) => {
+      return data
+              //.slice(7, 12) // For testing to reduce number of requests
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+function loadFileTreeOfRepository(repoFullName, branch) {
+  if (typeof branch !== 'string' || typeof branch != 'string') {
+    console.log('Invalid values for loadContentsForRepository. Given Repository full name: ' + repoFullName + ', Branch:' + branch)
+  } else {
+    return axios.get(getGithubTreeApiUrl(repoFullName, branch))
+      .then(({ data }) => {
+        return data.tree;
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+}
+
+function loadRawFile(repoFullName, branch, filePath) {
+  if (typeof branch !== 'string' || typeof branch != 'string') {
+    console.log('Invalid values for loadContentsForRepository. Given Repository full name: ' + repoFullName
+      + ', Branch:' + branch + ', file path: ' + filePath)
+  } else {
+    console.log('Load Raw File content from ' + getGithubRawApiUrl(repoFullName, branch, filePath))
+    return axios.get(getGithubRawApiUrl(repoFullName, branch, filePath))
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+}
+
 export {
+  ArchitecturalDecisionRecord,
   md2json, json2md, json2adr, adr2md,
-  snakeCase2naturalCase, naturalCase2snakeCase, 
-  ArchitecturalDecisionRecord
+  snakeCase2naturalCase, naturalCase2snakeCase,
+  loadRepositoriesOfUser, loadFileTreeOfRepository, loadRawFile
 }
