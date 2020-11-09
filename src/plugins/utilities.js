@@ -1,4 +1,6 @@
 /* eslint-disable */
+/* This file is a gathering place for all functions used in the MockUp. */
+
 import parser from 'md-2-json'
 import axios from 'axios'
 
