@@ -257,11 +257,7 @@ function adr2md(adr) {
     md = md.concat('* Status: ' + adr.status + '\n')
   }
   if (adr.deciders.length > 0) {
-    md = md.concat('* Deciders: ' + adr.deciders[0])
-    for (let dec in adr.deciders.slice(1)) {
-      md = md.concat(', ' + dec)
-    }
-    md = md.concat('\n')
+    md = md.concat('* Deciders: ' + adr.deciders + '\n')
   }
   if (adr.date !== '') {
     md = md.concat('* Date: ' + adr.date + '\n')
