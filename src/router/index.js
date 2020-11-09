@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Register from '../views/Register.vue'
-import MockUp from '../views/MockUp.vue'
+import EditorView from '../views/EditorView.vue'
 import Authorization from '../views/Authorization.vue'
-
+import ErrorPage from '../views/ErrorPage.vue' 
 Vue.use(VueRouter)
 
 const routes = [
@@ -14,14 +14,20 @@ const routes = [
     component: Register
   },
   {
-    path: '/mockup',
-    name: 'MockUp',
-    component: MockUp
+    path: '/manager',
+    alias: ['/editor'],
+    name: 'Editor',
+    component: EditorView
   },
   {
     path: '/authorize',
     name: 'Authorization',
     component: Authorization
+  },
+  {
+    path: '/*',
+    name: 'Error 404',
+    component: ErrorPage
   }
 ]
 

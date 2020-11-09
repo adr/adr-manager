@@ -63,8 +63,6 @@
     },
     props: {
       user: String,
-      repo: String,
-      branch: String
     },
     data: () => ({
       repositoryList: [],

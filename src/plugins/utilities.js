@@ -44,7 +44,7 @@ class ArchitecturalDecisionRecord {
   addOption({ title, description, pros, cons } = {}) {
     this.consideredOptions.push({
       title: title || '',
-      description: description || 'Enter a description here.',
+      description: description || '',
       pros: pros || [],
       cons: cons || []
     })
@@ -355,7 +355,7 @@ function loadRepositoriesOfUser(userName) {
   return axios.get(getGithubReposApiUrl(userName))
     .then(({ data }) => {
       return data
-              //.slice(7, 12) // For testing to reduce number of requests
+              //.slice(9, 12) // To reduce number of requests while testing. GitHub API-Rate Limit is 60/hour.
     })
     .catch((err) => {
       console.log(err)

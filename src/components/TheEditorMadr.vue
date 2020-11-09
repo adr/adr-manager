@@ -18,7 +18,7 @@
           <div>
             <v-card-title style="flex-shrink: 0">
               Date
-              </v-card-title>
+            </v-card-title>
           </div>
             <div class="flex-grow-1 flex-shrink-1">
               <DatePickerMenu v-model="adr.date"></DatePickerMenu>
@@ -183,7 +183,7 @@
 
 <script>
   import _ from 'lodash'
-  import DatePickerMenu from '../UsefulComponents/DatePickerMenu.vue'
+  import DatePickerMenu from './UsefulComponents/DatePickerMenu.vue'
 
   export default {
     name: 'AdrRepresentation',

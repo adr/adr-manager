@@ -17,7 +17,7 @@ export default {
       console.log(window.location.href)
       console.log(this.$route.query)
       var code = this.$route.query.code
-      this.$router.push({ name: 'MockUp' })
+      this.$router.push({ name: 'Editor' })
       var axios = require('axios')
       axios.post(
         'https://github.com/login/oauth/access_token', null, {
@@ -30,7 +30,10 @@ export default {
             Accept: 'application/json'
           }
         }
-      ).then( ({ data }) => { console.log(data) } )
+      ).then(({ data }) => { console.log(data) })
+        .catch((err) => {
+          console.log(err)
+        })
     },
     destroyed() {
       console.log('Bye from the Authorization component!')
