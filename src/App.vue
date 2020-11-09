@@ -1,4 +1,27 @@
 <template>
+<<<<<<< HEAD
+  <v-app id="app"  style="height: 100%;">
+    <v-main style="height: 100%;">
+      <router-view />
+    </v-main>
+  </v-app>
+</template>
+
+<script>
+  export default {
+    name: 'App',
+
+    data: () => ({
+      //
+    }),
+  };
+</script>
+
+
+<style>
+html, body {
+height: 100%;
+=======
   <div id="app">
     <!-- added a navbar -->
     <nav class="navbar navbar-dark bg-dark">
@@ -40,5 +63,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+>>>>>>> main
 }
 </style>
