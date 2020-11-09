@@ -4,45 +4,46 @@
                color="primary"
                dark style="-webkit-flex: 0; flex: 0;">
       <v-btn class="align-self-center" to="/">Log Out</v-btn>
-      <ToolbarMenuFile 
-        v-on:commit="logNotImplemented"
-        v-on:create-adr="createNewAdr"
-        v-on:delete-adr="logNotImplemented"/>
+      <ToolbarMenuFile v-on:commit="logNotImplemented"
+                       v-on:create-adr="createNewAdr"
+                       v-on:delete-adr="logNotImplemented" />
       <ToolbarMenuMode />
       <v-spacer></v-spacer>
       <ToolbarNavigation />
 
     </v-toolbar>
 
-      <v-card-text class="mx-0 my-0 px-0 py-0" style="-webkit-flex-grow: 1; flex-grow: 1; position: relative;">
-        <splitpanes class="default-theme" style="overflow: auto; position: absolute; height: 100%; width: 100%; ">
-          <pane size="20%" style="overflow: auto;">
-            <FileExplorer v-on:open-file="updateMd" v-bind:user="userName" />
-            <DialogAddRepositories>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn block
-                       v-bind="attrs"
-                       v-on="on">
-                  Add Repository
-                </v-btn>
-              </template>
-            </DialogAddRepositories>
-          </pane> <!--end File Explorer Pane -->
+    <v-card-text class="mx-0 my-0 px-0 py-0" style="-webkit-flex-grow: 1; flex-grow: 1; position: relative;">
+      <splitpanes class="default-theme" style="overflow: auto; position: absolute; height: 100%; width: 100%; ">
+        <pane size="20%" style="overflow: auto;">
+          <FileExplorer v-on:open-file="updateMd" v-bind:user="userName" />
+          <DialogAddRepositories>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn block
+                     v-bind="attrs"
+                     v-on="on">
+                Add Repository
+              </v-btn>
+            </template>
+          </DialogAddRepositories>
+        </pane> <!--end File Explorer Pane -->
 
-          <pane>
-            <Editor style="height: 100%;"
-                    v-model="adrRaw" />
-          </pane>
-        </splitpanes>
-      </v-card-text>
+        <pane>
+          <Editor style="height: 100%;"
+                  v-model="adrRaw" />
+        </pane>
+      </splitpanes>
+    </v-card-text>
 
-      <v-system-bar>
-        Aktuelle Repo: Not implemented
-        <v-spacer></v-spacer>
-        Current Branch:
-        <v-autocomplete dense class="px-4  pt-3 pb-0 my-0"
-                        :items="[currentBranch, 'branch 1', 'branch 2']"></v-autocomplete>
-      </v-system-bar>
+    <v-system-bar>
+      Aktuelle Repo: Not implemented
+      <v-spacer></v-spacer>
+
+      Current branch:
+      <select name="current-branch" id="current-branch" style="width: 20%">
+        <option v-for="(branchName, index) in ['master', 'branch 1', 'branch 2']" :key="index" v-text="branchName"></option>
+      </select>
+    </v-system-bar>
   </v-card>
 </template>
 
@@ -88,3 +89,9 @@
     }
   }
 </script>
+
+<style>
+  html {
+    overflow: auto;
+  }
+</style>

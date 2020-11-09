@@ -4,16 +4,9 @@ import Register from '../views/Register.vue'
 import EditorView from '../views/EditorView.vue'
 import Authorization from '../views/Authorization.vue'
 import ErrorPage from '../views/ErrorPage.vue'
-import DataView from '../views/DataView.vue' 
 Vue.use(VueRouter)
 
 const routes = [
-  { // Text Component of Daniel
-    path: '/data',
-    alias: ['/'],
-    name: 'DataView',
-    component: DataView
-  },
   {
     path: '/login',
     alias: ['/register', '/'],

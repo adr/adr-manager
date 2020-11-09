@@ -267,7 +267,7 @@
             name: dataEntry.name,
             fullName: dataEntry.full_name,
             defaultBranch: dataEntry.default_branch,
-            data: dataEntry
+            data: dataEntry,
           })
         })
         return repos
@@ -279,18 +279,26 @@
           path: repo.fullName,
           fileType: 'repo',
           branch: repo.defaultBranch,
-          children: []
+          children: [],
+          itemDisabled: false
         }))
         this.folderStructure.forEach((repo) => {
           loadFileTreeOfRepository(repo.name, repo.branch)
             .then((data) => {
               repo.children = this.computeFolderStructureFromData({ data, basePath: repo.name, repository: repo })
+              this.disableInvalidRepositories()
             })
             .catch((err) => {
               console.log(err)
             })
         }
         )
+      },
+
+      disableInvalidRepositories() {
+        this.folderStructure.forEach((repo) => {
+          repo.itemDisabled = !this.folderContainsPath({ folder: repo, path: 'docs/adr'})
+        })
       },
 
       // For one repository
