@@ -15,7 +15,7 @@
 
     <v-card-text class="mx-0 my-0 px-0 py-0" style="-webkit-flex-grow: 1; flex-grow: 1; position: relative;">
       <splitpanes class="default-theme" style="overflow: auto; position: absolute; height: 100%; width: 100%; ">
-        <pane size="20%" style="overflow: auto;">
+        <pane size="30%" style="overflow: auto;">
           <FileExplorer v-on:open-file="updateMd" v-bind:user="userName" />
           <DialogAddRepositories>
             <template v-slot:activator="{ on, attrs }">
