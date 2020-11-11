@@ -251,6 +251,10 @@ function json2adr(json, id = 'unknown') {
   return adr
 }
 
+function md2adr(md) {
+  return json2adr(md2json(md))
+}
+
 function adr2md(adr) {
   var md = '# ' + adr.title + '\n\n'
   if (adr.status !== '' && adr.status !== 'null') {
@@ -389,7 +393,7 @@ function loadRawFile(repoFullName, branch, filePath) {
 
 export {
   ArchitecturalDecisionRecord,
-  md2json, json2md, json2adr, adr2md,
+  md2adr, adr2md,
   snakeCase2naturalCase, naturalCase2snakeCase,
   loadRepositoriesOfUser, loadFileTreeOfRepository, loadRawFile
 }

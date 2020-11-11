@@ -1,49 +1,50 @@
 <template>
-  <v-container fluid class="editor text-left">
-    <h1><v-text-field label="Titel" hint="Changing this field, changes the file name. Do not use special characters." v-model="adr.title" 
-      @input="(val) => {adr.title=val; update()}"></v-text-field></h1>
-      <v-card tile v-if="showOptionalFields"
-      dense class="d-flex flex-row flex-wrap mb-6">
-        <v-card tile outlined class="d-flex pr-4">
-          <div style="flex-shrink: 0">
-            <v-card-title>
-              Status
-            </v-card-title>
-          </div>
-          <div  style="flex-shrink: 1; flex-grow: 1">
-            <v-combobox v-model="adr.status" :items="statusSuggestions"></v-combobox>
-          </div>
-          </v-card>
-        <v-card tile outlined class="d-flex pr-4">
-          <div>
-            <v-card-title style="flex-shrink: 0">
-              Date
-            </v-card-title>
-          </div>
-            <div class="flex-grow-1 flex-shrink-1">
-              <DatePickerMenu v-model="adr.date"></DatePickerMenu>
-            </div>
-          </v-card>
-          <v-card tile outlined class="d-flex flex-grow-1 flex-shrink-0 pr-4" style="min-width: 200px">
-            <div  style="flex-shrink: 0">
-              <v-card-title>Deciders</v-card-title>
-            </div>
-            <div class="flex-grow-1 flex-shrink-1">
-              <v-combobox dense v-model="adr.deciders"
-                          multiple chips></v-combobox>
-            </div>
-          </v-card>
-          <v-card tile outlined class="d-flex pr-4" style="flex-grow: 3">
-            <div style="flex-shrink: 0">
-              <v-card-title>
-                Technical Story
-              </v-card-title>
-            </div>
-            <div class="align-self-end flex-grow-1" style="min-width: 400px;">
-              <v-textarea dense auto-grow rows="1" v-model="adr.technicalStory"></v-textarea>
-            </div>
-          </v-card>
-</v-card>
+  <v-container fluid class="editor text-left" id="editor-madr">
+    <h1>
+      <v-text-field label="Titel" hint="Changing this field, changes the file name. Do not use special characters." v-model="adr.title"
+                    @input="(val) => {adr.title=val; update()}"></v-text-field>
+    </h1>
+    <v-card flat tile v-if="showOptionalFields"
+            dense class="d-flex flex-row flex-wrap mb-6">
+      <v-card dense class="d-flex pr-4">
+        <div style="flex-shrink: 0">
+          <v-card-title>
+            Status
+          </v-card-title>
+        </div>
+        <div style="flex-shrink: 1; flex-grow: 1">
+          <v-combobox v-model="adr.status" :items="statusSuggestions"></v-combobox>
+        </div>
+      </v-card>
+      <v-card dense class="d-flex pr-4">
+        <div>
+          <v-card-title style="flex-shrink: 0">
+            Date
+          </v-card-title>
+        </div>
+        <div class="flex-grow-1 flex-shrink-1">
+          <DatePickerMenu v-model="adr.date"></DatePickerMenu>
+        </div>
+      </v-card>
+      <v-card dense tile outlined class="d-flex flex-grow-1 flex-shrink-0 pr-4" style="min-width: 200px">
+        <div style="flex-shrink: 0">
+          <v-card-title>Deciders</v-card-title>
+        </div>
+        <div class="flex-grow-1 flex-shrink-1">
+          <v-combobox v-model="adr.deciders"></v-combobox>
+        </div>
+      </v-card>
+      <v-card tile outlined class="d-flex pr-4" style="flex-grow: 3">
+        <div style="flex-shrink: 0">
+          <v-card-title>
+            Technical Story
+          </v-card-title>
+        </div>
+        <div class="align-self-end flex-grow-1" style="min-width: 400px;">
+          <v-textarea dense auto-grow rows="1" v-model="adr.technicalStory"></v-textarea>
+        </div>
+      </v-card>
+    </v-card>
 
     <h3>Context and Problem Statement</h3>
     <v-textarea dense auto-grow rows="1" hint="Description of the problem" v-model="adr.contextAndProblemStatement"></v-textarea>
@@ -71,7 +72,7 @@
       <v-list-item dense
                    v-for="(option, i) in adr.consideredOptions"
                    :key="i">
-        <v-list-item-icon> <v-btn text @click="$vuetify.goTo('#considered-option-' + i)"><v-icon>mdi-feather</v-icon></v-btn> </v-list-item-icon>
+        <v-list-item-icon> <v-btn text @click="$vuetify.goTo('#considered-option-' + i, { container: '#editor-madr' })"><v-icon>mdi-feather</v-icon></v-btn> </v-list-item-icon>
         <v-textarea dense auto-grow rows="1" v-model="option.title"></v-textarea>
         <v-list-item-icon>
           <v-btn v-on:click="adr.consideredOptions.splice(i, 1)"><v-icon>mdi-minus</v-icon></v-btn>
@@ -196,7 +197,7 @@
     props: ['value', 'showOptionalFields'],
     computed: {
       statusSuggestions() {
-        return ['proposed', 'rejected', 'superseded by'].concat(this.adr.status.startsWith('superseded ') ? ['superseded by ADR-0001', 'superseded by ADR-0002', 'superseded by ADR-0003'] : []) 
+        return ['proposed', 'rejected', 'superseded by'].concat(this.adr.status.startsWith('superseded ') ? ['superseded by ADR-0001', 'superseded by ADR-0002', 'superseded by ADR-0003'] : [])
       }
     },
     watch: {

@@ -4,9 +4,9 @@
       <v-tabs-items v-model="tab" style="position: absolute; height: 100%; width: 100%; ">
         <v-tab-item :value="'MADR Editor'" style="height: 100%; ">
           <splitpanes class="mx-auto default-theme">
-            <pane class="overflow-y-auto">
-              <v-card-text class="mx-auto">
-                <EditorMadr v-model="adr" v-on:input="updateAdr" v-bind:show-optional-fields="showOptionalFields" />
+            <pane style="height: 100%;">
+              <v-card-text class="mx-auto mx-0 my-0 px-0 py-0" style="height: 100%;">
+                <EditorMadr v-model="adr" style="height: 100%;" v-on:input="updateAdr" v-bind:show-optional-fields="showOptionalFields" class="overflow-y-auto" />
               </v-card-text>
             </pane>
             <pane class="mx-auto overflow-y-auto" v-if="alwaysShowMarkdownPreview">
@@ -62,7 +62,7 @@
 
 <script>
   import _ from 'lodash'
-  import { md2json, json2adr, adr2md, ArchitecturalDecisionRecord } from '@/plugins/utilities'
+  import { md2adr, adr2md, ArchitecturalDecisionRecord } from '@/plugins/utilities'
 
   import { Splitpanes, Pane } from 'splitpanes'
   import 'splitpanes/dist/splitpanes.css'
@@ -113,19 +113,19 @@
     },
     created() {
       this.dValue = this.value;
-      this.adr = json2adr(md2json(this.value));
+      this.adr = md2adr(this.value);
       this.currentBranch = this.branchName;
     },
     watch: {
       value() {
         this.dValue = this.value;
-        this.adr = json2adr(md2json(this.value))
+        this.adr = md2adr(this.value)
       }
     },
     methods: {
       updateMd: function (md) {
         this.dValue = md;
-        this.adr = json2adr(md2json(md))
+        this.adr = md2adr(md)
         this.$emit('input', this.dValue);
       },
       updateAdr: _.debounce(function (adr) {
