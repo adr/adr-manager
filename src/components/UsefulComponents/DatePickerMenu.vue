@@ -8,9 +8,9 @@
             min-width="290px">
       <template v-slot:activator="{ on, attrs }">
         <v-text-field v-model="date"
-                      v-bind="attrs"
-                      v-on="on"
-                      ></v-text-field>
+                   v-bind="attrs"
+                   v-on="on"
+                   min-width="200px"></v-text-field>
       </template>
       <v-date-picker v-model="date"
                      no-title
@@ -19,13 +19,14 @@
 </template>
 
 <script>
+
   export default {
+    props: ['value'],
+
     data: () => ({
       date: new Date().toISOString().substr(0, 10),
       menu: false,
     }),
-
-    props: ['value'],
 
     mounted() {
       if (this.value.match("\\d{4}-\\d{2}-\\d{2}")) {

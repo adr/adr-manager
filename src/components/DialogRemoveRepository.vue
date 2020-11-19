@@ -8,18 +8,21 @@
     </template>
     <v-card>
       <v-card-title class="headline grey lighten-2 warning">
-        Delete ADR
+        Remove Repository
       </v-card-title>
 
       <v-card-text>
-        Are you sure you want to delete '{{ adr.name }}'?
+        <div>
+          Are you sure you want to remove '{{ repo.name }}'?
+        </div>
+        You can always add it again using the 'Add Repository' button.
       </v-card-text>
       <v-divider></v-divider>
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn @click="deleteAdr" class="warning">
-          Delete
+        <v-btn @click="removeRepo">
+          Remove
         </v-btn>
         <v-btn @click="showDialog = false">
           Cancel
@@ -39,10 +42,10 @@
         required: false,
         default: false,
       },
-      adr: {
+      repo: {
         type: Object,
         required: false,
-        default: () => ({ name: 'ADR-XXXX Add Status Field' }),
+        default: () => ({ name: 'this Repository' }),
       },
     },
     data: () => ({
@@ -54,8 +57,8 @@
       }
     },
     methods: {
-      deleteAdr() {
-        console.log('Sorry, I can\'t delete ', this.adr, '. Deleting an ADR is not implemented.')
+      removeRepo() {
+        console.log('Sorry, I can\'t remove ', this.repo  , '. Deleting an ADR is not implemented.')
         this.showDialog = false
       }
     }

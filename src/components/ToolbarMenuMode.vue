@@ -9,14 +9,14 @@
         </v-btn>
       </template>
       <v-list>
-        <v-list-item  v-on:click="$emit('switch-mode', 'basic')">
+        <v-list-item  v-on:click="switchMode('basic')">
           <v-list-item-title>Basic</v-list-item-title>
         </v-list-item>
-        <v-list-item v-on:click="$emit('switch-mode', 'advanced')">
+        <v-list-item v-on:click="switchMode('advanced')">
           <v-list-item-title>Advanced</v-list-item-title>
         </v-list-item>
-        <v-list-item v-on:click="$emit('switch-mode', 'pro')">
-          <v-list-item-title>Pro</v-list-item-title>
+        <v-list-item v-on:click="switchMode('professional')">
+          <v-list-item-title>Professional</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -39,6 +39,14 @@
     created() {
     },
     methods: {
+      switchMode(mode) {
+        if (['basic', 'advanced', 'professional'].includes(mode)) { // Double-check that passed mode is valid.
+          localStorage.setItem('mode', mode)
+          this.$emit('switch-mode', mode)
+        } else {
+          console.log('Error in Mode Selection')
+        }
+      }
     }
   };
 </script>

@@ -16,7 +16,7 @@ class ArchitecturalDecisionRecord {
     this.title = title || 'Default Title';
     this.status = status || '';
     this.deciders = deciders || [];
-    this.date = date || new Date().toISOString().substr(0, 10);
+    this.date = date || '';//new Date().toISOString().substr(0, 10);
     this.technicalStory = technicalStory || '';
     this.contextAndProblemStatement = contextAndProblemStatement || '';
     this.decisionDrivers = decisionDrivers || [];
@@ -282,7 +282,7 @@ function adr2md(adr) {
   }
 
   if (adr.consideredOptions.length > 0) {
-    md = md.concat('\n## Considered Options \n\n')
+    md = md.concat('\n## Considered Options\n\n')
     md = adr.consideredOptions.reduce((total, opt) => (total + '* ' + opt.title + '\n'), md)
   }
 
@@ -300,12 +300,12 @@ function adr2md(adr) {
   }
 
   if (adr.consideredOptions.some((opt) => (opt.description !== '' || opt.pros.length > 0 || opt.cons.length > 0))) {
-    md = md.concat('\n## Pros and Cons of the Options \n')
+    md = md.concat('\n## Pros and Cons of the Options\n')
     md = adr.consideredOptions.reduce((total, opt) => {
       if (opt.description !== '' || opt.pros.length > 0 || opt.cons.length > 0) {
         let res = total.concat('\n### ' + opt.title + '\n\n')
         if (opt.description !== '') {
-          res = res.concat(opt.description.replace(/^#|\n#/g, '\n###') + '\n\n')
+          res = res.concat(opt.description.replace(/^#|\n#/g, '\n####') + '\n\n')
         }
         res = opt.pros.reduce((total, arg) => (total.concat('* Good, because ' + arg + '\n')), res)
         res = opt.cons.reduce((total, arg) => (total.concat('* Bad, because ' + arg + '\n')), res)
@@ -341,7 +341,7 @@ function naturalCase2snakeCase(natural) {
 
 // API-URLs
 function getGithubTreeApiUrl(repoFullName, branch) {
-  return 'https://api.github.com/repos/' + repoFullName + '/git/trees/' + branch + '?recursive=4'
+  return 'https://api.github.com/repos/' + repoFullName + '/git/trees/' + branch + '?recursive=1'
 }
 
 function getGithubReposApiUrl(userName) {
@@ -357,7 +357,7 @@ function loadRepositoriesOfUser(userName) {
   return axios.get(getGithubReposApiUrl(userName))
     .then(({ data }) => {
       return data
-              //.slice(9, 12) // To reduce number of requests while testing. GitHub API-Rate Limit is 60/hour.
+              .slice(9, 12) // To reduce number of requests while testing. GitHub API-Rate Limit is 60/hour.
     })
     .catch((err) => {
       console.log(err)
