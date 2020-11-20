@@ -12,10 +12,6 @@
       </v-card-title>
 
       <v-card-text>
-        <!--<v-combobox label="Organization"
-                    :items="organizations"
-                    v-model="organization"
-                    @input="loadRepositoriesOf" />-->
         <v-list class="overflow-auto" height="400px">
           <v-list-item-group v-model="repositoriesSelected"
                              multiple>
@@ -65,35 +61,27 @@
       value: {
         type: Boolean,
         required: false,
-        default: false,
-      },
-      organizations: {
-        type: Array,
-        required: false,
-        default: () => (['adr', 'JabRef']),
+        default: true,
       },
     },
     data: () => ({
       showDialog: false,
-      organization: '',
       repositoriesDisplayed: [],
       repositoriesSelected: []
     }),
     watch: {
-      value(newValue) {
-        if (newValue ===  true && this.dialog === false) { // If the window is newly opened.
-          this.dialog = newValue;
+      showDialog(newValue) {
+        if (newValue ===  true) { // If the window is opened.
+          this.loadRepositories();
         }
       }
     },
-    mounted() {
-      this.loadRepositories()
-    },
+    mounted() {},
     methods: {
       loadRepositories() {
         loadRepositories().then((res) => {
             console.log(res.data);
-            this.repositoriesDisplayed = res.data.map((el) => ({ name: el.full_name, description: el.description }))
+            this.repositoriesDisplayed = res.data.map((el) => ({ name: el.full_name, description: el.description, repoData: el }))
           })
           .catch((error) => {
             // eslint-disable-next-line
@@ -101,7 +89,7 @@
           });
       },
       addRepositories() {
-        this.$emit('add-repositories', this.repositoriesSelected)
+        this.$emit('add-repositories', this.repositoriesSelected.map((el) => (el.repoData)))
       },
       
     }
