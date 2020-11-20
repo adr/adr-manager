@@ -3,10 +3,9 @@
     <div style="-webkit-flex-grow: 1; flex-grow: 1; position: relative">
       <div style="height: 100%; width: 100%; position: absolute; overflow-y:auto">
         <v-list dense multiple>
-          <v-list-group v-for="repo in folderStructure"
-                        :key="repo.path"
-                        :prepend-icon="fileTypeIconMapping[repo.fileType]"
-                        :disabled="!folderContainsPath({ folder: repo, path: 'docs/adr' })">
+          <v-list-group v-for="repo in folderStructure" :key="repo.path"
+            :prepend-icon="fileTypeIconMapping[repo.fileType]"
+            :disabled="!folderContainsPath({ folder: repo, path: 'docs/adr' })">
             <template v-slot:activator>
               <v-list-item-content>
                 <v-list-item-title v-text="repo.name"></v-list-item-title>
@@ -15,9 +14,7 @@
               <DialogRemoveRepository v-bind:repo="{ name: repo.name }" v-if="repo.fileType==='repo'">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn style="width: 30px; min-width: 30px; height: 100%;" class="mx-0 px-0"
-                         v-on:click="$emit('remove-repo', repo)"
-                         v-bind="attrs"
-                         v-on="on">
+                    v-on:click="$emit('remove-repo', repo)" v-bind="attrs" v-on="on">
                     <v-icon>mdi-folder-remove</v-icon>
                   </v-btn>
                 </template>
@@ -25,26 +22,24 @@
 
             </template>
             <v-list-item-group>
-              <v-list-item v-for="file in repo.children"
-                           :key="file.path"
-                           @click="openFileByPath({ path: file.path })">
+              <v-list-item v-for="file in repo.children" :key="file.path" @click="openFileByPath({ path: file.path })">
                 <v-list-item-icon>
                 </v-list-item-icon>
-                <v-list-item-content> <v-list-item-title v-text="file.name"></v-list-item-title> </v-list-item-content>
+                <v-list-item-content>
+                  <v-list-item-title v-text="file.name"></v-list-item-title>
+                </v-list-item-content>
 
                 <!-- Button-Icons for copy and delete -->
                 <v-list-item-icon>
                   <v-btn style="width: 30px; min-width: 30px; height: 100%;" class="mx-0 px-0"
-                         v-if="file.fileType==='adr' || file.fileType==='md'">
+                    v-if="file.fileType==='adr' || file.fileType==='md'">
                     <v-icon>mdi-content-duplicate</v-icon>
                   </v-btn>
 
                   <DialogDeleteAdr v-bind:adr="{ name: file.name }">
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn style="width: 30px; min-width: 30px; height: 100%;" class="mx-0 px-0"
-                             v-if="file.fileType==='adr' || file.fileType==='md'"
-                             v-bind="attrs"
-                             v-on="on">
+                        v-if="file.fileType==='adr' || file.fileType==='md'" v-bind="attrs" v-on="on">
                         <v-icon>mdi-delete</v-icon>
                       </v-btn>
                     </template>
@@ -53,7 +48,9 @@
               </v-list-item>
 
               <v-list-item inactive>
-                <v-btn block @click="createNewAdr({ repository : repo })"><v-icon>mdi-plus</v-icon> New ADR </v-btn>
+                <v-btn block @click="createNewAdr({ repository : repo })">
+                  <v-icon>mdi-plus</v-icon> New ADR
+                </v-btn>
               </v-list-item>
 
             </v-list-item-group>
@@ -61,27 +58,23 @@
         </v-list>
       </div>
     </div>
-      <div class="flex-grow-0 d-flex flex-wrap">
-        <DialogAddRepositories>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs"
-                   v-on="on"
-                   class="flex-grow-1 secondary">
-              Add Repository
-            </v-btn>
-          </template>
-        </DialogAddRepositories>
-        <DialogCommit>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs"
-                   v-on="on"
-                   class="flex-grow-1 secondary">
-              Commit and Push
-            </v-btn>
-          </template>
-        </DialogCommit>
-      </div>
-    </v-card>
+    <div class="flex-grow-0 d-flex flex-wrap">
+      <DialogAddRepositories @add-repositories="addRepositories">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn v-bind="attrs" v-on="on" class="flex-grow-1 secondary">
+            Add Repository
+          </v-btn>
+        </template>
+      </DialogAddRepositories>
+      <DialogCommit>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn v-bind="attrs" v-on="on" class="flex-grow-1 secondary">
+            Commit and Push
+          </v-btn>
+        </template>
+      </DialogCommit>
+    </div>
+  </v-card>
 </template>
 
 <script>
@@ -95,7 +88,7 @@
   import DialogCommit from '@/components/DialogCommit.vue'
   import DialogDeleteAdr from '@/components/DialogDeleteAdr.vue'
   import DialogRemoveRepository from '@/components/DialogRemoveRepository.vue'
-  
+
   export default {
     components: {
       DialogAddRepositories,
@@ -109,182 +102,146 @@
     data: function () {
       return {
         repositoryList: [],
-          folderStructure: [
-            {
-              name: 'madr',
-              path: 'madr',
-              fileType: 'repo',
-              children: [
-                {
-                  name: 'docs',
-                  path: 'madr/docs',
-                  fileType: 'folder',
-                  children: [
-                    {
-                      name: 'adr',
-                      path: 'madr/docs/adr',
-                      fileType: 'folder',
-                      children: [
-                        {
-                          name: 'file',
-                          path: 'madr/docs/adr/file.md',
-                          fileType: 'md',
-                          children: []
-                        }
-                      ],
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              name: 'other-rep',
-              path: 'other-rep',
-              fileType: 'repo',
-              children: [
-                {
-                  name: 'doc',
-                  path: 'doc',
-                  fileType: 'folder',
-                  children: [
-                    {
-                      name: 'adr',
-                      path: 'docs/adr',
-                      fileType: 'folder',
-                      children: [
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file1.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file2.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file3.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file4.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file5.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file6.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file7.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file8.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file9.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file10.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file11.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file12.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file13.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file14.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file15.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file16.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file17.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file18.md',
-                          fileType: 'md',
-                          children: []
-                        },
-                        {
-                          name: 'file',
-                          path: 'docs/adr/file19.md',
-                          fileType: 'md',
-                          children: []
-                        }
+        folderStructure: [
+          {
+            name: 'madr',
+            path: 'madr',
+            fileType: 'repo',
+            children: [
+              {
+                name: 'docs',
+                path: 'madr/docs',
+                fileType: 'folder',
+                children: [
+                  {
+                    name: 'adr',
+                    path: 'madr/docs/adr',
+                    fileType: 'folder',
+                    children: [
+                      {
+                        name: 'file',
+                        path: 'madr/docs/adr/file.md',
+                        fileType: 'md',
+                        children: []
+                      }
+                    ],
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            name: 'other-rep',
+            path: 'other-rep',
+            fileType: 'repo',
+            children: [
+              {
+                name: 'doc',
+                path: 'doc',
+                fileType: 'folder',
+                children: [
+                  {
+                    name: 'adr',
+                    path: 'docs/adr',
+                    fileType: 'folder',
+                    children: [
+                      {
+                        name: 'file',
+                        path: 'docs/adr/file1.md',
+                        fileType: 'md',
+                        children: []
+                      },
+                      {
+                        name: 'file',
+                        path: 'docs/adr/file2.md',
+                        fileType: 'md',
+                        children: []
+                      },
+                      {
+                        name: 'file',
+                        path: 'docs/adr/file9.md',
+                        fileType: 'md',
+                        children: []
+                      },
+                      {
+                        name: 'file',
+                        path: 'docs/adr/file10.md',
+                        fileType: 'md',
+                        children: []
+                      },
+                      {
+                        name: 'file',
+                        path: 'docs/adr/file11.md',
+                        fileType: 'md',
+                        children: []
+                      },
+                      {
+                        name: 'file',
+                        path: 'docs/adr/file12.md',
+                        fileType: 'md',
+                        children: []
+                      },
+                      {
+                        name: 'file',
+                        path: 'docs/adr/file13.md',
+                        fileType: 'md',
+                        children: []
+                      },
+                      {
+                        name: 'file',
+                        path: 'docs/adr/file14.md',
+                        fileType: 'md',
+                        children: []
+                      },
+                      {
+                        name: 'file',
+                        path: 'docs/adr/file15.md',
+                        fileType: 'md',
+                        children: []
+                      },
+                      {
+                        name: 'file',
+                        path: 'docs/adr/file16.md',
+                        fileType: 'md',
+                        children: []
+                      },
+                      {
+                        name: 'file',
+                        path: 'docs/adr/file17.md',
+                        fileType: 'md',
+                        children: []
+                      },
+                      {
+                        name: 'file',
+                        path: 'docs/adr/file18.md',
+                        fileType: 'md',
+                        children: []
+                      },
+                      {
+                        name: 'file',
+                        path: 'docs/adr/file19.md',
+                        fileType: 'md',
+                        children: []
+                      }
 
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
-            fileTypeIconMapping: {
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        fileTypeIconMapping: {
           html: 'mdi-language-html5',
-            js: 'mdi-nodejs',
-              json: 'mdi-code-json',
-                md: 'mdi-language-markdown',
-                  pdf: 'mdi-file-pdf',
-                    png: 'mdi-file-image',
-                      txt: 'mdi-file-document-outline',
-                        xls: 'mdi-file-excel',
-                          repo: 'mdi-folder-star',
-                            folder: 'mdi-folder'
+          js: 'mdi-nodejs',
+          json: 'mdi-code-json',
+          md: 'mdi-language-markdown',
+          pdf: 'mdi-file-pdf',
+          png: 'mdi-file-image',
+          txt: 'mdi-file-document-outline',
+          xls: 'mdi-file-excel',
+          repo: 'mdi-folder-star',
+          folder: 'mdi-folder'
         },
       }
     },
@@ -294,20 +251,12 @@
       }
     },
     created() {
-      //this.loadRepositories()
     },
     methods: {
-      /* loadRepositories() {
-        console.log('Load Repositories for user ' + this.user)
-        return loadRepositoriesOfUser(this.user)
-          .then((data) => {
-            console.log('Loaded Repositories')
-            this.repositoryList = this.computeRepositoryListFromData(data)
-          })
-          .then(() => {
-            this.loadFileTreeOfAllRepositories(this.repositoryList)
-          })
-      },*/
+      addRepositories(repoList) {
+        var repos = this.computeRepositoryListFromData(repoList);
+        this.loadFileTreeOfAllRepositories(repos)
+      },
       computeRepositoryListFromData(fetchedData) {
         var repos = []
         fetchedData.forEach(function addToStructure(dataEntry) {
@@ -344,13 +293,6 @@
         }
         )
       },
-
-      disableInvalidRepositories() {
-        this.folderStructure.forEach((repo) => {
-          repo.itemDisabled = !this.folderContainsPath({ folder: repo, path: 'docs/adr'})
-        })
-      },
-
       // For one repository
       computeFolderStructureFromData({ data, basePath, repository }) {
         var fS = []
@@ -383,7 +325,7 @@
       folderContainsPath({ folder, path }) {
         let searchedDirectory = getFileByPath({ folder: folder, path: folder.path + '/' + path });
         return typeof searchedDirectory !== 'undefined';
-      }, 
+      },
 
       selectRepo(repository) {
         console.log('select repo')
@@ -393,7 +335,7 @@
       openFileByPath({ path }) {
         if (typeof path === 'undefined') {
           console.log('Can\'t open file at an undefined path.')
-          return 
+          return
         }
         console.log('Open file by path: ' + path)
         let file = getFileByPath({ folder: this.folderStructure, path })
