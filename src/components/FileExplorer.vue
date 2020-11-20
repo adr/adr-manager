@@ -87,7 +87,6 @@
 <script>
   import {
     snakeCase2naturalCase,
-    loadRepositoriesOfUser,
     loadFileTreeOfRepository,
     loadRawFile
   } from '@/plugins/utilities'
@@ -295,10 +294,10 @@
       }
     },
     created() {
-      this.loadRepositories()
+      //this.loadRepositories()
     },
     methods: {
-      loadRepositories() {
+      /* loadRepositories() {
         console.log('Load Repositories for user ' + this.user)
         return loadRepositoriesOfUser(this.user)
           .then((data) => {
@@ -308,7 +307,7 @@
           .then(() => {
             this.loadFileTreeOfAllRepositories(this.repositoryList)
           })
-      },
+      },*/
       computeRepositoryListFromData(fetchedData) {
         var repos = []
         fetchedData.forEach(function addToStructure(dataEntry) {

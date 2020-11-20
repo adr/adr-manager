@@ -201,7 +201,7 @@ function json2adr(json, id = 'unknown') {
 
     if (rawDecisionOutcome.startsWith('Chosen option: ')) {
       rawDecisionOutcome = rawDecisionOutcome.split(', because')
-      chosenOption = rawDecisionOutcome[0].substring('Chosen option: '.length).replace(/^[\s"`´']+|[\s+"`´']$/g, '');
+      chosenOption = rawDecisionOutcome[0].substring('Chosen option: '.length).replace(/^[\s"`ï¿½']+|[\s+"`ï¿½']$/g, '');
       explanation = rawDecisionOutcome.slice(1).join().trim()
     } else {
       console.log('Couldn\'t find chosen option.')
@@ -352,18 +352,6 @@ function getGithubRawApiUrl(repoFullName, branch, filePath) {
 }
 
 // API-Calls (functions return promises)
-function loadRepositoriesOfUser(userName) {
-  console.log('Load Repositories ' + getGithubReposApiUrl(userName))
-  return axios.get(getGithubReposApiUrl(userName))
-    .then(({ data }) => {
-      return data
-              .slice(9, 12) // To reduce number of requests while testing. GitHub API-Rate Limit is 60/hour.
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
-
 function loadFileTreeOfRepository(repoFullName, branch) {
   if (typeof branch !== 'string' || typeof branch != 'string') {
     console.log('Invalid values for loadContentsForRepository. Given Repository full name: ' + repoFullName + ', Branch:' + branch)
@@ -395,5 +383,5 @@ export {
   ArchitecturalDecisionRecord,
   md2adr, adr2md,
   snakeCase2naturalCase, naturalCase2snakeCase,
-  loadRepositoriesOfUser, loadFileTreeOfRepository, loadRawFile
+  loadFileTreeOfRepository, loadRawFile
 }

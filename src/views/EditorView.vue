@@ -46,19 +46,33 @@ import { adr2md, ArchitecturalDecisionRecord } from "@/plugins/utilities";
 import { Splitpanes, Pane } from "splitpanes";
 import "splitpanes/dist/splitpanes.css";
 
-  import ToolbarMenuMode from '@/components/ToolbarMenuMode.vue'
-  //import ToolbarMenuFile from '@/components/ToolbarMenuFile.vue'
-  //import ToolbarNavigation from '@/components/ToolbarNavigation.vue'
-  import Editor from '@/components/TheEditor.vue'
-  import FileExplorer from '@/components/FileExplorer.vue'
+import ToolbarMenuMode from "@/components/ToolbarMenuMode.vue";
+import Editor from "@/components/TheEditor.vue";
+import FileExplorer from "@/components/FileExplorer.vue";
 
-
-  export default {
-    components: {
-      Splitpanes, Pane,
-      ToolbarMenuMode,
-      Editor,
-      FileExplorer
+export default {
+  components: {
+    Splitpanes,
+    Pane,
+    ToolbarMenuMode,
+    Editor,
+    FileExplorer,
+  },
+  data: () => ({
+    currentBranch: "",
+    adrRaw: adr2md(new ArchitecturalDecisionRecord()),
+    userName: "adr",
+    reposPath: "http://localhost:5000/repos",
+  }),
+  methods: {
+    updateMd: function(md) {
+      this.adrRaw = md;
+    },
+    createNewAdr: function() {
+      this.adrRaw = adr2md(new ArchitecturalDecisionRecord());
+    },
+    logNotImplemented() {
+      console.log("Not implemented.");
     },
   },
 };

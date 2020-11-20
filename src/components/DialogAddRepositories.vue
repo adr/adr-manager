@@ -12,10 +12,10 @@
       </v-card-title>
 
       <v-card-text>
-        <v-combobox label="Organization"
+        <!--<v-combobox label="Organization"
                     :items="organizations"
                     v-model="organization"
-                    @input="loadRepositoriesOf" />
+                    @input="loadRepositoriesOf" />-->
         <v-list class="overflow-auto" height="400px">
           <v-list-item-group v-model="repositoriesSelected"
                              multiple>
@@ -56,7 +56,8 @@
 </template>
 
 <script>
-  import { loadRepositoriesOfUser } from '@/plugins/utilities.js'
+  import { loadRepositories } from '@/plugins/api.js'
+
   export default {
     name: 'EditorAddRepositoryDialog',
     props: {
@@ -76,40 +77,33 @@
       showDialog: false,
       organization: '',
       repositoriesDisplayed: [],
-      repositoriesSelected: [],
-      reposPath: "http://localhost:5000/repos",
+      repositoriesSelected: []
     }),
     watch: {
-      value() {
-        this.dialog = this.value;
+      value(newValue) {
+        if (newValue ===  true && this.dialog === false) { // If the window is newly opened.
+          this.dialog = newValue;
+        }
       }
     },
-    created() {
-      loadRepositories()
-    }
+    mounted() {
+      this.loadRepositories()
+    },
     methods: {
-      /*loadRepositoriesOf(organization) {
-        return loadRepositoriesOfUser(organization)
-          .then((data) => {
-            this.repositoriesDisplayed = data.map((el) => ({ name: el.name, description: el.description }))
-          })
-      },*/
-      addRepositories() {
-        this.$emit('add-repositories', this.repositoriesSelected)
-      }
-      
       loadRepositories() {
-        axios
-          .post(this.reposPath)
-          .then((res) => {
+        loadRepositories().then((res) => {
             console.log(res.data);
-            this.repositoriesDisplayed = res.data.map((el) => ({ name: el.name, description: el.description }))
+            this.repositoriesDisplayed = res.data.map((el) => ({ name: el.full_name, description: el.description }))
           })
           .catch((error) => {
             // eslint-disable-next-line
             console.error(error);
           });
       },
+      addRepositories() {
+        this.$emit('add-repositories', this.repositoriesSelected)
+      },
+      
     }
   }
 </script>

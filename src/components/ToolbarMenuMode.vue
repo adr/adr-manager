@@ -23,6 +23,8 @@
 </template>
 
 <script>
+  import { EventBus } from '@/plugins/event-bus.js'
+
   export default {
     name: 'MenuMode',
     components: {
@@ -42,7 +44,8 @@
       switchMode(mode) {
         if (['basic', 'advanced', 'professional'].includes(mode)) { // Double-check that passed mode is valid.
           localStorage.setItem('mode', mode)
-          this.$emit('switch-mode', mode)
+          this.$emit('change-mode', mode)
+          EventBus.$emit('change-mode', mode)
         } else {
           console.log('Error in Mode Selection')
         }
