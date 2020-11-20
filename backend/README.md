@@ -7,7 +7,7 @@
 git clone [this_repo]
 # cd into the repo
 # cd into the backend folder
-pipenv install --dev
+pipenv install
 # open a shell with pipenv
 pipenv shell
 ```
@@ -18,8 +18,8 @@ pipenv shell
 python main.py
 ```
 
-### Deactivate server and virtual environment
-1. ` exit` or CTRL-d to deactivate virtual environment
+### Deactivate virtual environment and server
+1. ` exit` or CTRL-d to deactivate the virtual environment
 2. CTRL-c to close the server
 
 ### Install library 
