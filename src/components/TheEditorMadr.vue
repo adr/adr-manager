@@ -7,22 +7,26 @@
         <NavigatorFab :options="adr.consideredOptions" @scroll-to="scrollTo" />
 
         <h1>
-          <v-text-field label="Titel" hint="Changing this field, changes the file name. Do not use special characters." v-model="adr.title"></v-text-field>
+          <v-text-field label="Titel" hint="Changing this field, changes the file name. Do not use special characters." 
+          v-model="adr.title" @input="$emit('input', adr)"></v-text-field>
         </h1>
-        <StatusDateDecidersStory v-bind:adr="adr" v-bind:showOptionalFields="showOptionalFields"></StatusDateDecidersStory>
+        <StatusDateDecidersStory v-bind:adr="adr" 
+          v-bind:showOptionalFields="showOptionalFields" 
+          @input="$emit('input', adr)"
+          v-if="mode !== 'basic'"></StatusDateDecidersStory>
 
         <h3>Context and Problem Statement</h3>
         <v-card class="mb-4">
-          <codemirror v-model="adr.contextAndProblemStatement"></codemirror>
+          <codemirror v-model="adr.contextAndProblemStatement" @input="(val) => { adr.contextAndProblemStatement = val; $emit('input', adr) }"></codemirror>
         </v-card>
 
-        <DecisionDrivers :adr="adr" :showOptionalFields="showOptionalFields" class="mb-4"></DecisionDrivers>
+        <DecisionDrivers :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)" class="mb-4"></DecisionDrivers>
 
-        <ConsideredOptions :adr="adr" @scroll-to="scrollTo"></ConsideredOptions>
+        <ConsideredOptions :adr="adr" @scroll-to="scrollTo" @input="$emit('input', adr)"></ConsideredOptions>
 
-        <DecisionOutcome :adr="adr" :showOptionalFields="showOptionalFields" class="mb-4"></DecisionOutcome>
+        <DecisionOutcome :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)" class="mb-4"></DecisionOutcome>
 
-        <ProsAndConsOfOptions :adr="adr" :showOptionalFields="showOptionalFields" class="mb-4"></ProsAndConsOfOptions>
+        <ProsAndConsOfOptions :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)" class="mb-4"></ProsAndConsOfOptions>
 
 
         <div v-if="showOptionalFields">
@@ -32,7 +36,7 @@
                          v-for="(link, i) in adr.links"
                          :key="i">
               <v-list-item-icon></v-list-item-icon>
-              <codemirror v-model="adr.links[i]"></codemirror>
+              <codemirror v-model="adr.links[i]" @input="update('input', adr)"></codemirror>
               <v-list-item-icon>
                 <v-btn v-on:click="adr.links.splice(i, 1)"><v-icon>mdi-delete</v-icon></v-btn>
               </v-list-item-icon>
@@ -81,6 +85,7 @@
 <script>
   //import _ from 'lodash'
   import { ArchitecturalDecisionRecord } from '@/plugins/utilities.js'
+  import { EventBus } from '@/plugins/event-bus.js';
 
   import codemirror from './TheEditorMadrCodemirror.vue'
   import NavigatorFab from './TheEditorMadrFab.vue'
@@ -101,23 +106,32 @@
       DecisionOutcome,
       ProsAndConsOfOptions
     },
-    data: () => ({
-      adr: {},
-    }),
     props: {
       value: { type: ArchitecturalDecisionRecord },
-      showOptionalFields: {
-        type: Boolean,
-        default: localStorage.getItem('mode') === 'professional'
+    },
+    data: () => ({
+      adr: {},
+      mode: localStorage.getItem('mode') in ['basic', 'advanced', 'professional'] ?  localStorage.getItem('mode') : 'basic'
+    }),
+    computed: {
+      showOptionalFields() {
+        return this.mode !== 'basic'
       }
     },
     watch: {
       value() {
         this.adr = this.value
-      }
+      },
+      /*adr: {
+        handler() {
+          this.$emit('input', this.adr)
+        },
+        deep: true
+      }*/
     },
     created() {
-      this.adr = this.value
+      this.adr = this.value;
+      EventBus.$on('change-mode', (mode) => { this.mode = mode });
     },
     methods: {
       scrollTo(target) {
