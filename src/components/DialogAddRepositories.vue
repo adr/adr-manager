@@ -76,23 +76,40 @@
       showDialog: false,
       organization: '',
       repositoriesDisplayed: [],
-      repositoriesSelected: []
+      repositoriesSelected: [],
+      reposPath: "http://localhost:5000/repos",
     }),
     watch: {
       value() {
         this.dialog = this.value;
       }
     },
+    created() {
+      loadRepositories()
+    }
     methods: {
-      loadRepositoriesOf(organization) {
+      /*loadRepositoriesOf(organization) {
         return loadRepositoriesOfUser(organization)
           .then((data) => {
             this.repositoriesDisplayed = data.map((el) => ({ name: el.name, description: el.description }))
           })
-      },
+      },*/
       addRepositories() {
         this.$emit('add-repositories', this.repositoriesSelected)
       }
+      
+      loadRepositories() {
+        axios
+          .post(this.reposPath)
+          .then((res) => {
+            console.log(res.data);
+            this.repositoriesDisplayed = res.data.map((el) => ({ name: el.name, description: el.description }))
+          })
+          .catch((error) => {
+            // eslint-disable-next-line
+            console.error(error);
+          });
+      },
     }
   }
 </script>
