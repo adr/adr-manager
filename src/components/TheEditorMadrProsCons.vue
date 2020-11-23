@@ -2,47 +2,26 @@
   <div v-if="showOptionalFields">
     <h3>Pros and Cons of the  Options</h3>
     <div  class="mb-2"
-        v-for="(option, i) in adr.consideredOptions"
-         v-bind:key="i"
-         v-bind:id="'considered-option-' + i">
+        v-for="(option, i) in displayedOptions"
+        v-bind:key="i"
+        v-bind:id="'considered-option-' + i">
       <h4> {{ option.title }} </h4>
-      <v-card class="mb-2">
+      <v-card flat class="mb-2">
         <codemirror hint="Description of the option" v-model="option.description"></codemirror>
       </v-card>
-      <h5> Pros </h5>
-      <v-list>
-        <v-list-item dense
-                     v-for="(arg, i) in option.pros"
-                     v-bind:key="i">
-          <v-list-item-icon class="mr-4">Good, because</v-list-item-icon>
-          <v-list-item-content>
-            <codemirror v-model="option.pros[i]"></codemirror>
-          </v-list-item-content>
-          <v-list-item-icon>
-            <v-btn v-on:click="option.pros.splice(i, 1)"><v-icon>mdi-delete</v-icon></v-btn>
-          </v-list-item-icon>
-        </v-list-item>
-        <v-list-item>
-          <v-btn v-on:click="option.pros.push('')"><v-icon>mdi-plus</v-icon></v-btn>
-        </v-list-item>
-      </v-list>
+      
+      <div class="d-flex flex-wrap">
+        <div class="flex-grow-1" style="width: 50%; min-width: 600px">
+      <h5> Good, because ... </h5>
+      <EditorMadrList :list="option.pros" class="ml-16"/>
 
-      <h5> Cons </h5>
+    </div>
+      <div class="flex-grow-1" style="width: 50%; min-width: 600px">
+      <h5> Bad, because ... </h5>
 
-      <v-list>
-        <v-list-item dense
-                     v-for="(arg, i) in option.cons"
-                     v-bind:key="i">
-          <v-list-item-icon class="mr-4">Bad, because</v-list-item-icon>
-          <codemirror v-model="option.cons[i]"></codemirror>
-          <v-list-item-icon>
-            <v-btn v-on:click="option.cons.splice(i, 1)"><v-icon>mdi-delete</v-icon></v-btn>
-          </v-list-item-icon>
-        </v-list-item>
-        <v-list-item>
-          <v-btn v-on:click="option.cons.push('')"><v-icon>mdi-plus</v-icon></v-btn>
-        </v-list-item>
-      </v-list>
+      <EditorMadrList :list="option.cons" class="ml-16"/>
+    </div>
+  </div>
     </div>
 
   </div>
@@ -50,15 +29,22 @@
 
 <script>
   import codemirror from './TheEditorMadrCodemirror.vue'
+  import EditorMadrList from './TheEditorMadrList.vue'
 
   export default {
     name: 'EditorMadrProsCons',
     components: {
-      codemirror,
+      codemirror, EditorMadrList
     },
+    props: ['adr', 'showOptionalFields'],
     data: () => ({
     }),
-    props: ['adr', 'showOptionalFields']
+    computed: {
+      /* Only display options with a non-empty title */
+      displayedOptions() {
+        return this.adr.consideredOptions.filter((opt) => (opt.title !== ''))
+      }
+    },
   };
 </script>
 

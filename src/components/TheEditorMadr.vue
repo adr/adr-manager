@@ -4,10 +4,10 @@
     <v-sheet class="mx-auto mx-0 my-0 px-0 py-0" style="height: 100%; width:100%;">
 
       <v-container fluid class="mx-auto overflow-y-auto scroll" style="height: 100%;">
-        <NavigatorFab :options="adr.consideredOptions" @scroll-to="scrollTo" />
+        <NavigatorFab :options="adr.consideredOptions" @scroll-to="scrollTo" v-if="showOptionalFields"/>
 
         <h1>
-          <v-text-field label="Titel" hint="Changing this field, changes the file name. Do not use special characters." 
+          <v-text-field background="#eeeeee" label="Titel" hint="Changing this field, changes the file name. Do not use special characters." 
           v-model="adr.title" @input="$emit('input', adr)"></v-text-field>
         </h1>
         <StatusDateDecidersStory v-bind:adr="adr" 
@@ -16,69 +16,28 @@
           v-if="mode !== 'basic'"></StatusDateDecidersStory>
 
         <h3>Context and Problem Statement</h3>
-        <v-card class="mb-4">
+        <v-card flat class="mb-4">
           <codemirror v-model="adr.contextAndProblemStatement" @input="(val) => { adr.contextAndProblemStatement = val; $emit('input', adr) }"></codemirror>
         </v-card>
 
-        <DecisionDrivers :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)" class="mb-4"></DecisionDrivers>
+        <div v-if="showOptionalFields" class="my-8">
+          <h3>Decision Drivers</h3>
+          <GenericList :list="adr.decisionDrivers"/>
+        </div>
 
-        <ConsideredOptions :adr="adr" @scroll-to="scrollTo" @input="$emit('input', adr)"></ConsideredOptions>
+        <ConsideredOptions :adr="adr" @scroll-to="scrollTo" @input="$emit('input', adr)" class="my-8"></ConsideredOptions>
 
-        <DecisionOutcome :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)" class="mb-4"></DecisionOutcome>
+        <DecisionOutcome :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)" class="my-8"></DecisionOutcome>
 
-        <ProsAndConsOfOptions :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)" class="mb-4"></ProsAndConsOfOptions>
+        <ProsAndConsOfOptions :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)" class="my-8"></ProsAndConsOfOptions>
 
 
         <div v-if="showOptionalFields">
           <h3>Links</h3>
-          <v-list>
-            <v-list-item dense
-                         v-for="(link, i) in adr.links"
-                         :key="i">
-              <v-list-item-icon></v-list-item-icon>
-              <codemirror v-model="adr.links[i]" @input="update('input', adr)"></codemirror>
-              <v-list-item-icon>
-                <v-btn v-on:click="adr.links.splice(i, 1)"><v-icon>mdi-delete</v-icon></v-btn>
-              </v-list-item-icon>
-            </v-list-item>
-            <v-list-item>
-              <v-btn v-on:click="adr.links.push('')"><v-icon>mdi-plus</v-icon></v-btn>
-            </v-list-item>
-          </v-list>
+          <GenericList :list="adr.links" class="mb-16"/>
         </div>
       </v-container>
     </v-sheet>
-
-    <!--<v-navigation-drawer expand-on-hover float right position="absolute">
-
-    <v-list>
-      <v-list-item class="px-2">
-        <v-list-item-icon><v-icon>mdi-up</v-icon></v-list-item-icon>
-      </v-list-item>
-
-      <v-list-item @click="$vuetify.goTo(0, { container: '#editor-madr' })">
-        <v-list-item-content>
-          <v-list-item-title class="title">
-            Up
-          </v-list-item-title>
-          <v-list-item-subtitle>Scroll up</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
-
-    <v-divider></v-divider>
-
-    <v-list nav
-            dense>
-      <v-list-item v-for="(opt, i) in adr.consideredOptions" :key="i"
-                   @click="$vuetify.goTo('#considered-option-' + i, { container: '#editor-madr' })">
-        <v-list-item-icon>
-          <v-icon>{{ i+1 }}</v-icon>
-        </v-list-item-icon>
-        <v-list-item-title v-text="opt.title"></v-list-item-title>
-      </v-list-item>
-    </v-list>
-  </v-navigation-drawer>-->
   </v-container>
 </template>
 
@@ -92,8 +51,9 @@
   import StatusDateDecidersStory from './TheEditorMadrStatusDateDecidersStory.vue'
   import DecisionOutcome from './TheEditorMadrDecisionOutcome.vue'
   import ProsAndConsOfOptions from './TheEditorMadrProsCons.vue'
-  import DecisionDrivers from './TheEditorMadrDecisionDrivers.vue'
   import ConsideredOptions from './TheEditorMadrConsideredOptions.vue'
+
+  import GenericList from './TheEditorMadrList.vue'
 
   export default {
     name: 'EditorMADR',
@@ -101,17 +61,17 @@
       codemirror,
       NavigatorFab,
       StatusDateDecidersStory,
-      DecisionDrivers,
       ConsideredOptions,
       DecisionOutcome,
-      ProsAndConsOfOptions
+      ProsAndConsOfOptions,
+      GenericList
     },
     props: {
       value: { type: ArchitecturalDecisionRecord },
     },
     data: () => ({
       adr: {},
-      mode: localStorage.getItem('mode') in ['basic', 'advanced', 'professional'] ?  localStorage.getItem('mode') : 'basic'
+      mode: ['basic', 'advanced', 'professional'].includes(localStorage.getItem('mode')) ?  localStorage.getItem('mode') : 'basic'
     }),
     computed: {
       showOptionalFields() {
@@ -122,12 +82,12 @@
       value() {
         this.adr = this.value
       },
-      /*adr: {
+      adr: {
         handler() {
           this.$emit('input', this.adr)
         },
         deep: true
-      }*/
+      }
     },
     created() {
       this.adr = this.value;

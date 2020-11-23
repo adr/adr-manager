@@ -23,7 +23,7 @@
         <v-list-item-icon><v-icon>mdi-chevron-up</v-icon></v-list-item-icon>
       </v-list-item>
 
-      <v-list-item v-for="(opt, i) in options" v-bind:key="opt.title" v-on:click="scrollTo('#considered-option-' + i)">
+      <v-list-item v-for="(opt, i) in options" v-bind:key="i" v-on:click="scrollTo('#considered-option-' + i)">
         <v-list-item-title v-text="opt.title" />
         <!--<v-list-item-icon><v-icon v-text="i+1" /></v-list-item-icon>-->
       </v-list-item>

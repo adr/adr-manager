@@ -11,16 +11,18 @@
                 <v-list-item-title v-text="repo.name"></v-list-item-title>
               </v-list-item-content>
 
-              <DialogRemoveRepository v-bind:repo="{ name: repo.name }" v-if="repo.fileType==='repo'">
+              <DialogRemoveRepository v-bind:repo="{ name: repo.name }" v-if="repo.fileType==='repo'" @remove-repo="removeRepository(repo)">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn style="width: 30px; min-width: 30px; height: 100%;" class="mx-0 px-0"
-                    v-on:click="$emit('remove-repo', repo)" v-bind="attrs" v-on="on">
+                    v-bind="attrs" v-on="on">
                     <v-icon>mdi-folder-remove</v-icon>
                   </v-btn>
                 </template>
               </DialogRemoveRepository>
 
             </template>
+
+            <!-- sub list containing the ADRs -->
             <v-list-item-group>
               <v-list-item v-for="file in repo.children" :key="file.path" @click="openFileByPath({ path: file.path })">
                 <v-list-item-icon>
@@ -58,8 +60,9 @@
         </v-list>
       </div>
     </div>
+    <!-- Bottom Buttons for adding a repository and commiting -->
     <div class="flex-grow-0 d-flex flex-wrap">
-      <DialogAddRepositories @add-repositories="addRepositories">
+      <DialogAddRepositories :repos="notAddedRepositories" @add-repositories="addRepositories">
         <template v-slot:activator="{ on, attrs }">
           <v-btn v-bind="attrs" v-on="on" class="flex-grow-1 secondary">
             Add Repository
@@ -84,6 +87,8 @@
     loadRawFile
   } from '@/plugins/utilities'
 
+  import { loadRepositories } from '@/plugins/api.js'
+
   import DialogAddRepositories from '@/components/DialogAddRepositories.vue'
   import DialogCommit from '@/components/DialogCommit.vue'
   import DialogDeleteAdr from '@/components/DialogDeleteAdr.vue'
@@ -101,136 +106,7 @@
     },
     data: function () {
       return {
-        repositoryList: [],
-        folderStructure: [
-          {
-            name: 'madr',
-            path: 'madr',
-            fileType: 'repo',
-            children: [
-              {
-                name: 'docs',
-                path: 'madr/docs',
-                fileType: 'folder',
-                children: [
-                  {
-                    name: 'adr',
-                    path: 'madr/docs/adr',
-                    fileType: 'folder',
-                    children: [
-                      {
-                        name: 'file',
-                        path: 'madr/docs/adr/file.md',
-                        fileType: 'md',
-                        children: []
-                      }
-                    ],
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            name: 'other-rep',
-            path: 'other-rep',
-            fileType: 'repo',
-            children: [
-              {
-                name: 'doc',
-                path: 'doc',
-                fileType: 'folder',
-                children: [
-                  {
-                    name: 'adr',
-                    path: 'docs/adr',
-                    fileType: 'folder',
-                    children: [
-                      {
-                        name: 'file',
-                        path: 'docs/adr/file1.md',
-                        fileType: 'md',
-                        children: []
-                      },
-                      {
-                        name: 'file',
-                        path: 'docs/adr/file2.md',
-                        fileType: 'md',
-                        children: []
-                      },
-                      {
-                        name: 'file',
-                        path: 'docs/adr/file9.md',
-                        fileType: 'md',
-                        children: []
-                      },
-                      {
-                        name: 'file',
-                        path: 'docs/adr/file10.md',
-                        fileType: 'md',
-                        children: []
-                      },
-                      {
-                        name: 'file',
-                        path: 'docs/adr/file11.md',
-                        fileType: 'md',
-                        children: []
-                      },
-                      {
-                        name: 'file',
-                        path: 'docs/adr/file12.md',
-                        fileType: 'md',
-                        children: []
-                      },
-                      {
-                        name: 'file',
-                        path: 'docs/adr/file13.md',
-                        fileType: 'md',
-                        children: []
-                      },
-                      {
-                        name: 'file',
-                        path: 'docs/adr/file14.md',
-                        fileType: 'md',
-                        children: []
-                      },
-                      {
-                        name: 'file',
-                        path: 'docs/adr/file15.md',
-                        fileType: 'md',
-                        children: []
-                      },
-                      {
-                        name: 'file',
-                        path: 'docs/adr/file16.md',
-                        fileType: 'md',
-                        children: []
-                      },
-                      {
-                        name: 'file',
-                        path: 'docs/adr/file17.md',
-                        fileType: 'md',
-                        children: []
-                      },
-                      {
-                        name: 'file',
-                        path: 'docs/adr/file18.md',
-                        fileType: 'md',
-                        children: []
-                      },
-                      {
-                        name: 'file',
-                        path: 'docs/adr/file19.md',
-                        fileType: 'md',
-                        children: []
-                      }
-
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ],
+        folderStructure: [], // Tree structure of the displayed repositories and their contents
         fileTypeIconMapping: {
           html: 'mdi-language-html5',
           js: 'mdi-nodejs',
@@ -243,6 +119,17 @@
           repo: 'mdi-folder-star',
           folder: 'mdi-folder'
         },
+        allRepositories: [] // A list containing all repositories  (Raw Data fetched from GitHub) 
+      }
+    },
+    computed: {
+      addedRepoFullNames() {
+        console.log(this.folderStructure)
+        return this.folderStructure.map((repository) => (repository.fullName) )
+      },
+      notAddedRepositories() {
+        console.log('notAddedRepositories', this.allRepositories)
+        return this.allRepositories.filter((repo) => (!this.addedRepoFullNames.includes(repo.full_name)))
       }
     },
     watch: {
@@ -250,50 +137,81 @@
         console.log(this.folderStructure)
       }
     },
-    created() {
+    mounted() {
+      this.loadRepositories()
     },
     methods: {
-      addRepositories(repoList) {
-        var repos = this.computeRepositoryListFromData(repoList);
-        this.loadFileTreeOfAllRepositories(repos)
-      },
-      computeRepositoryListFromData(fetchedData) {
-        var repos = []
-        fetchedData.forEach(function addToStructure(dataEntry) {
-          repos.push({
-            id: dataEntry.id,
-            name: dataEntry.name,
-            fullName: dataEntry.full_name,
-            defaultBranch: dataEntry.default_branch,
-            data: dataEntry,
+      /** Loads all (added and unadded) repositories the user is authorized to access into allRepositories.
+       */
+       loadRepositories() {
+        loadRepositories().then((res) => {
+            console.log('Loaded repo data', res.data);
+            if (!Array.isArray(res.data)) {throw 'Couldn\'t load repos.'}
+            this.allRepositories = res.data
+            console.log('All Repositories', this.allRepositories)
           })
-        })
-        return repos
+          .catch((error) => {
+            // eslint-disable-next-line
+            console.error(error);
+          });
       },
 
-      loadFileTreeOfAllRepositories: function (repositoryList) {
-        this.folderStructure = repositoryList.map((repo) => ({
-          name: repo.fullName,
-          path: repo.fullName,
+      /** Adds all repositories from the repo list to the folder structure.
+       * Called when the 'Add repositories'-Dialog is closed.
+       * 
+       * @param repoList - A list of repository data (like it is fetched from GitHub)
+       */
+      addRepositories(repoList) {
+        this.loadFileTreeOfRepositories(repoList)
+      },
+
+      /** 
+       * @param repo
+       */
+      removeRepository(repo) {
+        this.folderStructure = this.folderStructure.filter((el) => (el.name !== repo.name))
+        this.$emit('remove-repo', repo)
+      },
+      /** Loads the entire file trees of passed repositories and adds them to the folder structure, ready to be displayed.
+       * 
+       * TODO: The backend with the authorization token should be called.
+       * 
+       * @param repositoryList - the list of repos like it is fetched from GitHub.
+       */
+      loadFileTreeOfRepositories: function (repositoryList) {
+        let addedRepoCount = this.folderStructure.length
+
+        this.folderStructure = this.folderStructure.concat(repositoryList.map((repo) => ({
+          data : repo,
+          name: repo.full_name,
+          fullName: repo.full_name,
+          path: repo.full_name,
           fileType: 'repo',
-          branch: repo.defaultBranch,
-          children: [],
-          itemDisabled: false
-        }))
-        this.folderStructure.forEach((repo) => {
-          loadFileTreeOfRepository(repo.name, repo.branch)
+          branch: repo.default_branch,
+          children: []
+        })))
+        // Get the file tree of the added repositories
+        this.folderStructure.slice(addedRepoCount).forEach((repo) => {
+          loadFileTreeOfRepository(repo.name, repo.branch) // TODO: Here the backend should be called. (Currently this calls to the public api.)
             .then((data) => {
               console.log(data)
               repo.children = this.computeFolderStructureFromData({ data, basePath: repo.name, repository: repo })
-              // this.disableInvalidRepositories()
             })
             .catch((err) => {
               console.log(err)
             })
-        }
-        )
+        })
       },
-      // For one repository
+      
+      /** Computes the nested folder structure from the git tree of one repository.
+       * 
+       * If the repository contains the path docs/adr/, it is used as base path, i.e. all files outside that path will be ignored.
+       * 
+       * @param data - the file tree (JSON structure can be viewed in the  tree attributee at 'https://api.github.com/repos/adr/madr/git/trees/master?recursive=1')
+       * @param basePath - prefix for all paths, e. g. the full repostory name
+       * @param repository - the repository object every file in this folder structure should refer to
+       * @returns the folder structure computed from the data 
+       */
       computeFolderStructureFromData({ data, basePath, repository }) {
         var fS = []
         data.forEach(function addToStructure(dataEntry) {
@@ -322,14 +240,14 @@
         return fS
       },
 
+      /**
+       * @param folder - the base folder in which should be searched
+       * @param path - the path inside that folder
+       * @returns True iff there is a file in the folder structur with the parameter path as prefix of its path
+       */
       folderContainsPath({ folder, path }) {
         let searchedDirectory = getFileByPath({ folder: folder, path: folder.path + '/' + path });
         return typeof searchedDirectory !== 'undefined';
-      },
-
-      selectRepo(repository) {
-        console.log('select repo')
-        this.$emit('select-repo', repository.data)
       },
 
       openFileByPath({ path }) {
@@ -339,9 +257,16 @@
         }
         console.log('Open file by path: ' + path)
         let file = getFileByPath({ folder: this.folderStructure, path })
-        this.openFile({ repoFullName: file.repository.name, branch: file.repository.branch, filePath: file.path.replace(file.repository.name, '') })
+        this.openFile({ repoFullName: file.repository.fullName, branch: file.repository.branch, filePath: file.path.replace(file.repository.name, '') })
       },
 
+      /** TODO: Loads the file content from GitHub and emits an 'open-file' event with the file content as parameter.
+       * 
+       * @param repoFullName - the full name of the repo (i.e. 'owner/repoName')
+       * @param branch - 
+       * @param filePath - the path to the file 
+       * @returns True iff there is a file in the folder structure with the parameter path as prefix of its path
+       */
       openFile({ repoFullName, branch, filePath }) {
         if (typeof repoFullName === 'string' && typeof branch === 'string' && typeof filePath === 'string') {
           loadRawFile(repoFullName, branch, filePath)
@@ -357,7 +282,6 @@
       },
 
       createNewAdr({ repository }) {
-        console.log('New ADR in ', repository, 'This is not implemented.')
         console.log('New ADR in ', repository, 'This is not implemented.')
         this.$emit('new-adr', repository.path)
       }

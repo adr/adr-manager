@@ -6,6 +6,10 @@ import '@mdi/font/css/materialdesignicons.css'
 
 import router from './router'
 
+/* Needed to refresh the code mirror, when it becomes visible. */
+import { ObserveVisibility } from 'vue-observe-visibility'
+Vue.directive('observe-visibility', ObserveVisibility)
+
 Vue.config.productionTip = false;
 
 new Vue({

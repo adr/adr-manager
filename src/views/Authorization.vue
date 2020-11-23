@@ -29,13 +29,13 @@ export default {
       .post(this.tokenPath, formData)
       .then((res) => {
         console.log(res.data);
+        this.$router.push({ name: "Editor" });
       })
       .catch((error) => {
         // eslint-disable-next-line
         console.error(error);
       });
 
-    this.$router.push({ name: "Editor" });
   },
   destroyed() {
     console.log("Bye from the Authorization component!");

@@ -200,9 +200,9 @@ function json2adr(json, id = 'unknown') {
     let explanation = rawDecisionOutcome
 
     if (rawDecisionOutcome.startsWith('Chosen option: ')) {
-      rawDecisionOutcome = rawDecisionOutcome.split(', because')
-      chosenOption = rawDecisionOutcome[0].substring('Chosen option: '.length).replace(/^[\s"`�']+|[\s+"`�']$/g, '');
-      explanation = rawDecisionOutcome.slice(1).join().trim()
+      rawDecisionOutcome = rawDecisionOutcome.split(/, because */)
+      chosenOption = rawDecisionOutcome[0].substring('Chosen option: '.length).replace(/^[\s"']+|[\s+"']$/g, '')
+      explanation = rawDecisionOutcome.slice(1).join()
     } else {
       console.log('Couldn\'t find chosen option.')
     }
@@ -232,9 +232,9 @@ function json2adr(json, id = 'unknown') {
         optionContents = mdListToArray(optionContents.substring(option.description.length))
           optionContents.forEach((optLine, index) => {
             if (optLine.startsWith('Good, ')) {
-              option.pros.push(optLine.replace(/^Good, because /g, '').trim())
+              option.pros.push(optLine.replace(/^Good, because */g, '').trim())
             } else {
-              option.cons.push(optLine.replace(/^Bad, because /g, '').trim())
+              option.cons.push(optLine.replace(/^Bad, because */g, '').trim())
             }
           })
       }

@@ -34,7 +34,7 @@
 
 <script>
   export default {
-    name: 'EditorDeleteAdr',
+    name: 'EditorRemoveRepo',
     props: {
       // value is true, iff showDialog == true, iff the dialog is shown. (value-prop enables v-model)
       value: {
@@ -58,7 +58,7 @@
     },
     methods: {
       removeRepo() {
-        console.log('Sorry, I can\'t remove ', this.repo  , '. Deleting an ADR is not implemented.')
+        this.$emit('remove-repo')
         this.showDialog = false
       }
     }

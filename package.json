@@ -10,15 +10,14 @@
     "dependencies": {
         "@mdi/font": "^3.6.95",
         "axios": "^0.21.0",
-        "codemirror": "^5.58.2",
         "core-js": "^3.6.5",
         "marked": "^1.2.3",
         "md-2-json": "^1.0.6",
-        "mergely": "^4.2.1",
         "roboto-fontface": "*",
         "splitpanes": "^2.3.4",
         "vue": "^2.6.11",
         "vue-codemirror": "^4.0.6",
+        "vue-observe-visibility": "^0.4.6",
         "vue-resource": "^1.5.1",
         "vue-router": "^3.4.8",
         "vuetify": "^2.2.11"
