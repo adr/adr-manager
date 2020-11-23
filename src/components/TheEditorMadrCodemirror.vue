@@ -1,7 +1,8 @@
 <template>
-  <v-card class="flex-grow-1 py-1 text-left flex-shrink-1">
+  <v-card flat class="flex-grow-1 py-1 text-left flex-shrink-1"
+    color="#eeeeee">
     <codemirror v-model="dValue" :options="cmOptions" v-on:input="(ev) => update(ev)"
-                ref="cm"></codemirror>
+                ref="cm" v-observe-visibility="visibilityChanged" class="customized-cm"></codemirror>
   </v-card>
 </template>
 
@@ -17,6 +18,7 @@
   // theme
   import 'codemirror/theme/lesser-dark.css'
 
+  import 'vue-observe-visibility'
   export default {
     name: 'EditorMadrCodemirror',
     components: {
@@ -37,39 +39,52 @@
           lineWrapping: true,
           mode: 'text/x-markdown',
           lineNumbers: false,
+          autoRefresh: true,
         }
       }
     },
     computed: {
       codemirror() {
-        return this.$refs.cm.codemirror.getDoc()
+        return this.$refs.cm.codemirror
       }
     },
     watch: {
       value() {
         if (this.dValue !== this.value) {
-          // console.log('CodemirrorDoc', this.codemirror)
-          this.codemirror.setValue(this.value)
+          this.codemirror.getDoc().setValue(this.value)
         }
       }
+    },
+    updated() {
+      this.codemirror.refresh()
     },
     created() {
       this.dValue = this.value
     },
     mounted() {
-      // console.log('Codemirror mounted')
-      this.codemirror.setValue(this.value)
+      this.codemirror.getDoc().setValue(this.value)
     },
     methods: {
+      /** Emit 'input' event.
+       */
       update: _.debounce(function () {
         this.$emit('input', this.dValue)
-      }, 300)
+      }, 300),
+      /** Refresh code mirror, when it becomes visible, to avoid anomalies.
+       */
+      visibilityChanged(isVisible) {
+        if (isVisible) {
+          this.codemirror.refresh()
+        }
+      }
     }
   };
 </script>
 
 <style scoped>
-  textarea {
-    padding: 20px;
+  .customized-cm >>> .CodeMirror {
+    font-family: Arial, monospace;
+    font-size: 11pt;
+    background-color: transparent;
   }
 </style>

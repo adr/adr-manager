@@ -11,7 +11,7 @@
         Add Repositories
       </v-card-title>
 
-      <v-card-text>
+      <v-card-text class="my-0">
         <v-list class="overflow-auto" height="400px">
           <v-list-item-group v-model="repositoriesSelected"
                              multiple>
@@ -37,8 +37,8 @@
         </v-list>
       </v-card-text>
 
-      <v-divider></v-divider>
-      <v-card-actions>
+      <v-divider class="mt-0"></v-divider>
+      <v-card-actions class="mt-0">
         <v-spacer></v-spacer>
         <v-btn :disabled="repositoriesSelected.length===0" @click="() => { showDialog = false; addRepositories() }">
           Add Repositories
@@ -52,8 +52,6 @@
 </template>
 
 <script>
-  import { loadRepositories } from '@/plugins/api.js'
-
   export default {
     name: 'EditorAddRepositoryDialog',
     props: {
@@ -63,33 +61,34 @@
         required: false,
         default: true,
       },
+      /**
+       * Array of full names of Repos that should not be added, e. g. Repos that were added previously.
+       */
+      repos: {
+        type: Array,
+        required: false,
+        default: () => ([])
+      }
     },
     data: () => ({
       showDialog: false,
-      repositoriesDisplayed: [],
       repositoriesSelected: []
     }),
-    watch: {
-      showDialog(newValue) {
-        if (newValue ===  true) { // If the window is opened.
-          this.loadRepositories();
-        }
+    computed: {
+      repositoriesDisplayed() {
+        console.log('Displayed Repositories', this.repos)
+        return this.repos.map((repo) => ({ name: repo.full_name, description: repo.description, repoData: repo }))
       }
     },
+    watch: {},
     mounted() {},
     methods: {
-      loadRepositories() {
-        loadRepositories().then((res) => {
-            console.log(res.data);
-            this.repositoriesDisplayed = res.data.map((el) => ({ name: el.full_name, description: el.description, repoData: el }))
-          })
-          .catch((error) => {
-            // eslint-disable-next-line
-            console.error(error);
-          });
-      },
+      /**
+       * Once the user has accepted his repo selection emit the selected repositories.
+       */
       addRepositories() {
         this.$emit('add-repositories', this.repositoriesSelected.map((el) => (el.repoData)))
+        this.repositoriesSelected = []
       },
       
     }

@@ -1,7 +1,8 @@
 <template>
   <v-card class="text-left overflow-y-auto" height="100%">
-    <codemirror v-model="rawMd" :options="cmOptions"
-                @input="update" @scroll="onCmScroll" style="height: 100%"></codemirror>
+    <codemirror v-model="rawMd" @input="update"
+                :options="cmOptions"
+                ref="cm" v-observe-visibility="visibilityChanged"></codemirror>
   </v-card>
 </template>
 
@@ -36,20 +37,27 @@
         rawMd: this.value,
       }
     },
+    computed: {
+      codemirror() {
+        return this.$refs.cm.codemirror
+      }
+    },
     watch: {
       value() {
-        console.log('raw value changed')
         this.rawMd = this.value
       }
     },
     methods: {
-      onCmScroll() {
-        console.log('onCmScroll')
-      },
       update: _.debounce(function (ev) {
-        console.log('update')
         this.$emit('input', ev)
-      }, 300)
+      }, 300),
+      /** Refresh code mirror, when it becomes visible, to avoid anomalies.
+       */
+       visibilityChanged(isVisible) {
+        if (isVisible) {
+          this.codemirror.refresh()
+        }
+      },
     }
   }
 </script>

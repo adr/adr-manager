@@ -12,7 +12,7 @@
 
       <div class="d-flex text-center">
         <h5 class="flex-grow-1 text-center">Your ADR</h5>
-        <h5 class="flex-grow-1 text-center">Our parser's output</h5>
+        <h5 class="flex-grow-1 text-center">Result</h5>
       </div>
       <div class="flex-grow-1 overflow-auto">
         <codemirror ref="compare"
@@ -20,7 +20,9 @@
                     v-model="mergeMd"
                     :merge="true"
                     :options="cmOption"
-                    @scroll="onCmScroll"></codemirror>
+                    @scroll="onCmScroll"
+                    v-observe-visibility="visibilityChanged"></codemirror>
+                    
       </div>
 
       <v-btn color="success" @click="accept">Accept</v-btn>
@@ -86,9 +88,6 @@
       this.cmOption.value = this.mergeMd
       this.$set(this.cmOption, 'origRight', adr2md(md2adr(this.mergeMd)))
     },
-    mounted() {
-      console.log('this is current codemirror object', this.codemirror)
-    },
     watch: {
       mergeMd() {
         this.updateOrig()
@@ -101,13 +100,23 @@
       onCmScroll() {
         console.log('onCmScroll')
       },
+      /** Called when user accepted. Emits 'accept' event.
+       */
       accept() {
         console.log('Accept')
         this.$emit('accept', adr2md(md2adr(this.mergeMd)))
       },
       updateOrig: _.debounce(function () {
         this.codemirror.right.orig.setValue(adr2md(md2adr(this.mergeMd)))
-      }, 300)
+      }, 300),
+      /** Refresh code mirror, when it becomes visible, to avoid anomalies.
+       */
+      visibilityChanged(isVisible) {
+        if (isVisible) {
+          this.codemirror.edit.refresh()
+          this.codemirror.right.orig.refresh()
+        }
+      }
     }
   }
 </script>
