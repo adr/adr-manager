@@ -56,18 +56,18 @@
 
 <script>
 // @ is an alias to /src
-import { adr2md, ArchitecturalDecisionRecord } from "@/plugins/utilities";
+import {adr2md, ArchitecturalDecisionRecord} from '@/plugins/utilities';
 
-import { Splitpanes, Pane } from "splitpanes";
-import "splitpanes/dist/splitpanes.css";
+import {Splitpanes, Pane} from 'splitpanes';
+import 'splitpanes/dist/splitpanes.css';
 
-import ToolbarMenuMode from "@/components/ToolbarMenuMode.vue";
-import ToolbarMenuFile from "@/components/ToolbarMenuFile.vue";
-import ToolbarNavigation from "@/components/ToolbarNavigation.vue";
-import Editor from "@/components/TheEditor.vue";
-import FileExplorer from "@/components/FileExplorer.vue";
-import DialogAddRepositories from "@/components/DialogAddRepositories.vue";
-import axios from "axios";
+import ToolbarMenuMode from '@/components/ToolbarMenuMode.vue';
+import ToolbarMenuFile from '@/components/ToolbarMenuFile.vue';
+import ToolbarNavigation from '@/components/ToolbarNavigation.vue';
+import Editor from '@/components/TheEditor.vue';
+import FileExplorer from '@/components/FileExplorer.vue';
+import DialogAddRepositories from '@/components/DialogAddRepositories.vue';
+import axios from 'axios';
 
 export default {
   components: {
@@ -81,10 +81,10 @@ export default {
     DialogAddRepositories,
   },
   data: () => ({
-    currentBranch: "",
+    currentBranch: '',
     adrRaw: adr2md(new ArchitecturalDecisionRecord()),
-    userName: "adr",
-    reposPath: "http://localhost:5000/repos",
+    userName: 'adr',
+    reposPath: 'http://localhost:5000/repos',
   }),
   methods: {
     updateMd: function(md) {
@@ -95,17 +95,17 @@ export default {
     },
     addRepositories() {
       axios
-        .post(this.reposPath)
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((error) => {
+          .post(this.reposPath)
+          .then((res) => {
+            console.log(res.data);
+          })
+          .catch((error) => {
           // eslint-disable-next-line
           console.error(error);
-        });
+          });
     },
     logNotImplemented() {
-      console.log("Not implemented.");
+      console.log('Not implemented.');
     },
   },
 };

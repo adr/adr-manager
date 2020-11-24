@@ -19,25 +19,25 @@
 </template>
 
 <script>
-  export default {
-    components: {},
-    data: () => ({
-    }),
-    props: {
-      consideredOptions: {
-        type: Array, // Array
-        required: false,
-        default: () => ([])
-      }
+export default {
+  components: {},
+  data: () => ({
+  }),
+  props: {
+    consideredOptions: {
+      type: Array, // Array
+      required: false,
+      default: () => ([]),
     },
-    created() {
+  },
+  created() {
+  },
+  methods: {
+    logNotImplemented() {
+      console.log('Not implemented.');
     },
-    methods: {
-      logNotImplemented() {
-        console.log('Not implemented.')
-      },
-    }
-  };
+  },
+};
 </script>
 
 <style scoped>
