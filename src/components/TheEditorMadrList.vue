@@ -5,7 +5,7 @@
                      v-for="(item, i) in list"
                      :key="i">
           <codemirror v-model="list[i]"  @input="$emit('input', list)"></codemirror>
-
+          
           <!-- Show a delete icon next to all items exccept the last. Show the add icon next to the last. -->
           <v-list-item-icon class="align-center flex-shrink-0">
             <v-btn v-show="i < list.length - 1" 
