@@ -23,7 +23,7 @@
             </template>
 
             <!-- sub list containing the ADRs -->
-            <v-list-item-group>
+            <v-list-item-group mandatory>
               <v-list-item v-for="file in repo.children" :key="file.path" @click="openFileByPath({ path: file.path })">
                 <v-list-item-icon>
                 </v-list-item-icon>

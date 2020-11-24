@@ -1,35 +1,45 @@
 <template>
-  <v-container fluid class="editor text-left d-flex flex-column" id="editor-madr">
+  <v-container fluid class="editor text-left d-flex flex-column mx-0" id="editor-madr">
 
     <v-sheet class="mx-auto mx-0 my-0 px-0 py-0" style="height: 100%; width:100%;">
 
       <v-container fluid class="mx-auto overflow-y-auto scroll" style="height: 100%;">
-        <NavigatorFab :options="adr.consideredOptions" @scroll-to="scrollTo" v-if="showOptionalFields"/>
+        <!--<NavigatorFab :options="adr.consideredOptions" @scroll-to="scrollTo" v-if="showOptionalFields"/>-->
 
-        <h1>
-          <v-text-field background="#eeeeee" label="Titel" hint="Changing this field, changes the file name. Do not use special characters." 
+        <v-card-title>
+          <v-text-field filled label="Titel" hint="Changing this field, changes the file name. Do not use special characters." 
           v-model="adr.title" @input="$emit('input', adr)"></v-text-field>
-        </h1>
+        </v-card-title>
         <StatusDateDecidersStory v-bind:adr="adr" 
           v-bind:showOptionalFields="showOptionalFields" 
           @input="$emit('input', adr)"
           v-if="mode !== 'basic'"></StatusDateDecidersStory>
+        
+          <v-divider></v-divider>
 
-        <h3>Context and Problem Statement</h3>
-        <v-card flat class="mb-4">
+        <h3 class="mt-8">Context and Problem Statement</h3>
+        <v-card flat class="mx-4 mb-8">
           <codemirror v-model="adr.contextAndProblemStatement" @input="(val) => { adr.contextAndProblemStatement = val; $emit('input', adr) }"></codemirror>
         </v-card>
+
+        <v-divider></v-divider>
 
         <div v-if="showOptionalFields" class="my-8">
           <h3>Decision Drivers</h3>
           <GenericList :list="adr.decisionDrivers"/>
         </div>
 
+        <v-divider></v-divider>
+
         <ConsideredOptions :adr="adr" @scroll-to="scrollTo" @input="$emit('input', adr)" class="my-8"></ConsideredOptions>
+
+        <v-divider></v-divider>
 
         <DecisionOutcome :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)" class="my-8"></DecisionOutcome>
 
-        <ProsAndConsOfOptions :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)" class="my-8"></ProsAndConsOfOptions>
+        <v-divider></v-divider>
+
+        <!--<ProsAndConsOfOptions :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)" class="my-8"></ProsAndConsOfOptions>-->
 
 
         <div v-if="showOptionalFields">
@@ -47,10 +57,10 @@
   import { EventBus } from '@/plugins/event-bus.js';
 
   import codemirror from './TheEditorMadrCodemirror.vue'
-  import NavigatorFab from './TheEditorMadrFab.vue'
+  //import NavigatorFab from './TheEditorMadrFab.vue'
   import StatusDateDecidersStory from './TheEditorMadrStatusDateDecidersStory.vue'
   import DecisionOutcome from './TheEditorMadrDecisionOutcome.vue'
-  import ProsAndConsOfOptions from './TheEditorMadrProsCons.vue'
+  //import ProsAndConsOfOptions from './TheEditorMadrProsCons.vue'
   import ConsideredOptions from './TheEditorMadrConsideredOptions.vue'
 
   import GenericList from './TheEditorMadrList.vue'
@@ -59,11 +69,11 @@
     name: 'EditorMADR',
     components: {
       codemirror,
-      NavigatorFab,
+      //NavigatorFab,
       StatusDateDecidersStory,
       ConsideredOptions,
       DecisionOutcome,
-      ProsAndConsOfOptions,
+      //ProsAndConsOfOptions,
       GenericList
     },
     props: {
@@ -102,4 +112,7 @@
 </script>
 
 <style scoped>
+  .html {
+    background-color: tomato;
+  }
 </style>
