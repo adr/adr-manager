@@ -5,8 +5,8 @@
     "scripts": {
         "serve": "vue-cli-service serve --open",
         "build": "vue-cli-service build",
-        "lint": "eslint **/*.js",
-        "lintfix": "eslint --fix --ext .js,.jsx .",
+        "lint": "eslint **/*.js **/*.vue",
+        "lintfix": "eslint --fix --ext .js,.jsx,.vue .",
         "test": "jest"
     },
     "dependencies": {
