@@ -16,11 +16,13 @@ npm run build
 ```
 
 ### Run lint
+Currently not possible
 ```
 npm run lint
 ```
 
 ### Run lintfix
+Currently not possible
 ```
 npm run lintfix
 ```
