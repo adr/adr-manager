@@ -23,24 +23,24 @@
 </template>
 
 <script>
-  export default {
-    name: 'MenuMode',
-    components: {
+export default {
+  name: 'MenuMode',
+  components: {
+  },
+  data: () => ({
+  }),
+  props: {
+    consideredOptions: {
+      type: Array, // Array
+      required: false,
+      default: () => ([]),
     },
-    data: () => ({
-    }),
-    props: {
-      consideredOptions: {
-        type: Array, // Array
-        required: false,
-        default: () => ([])
-      }
-    },
-    created() {
-    },
-    methods: {
-    }
-  };
+  },
+  created() {
+  },
+  methods: {
+  },
+};
 </script>
 
 <style scoped>
