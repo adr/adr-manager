@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import _ from 'lodash';
+import lodash from 'lodash';
 import {md2adr, adr2md, ArchitecturalDecisionRecord} from '@/plugins/utilities';
 
 import {Splitpanes, Pane} from 'splitpanes';
@@ -102,7 +102,7 @@ export default {
     tabs: ['MADR Editor', 'Markdown Preview', 'Raw Markdown'],
     alwaysShowMarkdownPreview: false,
     showOptionalFields: true,
-    _,
+    lodash,
   }),
   computed: {
     displayedTabs() {
@@ -128,7 +128,7 @@ export default {
       this.adr = md2adr(md);
       this.$emit('input', this.dValue);
     },
-    updateAdr: _.debounce(function(adr) {
+    updateAdr: lodash.debounce(function(adr) {
       this.dValue = adr2md(adr);
       this.adr = adr;
       this.$emit('input', this.dValue);
