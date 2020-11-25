@@ -3,15 +3,15 @@
 </template>
 
 <script>
-  export default {
-    props: ['value'],
-    computed: {
-      compiledMarkdown: function () {
-        var marked = require('marked')
-        return marked(this.value);
-      },
-    }
-  };
+export default {
+  props: ['value'],
+  computed: {
+    compiledMarkdown: function() {
+      const marked = require('marked');
+      return marked(this.value);
+    },
+  },
+};
 </script>
 
 <style scoped>
