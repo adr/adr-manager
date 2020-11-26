@@ -149,15 +149,15 @@ function json2adr(json, id = 'unknown') {
     let arr = mdListToArray(list)
     let line = arr.find((el) => (el.startsWith('Status: ')))
     if (typeof line !== 'undefined') {
-        adr.status = line.replace(/^Status: /, '').trim()
+      adr.status = line.replace(/^Status: /, '').trim()
     }
     line = arr.find((el) => (el.startsWith('Deciders: ')))
     if (typeof line !== 'undefined') {
-        adr.deciders = line.replace(/^Deciders: /, '').split(', ')
+      adr.deciders = line.replace(/^Deciders: /, '').split(', ')
     }
     line = arr.find((el) => (el.startsWith('Date: ')))
     if (typeof line !== 'undefined') {
-        adr.date = line.replace(/^Date: /, '').trim()
+      adr.date = line.replace(/^Date: /, '').trim()
     }
   }
 
@@ -189,7 +189,7 @@ function json2adr(json, id = 'unknown') {
       }
     })
   }
-  
+
   // Parse Decision Outcome
   prop = hasOwnPropertyCaseInsensitive(json[adr.title], 'Decision Outcome')
   if (prop) {
@@ -201,7 +201,7 @@ function json2adr(json, id = 'unknown') {
 
     if (rawDecisionOutcome.startsWith('Chosen option: ')) {
       rawDecisionOutcome = rawDecisionOutcome.split(/, because */)
-      chosenOption = rawDecisionOutcome[0].substring('Chosen option: '.length).replace(/^[\s"']+|[\s+"']$/g, '')
+      chosenOption = rawDecisionOutcome[0].substring('Chosen option: '.length).replace(/^[\s"'`]+|[\s+"'`]$/g, '')
       explanation = rawDecisionOutcome.slice(1).join()
     } else {
       console.log('Couldn\'t find chosen option.')
@@ -230,13 +230,13 @@ function json2adr(json, id = 'unknown') {
         let optionContents = json2md(prosConsJson[optionTitle])
         option.description = optionContents.split(/[*] Good|[*] Bad/)[0]
         optionContents = mdListToArray(optionContents.substring(option.description.length))
-          optionContents.forEach((optLine, index) => {
-            if (optLine.startsWith('Good, ')) {
-              option.pros.push(optLine.replace(/^Good, because */g, '').trim())
-            } else {
-              option.cons.push(optLine.replace(/^Bad, because */g, '').trim())
-            }
-          })
+        optionContents.forEach((optLine, index) => {
+          if (optLine.startsWith('Good, ')) {
+            option.pros.push(optLine.replace(/^Good, because */g, '').trim())
+          } else {
+            option.cons.push(optLine.replace(/^Bad, because */g, '').trim())
+          }
+        })
       }
     }
   }
