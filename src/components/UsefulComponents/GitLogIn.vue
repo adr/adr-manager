@@ -1,26 +1,6 @@
 <template>
   <div>
-    <v-btn
-      href="https://github.com/login/oauth/authorize?client_id=7399c989ae7246112a4d&scope=repo"
-    >
-      Log In with GitHub
-    </v-btn>
-    <div>
-      <main v-if="user">
-        <h1>Latest repositories starred</h1>
-        <ul>
-          <li v-for="repository in repositories" :key="repository.name">
-            <a :href="repository.html_url" target="_blank">{{
-              repository.name
-            }}</a>
-          </li>
-        </ul>
-        <p v-if="repositories.length === 0">Whoa, such empty!</p>
-      </main>
-      <div v-else>
-        <button @click.prevent="connect">Connect to GitHub</button>
-      </div>
-    </div>
+    <v-btn @click.prevent="connect">Connect to GitHub </v-btn>
   </div>
 </template>
 <script>
@@ -37,7 +17,7 @@ export default {
     // Here we initialize Pizzly.
     console.log("mounted");
     this.$pizzly = new Pizzly({
-      host: "adr-manager.herokuapp.com",
+      host: "https://adr-manager.herokuapp.com",
       publishableKey: "dpWJ4TU2yCu7ys4Nb6eX5zhv32GV6YcVYYvDJZvS",
     });
   },
