@@ -13,12 +13,12 @@
       <splitpanes class="default-theme" style="height: 100%; width: 100%; ">
         <pane size="30%" class="d-flex flex-column" style="-webkit-flex-grow: 1; flex-grow: 1; position: relative;">
 
-          <FileExplorer v-on:open-file="updateMd"
+          <FileExplorer v-on:open-file="openAdr"
                         v-bind:user="userName" />
         </pane> <!--end File Explorer Pane -->
 
         <pane>
-          <Editor style="height: 100%;" v-model="adrRaw" />
+          <Editor style="height: 100%;" v-bind:value="currentAdr.editedMd" />
         </pane>
       </splitpanes>
     </v-card-text>
@@ -60,13 +60,14 @@ export default {
   },
   data: () => ({
     currentBranch: "",
-    adrRaw: adr2md(new ArchitecturalDecisionRecord()),
+    currentAdr: { editedMd: adr2md(new ArchitecturalDecisionRecord()) },
     userName: "adr",
     reposPath: "http://localhost:5000/repos",
   }),
   methods: {
-    updateMd: function(md) {
-      this.adrRaw = md;
+    openAdr: function(adr) {
+      this.currentAdr = adr;
+      console.log(this.currentAdr)
     },
     createNewAdr: function() {
       this.adrRaw = adr2md(new ArchitecturalDecisionRecord());

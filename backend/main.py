@@ -49,5 +49,29 @@ def getRepos():
     reposJson = jsonify(session.get(requestRepos_url).json())
     return reposJson
 
+
+# Requests the file tree of one repository and returns the file tree as json-Array.
+@app.route("/tree", methods=["POST"])
+@cross_origin()
+def getRepoTree():
+    global session
+    repoFullName = request.form["full_name"]
+    branch = request.form["branch"] 
+    reposJson = jsonify(session.get("https://api.github.com/repos/" + repoFullName + "/git/trees/" + branch + "?recursive=1").json())
+    return reposJson
+
+    
+# Requests the raw content of one file and returns a json with the content.
+@app.route("/rawcontent", methods=["POST"])
+@cross_origin()
+def getRawContent():
+    global session
+    print(str(session))
+    repoFullName = request.form["full_name"]
+    branch = request.form["branch"] 
+    filePath = request.form["file_path"]
+    reposJson = jsonify(session.get("https://api.github.com/repos/" + repoFullName + "/contents/" + filePath).json())
+    return reposJson
+
 if __name__ == "__main__":
     app.run(debug=True)
