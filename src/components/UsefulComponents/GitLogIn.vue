@@ -5,13 +5,14 @@
 </template>
 <script>
 import Pizzly from "pizzly-js";
+import { EventBus } from '@/plugins/event-bus.js';
 
 export default {
   name: "connectGitHub",
   components: {},
   data: () => ({
     user: null,
-    repositories: [],
+    repositories: []
   }),
   mounted() {
     // Here we initialize Pizzly.
@@ -40,29 +41,20 @@ export default {
       console.log("success");
       console.log(data);
       this.user = data.authId;
-      this.fetchStarringRepositories();
+      this.sendData ();
+      this.$router.push({ name: "Editor" });
+      
+      
     },
     connectError: function(err) {
       console.log("error");
       console.error(err);
       alert("Something went wrong. Look at the logs.");
     },
-    fetchStarringRepositories: function() {
-      console.log("fetch");
-      this.$pizzly
-        .integration("github")
-        .auth(this.user)
-        .get("/user/starred")
-        .then((response) => response.json())
-        .then((data) => {
-          this.repositories = data;
-        })
-        .catch(this.fetchError);
-    },
-    fetchError: function(err) {
-      console.error(err);
-      alert("Something went wrong. Look at the logs.");
-    },
+    sendData () {
+      EventBus.$emit('AUTH_ID', this.user);
+      console.log("Payloud sent!");
+    }
   },
 };
 </script>
