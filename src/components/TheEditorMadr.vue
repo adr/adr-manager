@@ -183,37 +183,37 @@
 </template>
 
 <script>
-import _ from 'lodash';
-import DatePickerMenu from './UsefulComponents/DatePickerMenu.vue';
+  import _ from 'lodash'
+  import DatePickerMenu from './UsefulComponents/DatePickerMenu.vue'
 
-export default {
-  name: 'AdrRepresentation',
-  components: {
-    DatePickerMenu,
-  },
-  data: () => ({
-    adr: {},
-  }),
-  props: ['value', 'showOptionalFields'],
-  computed: {
-    statusSuggestions() {
-      return ['proposed', 'rejected', 'superseded by'].concat(this.adr.status.startsWith('superseded ') ? ['superseded by ADR-0001', 'superseded by ADR-0002', 'superseded by ADR-0003'] : []);
+  export default {
+    name: 'AdrRepresentation',
+    components: {
+      DatePickerMenu
     },
-  },
-  watch: {
-    value() {
-      this.adr = this.value;
+    data: () => ({
+      adr: {}
+    }),
+    props: ['value', 'showOptionalFields'],
+    computed: {
+      statusSuggestions() {
+        return ['proposed', 'rejected', 'superseded by'].concat(this.adr.status.startsWith('superseded ') ? ['superseded by ADR-0001', 'superseded by ADR-0002', 'superseded by ADR-0003'] : [])
+      }
     },
-  },
-  created() {
-    this.adr = this.value;
-  },
-  methods: {
-    update: _.debounce(function() {
-      this.$emit('input', this.adr);
-    }, 500),
-  },
-};
+    watch: {
+      value() {
+        this.adr = this.value
+      }
+    },
+    created() {
+      this.adr = this.value
+    },
+    methods: {
+      update: _.debounce(function () {
+        this.$emit('input', this.adr)
+      }, 500)
+    }
+  };
 </script>
 
 <style scoped>

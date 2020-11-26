@@ -57,90 +57,90 @@
     </v-tabs>
 
   </v-card>
-
+          
 </template>
 
 <script>
-import lodash from 'lodash';
-import {md2adr, adr2md, ArchitecturalDecisionRecord} from '@/plugins/utilities';
+  import _ from 'lodash'
+  import { md2adr, adr2md, ArchitecturalDecisionRecord } from '@/plugins/utilities'
 
-import {Splitpanes, Pane} from 'splitpanes';
-import 'splitpanes/dist/splitpanes.css';
+  import { Splitpanes, Pane } from 'splitpanes'
+  import 'splitpanes/dist/splitpanes.css'
 
-import EditorMadr from './TheEditorMadr.vue';
-import MarkdownPreview from './UsefulComponents/MarkdownPreview.vue';
+  import EditorMadr from './TheEditorMadr.vue'
+  import MarkdownPreview from './UsefulComponents/MarkdownPreview.vue'
 
-export default {
-  name: 'Editor',
-  components: {
-    Splitpanes, Pane,
-    EditorMadr,
-    MarkdownPreview,
-  },
-  props: {
-    value: {
-      type: String,
-      default: adr2md(new ArchitecturalDecisionRecord()),
+  export default {
+    name: 'Editor',
+    components: {
+      Splitpanes, Pane,
+      EditorMadr,
+      MarkdownPreview
     },
-    userName: {
-      type: String,
-      default: 'adr',
+    props: {
+      value: {
+        type: String,
+        default: adr2md(new ArchitecturalDecisionRecord())
+      },
+      userName: {
+        type: String,
+        default: 'adr'
+      },
+      repoName: {
+        type: String,
+        default: 'madr'
+      },
+      branchName: {
+        type: String,
+        default: 'master'
+      }
     },
-    repoName: {
-      type: String,
-      default: 'madr',
+    data: () => ({
+      adr: {},
+      dValue: "# Default ADR Editor heading",
+      tab: 0,
+      tabs: ['MADR Editor', 'Markdown Preview', 'Raw Markdown'],
+      alwaysShowMarkdownPreview: false,
+      showOptionalFields: true,
+      _
+    }),
+    computed: {
+      displayedTabs() {
+        //let dTabs = typeof this.dValue === 'string' && adr2md(json2adr(md2json(this.dValue))) === this.dValue ?
+        //  this.tabs : this.tabs.slice(1); 
+        return this.tabs
+      }
     },
-    branchName: {
-      type: String,
-      default: 'master',
-    },
-  },
-  data: () => ({
-    adr: {},
-    dValue: '# Default ADR Editor heading',
-    tab: 0,
-    tabs: ['MADR Editor', 'Markdown Preview', 'Raw Markdown'],
-    alwaysShowMarkdownPreview: false,
-    showOptionalFields: true,
-    lodash,
-  }),
-  computed: {
-    displayedTabs() {
-      // let dTabs = typeof this.dValue === 'string' && adr2md(json2adr(md2json(this.dValue))) === this.dValue ?
-      //  this.tabs : this.tabs.slice(1);
-      return this.tabs;
-    },
-  },
-  created() {
-    this.dValue = this.value;
-    this.adr = md2adr(this.value);
-    this.currentBranch = this.branchName;
-  },
-  watch: {
-    value() {
+    created() {
       this.dValue = this.value;
       this.adr = md2adr(this.value);
+      this.currentBranch = this.branchName;
     },
-  },
-  methods: {
-    updateMd: function(md) {
-      this.dValue = md;
-      this.adr = md2adr(md);
-      this.$emit('input', this.dValue);
+    watch: {
+      value() {
+        this.dValue = this.value;
+        this.adr = md2adr(this.value)
+      }
     },
-    updateAdr: lodash.debounce(function(adr) {
-      this.dValue = adr2md(adr);
-      this.adr = adr;
-      this.$emit('input', this.dValue);
-    }, 300),
-    addRepository() {
-      console.log('ToDo: Add a Repository.');
-    },
-    logNotImplemented() {
-      console.log('Not implemented.');
-    },
-  },
-};
+    methods: {
+      updateMd: function (md) {
+        this.dValue = md;
+        this.adr = md2adr(md)
+        this.$emit('input', this.dValue);
+      },
+      updateAdr: _.debounce(function (adr) {
+        this.dValue = adr2md(adr);
+        this.adr = adr;
+        this.$emit('input', this.dValue);
+      }, 300),
+      addRepository() {
+        console.log('ToDo: Add a Repository.')
+      },
+      logNotImplemented() {
+        console.log('Not implemented.')
+      }
+    }
+  };
 </script>
 
 <style scoped>

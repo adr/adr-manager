@@ -19,49 +19,49 @@
 </template>
 
 <script>
-export default {
-  data: () => ({
-    date: new Date().toISOString().substr(0, 10),
-    menu: false,
-  }),
+  export default {
+    data: () => ({
+      date: new Date().toISOString().substr(0, 10),
+      menu: false,
+    }),
 
-  props: ['value'],
+    props: ['value'],
 
-  mounted() {
-    if (this.value.match('\\d{4}-\\d{2}-\\d{2}')) {
-      this.date = this.value;
-    }
-  },
-
-  computed: {
-    computedDateFormatted() {
-      return this.formatDate(this.date);
+    mounted() {
+      if (this.value.match("\\d{4}-\\d{2}-\\d{2}")) {
+        this.date = this.value
+      } 
     },
-  },
 
-  watch: {
-    date() {
-      this.dateFormatted = this.formatDate(this.date);
+    computed: {
+      computedDateFormatted() {
+        return this.formatDate(this.date)
+      },
     },
-  },
 
-  methods: {
-    formatDate(date) {
-      if (!date) return null;
+    watch: {
+      date() {
+        this.dateFormatted = this.formatDate(this.date)
+      },
+    },
 
-      const [year, month, day] = date.split('-');
-      return `${month}/${day}/${year}`;
-    },
-    parseDate(date) {
-      if (!date) return null;
+    methods: {
+      formatDate(date) {
+        if (!date) return null
 
-      const [month, day, year] = date.split('/');
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        const [year, month, day] = date.split('-')
+        return `${month}/${day}/${year}`
+      },
+      parseDate(date) {
+        if (!date) return null
+
+        const [month, day, year] = date.split('/')
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+      },
+      update(e) {
+        this.menu = false; // Close menu
+        this.$emit('input', e)
+      },
     },
-    update(e) {
-      this.menu = false; // Close menu
-      this.$emit('input', e);
-    },
-  },
-};
+  }
 </script>
