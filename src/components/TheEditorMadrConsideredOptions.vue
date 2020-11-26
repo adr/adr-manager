@@ -11,7 +11,7 @@
             </template>
 
             <v-card flat v-on:click.native.stop class="d-flex my-0 py-0 expansion-right">
-            <codemirror :ref="'codemirror-' + i" class="my-0 py-0"  v-model="option.title" v-on:keyup.native.prevent.stop=""></codemirror>
+            <codemirror :ref="'codemirror-' + i" class="my-0 py-0 mx-4"  v-model="option.title" v-on:keyup.native.prevent.stop=""></codemirror>
             <div class="align-center flex-shrink-0 flex-grow-0  my-0 py-0">
               <v-btn v-show="i < adr.consideredOptions.length - 1"
                 v-on:click.native.stop="adr.consideredOptions.splice(i, 1)">
@@ -75,10 +75,6 @@
         console.log('Update Considered Options', this.adr);
         this.adr.addOption();
       }
-      console.log(this.$refs['codemirror-1'][0])
-      this.$refs['codemirror-1'][0].$on("click mousedown mouseup focus blur keydown change", function (e) {
-        console.log(e);
-      });
     },
     beforeUpdate() {
       if (this.adr.consideredOptions.length === 0) {
