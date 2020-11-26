@@ -12,13 +12,14 @@
 
 <script>
 // @ is an alias to /src
-import GitLogIn from '@/components/UsefulComponents/GitLogIn.vue';
+  import GitLogIn from '@/components/UsefulComponents/GitLogIn.vue'
 
 export default {
   name: 'Editor',
   components: {
-    GitLogIn,
+    GitLogIn
   },
-  data: () => ({}),
-};
+  data: () => ({
+  })
+}
 </script>

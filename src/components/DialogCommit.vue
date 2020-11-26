@@ -45,34 +45,34 @@
 </template>
 
 <script>
-export default {
-  name: 'EditorAddRepositoryDialog',
-  props: {
-    // value is true, iff showDialog == true, iff the dialog is shown. (value-prop enables v-model)
-    value: {
-      type: Boolean,
-      required: false,
-      default: false,
+  export default {
+    name: 'EditorAddRepositoryDialog',
+    props: {
+      // value is true, iff showDialog == true, iff the dialog is shown. (value-prop enables v-model)
+      value: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      currentBranch: {
+        type: String,
+        required: false,
+        default: 'master',
+      },
     },
-    currentBranch: {
-      type: String,
-      required: false,
-      default: 'master',
+    data: () => ({
+      showDialog: false,
+      organization: '',
+      pushToNewBranch: false,
+    }),
+    watch: {
+      value() {
+        this.dialog = this.value;
+      }
     },
-  },
-  data: () => ({
-    showDialog: false,
-    organization: '',
-    pushToNewBranch: false,
-  }),
-  watch: {
-    value() {
-      this.dialog = this.value;
-    },
-  },
-  methods: {
-  },
-};
+    methods: {
+    }
+  }
 </script>
 
 <style scoped>
