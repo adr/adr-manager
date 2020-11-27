@@ -6,7 +6,7 @@ import Pizzly from "pizzly-js";
 // A pizzy-object to make request to github
 let pizzly = new Pizzly({
   host: "https://adr-manager.herokuapp.com",
-  publishableKey: "dpWJ4TU2yCu7ys4Nb6eX5zhv32GV6YcVYYvDJZvS",
+  publishableKey: "dpWJ4TU2yCu7ys4Nb6eX5zhv32GV6YcVYYvDJZvS"
 });
 
 /**
