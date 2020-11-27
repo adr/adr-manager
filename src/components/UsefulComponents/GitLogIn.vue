@@ -5,7 +5,8 @@
 </template>
 <script>
 import Pizzly from "pizzly-js";
-import { EventBus } from '@/plugins/event-bus.js';
+
+
 
 export default {
   name: "connectGitHub",
@@ -29,7 +30,6 @@ export default {
     connect: function() {
       // Here, we create a new method
       // that "connect" a user to GitHub
-      console.log("connectFun");
       this.$pizzly
         .integration("github")
         .connect()
@@ -38,22 +38,13 @@ export default {
     },
     connectSuccess: function(data) {
       // On success, we update the user object
-      console.log("success");
-      console.log(data);
       this.user = data.authId;
-      this.sendData ();
-      this.$router.push({ name: "Editor" });
-      
-      
+      this.$router.push({ name: "Editor", params: { id: this.user, pizzly: this.$pizzly } });
     },
     connectError: function(err) {
       console.log("error");
       console.error(err);
       alert("Something went wrong. Look at the logs.");
-    },
-    sendData () {
-      EventBus.$emit('AUTH_ID', this.user);
-      console.log("Payloud sent!");
     }
   },
 };

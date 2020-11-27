@@ -62,7 +62,7 @@
     </div>
     <!-- Bottom Buttons for adding a repository and commiting -->
     <div class="flex-grow-0 d-flex flex-wrap">
-      <DialogAddRepositories :repos="notAddedRepositories" @click="loadRepositoryList"
+      <DialogAddRepositories :repos="notAddedRepositories" @click="loadRepositoryListComponent"
         @add-repositories="addRepositories">
         <template v-slot:activator="{ on, attrs }">
           <v-btn v-bind="attrs" v-on="on" class="flex-grow-1 secondary">
@@ -94,6 +94,7 @@
   import DialogCommit from '@/components/DialogCommit.vue'
   import DialogDeleteAdr from '@/components/DialogDeleteAdr.vue'
   import DialogRemoveRepository from '@/components/DialogRemoveRepository.vue'
+import Pizzly from 'pizzly-js'
 
   export default {
     components: {
@@ -107,6 +108,8 @@
     },
     data: function () {
       return {
+        dataAuth: "",
+        pizzly: new Pizzly({}),
         fileTypeIconMapping: {
           html: 'mdi-language-html5',
           js: 'mdi-nodejs',
@@ -117,7 +120,8 @@
           txt: 'mdi-file-document-outline',
           xls: 'mdi-file-excel',
           repo: 'mdi-folder-star',
-          folder: 'mdi-folder'
+          folder: 'mdi-folder',
+          
         },
         allRepositories: [], // A list containing all repositories  (Raw Data fetched from GitHub) 
         addedRepos: [],
@@ -128,7 +132,6 @@
         return this.addedRepos.map((repository) => (repository.fullName))
       },
       notAddedRepositories() {
-        console.log('notAddedRepositories', this.allRepositories)
         return this.allRepositories.filter((repo) => (!this.addedRepoFullNames.includes(repo.full_name)))
       },
       /** Tree structure of the displayed repositories and their contents
@@ -160,21 +163,27 @@
       }
     },
     watch: {
-      folderStructure() {
-        console.log('folderStructure changed. ', this.folderStructure)
-      }
+     
     },
     mounted() {
-      this.loadRepositoryList()
+     
+      
+    },
+    created() {
+      
+     this.dataAuth = this.$route.params.id;
+     this.pizzly = this.$route.params.pizzly;
+     this.loadRepositoryListComponent();
+
     },
     methods: {
       /** Loads all (added and unadded) repositories the user is authorized to access into allRepositories.
        */
-      loadRepositoryList() {
-        loadRepositoryList().then((res) => {
-          console.log('Loaded repo data', res.data);
-          if (!Array.isArray(res.data)) { throw 'Couldn\'t load repos.' }
-          this.allRepositories = res.data
+      loadRepositoryListComponent() {
+        loadRepositoryList(this.dataAuth, this.pizzly).then((res) => {
+          console.log('Loaded repo data', res);
+          if (!Array.isArray(res)) { throw 'Couldn\'t load repos.' }
+          this.allRepositories = res
           console.log('All Repositories', this.allRepositories)
         })
           .catch((error) => {
@@ -207,6 +216,7 @@
         this.addedRepos = this.addedRepos.filter((el) => (el.fullName !== repo.path))
         this.$emit('remove-repo', repo)
       },
+      
 
       /**
        * @param folder - the base folder in which should be searched

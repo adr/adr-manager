@@ -3,7 +3,7 @@
 import axios from 'axios'
 
 // API-URLs
-const reposPath = 'http://localhost:5000/repos'
+//const reposPath = 'http://localhost:5000/repos'
 const treePath = 'http://localhost:5000/tree'
 const rawPath = 'http://localhost:5000/rawcontent'
 
@@ -14,11 +14,16 @@ const rawPath = 'http://localhost:5000/rawcontent'
  * 
  * An example of the returned JSON structure can be found at 'https://api.github.com/users/adr/repos'
  */
-export async function loadRepositoryList() {
-  return axios.post(reposPath)
-    .catch((err) => {
-      console.log(err)
-    });
+export async function loadRepositoryList(user, pizzly) {
+  
+  return pizzly
+        .integration("github")
+        .auth(user)
+        .get("/user/repos")
+        .then(response => response.json())
+        .catch((err) => {
+          console.log(err)
+        });
 }
 
 /**Returns a Promise with the the file tree of the repository.
