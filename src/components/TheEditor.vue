@@ -78,7 +78,6 @@
   import EditorDiff from './TheEditorDiff.vue'
   import EditorRaw from './TheEditorRaw.vue'
   import MarkdownPreview from './UsefulComponents/MarkdownPreview.vue'
-    import { EventBus } from '@/plugins/event-bus.js'
 
   export default {
     name: 'Editor',
@@ -113,7 +112,6 @@
       tab: 'MADR Editor',
       tabs: ['MADR Editor', 'Markdown Preview', 'Raw Markdown'],
       alwaysShowMarkdownPreview: false,
-      dataAuth: "",
       _
     }),
     computed: {
@@ -132,11 +130,6 @@
       this.dValue = (' ' + this.value).slice(1);
       this.adr = md2adr(this.value);
       this.currentBranch = this.branchName;
-      EventBus.$on('AUTH_ID', (payload) => {
-        console.log("This is importan:");
-        console.log(payload);
-        this.updateData(payload)
-    });
     },
   
     watch: {
@@ -157,9 +150,6 @@
           this.dValue = adr2md(adr);
         }
       },
-      updateData (payload) {
-      this.dataAuth = payload
-    },
       updateMdToAdr(md) {
         if(this.tab !== "MADR Editor") {
           this.adr = md2adr(md)
