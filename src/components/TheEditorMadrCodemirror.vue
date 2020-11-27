@@ -1,8 +1,7 @@
 <template>
-  <v-card flat class="flex-grow-1 py-1 text-left flex-shrink-1"
-    color="#eeeeee">
-    <codemirror v-model="dValue" :options="cmOptions" v-on:input="(ev) => update(ev)"
-                ref="cm" v-observe-visibility="visibilityChanged" class="customized-cm"></codemirror>
+  <v-card flat class="flex-grow-1 py-1 pl-1 text-left flex-shrink-1" color="grey lighten-3">
+    <codemirror v-model="dValue" :options="cmOptions" v-on:input="(ev) => update(ev)" ref="cm"
+      v-observe-visibility="visibilityChanged" class="customized-cm"></codemirror>
   </v-card>
 </template>
 
@@ -82,9 +81,7 @@
 </script>
 
 <style scoped>
-  .customized-cm >>> .CodeMirror {
-    font-family: Arial, monospace;
-    font-size: 11pt;
+  .customized-cm>>>.CodeMirror {
     background-color: transparent;
   }
 </style>

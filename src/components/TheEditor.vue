@@ -7,8 +7,8 @@
           <splitpanes class="mx-auto default-theme">
             <pane style="height: 100%;">
               <v-card-text class="mx-auto mx-0 my-0 px-0 py-0" style="height: 100%;">
-                <EditorMadr style="height: 100%;" class="mx-auto mx-0 my-0 px-0 py-0"
-                            v-model="adr" v-on:input="updateAdrToMd" />
+                <EditorMadr style="height: 100%;" class="mx-auto mx-0 my-0 px-0 py-0" v-model="adr"
+                  v-on:input="updateAdrToMd" />
               </v-card-text>
             </pane>
             <pane class="mx-auto overflow-y-auto" v-if="alwaysShowMarkdownPreview">
@@ -17,21 +17,21 @@
               </v-card>
             </pane>
           </splitpanes>
-        </v-tab-item> <!--end 'MADR Editor'-->
-        <v-tab-item :value="'Convert'"
-                    style="height: 100%;">
+        </v-tab-item>
+        <!--end 'MADR Editor'-->
+        <v-tab-item :value="'Convert'" style="height: 100%;">
           <EditorDiff :raw="dValue" v-on:accept="acceptAfterDiff" />
-        </v-tab-item> <!--end 'Compare MD'-->
-        <v-tab-item :value="'Markdown Preview'"
-                    style="height: 100%;" class="mx-auto overflow-y-auto">
+        </v-tab-item>
+        <!--end 'Compare MD'-->
+        <v-tab-item :value="'Markdown Preview'" style="height: 100%;" class="mx-auto overflow-y-auto">
           <MarkdownPreview v-model="dValue"></MarkdownPreview>
-        </v-tab-item> <!--end 'Markdown Preview'-->
-        <v-tab-item :value="'Raw Markdown'"
-                    style="height: 100%;">
+        </v-tab-item>
+        <!--end 'Markdown Preview'-->
+        <v-tab-item :value="'Raw Markdown'" style="height: 100%;">
           <splitpanes class="default-theme">
             <pane class="mx-auto overflow-y-hidden height: 100%">
               <EditorRaw v-model="dValue" v-on:input="updateMdToAdr"
-                         style="max-width: 100%; min-width: 100%; height: 100%"></EditorRaw>
+                style="max-width: 100%; min-width: 100%; height: 100%"></EditorRaw>
             </pane>
             <pane v-if="alwaysShowMarkdownPreview" class="mx-auto overflow-y-auto">
               <v-card>
@@ -39,15 +39,13 @@
               </v-card>
             </pane>
           </splitpanes>
-        </v-tab-item> <!--end 'Raw Editor'-->
+        </v-tab-item>
+        <!--end 'Raw Editor'-->
       </v-tabs-items>
     </v-card-text>
 
     <v-toolbar dense class="my-0 py-0">
-      <v-tabs v-model="tab"
-              background-color="primary"
-              dark dense
-              class="pt-0 mt-0 align-self-end">
+      <v-tabs v-model="tab" background-color="primary" dark dense class="pt-0 mt-0 align-self-end">
         <!--<v-checkbox v-if="tab !== 'Markdown Preview'"
               v-model="alwaysShowMarkdownPreview"
               class="align-self-center mx-4"
@@ -55,9 +53,7 @@
         </v-checkbox>-->
 
         <v-spacer></v-spacer>
-        <v-tab v-for="(item, i) in displayedTabs"
-               :key="i"
-               :href="'#'+item">
+        <v-tab v-for="(item, i) in displayedTabs" :key="i" :href="'#'+item">
           {{ item }}
         </v-tab>
       </v-tabs>
@@ -116,7 +112,7 @@
     }),
     computed: {
       editingAllowed() {
-        return Boolean( this.tab === 'MADR Editor' || (typeof this.dValue === 'string' && adr2md(md2adr(this.dValue)) === this.dValue) );
+        return Boolean(this.tab === 'MADR Editor' || (typeof this.dValue === 'string' && adr2md(md2adr(this.dValue)) === this.dValue));
       },
       displayedTabs() {
         let dTabs = !this.editingAllowed ? this.tabs.map((val) => {
@@ -131,8 +127,12 @@
       this.adr = md2adr(this.value);
       this.currentBranch = this.branchName;
     },
-  
+
     watch: {
+      /**This method is called whenever the value prop changes. 
+       * When the MADR Editor is opened and the new value cannot be parsed perfectly, the Convert-Tab will be opened.
+       * (This is the main reason, why the parent component should not change the value-prop unless when opening an other ADR.)
+       */
       value(newValue) {
         this.dValue = (' ' + newValue).slice(1)
         let tmpAdr = md2adr(newValue)
@@ -143,15 +143,19 @@
           this.tab = 'Convert'
         }
       },
+      dValue(newValue) {
+        this.$emit('input', newValue)
+        console.log('dValue changed')
+      }
     },
     methods: {
       updateAdrToMd(adr) {
-        if(this.tab === "MADR Editor") {
+        if (this.tab === "MADR Editor") {
           this.dValue = adr2md(adr);
         }
       },
       updateMdToAdr(md) {
-        if(this.tab !== "MADR Editor") {
+        if (this.tab !== "MADR Editor") {
           this.adr = md2adr(md)
         }
       },

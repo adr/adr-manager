@@ -2,24 +2,24 @@
   <div fluid class="text-left">
 
     <h3>Decision Outcome</h3>
-    <v-card dense flat class="px-4 py-0 my-0">
+    <v-card dense flat class="px-0 py-0 my-0">
       <v-combobox filled class="pb-0 mb-0" v-model="adr.decisionOutcome.chosenOption"
         :items="adr.consideredOptions.map((opt) => { return opt.title })" label="Chosen option"></v-combobox>
     </v-card>
-    <v-card-subtitle class="mt-0 pt-0">because</v-card-subtitle>
-    <codemirror class="mx-4" v-model="adr.decisionOutcome.explanation"></codemirror>
+    <h6 class="mt-0 pt-0 px-0">because</h6>
+    <codemirror class="mx-0" v-model="adr.decisionOutcome.explanation"></codemirror>
     <!--<v-textarea dense auto-grow rows="1" v-model="adr.decisionOutcome.explanation"></v-textarea>-->
 
-    <div v-if="showOptionalFields" class="d-flex flex-wrap my-4">
-        <v-card flat class="flex-grow-1" style="width: 50%; min-width: 600px">
-          <v-card-title>Positive Consequences</v-card-title>
-          <EditorMadrList :list="adr.decisionOutcome.positiveConsequences" class="ml-8" />
-        </v-card>
-        <v-card flat class="flex-grow-1" style="width: 50%; min-width: 600px">
-          <v-card-title>Negative Consequences</v-card-title>
-          <EditorMadrList :list="adr.decisionOutcome.negativeConsequences" class="ml-8" />
-        </v-card>
-    </div>
+    <v-row flat v-if="showOptionalFields">
+      <v-col lg="6" md="12" flat class="flex-grow-1" min-width="600px" max-width="100%">
+        <h5 class="my-4">Positive Consequences</h5>
+        <EditorMadrList :list="adr.decisionOutcome.positiveConsequences" />
+      </v-col>
+      <v-col lg="6" md="12" flat class="flex-grow-1" min-width="600px" max-width="100%">
+        <h5 class="my-4">Negative Consequences</h5>
+        <EditorMadrList :list="adr.decisionOutcome.negativeConsequences" />
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -41,6 +41,3 @@
     }),
   };
 </script>
-
-<style scoped>
-</style>
