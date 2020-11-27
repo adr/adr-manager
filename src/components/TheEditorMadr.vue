@@ -3,48 +3,49 @@
 
     <v-sheet class="mx-auto mx-0 my-0 px-0 py-0" style="height: 100%; width:100%;">
 
-      <v-container fluid class="mx-auto overflow-y-auto scroll" style="height: 100%;">
+      <v-container fluid class="mx-auto overflow-y-auto scroll px-8" style="height: 100%;">
         <!--<NavigatorFab :options="adr.consideredOptions" @scroll-to="scrollTo" v-if="showOptionalFields"/>-->
 
-        <v-card-title>
-          <v-text-field filled label="Titel" hint="Changing this field, changes the file name. Do not use special characters." 
-          v-model="adr.title" @input="$emit('input', adr)"></v-text-field>
+        <v-card-title class="mx-0 px-0">
+          <v-text-field filled label="Titel"
+            hint="Changing this field, changes the file name. Do not use special characters." v-model="adr.title"
+            @input="$emit('input', adr)"></v-text-field>
         </v-card-title>
-        <StatusDateDecidersStory v-bind:adr="adr" 
-          v-bind:showOptionalFields="showOptionalFields" 
-          @input="$emit('input', adr)"
-          v-if="mode !== 'basic'"></StatusDateDecidersStory>
-        
-          <v-divider></v-divider>
-
-        <h3 class="mt-8">Context and Problem Statement</h3>
-        <v-card flat class="mx-4 mb-8">
-          <codemirror v-model="adr.contextAndProblemStatement" @input="(val) => { adr.contextAndProblemStatement = val; $emit('input', adr) }"></codemirror>
-        </v-card>
+        <StatusDateDecidersStory v-bind:adr="adr" v-bind:showOptionalFields="showOptionalFields"
+          @input="$emit('input', adr)" v-if="mode !== 'basic'"></StatusDateDecidersStory>
 
         <v-divider></v-divider>
+        <h3 class="mt-8">Context and Problem Statement</h3>
+        <v-card flat class="mb-8">
+          <codemirror v-model="adr.contextAndProblemStatement"
+            @input="(val) => { adr.contextAndProblemStatement = val; $emit('input', adr) }"></codemirror>
+        </v-card>
+
 
         <div v-if="showOptionalFields" class="my-8">
-          <h3>Decision Drivers</h3>
-          <GenericList :list="adr.decisionDrivers"/>
+          <v-divider></v-divider>
+          <h3 class="mt-8">Decision Drivers</h3>
+          <GenericList :list="adr.decisionDrivers" />
         </div>
 
         <v-divider></v-divider>
 
-        <ConsideredOptions :adr="adr" @scroll-to="scrollTo" @input="$emit('input', adr)" class="my-8"></ConsideredOptions>
+        <ConsideredOptions class="my-8" :adr="adr" :mode="mode" @scroll-to="scrollTo" @input="$emit('input', adr)">
+        </ConsideredOptions>
+
 
         <v-divider></v-divider>
+        <DecisionOutcome :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)" class="my-8">
+        </DecisionOutcome>
 
-        <DecisionOutcome :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)" class="my-8"></DecisionOutcome>
-
-        <v-divider></v-divider>
 
         <!--<ProsAndConsOfOptions :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)" class="my-8"></ProsAndConsOfOptions>-->
 
 
         <div v-if="showOptionalFields">
+          <v-divider></v-divider>
           <h3>Links</h3>
-          <GenericList :list="adr.links" class="mb-16"/>
+          <GenericList :list="adr.links" class="mb-16" />
         </div>
       </v-container>
     </v-sheet>
@@ -81,7 +82,7 @@
     },
     data: () => ({
       adr: {},
-      mode: ['basic', 'advanced', 'professional'].includes(localStorage.getItem('mode')) ?  localStorage.getItem('mode') : 'basic'
+      mode: ['basic', 'advanced', 'professional'].includes(localStorage.getItem('mode')) ? localStorage.getItem('mode') : 'basic'
     }),
     computed: {
       showOptionalFields() {
@@ -112,7 +113,8 @@
 </script>
 
 <style scoped>
-  .html {
-    background-color: tomato;
+  .editor>>>.CodeMirror {
+    font-family: Arial, monospace;
+    font-size: 11pt;
   }
 </style>
