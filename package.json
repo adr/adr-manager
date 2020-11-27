@@ -13,6 +13,7 @@
         "core-js": "^3.6.5",
         "marked": "^1.2.3",
         "md-2-json": "^1.0.6",
+        "pizzly-js": "^0.2.8",
         "roboto-fontface": "*",
         "splitpanes": "^2.3.4",
         "vue": "^2.6.11",
