@@ -31,32 +31,32 @@
 </template>
 
 <script>
-export default {
-  name: 'EditorAddRepositoryDialog',
-  props: {
-    // value is true, iff showDialog == true, iff the dialog is shown. (value-prop enables v-model)
-    value: {
-      type: Boolean,
-      required: false,
-      default: false,
+  export default {
+    name: 'EditorAddRepositoryDialog',
+    props: {
+      // value is true, iff showDialog == true, iff the dialog is shown. (value-prop enables v-model)
+      value: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      adr: {
+        type: Object,
+        required: false,
+        default: () => ({ name: 'ADR-XXXX Add Status Field' }),
+      },
     },
-    adr: {
-      type: Object,
-      required: false,
-      default: () => ({name: 'ADR-XXXX Add Status Field'}),
+    data: () => ({
+      showDialog: false,
+    }),
+    watch: {
+      value() {
+        this.dialog = this.value;
+      }
     },
-  },
-  data: () => ({
-    showDialog: false,
-  }),
-  watch: {
-    value() {
-      this.dialog = this.value;
-    },
-  },
-  methods: {
-  },
-};
+    methods: {
+    }
+  }
 </script>
 
 <style scoped>
