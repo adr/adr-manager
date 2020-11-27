@@ -20,7 +20,7 @@ export default {
     console.log("mounted");
     this.$pizzly = new Pizzly({
       host: "https://adr-manager.herokuapp.com",
-      publishableKey: "dpWJ4TU2yCu7ys4Nb6eX5zhv32GV6YcVYYvDJZvS",
+      publishableKey: "dpWJ4TU2yCu7ys4Nb6eX5zhv32GV6YcVYYvDJZvS"
     });
   },
   destroyed() {
@@ -39,7 +39,7 @@ export default {
     connectSuccess: function(data) {
       // On success, we update the user object
       this.user = data.authId;
-      this.$router.push({ name: "Editor", params: { id: this.user, pizzly: this.$pizzly } });
+      this.$router.push({ name: "Editor", params: { id: this.user } });
     },
     connectError: function(err) {
       console.log("error");
