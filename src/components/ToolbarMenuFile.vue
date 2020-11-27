@@ -34,24 +34,24 @@
 </template>
 
 <script>
-import DialogCommit from './DialogCommit.vue';
+  import DialogCommit from './DialogCommit.vue'
 
-export default {
-  name: 'MenuFile',
-  components: {
-    DialogCommit,
-  },
-  data: () => ({
-  }),
-  props: {},
-  created() {
-  },
-  methods: {
-    logNotImplemented() {
-      console.log('Not implemented.');
+  export default {
+    name: 'MenuFile',
+    components: {
+      DialogCommit
     },
-  },
-};
+    data: () => ({
+    }),
+    props: {},
+    created() {
+    },
+    methods: {
+      logNotImplemented() {
+        console.log('Not implemented.')
+      },
+    }
+  };
 </script>
 
 <style scoped>
