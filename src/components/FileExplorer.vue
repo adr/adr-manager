@@ -94,7 +94,7 @@
   import DialogCommit from '@/components/DialogCommit.vue'
   import DialogDeleteAdr from '@/components/DialogDeleteAdr.vue'
   import DialogRemoveRepository from '@/components/DialogRemoveRepository.vue'
-import Pizzly from 'pizzly-js'
+  import Pizzly from 'pizzly-js'
 
   export default {
     components: {
@@ -198,10 +198,11 @@ import Pizzly from 'pizzly-js'
        * @param repoList - A list of repository data (like it is fetched from GitHub)
        */
       addRepositories(repoList) {
+       
         loadAllRepositoryContent(repoList.map((repo) => ({
           fullName: repo.full_name,
           branch: repo.default_branch
-        })))
+        })), this.pizzly, this.dataAuth)
           .then((repoObjectList) => {
             console.log('addRepositories', repoObjectList)
             if (typeof(repoObjectList) !== 'undefined')
