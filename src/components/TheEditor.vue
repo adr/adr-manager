@@ -131,6 +131,7 @@
       this.adr = md2adr(this.value);
       this.currentBranch = this.branchName;
     },
+  
     watch: {
       value(newValue) {
         this.dValue = (' ' + newValue).slice(1)

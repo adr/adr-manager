@@ -1,24 +1,29 @@
 /* This file contains any calls to the backend. */
 
-import axios from 'axios'
-
-// API-URLs
-const reposPath = 'http://localhost:5000/repos'
-const treePath = 'http://localhost:5000/tree'
-const rawPath = 'http://localhost:5000/rawcontent'
+import Pizzly from "pizzly-js";
 
 // API-Calls (functions return promises)
+// A pizzy-object to make request to github
+let pizzly = new Pizzly({
+  host: "https://adr-manager.herokuapp.com",
+  publishableKey: "dpWJ4TU2yCu7ys4Nb6eX5zhv32GV6YcVYYvDJZvS"
+});
 
 /**
  * Returns a Promise with the list of all repositories accessible by the user.
  * 
  * An example of the returned JSON structure can be found at 'https://api.github.com/users/adr/repos'
+ * @param {String} user - the authID of user'
  */
-export async function loadRepositoryList() {
-  return axios.post(reposPath)
-    .catch((err) => {
-      console.log(err)
-    });
+export async function loadRepositoryList(user) {
+  return pizzly
+        .integration("github")
+        .auth(user)
+        .get("/user/repos")
+        .then(response => response.json())
+        .catch((err) => {
+          console.log(err)
+        });
 }
 
 /**Returns a Promise with the the file tree of the repository.
@@ -27,18 +32,17 @@ export async function loadRepositoryList() {
  * 
  * @param {String} repoFullName - the full name of the repository, e.g. 'adr/madr'
  * @param {String} branch - the name of the branch, e.g. 'master' 
+ * @param {String} user - the authID of user'
  */
-export async function loadFileTreeOfRepository(repoFullName, branch) {
-  const formData = new FormData();
-  formData.append('full_name', repoFullName);
-  formData.append('branch', branch);
-  return axios.post(treePath, formData)
-    .then(({ data }) => {
-      return data.tree;
-    })
+export async function loadFileTreeOfRepository(repoFullName, branch, user) {
+  return pizzly
+    .integration("github")
+    .auth(user)
+    .get("/repos/" + repoFullName + "/git/trees/" + branch + "?recursive=1")
+    .then(response => response.json())
     .catch((err) => {
       console.log(err)
-    });
+  });
 }
 
 /**
@@ -51,23 +55,22 @@ export async function loadFileTreeOfRepository(repoFullName, branch) {
  * @param {String} repoFullName  - the full name of the repository, e.g. 'adr/madr'
  * @param {String} branch  - the name of the branch, e.g. 'master' 
  * @param {String} filePath  - the name of the branch, e.g. 'docs/adr/0001-some-name.md' 
+ * @param {String} user  - the authID of the user'  
  */
-export async function loadRawFile(repoFullName, branch, filePath) {
+export async function loadRawFile(repoFullName, branch, filePath , user) {
   if (typeof branch !== 'string' || typeof branch != 'string') {
     console.log('Invalid values for loadContentsForRepository. Given Repository full name: ' + repoFullName
       + ', Branch:' + branch + ', file path: ' + filePath)
   } else {
-    const formData = new FormData();
-    formData.append('full_name', repoFullName);
-    formData.append('branch', branch);
-    formData.append('file_path', filePath);
-    return axios.post(rawPath, formData) 
-      .then(({ data }) => {
-        return decodeUnicode(data.content); // Decode base64 
-      })
-      .catch((err) => {
-        console.log(err)
-      });
+    return pizzly
+    .integration("github")
+    .auth(user)
+    .get("/repos/" + repoFullName + "/contents/" + filePath)
+    .then(response => response.json())
+    .then(response => decodeUnicode(response.content))
+    .catch((err) => {
+      console.log(err)
+  });
   }
 }
 
@@ -101,9 +104,11 @@ function decodeUnicode(str) {
  * }
  * 
  * @param {Array[Object]} loadRepositoryList - each array entry must have the attributes fullName and branch
+ * @param {String} user - the authID of user'
  * @returns an array of repositories
  */
-export async function loadAllRepositoryContent(repoList) {
+export async function loadAllRepositoryContent(repoList, user) {
+  
   return repoList.map((repo) => {
     let repoFullName = repo.fullName
     let branch = repo.branch
@@ -112,14 +117,14 @@ export async function loadAllRepositoryContent(repoList) {
       activeBranch: branch,
       adrs : []
     }
-    loadFileTreeOfRepository(repoFullName, branch)
+    loadFileTreeOfRepository(repoFullName, branch, user)
       .then((data) => {
-        let adrList =  data.filter((file) =>  { // Find all files in the folder 'docs/adr' or 'doc/adr'
+        let adrList =  data.tree.filter((file) =>  { // Find all files in the folder 'docs/adr' or 'doc/adr'
           return file.path.startsWith('docs/adr/') || file.path.startsWith('doc/adr/') // Allow docs/adr and doc/adr as path .. maybe change this to demand mutual exclusion.
         })
         console.log('adrList', adrList)
         adrList.forEach((adr) => {
-          loadRawFile(repoFullName, branch, adr.path)
+          loadRawFile(repoFullName, branch, adr.path, user , pizzly)
             .then((rawMd) => {
               repoObject.adrs.push({
                 path : adr.path,
