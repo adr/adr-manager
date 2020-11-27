@@ -94,7 +94,6 @@
   import DialogCommit from '@/components/DialogCommit.vue'
   import DialogDeleteAdr from '@/components/DialogDeleteAdr.vue'
   import DialogRemoveRepository from '@/components/DialogRemoveRepository.vue'
-  import Pizzly from 'pizzly-js'
 
   export default {
     components: {
@@ -109,7 +108,6 @@
     data: function () {
       return {
         dataAuth: "",
-        pizzly: new Pizzly({}),
         fileTypeIconMapping: {
           html: 'mdi-language-html5',
           js: 'mdi-nodejs',
@@ -172,7 +170,6 @@
     created() {
       
      this.dataAuth = this.$route.params.id;
-     this.pizzly = this.$route.params.pizzly;
      this.loadRepositoryListComponent();
 
     },
@@ -180,7 +177,7 @@
       /** Loads all (added and unadded) repositories the user is authorized to access into allRepositories.
        */
       loadRepositoryListComponent() {
-        loadRepositoryList(this.dataAuth, this.pizzly).then((res) => {
+        loadRepositoryList(this.dataAuth).then((res) => {
           console.log('Loaded repo data', res);
           if (!Array.isArray(res)) { throw 'Couldn\'t load repos.' }
           this.allRepositories = res
@@ -202,7 +199,7 @@
         loadAllRepositoryContent(repoList.map((repo) => ({
           fullName: repo.full_name,
           branch: repo.default_branch
-        })), this.pizzly, this.dataAuth)
+        })), this.dataAuth)
           .then((repoObjectList) => {
             console.log('addRepositories', repoObjectList)
             if (typeof(repoObjectList) !== 'undefined')
