@@ -85,8 +85,7 @@
     <!-- Bottom Buttons for adding a repository and commiting -->
     <div class="flex-grow-0 d-flex flex-wrap">
       <DialogAddRepositories
-        :repos="notAddedRepositories"
-        @click="loadRepositoryListComponent"
+        :added-repos="addedRepos"
         @add-repositories="addRepositories"
       >
         <template v-slot:activator="{ on, attrs }">
@@ -108,8 +107,6 @@
 
 <script>
 import { snakeCase2naturalCase } from "@/plugins/utilities";
-
-import { loadRepositoryList, loadAllRepositoryContent } from "@/plugins/api.js";
 
 import DialogAddRepositories from "@/components/DialogAddRepositories.vue";
 import DialogCommit from "@/components/DialogCommit.vue";
@@ -141,18 +138,12 @@ export default {
         repo: "mdi-folder-star",
         folder: "mdi-folder"
       },
-      allRepositories: [], // A list containing all repositories  (Raw Data fetched from GitHub)
       addedRepos: []
     };
   },
   computed: {
     addedRepoFullNames() {
       return this.addedRepos.map((repository) => repository.fullName);
-    },
-    notAddedRepositories() {
-      return this.allRepositories.filter(
-        (repo) => !this.addedRepoFullNames.includes(repo.full_name)
-      );
     },
     /** Tree structure of the displayed repositories and their contents
      */
@@ -188,44 +179,19 @@ export default {
   mounted() {},
   created() {
     this.dataAuth = this.$route.params.id;
-    this.loadRepositoryListComponent();
   },
   methods: {
-    /** Loads all (added and unadded) repositories the user is authorized to access into allRepositories.
-     */
-    loadRepositoryListComponent() {
-      loadRepositoryList(this.dataAuth)
-        .then((res) => {
-          console.log("Loaded repo data", res);
-          if (!Array.isArray(res)) {
-            throw "Couldn't load repos.";
-          }
-          this.allRepositories = res;
-          console.log("All Repositories", this.allRepositories);
-        })
-        .catch((error) => {
-          // eslint-disable-next-line
-          console.error(error);
-        });
-    },
 
     /** Adds all repositories from the repo list to the folder structure.
      * Called when the 'Add repositories'-Dialog is closed.
      *
-     * @param repoList - A list of repository data (like it is fetched from GitHub)
+     * @param repoList - A list of repository data (with attributes 'fullName', 'activeBranch' and 'adrs')
      */
     addRepositories(repoList) {
-      loadAllRepositoryContent(
-        repoList.map((repo) => ({
-          fullName: repo.full_name,
-          branch: repo.default_branch
-        })),
-        this.dataAuth
-      ).then((repoObjectList) => {
-        console.log("addRepositories", repoObjectList);
-        if (typeof repoObjectList !== "undefined")
-          this.addedRepos = this.addedRepos.concat(repoObjectList);
-      });
+        console.log("addRepositories", repoList);
+        if (typeof repoList !== "undefined") {
+          this.addedRepos = this.addedRepos.concat(repoList);
+        } 
     },
 
     /**
