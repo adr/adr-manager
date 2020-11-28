@@ -5,6 +5,12 @@
     <template v-slot:activator="{ on, attrs }">
       <slot name="activator" v-bind:on="on" v-bind:attrs="attrs">
       </slot>
+      <v-overlay :value="showLoadingOverlay">
+        <v-progress-circular
+          indeterminate
+          size="64"
+        ></v-progress-circular>
+      </v-overlay>
     </template>
     <v-card>
       <v-card-title class="headline grey lighten-2">
@@ -52,6 +58,8 @@
 </template>
 
 <script>
+  import { loadRepositoryList, loadAllRepositoryContent } from "@/plugins/api.js";
+
   export default {
     name: 'EditorAddRepositoryDialog',
     props: {
@@ -64,32 +72,88 @@
       /**
        * Array of full names of Repos that should not be added, e. g. Repos that were added previously.
        */
-      repos: {
+      addedRepos: {
         type: Array,
         required: false,
-        default: () => ([])
+        default: () => ([]),
+        validator(value) {
+          return value.every((repo) => (repo.fullName))
+        }
       }
     },
     data: () => ({
+      dataAuth: "",
       showDialog: false,
-      repositoriesSelected: []
+      repositoriesSelected: [],
+      allRepositories: [], // A list containing all repositories  (Raw Data fetched from GitHub)
+      showLoadingOverlay: false
     }),
     computed: {
+      notAddedRepositories() {
+        return this.allRepositories.filter(
+          (repo) => !this.addedRepos.map((repo) => (repo.fullName)).includes(repo.full_name)
+        );
+      },
       repositoriesDisplayed() {
-        console.log('Displayed Repositories', this.repos)
-        return this.repos.map((repo) => ({ name: repo.full_name, description: repo.description, repoData: repo }))
+        console.log('Displayed Repositories', this.notAddedRepositories)
+        return this.notAddedRepositories.map((repo) => ({ name: repo.full_name, description: repo.description, repoData: repo }))
+      },
+    },
+    watch: {
+       /** Reload repositories in case something went wrong while mounting, a new repo was created on GitHub or something similar. */
+      showDialog(newValue) {
+        if (newValue === true) {
+          this.loadRepositoryListComponent();
+        }
       }
     },
-    watch: {},
-    mounted() {},
+    mounted() {
+      this.dataAuth = this.$route.params.id;
+      console.log(this.dataAuth)
+      this.loadRepositoryListComponent();
+    },
     methods: {
-      /**
-       * Once the user has accepted his repo selection emit the selected repositories.
+      
+      /** Loads all (added and unadded) repositories the user is authorized to access into allRepositories.
        */
-      addRepositories() {
-        this.$emit('add-repositories', this.repositoriesSelected.map((el) => (el.repoData)))
-        this.repositoriesSelected = []
+      loadRepositoryListComponent() {
+        loadRepositoryList(this.dataAuth)
+          .then((res) => {
+            console.log("Loaded repo data", res);
+            if (!Array.isArray(res)) {
+              throw "Couldn't load repos.";
+            }
+            this.allRepositories = res;
+            console.log("All Repositories", this.allRepositories);
+          })
+          .catch((error) => {
+            // eslint-disable-next-line
+            console.error(error);
+          });
       },
+    /** Once the user has accepted his repo selection, load the selected repos and emit them.
+     * Called when the 'Add repositories'-Dialog is closed.
+     *
+     * @param repoList - A list of repository data (like it is fetched from GitHub)
+     */
+    addRepositories: async function() {
+      console.log(this.repositoriesSelected)
+      this.showLoadingOverlay = true;
+      console.log("Loading True");
+      loadAllRepositoryContent(
+        this.repositoriesSelected.map((repo) => ({
+          fullName: repo.repoData.full_name,
+          branch: repo.repoData.default_branch
+        })),
+        this.dataAuth
+      ).then((repoObjectList) => {
+        if (typeof repoObjectList !== "undefined") {
+          this.showLoadingOverlay = false;
+          this.$emit('add-repositories', repoObjectList)
+          this.repositoriesSelected = []
+        }
+      });
+    },
       
     }
   }

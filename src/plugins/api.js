@@ -17,13 +17,13 @@ let pizzly = new Pizzly({
  */
 export async function loadRepositoryList(user) {
   return pizzly
-        .integration("github")
-        .auth(user)
-        .get("/user/repos")
-        .then(response => response.json())
-        .catch((err) => {
-          console.log(err)
-        });
+    .integration("github")
+    .auth(user)
+    .get("/user/repos")
+    .then(response => response.json())
+    .catch((err) => {
+      console.log(err)
+    });
 }
 
 /**Returns a Promise with the the file tree of the repository.
@@ -42,7 +42,7 @@ export async function loadFileTreeOfRepository(repoFullName, branch, user) {
     .then(response => response.json())
     .catch((err) => {
       console.log(err)
-  });
+    });
 }
 
 /**
@@ -57,20 +57,20 @@ export async function loadFileTreeOfRepository(repoFullName, branch, user) {
  * @param {String} filePath  - the name of the branch, e.g. 'docs/adr/0001-some-name.md' 
  * @param {String} user  - the authID of the user'  
  */
-export async function loadRawFile(repoFullName, branch, filePath , user) {
+export async function loadRawFile(repoFullName, branch, filePath, user) {
   if (typeof branch !== 'string' || typeof branch != 'string') {
     console.log('Invalid values for loadContentsForRepository. Given Repository full name: ' + repoFullName
       + ', Branch:' + branch + ', file path: ' + filePath)
   } else {
     return pizzly
-    .integration("github")
-    .auth(user)
-    .get("/repos/" + repoFullName + "/contents/" + filePath)
-    .then(response => response.json())
-    .then(response => decodeUnicode(response.content))
-    .catch((err) => {
-      console.log(err)
-  });
+      .integration("github")
+      .auth(user)
+      .get("/repos/" + repoFullName + "/contents/" + filePath)
+      .then(response => response.json())
+      .then(response => decodeUnicode(response.content))
+      .catch((err) => {
+        console.log(err)
+      });
   }
 }
 
@@ -108,33 +108,45 @@ function decodeUnicode(str) {
  * @returns an array of repositories
  */
 export async function loadAllRepositoryContent(repoList, user) {
-  
-  return repoList.map((repo) => {
+
+  let repoPromises = []
+  let adrPromises = []
+  let repoObjectList = repoList.map((repo) => {
     let repoFullName = repo.fullName
     let branch = repo.branch
     let repoObject = {
-      fullName : repoFullName,
+      fullName: repoFullName,
       activeBranch: branch,
-      adrs : []
+      adrs: []
     }
-    loadFileTreeOfRepository(repoFullName, branch, user)
+    repoPromises.push(loadFileTreeOfRepository(repoFullName, branch, user)
       .then((data) => {
-        let adrList =  data.tree.filter((file) =>  { // Find all files in the folder 'docs/adr' or 'doc/adr'
+        // Find all files in the folder 'docs/adr' or 'doc/adr'
+        let adrList = data.tree.filter((file) => {
           return file.path.startsWith('docs/adr/') || file.path.startsWith('doc/adr/') // Allow docs/adr and doc/adr as path .. maybe change this to demand mutual exclusion.
         })
         console.log('adrList', adrList)
+
+        // Load the content of each ADR.
         adrList.forEach((adr) => {
-          loadRawFile(repoFullName, branch, adr.path, user , pizzly)
-            .then((rawMd) => {
-              repoObject.adrs.push({
-                path : adr.path,
-                originalMd : rawMd,
-                editedMd: rawMd
+          let adrObject = {
+            path: adr.path,
+          }
+          repoObject.adrs.push(adrObject)
+          adrPromises.push(
+            loadRawFile(repoFullName, branch, adr.path, user, pizzly)
+              .then((rawMd) => {
+                adrObject.originalMd = rawMd;
+                adrObject.editedMd = rawMd
               })
-            })
+          )
         })
         console.log('adrList', repoObject.adrs)
       })
-      return repoObject
+    )
+    return repoObject
   })
+  await Promise.all(repoPromises) // Wait until all file trees are loaded.
+  await Promise.all(adrPromises) // Wait until all raw contents are loaded.
+  return repoObjectList
 }
