@@ -111,10 +111,3 @@
     }
   };
 </script>
-
-<style scoped>
-  .editor>>>.CodeMirror {
-    font-family: Arial, monospace;
-    font-size: 11pt;
-  }
-</style>
