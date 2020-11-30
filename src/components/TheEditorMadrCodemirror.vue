@@ -1,7 +1,7 @@
 <template>
-  <v-card flat class="flex-grow-1 py-1 pl-1 text-left flex-shrink-1" color="grey lighten-3">
+  <v-card flat class="flex-grow-1 py-1 pl-1 text-left flex-shrink-1" :color="color">
     <codemirror v-model="dValue" :options="cmOptions" v-on:input="(ev) => update(ev)" ref="cm"
-      v-observe-visibility="visibilityChanged" class="customized-cm"></codemirror>
+      v-observe-visibility="visibilityChanged" class="customizedcm"></codemirror>
   </v-card>
 </template>
 
@@ -27,6 +27,10 @@
       value: {
         type: String,
         default: ' '
+      },
+      color: {
+        type: String,
+        default: 'grey lighten-3'
       }
     },
     data() {
@@ -81,7 +85,9 @@
 </script>
 
 <style scoped>
-  .customized-cm>>>.CodeMirror {
+  .customizedcm >>> .CodeMirror {
     background-color: transparent;
+    font-family: Arial, monospace;
+    font-size: 11pt;
   }
 </style>

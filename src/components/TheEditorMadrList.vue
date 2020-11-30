@@ -1,8 +1,8 @@
 <!-- List of Codemirror-Items and Add/Delete-Buttons. Used in the sections: Consequences, Links, Pros and Cons -->
 <template>
-  <v-list class="my-0 py-0">
+  <v-list class="my-0 py-0" color="rgb(255,255,255,0)">
     <v-list-item dense class="align-self-center mx-0 px-0" v-for="(item, i) in list" :key="i">
-      <codemirror v-model="list[i]" @input="$emit('input', list)"></codemirror>
+      <codemirror v-model="list[i]" @input="$emit('input', list)" :color="cmColor"></codemirror>
 
       <!-- Show a delete icon next to all items exccept the last. Show the add icon next to the last. -->
       <v-list-item-icon class="align-center flex-shrink-0">
@@ -12,13 +12,13 @@
       </v-list-item-icon>
     </v-list-item>
 
-    <!-- last item with '+'-Symbol -->
+    <!-- last item with '+'-Button -->
     <v-list-item dense class="align-self-center mx-0 px-0" :key="list.length">
-      <codemirror v-model="lastItem" @input="$emit('input', list)"></codemirror>
+      <codemirror v-model="lastItem" @input="updateLastItem" :color="cmColor"></codemirror>
 
       <!-- Show the add icon next to the last. -->
       <v-list-item-icon class="align-center flex-shrink-0">
-        <v-btn v-on:click="list.push(lastItem); lastItem=''">
+        <v-btn v-on:click="addItem">
           <v-icon>mdi-plus</v-icon>
         </v-btn>
       </v-list-item-icon>
@@ -39,12 +39,35 @@
         type: Array,
         default: () => ([''])
       },
+      cmColor: {
+        type: String,
+      }
     },
     data: () => ({
       lastItem: ''
     }),
+    watch: {
+      lastItem(newValue) {
+        if (newValue != '') {
+          this.adr.addOption({title: newValue}); 
+          this.lastItem = ''
+        }
+      }
+    },
     mounted() {
     },
+    methods: {
+      updateLastItem(newValue) {
+        if (newValue != '') {
+          this.addItem()
+        }
+      },
+      addItem() {
+        this.list.push(this.lastItem); 
+        this.lastItem = ''; 
+        this.$emit('input', this.list)
+      }
+    }
   };
 </script>
 

@@ -13,7 +13,8 @@ let pizzly = new Pizzly({
  * Returns a Promise with the list of all repositories accessible by the user.
  * 
  * An example of the returned JSON structure can be found at 'https://api.github.com/users/adr/repos'
- * @param {String} user - the authID of user'
+ * @param {string} user - the authID of user'
+ * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
  */
 export async function loadRepositoryList(user) {
   return pizzly
@@ -30,9 +31,10 @@ export async function loadRepositoryList(user) {
  * The returned file tree is an array. 
  * An example of the returned JSON structure can be found in the attribute 'tree' at 'https://api.github.com/repos/adr/madr/git/trees/master?recursive=1'
  * 
- * @param {String} repoFullName - the full name of the repository, e.g. 'adr/madr'
- * @param {String} branch - the name of the branch, e.g. 'master' 
- * @param {String} user - the authID of user'
+ * @param {string} repoFullName - the full name of the repository, e.g. 'adr/madr'
+ * @param {string} branch - the name of the branch, e.g. 'master' 
+ * @param {string} user - the authID of user'
+ * @returns {Promise<object>} where the object has a tree attribute containing an array of all files in the repository  
  */
 export async function loadFileTreeOfRepository(repoFullName, branch, user) {
   return pizzly
@@ -52,10 +54,11 @@ export async function loadFileTreeOfRepository(repoFullName, branch, user) {
  * 
  * (Currently the backend does not consider the branch but just sends content of default branch.)
  * 
- * @param {String} repoFullName  - the full name of the repository, e.g. 'adr/madr'
- * @param {String} branch  - the name of the branch, e.g. 'master' 
- * @param {String} filePath  - the name of the branch, e.g. 'docs/adr/0001-some-name.md' 
- * @param {String} user  - the authID of the user'  
+ * @param {string} repoFullName  - the full name of the repository, e.g. 'adr/madr'
+ * @param {string} branch  - the name of the branch, e.g. 'master' 
+ * @param {string} filePath  - the name of the branch, e.g. 'docs/adr/0001-some-name.md' 
+ * @param {string} user  - the authID of the user'
+ * @returns {Promise<string>} a promise with the raw content of the specified file
  */
 export async function loadRawFile(repoFullName, branch, filePath, user) {
   if (typeof branch !== 'string' || typeof branch != 'string') {
@@ -77,7 +80,8 @@ export async function loadRawFile(repoFullName, branch, filePath, user) {
 /** Decodes a base64 string to binary. 
  * (Helper method when loading raw content)
  * 
- * @param {String} str - a string encoded base64 
+ * @param {string} str - a string encoded base64 
+ * @returns {string} the decoded string
  */
 function decodeUnicode(str) {
   // Going backwards: from bytestream, to percent-encoding, to original string.
@@ -103,9 +107,9 @@ function decodeUnicode(str) {
  *  editedMd: String
  * }
  * 
- * @param {Array[Object]} loadRepositoryList - each array entry must have the attributes fullName and branch
- * @param {String} user - the authID of user'
- * @returns an array of repositories
+ * @param {object[]} repoList - each array entry must have the attributes fullName and branch
+ * @param {string} user - the authID of user'
+ * @returns {Promise<object[]>} an array of repositories
  */
 export async function loadAllRepositoryContent(repoList, user) {
 

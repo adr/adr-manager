@@ -138,6 +138,9 @@
         let tmpAdr = md2adr(newValue)
         if (this.dValue === adr2md(tmpAdr)) { // If the parser did a perfect job, update the ADR.
           this.adr = tmpAdr
+          if (this.tab === 'Convert') {
+            this.tab = 'MADR Editor'
+          }
           console.log('Updated ADR')
         } else if (this.tab === 'MADR Editor') {  // Else ask the user to review his ADR.
           this.tab = 'Convert'
@@ -145,7 +148,6 @@
       },
       dValue(newValue) {
         this.$emit('input', newValue)
-        console.log('dValue changed')
       }
     },
     methods: {
