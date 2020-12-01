@@ -52,9 +52,10 @@
       }
     },
     watch: {
-      value() {
-        if (this.dValue !== this.value) {
-          this.codemirror.getDoc().setValue(this.value)
+      value(newValue) {
+        if (this.dValue !== newValue) {
+          this.codemirror.setValue(newValue)
+          this.codemirror.clearHistory()
         }
       }
     },
