@@ -20,7 +20,10 @@ class ArchitecturalDecisionRecord {
     this.technicalStory = technicalStory || '';
     this.contextAndProblemStatement = contextAndProblemStatement || '';
     this.decisionDrivers = decisionDrivers || [];
-    this.consideredOptions = consideredOptions || [];
+    this.consideredOptions = []
+    if(consideredOptions && consideredOptions.length > 0) {
+      consideredOptions.forEach(function (opt) { this.addOption(opt) })
+    }
     this.decisionOutcome = decisionOutcome || {
       chosenOption: '',
       explanation: '',
@@ -44,11 +47,13 @@ class ArchitecturalDecisionRecord {
     }
   }
   addOption({ title, description, pros, cons } = {}) {
+    let id = this.consideredOptions.length
     this.consideredOptions.push({
       title: title || '',
       description: description || '',
       pros: pros || [],
-      cons: cons || []
+      cons: cons || [],
+      id: id // needed as key/id (for referencing an option or as key in v-for or drag'n'drop)
     })
   }
   getOptionByTitle(title) {
@@ -180,13 +185,13 @@ function json2adr(json, id = 'unknown') {
   if (prop) {
     let rawOptionList = json2md(json[adr.title][prop]).trim()
     rawOptionList = mdListToArray(rawOptionList)
-    adr.consideredOptions = rawOptionList.map((optTitle) => {
-      return {
+    rawOptionList.forEach((optTitle) => {
+      adr.addOption({
         title: optTitle,
         description: '',
         pros: [],
         cons: []
-      }
+      })
     })
   }
 
