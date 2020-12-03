@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Considered Options</h3> 
+    <h3>Considered Options</h3>
 
     <v-card v-if="mode === 'basic'" flat class="flex-grow-1 mx-0" style="min-width: 600px">
       <EditorMadrList :list="optionTitleList" @input="updateOptionTitles" @remove-item="removeOption"
@@ -8,11 +8,9 @@
     </v-card>
 
     <v-card v-else flat>
-      <drop-list :items="adr.consideredOptions" 
-        @reorder="$event.apply(adr.consideredOptions)" >
+      <drop-list :items="adr.consideredOptions" @reorder="$event.apply(adr.consideredOptions)">
         <template v-slot:item="{ item, reorder }">
-          <drag :key="item.id" :data="item"
-            :style="
+          <drag :key="item.id" :data="item" :style="
                     reorder
                       ? {
                           borderLeft: '2px solid #1976D2',
@@ -22,67 +20,68 @@
                   ">
 
             <template v-slot:drag-image></template> <!-- Don't show any image while dragging. -->
-              <v-card flat :class="['my-1', activeOptions.includes(item) ? 'mb-8' : '']">
-                <!-- Title and Icons -->
-                <v-card flat class="d-flex" :color="isChosenOption(item) ? 'light-green lighten-5' : 'transparent'">
-                  <!-- Left Icons -->
-                  <div flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0 d-flex"
-                    style="width: 64px; min-width: 64px">
-                    <!-- Left Icons, when the option is collapsed -->
-                    <v-btn v-show="!activeOptions.includes(item)" text class="mx-0 px-0 flex-grow-1 flex-shrink-1"
-                      style="min-width: 0" @click="activeOptions.push(item)">
-                      <v-icon v-if="isChosenOption(item)" color="success" style="min-width: 18px; width: 18px">
-                        mdi-check-decagram
-                      </v-icon>
-                      <div v-else style="min-width: 18px"></div>
-                      <v-icon class="ml-2">mdi-chevron-down</v-icon>
-                    </v-btn>
-                    <!-- Left Icons, when the option is expanded -->
-                    <v-btn v-show="activeOptions.includes(item)" text class="mx-0 px-0 flex-grow-1 flex-shrink-1"
-                      style="min-width: 0" @click="activeOptions = activeOptions.filter((val) => (val !== item))">
+            <v-card flat :class="['my-1', activeOptions.includes(item) ? 'mb-8' : '']">
+              <!-- Title and Icons -->
+              <v-card flat class="d-flex" :color="isChosenOption(item) ? 'light-green lighten-5' : 'transparent'">
+                <!-- Left Icons -->
+                <div flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0 d-flex"
+                  style="width: 64px; min-width: 64px">
+                  <!-- Left Icons, when the option is collapsed -->
+                  <v-btn v-show="!activeOptions.includes(item)" text class="mx-0 px-0 flex-grow-1 flex-shrink-1"
+                    style="min-width: 0" @click="activeOptions.push(item)">
+                    <v-icon v-if="isChosenOption(item)" color="success" style="min-width: 18px; width: 18px">
+                      mdi-check-decagram
+                    </v-icon>
+                    <div v-else style="min-width: 18px"></div>
+                    <v-icon class="ml-2">mdi-chevron-down</v-icon>
+                  </v-btn>
+                  <!-- Left Icons, when the option is expanded -->
+                  <v-btn v-show="activeOptions.includes(item)" text class="mx-0 px-0 flex-grow-1 flex-shrink-1"
+                    style="min-width: 0" @click="activeOptions = activeOptions.filter((val) => (val !== item))">
 
-                      <v-icon v-if="isChosenOption(item)" color="success" style="min-width: 18px; width: 18px">
-                        mdi-check-decagram
-                      </v-icon>
-                      <div v-else style="min-width: 18px"></div>
+                    <v-icon v-if="isChosenOption(item)" color="success" style="min-width: 18px; width: 18px">
+                      mdi-check-decagram
+                    </v-icon>
+                    <div v-else style="min-width: 18px"></div>
 
-                      <v-icon class="ml-2">mdi-chevron-up</v-icon>
-                    </v-btn>
-                  </div>
-                  <!-- Option Title -->
-                  <codemirror :ref="'codemirror-' + item.id" class="my-0 py-0 mr-4 optiontitle" v-model="item.title" color="grey lighten-2"></codemirror>
-                  <!-- Right Icons -->
-                  <div class="align-center flex-shrink-0 flex-grow-0  my-0 py-0">
-                    <v-btn v-on:click="removeOption(item)">
-                      <v-icon>mdi-delete</v-icon>
-                    </v-btn>
-                  </div>
-                </v-card>
-
-                <!-- Expandable Description -->
-                <v-expand-transition>
-                  <div v-show="activeOptions.includes(item)" class="pl-12">
-                    <h6 class="py-4 pl-4"> Description </h6>
-                    <div class="pb-2 ml-4" style="margin-right: 80px">
-                      <codemirror hint="Description of the option" v-model="item.description" color="grey lighten-3">
-                      </codemirror>
-                    </div>
-
-                    <div class="d-flex flex-wrap mx-0 px-0 pb-4">
-                      <div class="flex-grow-1 mx-0 px-0" style="width: 50%; min-width: 600px">
-                        <h6 class="py-4 pl-4"> Good, because ... </h6>
-                        <EditorMadrList :list="item.pros" class="ml-4 mr-0 px-0" cm-color="grey lighten-3" />
-
-                      </div>
-                      <div class="flex-grow-1 mx-0 px-0" style="width: 50%; min-width: 600px">
-                        <h6 class="py-4 pl-4"> Bad, because ... </h6>
-                        <EditorMadrList :list="item.cons" class="ml-4 mr-0 px-0" cm-color="grey lighten-3" />
-                      </div>
-                    </div>
-                  </div>
-                </v-expand-transition>
-                <v-divider v-show="activeOptions.includes(item)" />
+                    <v-icon class="ml-2">mdi-chevron-up</v-icon>
+                  </v-btn>
+                </div>
+                <!-- Option Title -->
+                <codemirror :ref="'codemirror-' + item.id" class="my-0 py-0 mr-4 optiontitle" v-model="item.title"
+                  color="grey lighten-2"></codemirror>
+                <!-- Right Icons -->
+                <div class="align-center flex-shrink-0 flex-grow-0  my-0 py-0">
+                  <v-btn v-on:click="removeOption(item)">
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+                </div>
               </v-card>
+
+              <!-- Expandable Description -->
+              <v-expand-transition>
+                <div v-show="activeOptions.includes(item)" class="pl-12">
+                  <h6 class="py-4 pl-4"> Description </h6>
+                  <div class="pb-2 ml-4" style="margin-right: 80px">
+                    <codemirror hint="Description of the option" v-model="item.description" color="grey lighten-3">
+                    </codemirror>
+                  </div>
+
+                  <div class="d-flex flex-wrap mx-0 px-0 pb-4">
+                    <div class="flex-grow-1 mx-0 px-0" style="width: 50%; min-width: 600px">
+                      <h6 class="py-4 pl-4"> Good, because ... </h6>
+                      <EditorMadrList :list="item.pros" class="ml-4 mr-0 px-0" cm-color="grey lighten-3" />
+
+                    </div>
+                    <div class="flex-grow-1 mx-0 px-0" style="width: 50%; min-width: 600px">
+                      <h6 class="py-4 pl-4"> Bad, because ... </h6>
+                      <EditorMadrList :list="item.cons" class="ml-4 mr-0 px-0" cm-color="grey lighten-3" />
+                    </div>
+                  </div>
+                </div>
+              </v-expand-transition>
+              <v-divider v-show="activeOptions.includes(item)" />
+            </v-card>
           </drag>
         </template>
         <template v-slot:feedback="{ data }">
@@ -91,23 +90,22 @@
         </template>
 
 
-        
-          <!-- Last Item with '+'-Button -->
-          <v-card class="my-1" flat :key="adr.consideredOptions.length">
-            <v-card flat class="d-flex">
-              <v-card flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0" style="width: 64px; min-width:50px">
-              </v-card>
-              <codemirror :ref="'codemirror-' + adr.consideredOptions.length" class="my-0 py-0 mr-4 optiontitle"
-                color="grey lighten-2" v-model="lastItem"
-                @blur="addLastItemToOptions">
-              </codemirror>
-              <div class="align-center flex-shrink-0 flex-grow-0  my-0 py-0">
-                <v-btn v-on:click="addLastItemToOptions">
-                  <v-icon>mdi-plus</v-icon>
-                </v-btn>
-              </div>
+
+        <!-- Last Item with '+'-Button -->
+        <v-card class="my-1" flat :key="adr.consideredOptions.length">
+          <v-card flat class="d-flex">
+            <v-card flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0" style="width: 64px; min-width:50px">
             </v-card>
+            <codemirror :ref="'codemirror-' + adr.consideredOptions.length" class="my-0 py-0 mr-4 optiontitle"
+              color="grey lighten-2" v-model="lastItem" @blur="addLastItemToOptions">
+            </codemirror>
+            <div class="align-center flex-shrink-0 flex-grow-0  my-0 py-0">
+              <v-btn v-on:click="addLastItemToOptions">
+                <v-icon>mdi-plus</v-icon>
+              </v-btn>
+            </div>
           </v-card>
+        </v-card>
       </drop-list>
 
     </v-card>
@@ -144,7 +142,7 @@
         return this.adr.consideredOptions.map((opt) => (opt.title))
       }
     },
-    watch: { },
+    watch: {},
     mounted() {
     },
     methods: {
@@ -160,7 +158,7 @@
 
       addLastItemToOptions() {
         if (this.lastItem.trim() !== '') {
-          this.adr.addOption({title: this.lastItem}); 
+          this.adr.addOption({ title: this.lastItem });
           this.lastItem = ''
         }
       },

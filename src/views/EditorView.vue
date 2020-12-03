@@ -50,7 +50,8 @@
 
 <script>
   // @ is an alias to /src
-  import { adr2md, ArchitecturalDecisionRecord } from "@/plugins/utilities";
+  import { adr2md } from "@/plugins/parser";
+  import { ArchitecturalDecisionRecord } from "@/plugins/classes";
   import DialogAddRepositories from "@/components/DialogAddRepositories.vue";
 
   import _ from 'lodash'

@@ -87,7 +87,7 @@ class MADRGenerator extends MADRListener {
     }
 
     enterOptionTitle(ctx) {
-        console.log('Option Title in Pros and Cons: ', ctx.getText())
+        // console.log('Option Title in Pros and Cons: ', ctx.getText())
         this.currentOption = this.getMostSimilarOptionTo(ctx.getText())
     }
 
@@ -118,8 +118,8 @@ class MADRGenerator extends MADRListener {
      */
     getMostSimilarOptionTo(optTitle) {
         // Find the option that has a similar enough title.
-        let opt = this.adr.consideredOptions.find(function (opt) { 
-            return this.matchOptionTitle(opt.title, optTitle) 
+        let opt = this.adr.consideredOptions.find(function (opt) {
+            return this.matchOptionTitle(opt.title, optTitle)
         }, this);
         if (opt) { // If a fitting option was found, return it.
             return opt;
@@ -160,7 +160,6 @@ class MADRGenerator extends MADRListener {
  * @returns {ArchitecturalDecisionRecord}
  */
 export function md2adr(md) {
-    console.log(ArchitecturalDecisionRecord)
     const chars = new antlr4.InputStream(md);
     const lexer = new MADRLexer(chars);
     const tokens = new antlr4.CommonTokenStream(lexer);
@@ -170,7 +169,7 @@ export function md2adr(md) {
     // console.log('Created Parse Tree! ', tree)
     const printer = new MADRGenerator();
     antlr4.tree.ParseTreeWalker.DEFAULT.walk(printer, tree);
-    console.log('Result ADR ', printer.adr)
+    // console.log('Result ADR ', printer.adr)
     return printer.adr;
 }
 

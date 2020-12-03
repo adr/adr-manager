@@ -11,15 +11,15 @@
 </template>
 
 <script>
-// @ is an alias to /src
+  // @ is an alias to /src
   import GitLogIn from '@/components/UsefulComponents/GitLogIn.vue'
 
-export default {
-  name: 'Editor',
-  components: {
-    GitLogIn
-  },
-  data: () => ({
-  })
-}
+  export default {
+    name: 'Editor',
+    components: {
+      GitLogIn
+    },
+    data: () => ({
+    })
+  }
 </script>
