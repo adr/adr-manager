@@ -1,7 +1,6 @@
 <template>
-  <v-dialog v-bind:value="showDialog"
-            v-on:input="(value) => { showDialog = value; $emit('input', value) }"
-            width="600px">
+  <v-dialog v-bind:value="showDialog" v-on:input="(value) => { showDialog = value; $emit('input', value) }"
+    width="600px">
     <template v-slot:activator="{ on, attrs }">
       <slot name="activator" v-bind:on="on" v-bind:attrs="attrs">
       </slot>

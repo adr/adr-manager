@@ -20,6 +20,7 @@
         "vue-codemirror": "^4.0.6",
         "vue-easy-dnd": "^1.10.2",
         "vue-observe-visibility": "^0.4.6",
+        "vue-resize-directive": "^1.2.0",
         "vue-resource": "^1.5.1",
         "vue-router": "^3.4.8",
         "vuetify": "^2.2.11"

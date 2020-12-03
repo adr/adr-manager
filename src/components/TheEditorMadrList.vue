@@ -46,18 +46,18 @@
     data: () => ({
       lastItem: ''
     }),
-    watch: { },
+    watch: {},
     mounted() {
     },
     methods: {
       addItemIfNotEmpty() {
-        if (this.lastItem.trim() !== '') { 
-          this.addItem() 
+        if (this.lastItem.trim() !== '') {
+          this.addItem()
         }
       },
       addItem() {
-        this.list.push(this.lastItem); 
-        this.lastItem = ''; 
+        this.list.push(this.lastItem);
+        this.lastItem = '';
         this.$emit('input', this.list)
       }
     }

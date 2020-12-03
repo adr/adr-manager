@@ -1,6 +1,5 @@
 <template>
-  <div flat tile v-if="showOptionalFields"
-       dense class="d-flex flex-row flex-wrap mb-6 mx-0 px-0">
+  <div flat tile v-if="showOptionalFields" dense class="d-flex flex-row flex-wrap mb-6 mx-0 px-0">
     <div dense class="d-flex  mx-0 px-0">
       <div style="flex-shrink: 0">
         <v-card-title class="py-0">
@@ -13,7 +12,7 @@
     </div>
     <div class="d-flex  mx-0 px-0">
       <div>
-        <v-card-title  class="py-0" style="flex-shrink: 0">
+        <v-card-title class="py-0" style="flex-shrink: 0">
           Date
         </v-card-title>
       </div>
@@ -44,40 +43,40 @@
 </template>
 
 <script>
-//import _ from 'lodash'
-import DatePickerMenu from './UsefulComponents/DatePickerMenu.vue'
-import codemirror from './TheEditorMadrCodemirror.vue'
-import { ArchitecturalDecisionRecord } from '@/plugins/utilities.js'
+  //import _ from 'lodash'
+  import DatePickerMenu from './UsefulComponents/DatePickerMenu.vue'
+  import codemirror from './TheEditorMadrCodemirror.vue'
+  import { ArchitecturalDecisionRecord } from '@/plugins/classes.js'
 
-export default {
-name: 'EditorMadrStatusDateDecidersStory',
-components: {
-DatePickerMenu,
-codemirror,
-},
-data: () => ({
-}),
-props: {
-adr: {
-  type: ArchitecturalDecisionRecord,
-},
-showOptionalFields: {
-  type: Boolean,
-  default: true
-}
-},
-computed: {
-statusSuggestions() {
-  return ['proposed', 'rejected', 'accepted', 'deprecated', 'superseded by']
-    .concat(this.adr.status.startsWith('superseded ') ? ['superseded by ADR-0001', 'superseded by ADR-0002', 'superseded by ADR-0003'] : [])
-}
-},
-methods: {
-scrollTo(target) {
-  this.$vuetify.goTo(target, { container: '.scroll' })
-},
-}
-};
+  export default {
+    name: 'EditorMadrStatusDateDecidersStory',
+    components: {
+      DatePickerMenu,
+      codemirror,
+    },
+    data: () => ({
+    }),
+    props: {
+      adr: {
+        type: ArchitecturalDecisionRecord,
+      },
+      showOptionalFields: {
+        type: Boolean,
+        default: true
+      }
+    },
+    computed: {
+      statusSuggestions() {
+        return ['proposed', 'rejected', 'accepted', 'deprecated', 'superseded by']
+          .concat(this.adr.status.startsWith('superseded ') ? ['superseded by ADR-0001', 'superseded by ADR-0002', 'superseded by ADR-0003'] : [])
+      }
+    },
+    methods: {
+      scrollTo(target) {
+        this.$vuetify.goTo(target, { container: '.scroll' })
+      },
+    }
+  };
 </script>
 
 <style scoped>

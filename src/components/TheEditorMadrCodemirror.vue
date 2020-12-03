@@ -1,5 +1,5 @@
 <template>
-  <v-card flat class="flex-grow-1 py-1 pl-1 text-left flex-shrink-1" :color="color">
+  <v-card flat class="flex-grow-1 py-1 pl-2 text-left flex-shrink-1" :color="color">
     <codemirror v-model="dValue" :options="cmOptions" v-on:input="(ev) => update(ev)" ref="cm"
       v-observe-visibility="visibilityChanged" class="customizedcm"
       @blur="$emit('blur')"
@@ -20,6 +20,8 @@
   import 'codemirror/theme/lesser-dark.css'
 
   import 'vue-observe-visibility'
+
+
   export default {
     name: 'EditorMadrCodemirror',
     components: {
@@ -75,7 +77,7 @@
        */
       update: _.debounce(function () {
         this.$emit('input', this.dValue)
-      }, 300),
+      }, 500),
       /** Refresh code mirror, when it becomes visible, to avoid anomalies.
        */
       visibilityChanged(isVisible) {
