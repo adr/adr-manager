@@ -31,7 +31,7 @@
 
 <script>
   // require component
-  import { adr2md, md2adr } from '@/plugins/utilities.js'
+  import { adr2md, md2adr } from '@/plugins/parser.js'
   import _ from 'lodash'
 
   // require component

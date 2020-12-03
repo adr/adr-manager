@@ -14,7 +14,7 @@
         <StatusDateDecidersStory v-bind:adr="adr" v-bind:showOptionalFields="showOptionalFields"
           @input="$emit('input', adr)" v-if="mode !== 'basic'"></StatusDateDecidersStory>
 
-        <v-divider></v-divider>
+        <v-divider class="my-8"></v-divider>
         <h3 class="mt-8">Context and Problem Statement</h3>
         <v-card flat class="mb-8">
           <codemirror v-model="adr.contextAndProblemStatement"
@@ -22,20 +22,20 @@
         </v-card>
 
 
-        <div v-if="showOptionalFields" class="my-8">
-          <v-divider></v-divider>
-          <h3 class="mt-8">Decision Drivers</h3>
+        <div v-if="showOptionalFields">
+          <v-divider class="my-8"></v-divider>
+          <h3>Decision Drivers</h3>
           <GenericList :list="adr.decisionDrivers" />
         </div>
 
-        <v-divider></v-divider>
+        <v-divider class="my-8"></v-divider>
 
-        <ConsideredOptions class="my-8" :adr="adr" :mode="mode" @scroll-to="scrollTo" @input="$emit('input', adr)">
+        <ConsideredOptions :adr="adr" :mode="mode" @scroll-to="scrollTo" @input="$emit('input', adr)">
         </ConsideredOptions>
 
 
-        <v-divider></v-divider>
-        <DecisionOutcome :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)" class="my-8">
+        <v-divider class="my-8"></v-divider>
+        <DecisionOutcome :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)">
         </DecisionOutcome>
 
 
@@ -43,7 +43,7 @@
 
 
         <div v-if="showOptionalFields">
-          <v-divider></v-divider>
+          <v-divider class="my-8"></v-divider>
           <h3>Links</h3>
           <GenericList :list="adr.links" class="mb-16" />
         </div>
@@ -54,7 +54,7 @@
 
 <script>
   //import _ from 'lodash'
-  import { ArchitecturalDecisionRecord } from '@/plugins/utilities.js'
+  import { ArchitecturalDecisionRecord } from '@/plugins/classes.js'
   import { EventBus } from '@/plugins/event-bus.js';
 
   import codemirror from './TheEditorMadrCodemirror.vue'

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h3>Considered Options</h3>
+    <h3>Considered Options</h3> 
+
     <v-card v-if="mode === 'basic'" flat class="flex-grow-1 mx-0" style="min-width: 600px">
       <EditorMadrList :list="optionTitleList" @input="updateOptionTitles" @remove-item="removeOption"
         class="mx-0 px-0" />
@@ -49,8 +50,7 @@
                     </v-btn>
                   </div>
                   <!-- Option Title -->
-                  <codemirror :ref="'codemirror-' + item.id" class="my-0 py-0 mr-4 optiontitle" v-model="item.title" color="grey lighten-2"
-                    v-on:keyup.native.prevent.stop=""></codemirror>
+                  <codemirror :ref="'codemirror-' + item.id" class="my-0 py-0 mr-4 optiontitle" v-model="item.title" color="grey lighten-2"></codemirror>
                   <!-- Right Icons -->
                   <div class="align-center flex-shrink-0 flex-grow-0  my-0 py-0">
                     <v-btn v-on:click="removeOption(item)">
@@ -98,10 +98,11 @@
               <v-card flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0" style="width: 64px; min-width:50px">
               </v-card>
               <codemirror :ref="'codemirror-' + adr.consideredOptions.length" class="my-0 py-0 mr-4 optiontitle"
-                color="grey lighten-2" v-model="lastItem">
+                color="grey lighten-2" v-model="lastItem"
+                @blur="addLastItemToOptions">
               </codemirror>
               <div class="align-center flex-shrink-0 flex-grow-0  my-0 py-0">
-                <v-btn v-on:click="adr.addOption({title: lastItem}); lastItem = ''">
+                <v-btn v-on:click="addLastItemToOptions">
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
               </div>
@@ -155,6 +156,13 @@
        */
       insertOption(event) {
         this.adr.consideredOptions.splice(event.index, 0, event.data);
+      },
+
+      addLastItemToOptions() {
+        if (this.lastItem.trim() !== '') {
+          this.adr.addOption({title: this.lastItem}); 
+          this.lastItem = ''
+        }
       },
 
       /** Put option titles in option list of ADR. 

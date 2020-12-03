@@ -1,7 +1,9 @@
 <template>
   <v-card flat class="flex-grow-1 py-1 pl-1 text-left flex-shrink-1" :color="color">
     <codemirror v-model="dValue" :options="cmOptions" v-on:input="(ev) => update(ev)" ref="cm"
-      v-observe-visibility="visibilityChanged" class="customizedcm"></codemirror>
+      v-observe-visibility="visibilityChanged" class="customizedcm"
+      @blur="$emit('blur')"
+      @focus="$emit('focus')"></codemirror>
   </v-card>
 </template>
 
@@ -80,7 +82,7 @@
         if (isVisible) {
           this.codemirror.refresh()
         }
-      }
+      },
     }
   };
 </script>
