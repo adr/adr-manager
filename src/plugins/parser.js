@@ -117,24 +117,50 @@ class MADRGenerator extends MADRListener {
      * @param {string} optTitle 
      */
     getMostSimilarOptionTo(optTitle) {
-        // Find the option that has a similar enough title.
+        // Find the option with a very similar title.
         let opt = this.adr.consideredOptions.find(function (opt) {
-            return this.matchOptionTitle(opt.title, optTitle)
+            return this.matchOptionTitleAlmostExactly(opt.title, optTitle)
         }, this);
         if (opt) { // If a fitting option was found, return it.
             return opt;
-        } else {
-            // If no fitting option is found, create a new option and return it.
-            return this.adr.addOption({ title: optTitle })
+        } 
+        // Else check if there is another (less) similar title.
+        opt = this.adr.consideredOptions.find(function (opt) {
+            return this.matchOptionTitleMoreRelaxed(opt.title, optTitle)
+        }, this);
+        if (opt) { // If a fitting option was found, return it.
+            return opt;
         }
+        // If no fitting option is found, create a new option and return it.
+        return this.adr.addOption({ title: optTitle })
     }
+
     /**
+     * Option titles are similar, iff they are equal after 
+     *  (1) removing all white spaces
+     *  (2) lower-casing them.
+     * 
+     * @param {string} optTitle1 
+     * @param {string} optTitle2 
+     * @returns {boolean} True, iff the option titles are very similar.
+     */
+    matchOptionTitleAlmostExactly(optTitle1, optTitle2) {
+        let trimmed1 = optTitle1.replace(/ /g, '').toLowerCase() // Remove whitespaces and lower-case heading
+        let trimmed2 = optTitle2.replace(/ /g, '').toLowerCase()
+        return trimmed1 === trimmed2
+    }
+
+    /**
+     * Option titles are similar, iff they are equal after 
+     *  (1) removing all white spaces
+     *  (2) lower-casing them
+     * or one of these normalized titles is a prefix of the other title.
      * 
      * @param {string} optTitle1 
      * @param {string} optTitle2 
      * @returns {boolean} True, iff the option titles are similar
      */
-    matchOptionTitle(optTitle1, optTitle2) {
+    matchOptionTitleMoreRelaxed(optTitle1, optTitle2) {
         let trimmed1 = optTitle1.replace(/ /g, '').toLowerCase() // Remove whitespaces and lower-case heading
         let trimmed2 = optTitle2.replace(/ /g, '').toLowerCase()
         return trimmed1 === trimmed2 || trimmed1.startsWith(trimmed2) || trimmed2.startsWith(trimmed1)
@@ -155,7 +181,7 @@ class MADRGenerator extends MADRListener {
 }
 
 /**
- * Converts an markdown into an ADR object.
+ * Converts a markdown into a MADR object.
  * @param {string} md 
  * @returns {ArchitecturalDecisionRecord}
  */
@@ -240,7 +266,7 @@ export function adr2md(adr) {
         }, md)
     }
     if (adr.links.length > 0) {
-        md = md.concat('\n## Links \n\n')
+        md = md.concat('\n## Links\n\n')
         md = adr.links.reduce((total, link) => (total + '* ' + link + '\n'), md)
     }
     return md
