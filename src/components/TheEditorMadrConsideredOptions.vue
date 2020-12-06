@@ -9,7 +9,7 @@
 
     <v-card v-else flat>
       <div v-for="(item, i) in adr.consideredOptions" :key="item.id">
-        <drop @dragenter="(event) => moveOption(event.data, i)" @drop="logSomething('Dropped!')" class="my-0 py-0">
+        <drop @dragenter="(event) => moveOption(event.data, i)" class="my-0 py-0">
 
             <v-card flat :class="['my-1', activeOptions.includes(item) ? 'mb-8' : '']"
               :style="
@@ -32,7 +32,7 @@
                         <drag v-show="hoveredOption === item || draggedOption === item" 
                           :key="item.id" :data="item"
                           @dragstart="draggedOption = item"
-                          @dragend="draggedOption = {}; logSomething('dragend')" >
+                          @dragend="draggedOption = {}" >
                           <template v-slot:drag-image>{{ item.title }}</template> <!-- Show the title while dragging. -->
                           <v-icon> mdi-drag-vertical </v-icon>
                         </drag>
@@ -209,10 +209,6 @@
        */
       isChosenOption(option) {
         return this.adr.decisionOutcome.chosenOption === option.title && this.adr.decisionOutcome.chosenOption !== ''
-      },
-
-      logSomething(something) {
-        console.log('Soemthing, ', something)
       }
     }
   };

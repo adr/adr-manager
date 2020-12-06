@@ -1,6 +1,8 @@
 <template>
   <v-card class="editor text-center mx-auto d-flex flex-column" height="100%">
-    <v-toolbar dense color="primary" dark style="-webkit-flex: 0; flex: 0;">
+    <v-toolbar dense
+               color="primary"
+               dark style="-webkit-flex: 0; flex: 0;">
       <v-btn class="align-self-center" to="/">Log Out</v-btn>
       <!--<ToolbarMenuFile v-on:commit="logNotImplemented"
                  v-on:create-adr="createNewAdr"

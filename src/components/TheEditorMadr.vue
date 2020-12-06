@@ -7,7 +7,7 @@
         <!--<NavigatorFab :options="adr.consideredOptions" @scroll-to="scrollTo" v-if="showOptionalFields"/>-->
 
         <v-card-title class="mx-0 px-0">
-          <v-text-field filled label="Titel"
+          <v-text-field filled label="Title"
             hint="Changing this field, changes the file name. Do not use special characters." v-model="adr.title"
             @input="$emit('input', adr)"></v-text-field>
         </v-card-title>
