@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="editor text-left" id="editor-madr">
     <h1>
-      <v-text-field label="Titel" hint="Changing this field, changes the file name. Do not use special characters." v-model="adr.title"
+      <v-text-field label="Title" hint="Changing this field, changes the file name. Do not use special characters." v-model="adr.title"
                     @input="(val) => {adr.title=val; update()}"></v-text-field>
     </h1>
     <v-card flat tile v-if="showOptionalFields"
