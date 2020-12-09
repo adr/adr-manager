@@ -117,6 +117,7 @@
 </template>
 
 <script>
+  import { ArchitecturalDecisionRecord } from '@/plugins/classes'
   import codemirror from './TheEditorMadrCodemirror.vue'
   import EditorMadrList from './TheEditorMadrList.vue'
   import { Drag, Drop } from 'vue-easy-dnd'
@@ -130,7 +131,7 @@
     },
     props: {
       adr: {
-        type: Object // ArchitecturalDecisionRecord
+        type: ArchitecturalDecisionRecord
       },
       mode: {
         type: String
@@ -160,12 +161,16 @@
       insertOption(event) {
         this.adr.consideredOptions.splice(event.index, 0, event.data);
       },
+
       /**
        * Moves the option to another index.
+       * Requires the option to be already contained in the list of options.
        */
       moveOption(option, newIndex) {
-        this.adr.consideredOptions.splice(this.adr.consideredOptions.indexOf(option), 1)
-        this.adr.consideredOptions.splice(newIndex, 0, option);
+        if (this.adr.consideredOptions.includes(option)) {
+          this.adr.consideredOptions.splice(this.adr.consideredOptions.indexOf(option), 1)
+          this.adr.consideredOptions.splice(newIndex, 0, option);
+        }
       },
 
       addLastItemToOptions() {
