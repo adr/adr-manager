@@ -121,14 +121,12 @@
        * @param {Array} repoList - a list of repositories 
        */
       addRepositories(repoList) {
-        console.log("CURRENT ADR ARE : ", repoList);
         this.addedRepositories = this.addedRepositories.concat(repoList);
         if (!this.currentAdr.editedMd) {
           this.openAnyAdr()
         }
       },
       setActiveBranch(activeBranch) {
-        console.log("Current repo is : ", this.currentRepo);
         this.selected = activeBranch;
       },
       onSelectedBranch(){
@@ -138,7 +136,6 @@
           if (typeof repoObjectList !== "undefined") {
             this.removeRepository(repoObjectList);
             this.addRepositories(repoObjectList);
-            console.log("WAS IST DAS????", repoObjectList)
           }
         });
         }).catch(() => {
@@ -149,8 +146,7 @@
         loadBranchesName(
         this.currentRepo.split("/")[1],
         this.currentRepo.split("/")[0], 
-        this.dataAuth).then((branchesObjectList) => { 
-          console.log("Crrent branche are : ", branchesObjectList)         
+        this.dataAuth).then((branchesObjectList) => {       
           let x = branchesObjectList.map((branches) => ({
             brancheName: branches.name
           }));
@@ -166,14 +162,12 @@
       updateBranches(repoName){
         this.currentAdr = {};
         this.currentRepo = repoName;
-        console.log("Loading branches", this.addedRepositories);
         this.loadBranchesName();
       },
       /** Removes the repository from the added repositories.
        * If the currently edited adr is in that repository, open another one. 
        */
       removeRepository(repoToRemove) {
-        console.log("WAS WIRD HIER WEG", repoToRemove);
         this.addedRepositories = this.addedRepositories.filter((repo) => (repo.fullName !== repoToRemove.fullName))
         if (repoToRemove.adrs.includes(this.currentAdr)) {
           this.currentAdr = {}
