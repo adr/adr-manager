@@ -174,3 +174,62 @@ export async function loadAllRepositoryContent(repoList, user) {
   await Promise.all(adrPromises) // Wait until all raw contents are loaded.
   return repoObjectList
 }
+
+/** Loads the content of all repositories.
+ * 
+ * Each array entry is one repository with the following json-structure
+ * {
+ *  fullName: String,
+ *  activeBranch: String,
+ *  adrs: Array[ADR]
+ * }
+ * where an ADR has the structure
+ * {
+ *  path: String,
+ *  originalMd: String,
+ *  editedMd: String
+ * }
+ * 
+ * @param {object[]} repoList - each array entry must have the attributes fullName and branch
+ * @param {string} user - the authID of user'
+ * @returns {Promise<object[]>} an array of repositories
+ */
+export async function loadARepositoryContent(repoFullName, branchName, user) {
+
+  let repoPromises = []
+  let adrPromises = []
+  let repoObject = {
+    fullName: repoFullName,
+    activeBranch: branchName,
+    adrs: []
+  }
+ 
+    repoPromises.push(loadFileTreeOfRepository(repoFullName, branchName, user)
+      .then((data) => {
+        // Find all files in the folder 'docs/adr' or 'doc/adr'
+        let adrList = data.tree.filter((file) => {
+          return file.path.startsWith('docs/adr/') || file.path.startsWith('doc/adr/') // Allow docs/adr and doc/adr as path .. maybe change this to demand mutual exclusion.
+        })
+        console.log('adrList', adrList)
+
+        // Load the content of each ADR.
+        adrList.forEach((adr) => {
+          let adrObject = {
+            path: adr.path,
+          }
+          repoObject.adrs.push(adrObject)
+          adrPromises.push(
+            loadRawFile(repoFullName, branchName, adr.path, user, pizzly)
+              .then((rawMd) => {
+                adrObject.originalMd = rawMd;
+                adrObject.editedMd = rawMd
+              })
+          )
+        })
+        console.log('adrList', repoObject.adrs)
+      })
+    )
+  await Promise.all(repoPromises) // Wait until all file trees are loaded.
+  await Promise.all(adrPromises) // Wait until all raw contents are loaded.
+  return repoObject
+}
