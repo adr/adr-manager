@@ -3,19 +3,23 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "serve": "vue-cli-service serve",
+        "serve": "vue-cli-service serve --open",
         "build": "vue-cli-service build",
         "lint": "vue-cli-service lint"
     },
     "dependencies": {
         "@mdi/font": "^3.6.95",
+        "antlr4": "^4.9.0",
         "axios": "^0.21.0",
         "core-js": "^3.6.5",
         "marked": "^1.2.3",
-        "md-2-json": "^1.0.6",
+        "pizzly-js": "^0.2.8",
         "roboto-fontface": "*",
         "splitpanes": "^2.3.4",
         "vue": "^2.6.11",
+        "vue-codemirror": "^4.0.6",
+        "vue-easy-dnd": "^1.10.2",
+        "vue-observe-visibility": "^0.4.6",
         "vue-resource": "^1.5.1",
         "vue-router": "^3.4.8",
         "vuetify": "^2.2.11"
