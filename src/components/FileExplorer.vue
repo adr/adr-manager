@@ -4,10 +4,10 @@
       <div style="height: 100%; width: 100%; position: absolute; overflow-y:auto">
         <v-list dense multiple>
           <v-list-group v-for="(repo, i) in folderStructure" :key="repo.path"
-            :prepend-icon="fileTypeIconMapping[repo.fileType]" :value="i === 0">
+            :prepend-icon="fileTypeIconMapping[repo.fileType]" :value="i === 0" @click="sendRepo(repo)"> 
             <template v-slot:activator>
-              <v-list-item-content>
-                <v-list-item-title v-text="repo.name"></v-list-item-title>
+              <v-list-item-content >
+                <v-list-item-title v-text="repo.name" ></v-list-item-title>
               </v-list-item-content>
 
               <DialogRemoveRepository v-bind:repo="{ name: repo.name }" v-if="repo.fileType === 'repo'"
@@ -200,7 +200,10 @@
         });
         return typeof searchedDirectory !== "undefined";
       },
-
+      sendRepo(repo){
+        this.$emit("repo-name", repo.name);
+        this.$emit("active-branch", repo.repository.activeBranch)
+      },
       openFileByPath({ path }) {
         if (typeof path === "undefined") {
           console.log("Can't open file at an undefined path.");
@@ -219,7 +222,7 @@
         if (typeof file.adr !== "undefined") {
           this.$emit("open-file", file.adr);
         } else {
-          console.log("Open File Failed :(");
+          console.log("Open File Failed :("); 
         }
       },
 

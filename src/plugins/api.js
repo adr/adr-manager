@@ -47,6 +47,26 @@ export async function loadFileTreeOfRepository(repoFullName, branch, user) {
     });
 }
 
+
+/**Returns a Promise with the the file tree of the repository.
+ * The returned file tree is an array. 
+ * An example of the returned JSON structure can be found in the attribute 'tree' at 'https://api.github.com/repos/adr/madr/git/trees/master?recursive=1'
+ * 
+ * @param {string} repoFullName - the full name of the repository, e.g. 'adr/madr'
+ * @param {string} user - the authID of user'
+ * @returns {Promise<object>} where the object has a tree attribute containing an array of all files in the repository  
+ */
+export async function loadBranchesName(repoFullName, username, dataAuth) {
+  return pizzly
+    .integration("github")
+    .auth(dataAuth)
+    .get("/repos/" + username + "/" + repoFullName + "/branches?per_page=999")
+    .then(response => response.json())
+    .catch((err) => {
+      console.log(err)
+    });
+}
+
 /**
  * Returns a Promise with the the raw content of the file.
  * 

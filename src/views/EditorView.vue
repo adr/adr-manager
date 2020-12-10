@@ -23,7 +23,7 @@
       <splitpanes v-else class="default-theme" style="height: 100%; width: 100%; ">
         <pane size="30%" class="d-flex flex-column" style="-webkit-flex-grow: 1; flex-grow: 1; position: relative;">
 
-          <FileExplorer v-on:open-file="openAdr" v-bind:user="userName" v-bind:added-repositories="addedRepositories"
+          <FileExplorer v-on:open-file="openAdr" v-on:repo-name="updateBranches" v-bind:user="userName" v-on:active-branch="setActiveBranch" v-bind:added-repositories="addedRepositories"
             @add-repositories="addRepositories"
             @remove-repository="removeRepository" />
         </pane>
@@ -36,12 +36,14 @@
     </v-card-text>
 
     <v-system-bar>
-      Current ADR: Not implemented
+        {{"Current ADR: " + setAdrName}}
       <v-spacer></v-spacer>
-
       Current branch:
-      <select name="current-branch" id="current-branch" style="width: 20%">
-        <option v-for="(branchName, index) in ['master', 'branch 1', 'branch 2']" :key="index" v-text="branchName">
+      <select @change="onSelectedBranch" v-model="selected" name="current-branch" id="current-branch" style="width: 20%">
+        <option  v-for="(branchName, index) in branchesName" :key="index" v-text="branchName"
+        >
+          {{branchName}}
+       
         </option>
       </select>
     </v-system-bar>
@@ -52,6 +54,7 @@
   // @ is an alias to /src
   import { adr2md, ArchitecturalDecisionRecord } from "@/plugins/utilities";
   import DialogAddRepositories from "@/components/DialogAddRepositories.vue";
+  import { loadBranchesName } from "@/plugins/api.js";
 
   import _ from 'lodash'
 
@@ -72,8 +75,12 @@
       DialogAddRepositories
     },
     data: () => ({
+      selected: "",
+      branchesName: [],
+      dataAuth: "",
+      nameAdr: "",
       addedRepositories: [],
-      currentRepo: {},
+      currentRepo: "",
       initialEditedMd: undefined, // Change this for opening an ADR in the editor.
       currentAdr: {},
       userName: "adr",
@@ -82,6 +89,13 @@
     computed: {
       hideEditor() {
         return this.initialEditedMd === undefined
+      },
+      setAdrName() {
+        if(this.currentAdr.path !== undefined) {
+          return  this.currentAdr.path.split("/").pop();
+        }else {
+          return ""
+        }
       }
     },
     watch: {
@@ -90,15 +104,15 @@
       }
     },
     mounted() {
+      this.dataAuth = this.$route.params.id;
       let addedRepos = localStorage.getItem('addedRepositories');
       if (addedRepos !== null) {
-        console.log('Stored Repositories', addedRepos)
         addedRepos = JSON.parse(addedRepos)
         // Validate storage
         if (isValidRepoList(addedRepos)) {
           console.log('Adding Repositories', addedRepos)
           this.addRepositories(addedRepos)
-        }
+        }      
       }
     },
     methods: {
@@ -111,6 +125,38 @@
         if (!this.currentAdr.editedMd) {
           this.openAnyAdr()
         }
+      },
+      setActiveBranch(activeBranch) {
+        console.log("Current repo is : ", this.currentRepo);
+        this.selected = activeBranch;
+      },
+      onSelectedBranch(){
+        console.log("YOU SELECTED :", this.selected);
+        alert("DAS");
+      },
+      loadBranchesName() {
+        loadBranchesName(
+        this.currentRepo.split("/")[1],
+        this.currentRepo.split("/")[0], 
+        this.dataAuth).then((branchesObjectList) => { 
+          console.log("Crrent branche are : ", branchesObjectList)         
+          let x = branchesObjectList.map((branches) => ({
+            brancheName: branches.name
+          }));
+          this.branchesName = [];
+          let i = "";
+          for (i=0;  i < x.length; i++) {
+            this.branchesName.push(x[i].brancheName);
+          }
+        
+          
+        }) 
+      },
+      updateBranches(repoName){
+        this.currentAdr = {};
+        this.currentRepo = repoName;
+        console.log("Loading branches", this.addedRepositories);
+        this.loadBranchesName();
       },
       /** Removes the repository from the added repositories.
        * If the currently edited adr is in that repository, open another one. 
@@ -128,7 +174,9 @@
       openAnyAdr() {
           let reposWithAdrs = this.addedRepositories.filter(repo => (repo.adrs && repo.adrs[0]))
           if(reposWithAdrs.length > 0) {
-            let someAdr = reposWithAdrs[0].adrs[0]
+            let someAdr = reposWithAdrs[0].adrs[0];
+            this.updateBranches(reposWithAdrs[0].fullName);
+            this.selected = reposWithAdrs[0].activeBranch;
             this.openAdr(someAdr)
           }
       },

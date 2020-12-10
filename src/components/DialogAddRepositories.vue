@@ -111,7 +111,6 @@
       loadRepositoryList() {
         loadRepositoryList(this.dataAuth)
           .then((res) => {
-            console.log("Loaded repo data", res);
             if (!Array.isArray(res)) {
               throw "Couldn't load repos.";
             }
