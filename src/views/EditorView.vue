@@ -25,14 +25,16 @@
       <splitpanes v-else class="default-theme" style="height: 100%; width: 100%; ">
         <pane size="30%" class="d-flex flex-column" style="-webkit-flex-grow: 1; flex-grow: 1; position: relative;">
 
-          <FileExplorer v-on:open-file="openAdr" v-bind:user="userName" v-bind:added-repositories="addedRepositories"
+          <FileExplorer v-on:open-file="openAdr" v-on:file-path="setFilePath" v-bind:user="userName" v-bind:firstUserName="firstUserName" 
+            v-bind:firstRepoName="firstRepoName" v-bind:editedADR="editedADR" v-bind:added-repositories="addedRepositories"
             @add-repositories="addRepositories"
             @remove-repository="removeRepository" />
         </pane>
         <!--end File Explorer Pane -->
 
         <pane>
-          <Editor style="height: 100%;" v-bind:value="initialEditedMd" @input="updateMd"/>
+          <Editor style="height: 100%;" v-bind:value="initialEditedMd" v-bind:filePath="filePath" v-on:adr-file="setADRFile" v-bind:firstUserName="firstUserName" 
+            v-bind:firstRepoName="firstRepoName" @input="updateMd"/>
         </pane>
       </splitpanes>
     </v-card-text>
@@ -81,6 +83,10 @@
       currentAdr: {},
       userName: "adr",
       reposPath: "http://localhost:5000/repos",
+      firstUserName: "",
+      firstRepoName: "",
+      filePath: "",
+      editedADR: {}
     }),
     computed: {
       hideEditor() {
@@ -95,7 +101,6 @@
     mounted() {
       let addedRepos = localStorage.getItem('addedRepositories');
       if (addedRepos !== null) {
-        console.log('Stored Repositories', addedRepos)
         addedRepos = JSON.parse(addedRepos)
         // Validate storage
         if (isValidRepoList(addedRepos)) {
@@ -105,6 +110,12 @@
       }
     },
     methods: {
+      setFilePath(path) {
+        this.filePath = path;
+      },
+      setADRFile(adr) {
+        this.editedADR = adr;
+      },
       /** Adds the repositories to the added repositories.
        * If no ADR is currently edited, open one.
        * @param {Array} repoList - a list of repositories 
@@ -131,8 +142,14 @@
       openAnyAdr() {
           let reposWithAdrs = this.addedRepositories.filter(repo => (repo.adrs && repo.adrs[0]))
           if(reposWithAdrs.length > 0) {
-            let someAdr = reposWithAdrs[0].adrs[0]
-            this.openAdr(someAdr)
+            let someAdr = reposWithAdrs[0].adrs[0];
+
+            let path = reposWithAdrs[0].fullName;
+            let indexUserName = path.indexOf("/");
+            this.firstUserName = path.slice(0, indexUserName);
+            this.firstRepoName = path.slice(indexUserName + 1);
+
+            this.openAdr(someAdr);
           }
       },
       openAdr: function (adr) {
