@@ -124,3 +124,7 @@ ehthumbs.db
 *.orig
 *.bak
 *.zip
+
+# Antlr files
+*.interp
+*.tokens

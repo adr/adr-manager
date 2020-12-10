@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Register from '../views/Register.vue'
 import EditorView from '../views/EditorView.vue'
-import Authorization from '../views/Authorization.vue'
 import ErrorPage from '../views/ErrorPage.vue'
 Vue.use(VueRouter)
 
@@ -18,11 +17,6 @@ const routes = [
     alias: ['/editor'],
     name: 'Editor',
     component: EditorView
-  },
-  {
-    path: '/authorize',
-    name: 'Authorization',
-    component: Authorization
   },
   {
     path: '/*',

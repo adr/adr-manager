@@ -6,34 +6,19 @@
       </slot>
     </template>
     <v-card>
-      <v-card-title class="headline grey lighten-2">
-        Commit changes
+      <v-card-title class="headline grey lighten-2 warning">
+        Delete ADR
       </v-card-title>
 
       <v-card-text>
-        The following files were changed:
-        <ul>
-          <li>1234 Adr X</li>
-          <li>3456 Adr Y</li>
-        </ul>
-        Do you want to push to a new branch?
-        <v-switch v-model="pushToNewBranch">
-          <template v-slot:label>
-            <div>
-              <div>
-                <div v-if="pushToNewBranch"> Push to new branch '{{ currentBranch }}-adr-update'.</div>
-                <div v-else>Push to {{ currentBranch }}.</div>
-              </div>
-            </div>
-          </template>
-        </v-switch>
+        Are you sure you want to delete '{{ adr.name }}'?
       </v-card-text>
       <v-divider></v-divider>
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn @click="() => { showDialog = false; $emit('commit') }">
-          Commit and push!
+        <v-btn @click="deleteAdr" class="warning">
+          Delete
         </v-btn>
         <v-btn @click="showDialog = false">
           Cancel
@@ -45,7 +30,7 @@
 
 <script>
   export default {
-    name: 'EditorAddRepositoryDialog',
+    name: 'EditorDeleteAdr',
     props: {
       // value is true, iff showDialog == true, iff the dialog is shown. (value-prop enables v-model)
       value: {
@@ -53,16 +38,14 @@
         required: false,
         default: false,
       },
-      currentBranch: {
-        type: String,
+      adr: {
+        type: Object,
         required: false,
-        default: 'master',
+        default: () => ({ name: 'ADR-XXXX Add Status Field' }),
       },
     },
     data: () => ({
       showDialog: false,
-      organization: '',
-      pushToNewBranch: false,
     }),
     watch: {
       value() {
@@ -70,6 +53,10 @@
       }
     },
     methods: {
+      deleteAdr() {
+        console.log('Sorry, I can\'t delete ', this.adr, '. Deleting an ADR is not implemented.')
+        this.showDialog = false
+      }
     }
   }
 </script>

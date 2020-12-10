@@ -1,24 +1,50 @@
 <template>
   <div>
-    <v-btn :href="githubAuthorizeUrl">
-      Log In with GitHub
-    </v-btn>
+    <v-btn @click.prevent="connect">Connect to GitHub</v-btn>
   </div>
 </template>
 
 <script>
-  export default {
-    data: () => ({
-      text: 'Text',
-      githubAuthorizeUrl: 'https://github.com/login/oauth/authorize?client_id=2a2586230dd928a44291'
-    }),
-    methods: {
-      authorizeToGitHub() {
-        window.location.href = this.githubAuthorizeUrl
-      }
-    }
-  };
-</script>
+import Pizzly from "pizzly-js";
 
-<style>
-</style>
+export default {
+  name: "connectGitHub",
+  components: {},
+  data: () => ({
+    user: null,
+    repositories: []
+  }),
+  mounted() {
+    // Here we initialize Pizzly.
+    console.log("mounted");
+    this.$pizzly = new Pizzly({
+      host: "https://adr-manager.herokuapp.com",
+      publishableKey: "dpWJ4TU2yCu7ys4Nb6eX5zhv32GV6YcVYYvDJZvS"
+    });
+  },
+  destroyed() {
+    console.log("Bye from the git login github component!");
+  },
+  methods: {
+    connect: function() {
+      // Here, we create a new method
+      // that "connect" a user to GitHub
+      this.$pizzly
+        .integration("github")
+        .connect()
+        .then(this.connectSuccess)
+        .catch(this.connectError);
+    },
+    connectSuccess: function(data) {
+      // On success, we update the user object
+      this.user = data.authId;
+      this.$router.push({ name: "Editor", params: { id: this.user } });
+    },
+    connectError: function(err) {
+      console.log("error");
+      console.error(err);
+      alert("Something went wrong. Look at the logs.");
+    }
+  },
+};
+</script>
