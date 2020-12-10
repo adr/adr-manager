@@ -22,6 +22,7 @@
         "vue-observe-visibility": "^0.4.6",
         "vue-resource": "^1.5.1",
         "vue-router": "^3.4.8",
+        "vue-simple-alert": "^1.1.1",
         "vuetify": "^2.2.11"
     },
     "devDependencies": {

@@ -54,7 +54,7 @@
   // @ is an alias to /src
   import { adr2md, ArchitecturalDecisionRecord } from "@/plugins/utilities";
   import DialogAddRepositories from "@/components/DialogAddRepositories.vue";
-  import { loadBranchesName } from "@/plugins/api.js";
+  import { loadBranchesName, loadARepositoryContent } from "@/plugins/api.js";
 
   import _ from 'lodash'
 
@@ -121,6 +121,7 @@
        * @param {Array} repoList - a list of repositories 
        */
       addRepositories(repoList) {
+        console.log("CURRENT ADR ARE : ", repoList);
         this.addedRepositories = this.addedRepositories.concat(repoList);
         if (!this.currentAdr.editedMd) {
           this.openAnyAdr()
@@ -131,8 +132,18 @@
         this.selected = activeBranch;
       },
       onSelectedBranch(){
-        console.log("YOU SELECTED :", this.selected);
-        alert("DAS");
+        this.$confirm("Do you really want to change branch?").then(() => {
+          loadARepositoryContent(this.currentRepo, this.selected, this.dataAuth)
+          .then((repoObjectList) => {
+          if (typeof repoObjectList !== "undefined") {
+            this.removeRepository(repoObjectList);
+            this.addRepositories(repoObjectList);
+            console.log("WAS IST DAS????", repoObjectList)
+          }
+        });
+        }).catch(() => {
+          console.log("Action cancelled");
+        });
       },
       loadBranchesName() {
         loadBranchesName(
@@ -162,6 +173,7 @@
        * If the currently edited adr is in that repository, open another one. 
        */
       removeRepository(repoToRemove) {
+        console.log("WAS WIRD HIER WEG", repoToRemove);
         this.addedRepositories = this.addedRepositories.filter((repo) => (repo.fullName !== repoToRemove.fullName))
         if (repoToRemove.adrs.includes(this.currentAdr)) {
           this.currentAdr = {}
