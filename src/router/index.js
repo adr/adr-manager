@@ -8,15 +8,35 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/login',
-    alias: ['/register', '/'],
     name: 'Register',
+    alias: ['/register', '/'],
     component: Register
   },
+  /** Route to the Editor without branch. */
   {
-    path: '/manager',
-    alias: ['/editor'],
+    path: '/manager/:organization?/:repo?/:adr?',
     name: 'Editor',
-    component: EditorView
+    alias: ['/editor/:organization?/:repo?/:adr?'],
+    component: EditorView,
+    /** Pass the route as props to EditorView. */
+    props: route => ({ ...route.query, ...route.params, 
+      repoFullName : route.params.organization  + '/' +  route.params.repo,
+      branch : '',
+      adr : route.params.adr
+    }),
+  },
+  /** Route to the Editor with branch. */
+  {
+    path: '/manager/:organization?/:repo?/:branch?/:adr?',
+    name: 'Editor',
+    alias: ['/editor/:organization?/:repo?/:branch?/:adr?'],
+    component: EditorView,
+    /** Pass the route as props to EditorView. */
+    props: route => ({ ...route.query, ...route.params, 
+      repoFullName : route.params.organization  + '/' +  route.params.repo,
+      branch : route.params.branch, 
+      adr : route.params.adr
+    }),
   },
   {
     path: '/*',
