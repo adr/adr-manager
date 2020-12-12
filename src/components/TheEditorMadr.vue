@@ -55,7 +55,7 @@
 <script>
   //import _ from 'lodash'
   import { ArchitecturalDecisionRecord } from '@/plugins/classes.js'
-  import { EventBus } from '@/plugins/event-bus.js';
+  import { store } from '@/plugins/store.js';
 
   import codemirror from './TheEditorMadrCodemirror.vue'
   //import NavigatorFab from './TheEditorMadrFab.vue'
@@ -82,11 +82,13 @@
     },
     data: () => ({
       adr: {},
-      mode: ['basic', 'advanced', 'professional'].includes(localStorage.getItem('mode')) ? localStorage.getItem('mode') : 'basic'
     }),
     computed: {
       showOptionalFields() {
         return this.mode !== 'basic'
+      },
+      mode() {
+        return store.mode
       }
     },
     watch: {
@@ -102,7 +104,7 @@
     },
     created() {
       this.adr = this.value;
-      EventBus.$on('change-mode', (mode) => { this.mode = mode });
+      store.$on('set-mode', (mode) => { this.mode = mode });
     },
     methods: {
       scrollTo(target) {

@@ -10,6 +10,7 @@ let pizzly = new Pizzly({
 });
 
 export async function getCommitSha(user, repoOwner, repoName, currentBranch) {
+  user = localStorage.getItem('authId')
   return pizzly
     .integration("github")
     .auth(user)
@@ -21,6 +22,7 @@ export async function getCommitSha(user, repoOwner, repoName, currentBranch) {
 }
 
 export async function createBlobs(user, repoOwner, repoName, file) {
+  user = localStorage.getItem('authId')
   return pizzly
     .integration("github")
     .auth(user)
@@ -41,6 +43,7 @@ export async function createFileTree(
   lastCommitSha,
   folderTree
 ) {
+  user = localStorage.getItem('authId')
   return pizzly
     .integration("github")
     .auth(user)
@@ -63,6 +66,7 @@ export async function createCommit(
   lastCommitSha,
   treeSha
 ) {
+  user = localStorage.getItem('authId')
   return pizzly
     .integration("github")
     .auth(user)
@@ -88,6 +92,7 @@ export async function pushToGitHub(
   branch,
   newCommitSha
 ) {
+  user = localStorage.getItem('authId')
   return pizzly
     .integration("github")
     .auth(user)
@@ -112,6 +117,7 @@ export async function pushToGitHub(
  * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
  */
 export async function loadRepositoryList(user) {
+  user = localStorage.getItem('authId')
   return pizzly
     .integration("github")
     .auth(user)
@@ -132,6 +138,7 @@ export async function loadRepositoryList(user) {
  * @returns {Promise<object>} where the object has a tree attribute containing an array of all files in the repository
  */
 export async function loadFileTreeOfRepository(repoFullName, branch, user) {
+  user = localStorage.getItem('authId')
   return pizzly
     .integration("github")
     .auth(user)
@@ -152,13 +159,14 @@ export async function loadFileTreeOfRepository(repoFullName, branch, user) {
  * @returns {Promise<object>} where the object has a tree attribute containing an array of all files in the repository  
  */
 export async function loadBranchesName(repoFullName, username, dataAuth) {
+  dataAuth = localStorage.getItem('authId');
   return pizzly
     .integration("github")
     .auth(dataAuth)
     .get("/repos/" + username + "/" + repoFullName + "/branches?per_page=999")
     .then(response => response.json())
     .catch((err) => {
-      console.log(err)
+      console.log(err);
     });
 }
 
@@ -176,6 +184,7 @@ export async function loadBranchesName(repoFullName, username, dataAuth) {
  * @returns {Promise<string>} a promise with the raw content of the specified file
  */
 export async function loadRawFile(repoFullName, branch, filePath, user) {
+  user = localStorage.getItem('authId');
   if (typeof branch !== "string" || typeof branch != "string") {
     console.log(
       "Invalid values for loadContentsForRepository. Given Repository full name: " +
@@ -236,6 +245,7 @@ function decodeUnicode(str) {
  * @returns {Promise<object[]>} an array of repositories
  */
 export async function loadAllRepositoryContent(repoList, user) {
+  user = localStorage.getItem('authId');
   let repoPromises = [];
   let adrPromises = [];
   let repoObjectList = repoList.map((repo) => {
@@ -302,6 +312,7 @@ export async function loadAllRepositoryContent(repoList, user) {
  * @returns {Promise<object[]>} an array of repositories
  */
 export async function loadARepositoryContent(repoFullName, branchName, user) {
+  user = localStorage.getItem('authId');
 
   let repoPromises = []
   let adrPromises = []

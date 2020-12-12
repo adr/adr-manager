@@ -51,9 +51,10 @@
 
 <script>
   import { loadRepositoryList, loadAllRepositoryContent } from "@/plugins/api.js";
+  import { store } from "@/plugins/store.js";
 
   export default {
-    name: 'EditorAddRepositoryDialog',
+    name: 'DialogAddRepositories',
     props: {
       // value is true, iff showDialog == true, iff the dialog is shown. (value-prop enables v-model)
       value: {
@@ -137,7 +138,7 @@
         ).then((repoObjectList) => {
           if (typeof repoObjectList !== "undefined") {
             this.showLoadingOverlay = false;
-            this.$emit('add-repositories', repoObjectList)
+            store.addRepositories(repoObjectList)
 
             this.repositoriesSelected = []
           }
