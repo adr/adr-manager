@@ -176,8 +176,6 @@
           })
       },
       updateBranches(repoName) {
-        this.currentAdr = {};
-
         this.currentRepo = repoName;
         this.loadBranchesName();
       },

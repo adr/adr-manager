@@ -1,22 +1,18 @@
 <template>
-  <v-menu offset-y>
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn class="align-self-center ml-4" dark text v-bind="attrs" v-on="on">
-        Mode
-      </v-btn>
-    </template>
-    <v-list>
-      <v-list-item v-on:click="setMode('basic')">
-        <v-list-item-title>Basic</v-list-item-title>
-      </v-list-item>
-      <v-list-item v-on:click="setMode('advanced')">
-        <v-list-item-title>Advanced</v-list-item-title>
-      </v-list-item>
-      <v-list-item v-on:click="setMode('professional')">
-        <v-list-item-title>Professional</v-list-item-title>
-      </v-list-item>
-    </v-list>
-  </v-menu>
+    <v-tabs v-model="tab" background-color="primary" dark dense class="pl-8 pt-0 mt-0">
+
+      <v-tooltip v-for="item in modes" :key="item.name" open-delay="500" bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-tab text dark v-on:click="setMode(item.name)" v-on="on"
+            v-bind="attrs">
+            {{ item.name }}
+          </v-tab>
+        </template>
+        <span>
+          {{ item.tooltip }}
+        </span>
+      </v-tooltip>
+    </v-tabs>
 </template>
 
 <script>
@@ -27,6 +23,12 @@
     components: {
     },
     data: () => ({
+      tab: 0,
+      modes: [
+        { name: 'basic', tooltip: 'Only show required fields.' },
+        { name: 'advanced', tooltip: 'Show advanced fields.' },
+        { name: 'professional', tooltip: 'Show all fields.' }
+      ]
     }),
     props: {
       consideredOptions: {
@@ -36,10 +38,11 @@
       }
     },
     created() {
+      this.tab = this.modes.findIndex(m => (m.name === store.mode));
     },
     methods: {
       setMode(mode) {
-        store.setMode(mode)
+        store.setMode(mode);
       }
     }
   };

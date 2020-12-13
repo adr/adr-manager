@@ -1,5 +1,5 @@
 <template>
-  <div flat tile v-if="showOptionalFields" dense class="d-flex flex-row flex-wrap mb-6 mx-0 px-0">
+  <div flat tile dense class="d-flex flex-row flex-wrap">
     <div dense class="d-flex  mx-0 px-0">
       <div style="flex-shrink: 0">
         <v-card-title class="py-0">
@@ -60,10 +60,6 @@
       adr: {
         type: ArchitecturalDecisionRecord,
       },
-      showOptionalFields: {
-        type: Boolean,
-        default: true
-      }
     },
     computed: {
       statusSuggestions() {

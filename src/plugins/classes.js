@@ -1,14 +1,13 @@
 
 // MADR-Type Definition
 export class ArchitecturalDecisionRecord {
-  constructor({ id, title, status, deciders,
+  constructor({ title, status, deciders,
     date, technicalStory, contextAndProblemStatement,
     decisionDrivers, consideredOptions,
     decisionOutcome,
     links
   } = {}) {
-    this.id = id || 'Unknown ID'
-    this.title = title || 'Default Title';
+    this.title = title || '';
     this.status = status || '';
     this.deciders = deciders || [];
     this.date = date || '';//new Date().toISOString().substr(0, 10);
@@ -64,4 +63,15 @@ export class ArchitecturalDecisionRecord {
       return el.title.startsWith(title)
     })
   }
+}
+
+export class Repository {
+   constructor ({ fullName, activeBranch, branches, adrs}) {
+    this.fullName = fullName || '';
+    this.activeBranch = activeBranch || '';
+    this.branches = branches || [];
+    this.adrs = adrs || [];
+    this.addedAdrs = [];
+    this.deletedAdrs = [];
+   }
 }

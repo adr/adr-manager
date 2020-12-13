@@ -3,7 +3,7 @@
     <div style="-webkit-flex-grow: 1; flex-grow: 1; position: relative">
       <div style="height: 100%; width: 100%; position: absolute; overflow-y:auto">
         <v-list dense multiple>
-          <v-list-group v-for="(repo, i) in folderStructure" :key="repo.path"
+          <v-list-group v-for="(repo, i) in folderTree" :key="repo.path"
             :prepend-icon="fileTypeIconMapping[repo.fileType]" :value="i === 0" @click="sendRepo(repo)">
             <template v-slot:activator>
               <v-list-item-content>
@@ -21,8 +21,9 @@
             </template>
 
             <!-- sub list containing the ADRs -->
-            <v-list-item-group mandatory>
-              <v-list-item v-for="file in repo.children" :key="file.path" @click="openFileByPath({ path: file.path })">
+            <v-list-item-group mandatory v-model="openAdrPath">
+              <v-list-item v-for="file in repo.children" :key="file.path" @click="openFileByPath({ path: file.path })"
+                :value="file.path">
                 <v-tooltip bottom open-delay="500">
                   <template v-slot:activator="{ on, attrs }">
                     <v-list-item-icon> </v-list-item-icon>
@@ -40,7 +41,7 @@
                     <v-icon>mdi-content-duplicate</v-icon>
                   </v-btn>
 
-                  <DialogDeleteAdr v-bind:adr="{ name: file.name }">
+                  <DialogDeleteAdr :adr="file.adr" :repo="repo.repository">
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn style="width: 30px; min-width: 30px; height: 100%;" class="mx-0 px-0"
                         v-if="file.fileType === 'adr' || file.fileType === 'md'" v-bind="attrs" v-on="on">
@@ -110,7 +111,7 @@
     data: function () {
       return {
         dataAuth: "",
-        openAdrPath: "",
+        // openAdrPath: "",
         userName: this.firstUserName,
         repoName: this.firstRepoName,
         fileTypeIconMapping: {
@@ -134,8 +135,8 @@
       },
       /** Tree structure of the displayed repositories and their contents
        */
-      folderStructure() {
-        return store.addedRepositories.map((repo) => {
+      folderTree() {
+        let folderTree = store.addedRepositories.map((repo) => {
           let fsRepoEntry = {
             name: repo.fullName,
             fullName: repo.fullName,
@@ -163,11 +164,42 @@
               tooltip: adr.path,
             };
           });
+          // Sort ADRs by path
+          fsRepoEntry.children.sort((r1, r2) => {
+            if (r1.path < r2.path) {
+              return -1;
+            }
+            if (r1.path > r2.path) {
+              return 1;
+            }
+            return 0;
+          })
           return fsRepoEntry;
         });
+        // Sort Repositories by fullName
+        folderTree.sort((r1, r2) => {
+          if (r1.fullName < r2.fullName) {
+            return -1;
+          }
+          if (r1.fullName > r2.fullName) {
+            return 1;
+          }
+          return 0;
+        })
+        return folderTree;
       },
+      openAdrPath: {
+        get() {
+          return store.currentRepository.fullName + "/" + store.currentlyEditedAdr.path
+        },
+        set() { }
+      }
     },
-    watch: {},
+    watch: {
+      openAdrPath(newValue) {
+        console.log('adr path', newValue);
+      }
+    },
     mounted() { },
     created() {
       this.dataAuth = this.$route.params.id;
@@ -189,7 +221,7 @@
       },
 
       activeFilePath() {
-        let activeFile = this.folderStructure.reduce((total, repo) => {
+        let activeFile = this.folderTree.reduce((total, repo) => {
           return total.concat(repo.children)
         }, [])
           .find(file => (file.adr === store.currentlyEditedAdr))
@@ -231,7 +263,7 @@
           return;
         }
         console.log("Open file by path: " + path);
-        let file = getFileByPath({ folder: this.folderStructure, path });
+        let file = getFileByPath({ folder: this.folderTree, path });
 
         let indexUserName = path.indexOf("/");
         this.userName = path.slice(0, indexUserName);
@@ -288,9 +320,9 @@
       return;
     }
 
-    let searchedFile = folder ? folder : this.folderStructure;
+    let searchedFile = folder ? folder : this.folderTree;
     if (!searchedFile.path) {
-      searchedFile = searchedFile.find((file) => path.startsWith(file.path)); //= this.folderStructure.find((repo) => (remainingPath.startsWith(repo.name)))
+      searchedFile = searchedFile.find((file) => path.startsWith(file.path)); //= this.folderTree.find((repo) => (remainingPath.startsWith(repo.name)))
     }
 
     let found = false;
