@@ -29,11 +29,7 @@ function snakeCase2naturalCase(snake) {
 * @param {string} snake 
 */
 function naturalCase2snakeCase(natural) {
-  return natural.replace(
-      /([ ][a-z])/g,
-      (group) => group.toLowerCase()
-          .replace(' ', '-')
-  )
+  return natural.toLowerCase().split(' ').join('-');
 }
 
 // API-URLs

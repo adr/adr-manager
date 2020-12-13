@@ -11,7 +11,7 @@
       </v-card-title>
 
       <v-card-text>
-        Are you sure you want to delete '{{ adr.name }}'?
+        Are you sure you want to delete '{{ adr.path }}'?
       </v-card-text>
       <v-divider></v-divider>
 
@@ -29,6 +29,8 @@
 </template>
 
 <script>
+  import { store } from '@/plugins/store'
+
   export default {
     name: 'EditorDeleteAdr',
     props: {
@@ -36,12 +38,15 @@
       value: {
         type: Boolean,
         required: false,
-        default: false,
+        default: false
+      },
+      repo: {
+        type: Object,
+        required: true
       },
       adr: {
         type: Object,
-        required: false,
-        default: () => ({ name: 'ADR-XXXX Add Status Field' }),
+        required: true
       },
     },
     data: () => ({
@@ -54,7 +59,7 @@
     },
     methods: {
       deleteAdr() {
-        console.log('Sorry, I can\'t delete ', this.adr, '. Deleting an ADR is not implemented.')
+        store.deleteAdr(this.adr, this.repo)
         this.showDialog = false
       }
     }

@@ -61,17 +61,6 @@
         type: Boolean,
         required: false,
         default: false,
-      },
-      /**
-       * Array of repos with a 'fullName' attribute that should not be added, e. g. Repos that were added previously.
-       */
-      addedRepos: {
-        type: Array,
-        required: false,
-        default: () => ([]),
-        validator(value) {
-          return value.every((repo) => (repo.fullName))
-        }
       }
     },
     data: () => ({
@@ -85,7 +74,7 @@
     computed: {
       notAddedRepositories() {
         return this.allRepositories.filter(
-          (repo) => !this.addedRepos.map((repo) => (repo.fullName)).includes(repo.full_name)
+          (repo) => !store.addedRepositories.map((repo) => (repo.fullName)).includes(repo.full_name)
         );
       },
       repositoriesDisplayed() {
@@ -142,6 +131,10 @@
 
             this.repositoriesSelected = []
           }
+        }).catch((e) => {
+          alert('Sorry, we couldn\'t load the repositories you requested!');
+          console.log(e);
+          this.showLoadingOverlay = false;
         });
       }
     }

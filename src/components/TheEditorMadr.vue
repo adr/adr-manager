@@ -4,49 +4,43 @@
     <v-sheet class="mx-auto mx-0 my-0 px-0 py-0" style="height: 100%; width:100%;">
 
       <v-container fluid class="mx-auto overflow-y-auto scroll px-8" style="height: 100%;">
-        <!--<NavigatorFab :options="adr.consideredOptions" @scroll-to="scrollTo" v-if="showOptionalFields"/>-->
-
-        <v-card-title class="mx-0 px-0">
+        <v-card-title class="mx-0 px-0 mb-0 pb-0">
           <v-text-field filled label="Title"
             hint="Changing this field, changes the file name. Do not use special characters." v-model="adr.title"
-            @input="$emit('input', adr)"></v-text-field>
+            @input="$emit('input', adr)" />
         </v-card-title>
-        <StatusDateDecidersStory v-bind:adr="adr" v-bind:showOptionalFields="showOptionalFields"
-          @input="$emit('input', adr)" v-if="mode !== 'basic'"></StatusDateDecidersStory>
 
-        <v-divider class="my-8"></v-divider>
+        <StatusDateDecidersStory v-if="mode !== 'basic'" v-bind:adr="adr" @input="$emit('input', adr)" />
+
+        <v-divider class="my-8" />
+
         <h3 class="mt-8">Context and Problem Statement</h3>
         <v-card flat class="mb-8">
           <codemirror v-model="adr.contextAndProblemStatement"
-            @input="(val) => { adr.contextAndProblemStatement = val; $emit('input', adr) }"></codemirror>
+            @input="(val) => { adr.contextAndProblemStatement = val; $emit('input', adr) }" />
         </v-card>
 
 
-        <div v-if="showOptionalFields">
-          <v-divider class="my-8"></v-divider>
+        <div v-if="mode === 'professional'">
+          <v-divider class="my-8" />
           <h3>Decision Drivers</h3>
           <GenericList :list="adr.decisionDrivers" />
         </div>
 
-        <v-divider class="my-8"></v-divider>
+        <v-divider class="my-8" />
 
-        <ConsideredOptions :adr="adr" :mode="mode" @scroll-to="scrollTo" @input="$emit('input', adr)">
-        </ConsideredOptions>
+        <ConsideredOptions :adr="adr" :mode="mode" @scroll-to="scrollTo" @input="$emit('input', adr)" />
 
+        <v-divider class="my-8" />
+        <DecisionOutcome :adr="adr" :mode="mode" @input="$emit('input', adr)" />
 
-        <v-divider class="my-8"></v-divider>
-        <DecisionOutcome :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)">
-        </DecisionOutcome>
-
-
-        <!--<ProsAndConsOfOptions :adr="adr" :showOptionalFields="showOptionalFields" @input="$emit('input', adr)" class="my-8"></ProsAndConsOfOptions>-->
-
-
-        <div v-if="showOptionalFields">
-          <v-divider class="my-8"></v-divider>
+        <div v-if="mode === 'professional'">
+          <v-divider class="my-8" />
           <h3>Links</h3>
-          <GenericList :list="adr.links" class="mb-16" />
+          <GenericList :list="adr.links" />
         </div>
+
+        <div class="my-16"></div>
       </v-container>
     </v-sheet>
   </v-container>
@@ -84,9 +78,6 @@
       adr: {},
     }),
     computed: {
-      showOptionalFields() {
-        return this.mode !== 'basic'
-      },
       mode() {
         return store.mode
       }
@@ -104,7 +95,6 @@
     },
     created() {
       this.adr = this.value;
-      store.$on('set-mode', (mode) => { this.mode = mode });
     },
     methods: {
       scrollTo(target) {
