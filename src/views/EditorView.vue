@@ -76,6 +76,7 @@
     },
     data: () => ({
       selected: "",
+      oldSelected: "",
       branchesName: [],
       dataAuth: "",
       nameAdr: "",
@@ -127,10 +128,12 @@
         }
       },
       setActiveBranch(activeBranch) {
+        this.oldSelected = this.selected;
         this.selected = activeBranch;
       },
       onSelectedBranch(){
         this.$confirm("Do you really want to change branch?").then(() => {
+          console.log("ACTIVEBRANCH ON SELECT ", this.selected);
           loadARepositoryContent(this.currentRepo, this.selected, this.dataAuth)
           .then((repoObjectList) => {
           if (typeof repoObjectList !== "undefined") {
@@ -139,6 +142,9 @@
           }
         });
         }).catch(() => {
+          this.selected = this.oldSelected;
+          console.log("ACTIVEBRANCH ", this.selected);
+          
           console.log("Action cancelled");
         });
       },
