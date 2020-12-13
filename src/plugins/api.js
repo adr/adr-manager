@@ -88,7 +88,7 @@ export async function loadRawFile(repoFullName, branch, filePath, user) {
     return pizzly
       .integration("github")
       .auth(user)
-      .get("/repos/" + repoFullName + "/contents/" + filePath)
+      .get("/repos/" + repoFullName + "/contents/" + filePath + "?ref=" + branch)
       .then(response => response.json())
       .then(response => decodeUnicode(response.content))
       .catch((err) => {
@@ -222,7 +222,8 @@ export async function loadARepositoryContent(repoFullName, branchName, user) {
             loadRawFile(repoFullName, branchName, adr.path, user, pizzly)
               .then((rawMd) => {
                 adrObject.originalMd = rawMd;
-                adrObject.editedMd = rawMd
+                adrObject.editedMd = rawMd;
+                
               })
           )
         })
