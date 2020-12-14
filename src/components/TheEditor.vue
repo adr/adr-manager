@@ -65,7 +65,8 @@
 
 <script>
   import _ from 'lodash'
-  import { md2adr, adr2md, ArchitecturalDecisionRecord } from '@/plugins/utilities'
+  import { ArchitecturalDecisionRecord } from '@/plugins/classes'
+  import { md2adr, adr2md } from '@/plugins/parser'
 
   import { Splitpanes, Pane } from 'splitpanes'
   import 'splitpanes/dist/splitpanes.css'

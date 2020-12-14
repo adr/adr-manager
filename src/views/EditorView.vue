@@ -1,6 +1,8 @@
 <template>
   <v-card class="editor text-center mx-auto d-flex flex-column" height="100%">
-    <v-toolbar dense color="primary" dark style="-webkit-flex: 0; flex: 0;">
+    <v-toolbar dense
+               color="primary"
+               dark style="-webkit-flex: 0; flex: 0;">
       <v-btn class="align-self-center" to="/">Log Out</v-btn>
       <!--<ToolbarMenuFile v-on:commit="logNotImplemented"
                  v-on:create-adr="createNewAdr"
@@ -52,7 +54,8 @@
 
 <script>
   // @ is an alias to /src
-  import { adr2md, ArchitecturalDecisionRecord } from "@/plugins/utilities";
+  import { adr2md } from "@/plugins/parser";
+  import { ArchitecturalDecisionRecord } from "@/plugins/classes";
   import DialogAddRepositories from "@/components/DialogAddRepositories.vue";
   import { loadBranchesName, loadARepositoryContent } from "@/plugins/api.js";
 
@@ -133,7 +136,6 @@
       },
       onSelectedBranch(){
         this.$confirm("Do you really want to change branch?").then(() => {
-          console.log("ACTIVEBRANCH ON SELECT ", this.selected);
           loadARepositoryContent(this.currentRepo, this.selected, this.dataAuth)
           .then((repoObjectList) => {
           if (typeof repoObjectList !== "undefined") {
@@ -143,9 +145,6 @@
         });
         }).catch(() => {
           this.selected = this.oldSelected;
-          console.log("ACTIVEBRANCH ", this.selected);
-          
-          console.log("Action cancelled");
         });
       },
       loadBranchesName() {

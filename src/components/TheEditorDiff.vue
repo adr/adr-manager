@@ -1,37 +1,32 @@
 ﻿<template>
   <v-card fluid class="editor text-left d-flex flex-column px-0 pb-2" id="editor-madr" style="height: 100%">
-  <v-card-title> Sorry, we have parsing trouble. </v-card-title>
-  <div>
-    If you want to use the MADR-Editor, our parser will generate the markdown on the right-hand side.
-    You can edit your raw Markdown to make sure that no important content is lost while parsing. <br />
-    Note, that we only support MADRs matching the template at
-    <a href="https://github.com/adr/madr/blob/master/template/template.md" target="_blank">
-      https://github.com/adr/madr/blob/master/template/template.md
-    </a>
-  </div>
+    <v-card-title> Sorry, we have parsing trouble. </v-card-title>
+    <div>
+      If you want to use the MADR-Editor, our parser will generate the markdown on the right-hand side.
+      You can edit your raw Markdown to make sure that no important content is lost while parsing. <br />
+      Note, that we only support MADRs matching the template at
+      <a href="https://github.com/adr/madr/blob/master/template/template.md" target="_blank">
+        https://github.com/adr/madr/blob/master/template/template.md
+      </a>
+    </div>
 
-      <div class="d-flex text-center">
-        <h5 class="flex-grow-1 text-center">Your ADR</h5>
-        <h5 class="flex-grow-1 text-center">Result</h5>
-      </div>
-      <div class="flex-grow-1 overflow-auto">
-        <codemirror ref="compare"
-                    class="flex-grow-1"
-                    v-model="mergeMd"
-                    :merge="true"
-                    :options="cmOption"
-                    @scroll="onCmScroll"
-                    v-observe-visibility="visibilityChanged"></codemirror>
-                    
-      </div>
+    <div class="d-flex text-center">
+      <h5 class="flex-grow-1 text-center">Your ADR</h5>
+      <h5 class="flex-grow-1 text-center">Result</h5>
+    </div>
+    <div class="flex-grow-1 overflow-auto">
+      <codemirror ref="compare" class="flex-grow-1" v-model="mergeMd" :merge="true" :options="cmOption"
+        @scroll="onCmScroll" v-observe-visibility="visibilityChanged"></codemirror>
 
-      <v-btn color="success" @click="accept">Accept</v-btn>
-</v-card>
+    </div>
+
+    <v-btn color="success" @click="accept">Accept</v-btn>
+  </v-card>
 </template>
 
 <script>
   // require component
-  import { adr2md, md2adr } from '@/plugins/utilities.js'
+  import { adr2md, md2adr } from '@/plugins/parser.js'
   import _ from 'lodash'
 
   // require component
@@ -123,7 +118,8 @@
 
 
 <style>
-  .CodeMirror-merge, .CodeMirror-merge .CodeMirror {
+  .CodeMirror-merge,
+  .CodeMirror-merge .CodeMirror {
     height: auto;
     min-height: 100px;
     /*border-bottom: none;*/
