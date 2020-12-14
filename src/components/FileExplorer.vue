@@ -28,7 +28,8 @@
 
                     <v-list-item-icon> </v-list-item-icon>
                     <v-list-item-content v-bind="attrs" v-on="on">
-                      <v-list-item-title v-text="file.name + (file.adr.originalMd !== file.adr.editedMd ? '*' : '')"></v-list-item-title>
+                      <v-list-item-title v-text="file.name + (file.adr.originalMd !== file.adr.editedMd ? '*' : '')">
+                      </v-list-item-title>
                     </v-list-item-content>
 
                   </template>

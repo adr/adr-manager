@@ -1,12 +1,11 @@
 <template>
   <div>
-    <v-btn @click.prevent="connect">Connect to GitHub </v-btn>
+    <v-btn @click.prevent="connect">Connect to GitHub</v-btn>
   </div>
 </template>
+
 <script>
 import Pizzly from "pizzly-js";
-
-
 
 export default {
   name: "connectGitHub",

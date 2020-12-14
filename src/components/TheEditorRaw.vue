@@ -1,8 +1,7 @@
 <template>
   <v-card class="text-left overflow-y-auto" height="100%">
-    <codemirror v-model="rawMd" @input="update"
-                :options="cmOptions"
-                ref="cm" v-observe-visibility="visibilityChanged"></codemirror>
+    <codemirror v-model="rawMd" @input="update" :options="cmOptions" ref="cm" v-observe-visibility="visibilityChanged">
+    </codemirror>
   </v-card>
 </template>
 
@@ -53,7 +52,7 @@
       }, 300),
       /** Refresh code mirror, when it becomes visible, to avoid anomalies.
        */
-       visibilityChanged(isVisible) {
+      visibilityChanged(isVisible) {
         if (isVisible) {
           this.codemirror.refresh()
         }
@@ -66,6 +65,7 @@
   .CodeMirror {
     height: auto;
   }
+
   textarea {
     font-family: "Monaco", courier, monospace;
     padding: 20px;

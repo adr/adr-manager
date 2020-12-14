@@ -14,7 +14,7 @@
 
     <!-- last item with '+'-Button -->
     <v-list-item dense class="align-self-center mx-0 px-0" :key="list.length">
-      <codemirror v-model="lastItem" :color="cmColor"></codemirror>
+      <codemirror v-model="lastItem" :color="cmColor" @blur="addItemIfNotEmpty"></codemirror>
 
       <!-- Show the add icon next to the last. -->
       <v-list-item-icon class="align-center flex-shrink-0">
@@ -46,13 +46,18 @@
     data: () => ({
       lastItem: ''
     }),
-    watch: { },
+    watch: {},
     mounted() {
     },
     methods: {
+      addItemIfNotEmpty() {
+        if (this.lastItem.trim() !== '') {
+          this.addItem()
+        }
+      },
       addItem() {
-        this.list.push(this.lastItem); 
-        this.lastItem = ''; 
+        this.list.push(this.lastItem);
+        this.lastItem = '';
         this.$emit('input', this.list)
       }
     }
