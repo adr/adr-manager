@@ -199,9 +199,9 @@ export async function loadRawFile(repoFullName, branch, filePath, user) {
     return pizzly
       .integration("github")
       .auth(user)
-      .get("/repos/" + repoFullName + "/contents/" + filePath)
-      .then((response) => response.json())
-      .then((response) => decodeUnicode(response.content))
+      .get("/repos/" + repoFullName + "/contents/" + filePath + "?ref=" + branch)
+      .then(response => response.json())
+      .then(response => decodeUnicode(response.content))
       .catch((err) => {
         console.log(err);
       });
@@ -228,19 +228,6 @@ function decodeUnicode(str) {
 
 /** Loads the content of all repositories.
  *
- * Each array entry is one repository with the following json-structure
- * {
- *  fullName: String,
- *  activeBranch: String,
- *  adrs: Array[ADR]
- * }
- * where an ADR has the structure
- * {
- *  path: String,
- *  originalMd: String,
- *  editedMd: String
- * }
- *
  * @param {object[]} repoList - each array entry must have the attributes fullName and branch
  * @param {string} user - the authID of user'
  * @returns {Promise<Repository[]>} an array of repositories
@@ -258,20 +245,7 @@ export async function loadAllRepositoryContent(repoList, user) {
   return repoObjectList;
 }
 
-/** Loads the content of all repositories.
- * 
- * Each array entry is one repository with the following json-structure
- * {
- *  fullName: String,
- *  activeBranch: String,
- *  adrs: Array[ADR]
- * }
- * where an ADR has the structure
- * {
- *  path: String,
- *  originalMd: String,
- *  editedMd: String
- * }
+/** Loads the content of one repositories.
  * 
  * @param {object[]} repoList - each array entry must have the attributes fullName and branch
  * @param {string} user - the authID of user'
@@ -286,17 +260,16 @@ export async function loadARepositoryContent(repoFullName, branchName, user) {
     fullName: repoFullName,
     activeBranch: branchName,
     adrs: []
-  })
+  });
 
   repoPromises.push(loadFileTreeOfRepository(repoFullName, branchName, user)
     .then((data) => {
       // Find all files in the folder 'docs/adr' or 'doc/adr'
       let adrList = data.tree.filter((file) => {
-        return file.path.startsWith('docs/adr/') || file.path.startsWith('doc/adr/'); // Allow docs/adr and doc/adr as path .. maybe change this to demand mutual exclusion.
+        return file.path.startsWith('docs/adr/') || file.path.startsWith('doc/adr/') // Allow docs/adr and doc/adr as path .. maybe change this to demand mutual exclusion.
       })
-      console.log('adrList', adrList);
+      console.log('adrList', adrList)
 
-      
       // Load the content of each ADR.
       adrList.forEach((adr) => {
         let id = Number(adr.path.split('/').pop().split('-')[0]);
@@ -307,18 +280,19 @@ export async function loadARepositoryContent(repoFullName, branchName, user) {
           path: adr.path,
           id: id
         }
-        repoObject.adrs.push(adrObject);
+        repoObject.adrs.push(adrObject)
         adrPromises.push(
           loadRawFile(repoFullName, branchName, adr.path, user, pizzly)
             .then((rawMd) => {
               adrObject.originalMd = rawMd;
-              adrObject.editedMd = rawMd
+              adrObject.editedMd = rawMd;
+
             })
-        );
-      })
-      console.log('adrList', repoObject.adrs);
+        )
+      });
+      console.log('adrList', repoObject.adrs)
     })
-  )
+  );
   await Promise.all(repoPromises); // Wait until all file trees are loaded.
   await Promise.all(adrPromises); // Wait until all raw contents are loaded.
   return repoObject;

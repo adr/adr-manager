@@ -84,6 +84,7 @@
     },
     data: () => ({
       selected: "",
+      oldSelected: "",
       branchesName: [],
       nameAdr: "",
       addedRepositories: [],
@@ -134,6 +135,7 @@
       },
       setActiveBranch(activeBranch) {
         store.setActiveBranch(activeBranch);
+        this.oldSelected = this.selected;
         this.selected = activeBranch;
       },
       onSelectedBranch() {
@@ -145,7 +147,8 @@
               }
             });
         }).catch(() => {
-          console.log("Action cancelled");
+          this.selected = this.oldSelected;
+          store.setActiveBranch(this.oldSelected);
         });
       },
       loadBranchesName() {
