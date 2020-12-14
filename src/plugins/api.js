@@ -292,29 +292,34 @@ export async function loadARepositoryContent(repoFullName, branchName, user) {
     .then((data) => {
       // Find all files in the folder 'docs/adr' or 'doc/adr'
       let adrList = data.tree.filter((file) => {
-        return file.path.startsWith('docs/adr/') || file.path.startsWith('doc/adr/') // Allow docs/adr and doc/adr as path .. maybe change this to demand mutual exclusion.
+        return file.path.startsWith('docs/adr/') || file.path.startsWith('doc/adr/'); // Allow docs/adr and doc/adr as path .. maybe change this to demand mutual exclusion.
       })
       console.log('adrList', adrList);
 
+      
       // Load the content of each ADR.
       adrList.forEach((adr) => {
+        let id = Number(adr.path.split('/').pop().split('-')[0]);
+        if (isNaN(id)) {
+          id = -1;
+        }
         let adrObject = {
           path: adr.path,
-          id: Number(adr.path.split('/').pop().split('-')[0])
+          id: id
         }
-        repoObject.adrs.push(adrObject)
+        repoObject.adrs.push(adrObject);
         adrPromises.push(
           loadRawFile(repoFullName, branchName, adr.path, user, pizzly)
             .then((rawMd) => {
               adrObject.originalMd = rawMd;
               adrObject.editedMd = rawMd
             })
-        )
+        );
       })
-      console.log('adrList', repoObject.adrs)
+      console.log('adrList', repoObject.adrs);
     })
   )
-  await Promise.all(repoPromises) // Wait until all file trees are loaded.
-  await Promise.all(adrPromises) // Wait until all raw contents are loaded.
-  return repoObject
+  await Promise.all(repoPromises); // Wait until all file trees are loaded.
+  await Promise.all(adrPromises); // Wait until all raw contents are loaded.
+  return repoObject;
 }

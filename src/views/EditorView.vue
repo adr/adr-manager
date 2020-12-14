@@ -23,7 +23,6 @@
 
           <FileExplorer v-bind:user="userName" v-bind:firstUserName="firstUserName" v-bind:firstRepoName="firstRepoName"
             v-bind:editedADR="editedADR" v-bind:added-repositories="addedRepositories"
-            v-on:add-repositories="addRepositories"
             v-on:file-path="setFilePath" v-on:active-branch="setActiveBranch" v-on:repo-name="updateBranches" />
 
         </pane>
@@ -132,16 +131,6 @@
       },
       setADRFile(adr) {
         this.editedADR = adr;
-      },
-      /** Adds the repositories to the added repositories.
-       * If no ADR is currently edited, open one.
-       * @param {object[]} repoList - a list of repositories 
-       */
-      addRepositories(repoList) {
-        this.addedRepositories = this.addedRepositories.concat(repoList);
-        if (!this.currentAdr.editedMd) {
-          this.openAnyAdr();
-        }
       },
       setActiveBranch(activeBranch) {
         store.setActiveBranch(activeBranch);
