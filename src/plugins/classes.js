@@ -9,15 +9,16 @@ export class ArchitecturalDecisionRecord {
   } = {}) {
     this.title = title || '';
     this.status = status || '';
-    this.deciders = deciders || [];
+    this.deciders = deciders || '';
     this.date = date || '';//new Date().toISOString().substr(0, 10);
     this.technicalStory = technicalStory || '';
     this.contextAndProblemStatement = contextAndProblemStatement || '';
     this.decisionDrivers = decisionDrivers || [];
-    this.consideredOptions = []
+    this.consideredOptions = [];
     if (consideredOptions && consideredOptions.length > 0) {
-      consideredOptions.forEach(function (opt) { this.addOption(opt) })
+      consideredOptions.forEach(function (opt) { this.addOption(opt) });
     }
+    this.highestOptionId = 0;
     this.decisionOutcome = decisionOutcome || {
       chosenOption: '',
       explanation: '',
@@ -47,7 +48,8 @@ export class ArchitecturalDecisionRecord {
    *  optionData - an object with optional attributes title, description, pros, cons  
    */
   addOption({ title, description, pros, cons } = {}) {
-    let id = this.consideredOptions.length
+    let id = this.highestOptionId
+    this.highestOptionId = this.highestOptionId + 1
     let newOpt = {
       title: title || '',
       description: description || '',

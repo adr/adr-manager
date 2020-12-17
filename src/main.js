@@ -7,9 +7,12 @@ import VueSimpleAlert from "vue-simple-alert";
 
 import router from './router'
 
-/* Needed to refresh the code mirror, when it becomes visible. */
+/* Needed to refresh the code mirror, when it becomes visible or is resized. */
 import { ObserveVisibility } from 'vue-observe-visibility'
 Vue.directive('observe-visibility', ObserveVisibility)
+import resize from "vue-element-resize-detector";
+Vue.use(resize)
+
 Vue.use(VueSimpleAlert);
 Vue.config.productionTip = false;
 

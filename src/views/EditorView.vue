@@ -1,7 +1,7 @@
 <template>
   <v-card class="editor text-center mx-auto d-flex flex-column" height="100%">
     <v-toolbar dense color="primary" dark style="-webkit-flex: 0; flex: 0;">
-      <v-btn class="align-self-center" to="/">Log Out</v-btn>
+      <v-btn class="align-self-center" @click="logOut">Log Out</v-btn>
       <ToolbarMenuMode />
       <v-spacer></v-spacer>
     </v-toolbar>
@@ -22,15 +22,15 @@
         <pane size="30%" class="d-flex flex-column" style="-webkit-flex-grow: 1; flex-grow: 1; position: relative;">
 
           <FileExplorer v-bind:user="userName" v-bind:firstUserName="firstUserName" v-bind:firstRepoName="firstRepoName"
-            v-bind:editedADR="editedADR" v-bind:added-repositories="addedRepositories"
-            v-on:file-path="setFilePath" v-on:active-branch="setActiveBranch" v-on:repo-name="updateBranches" />
+            v-bind:editedADR="editedADR" v-on:file-path="setFilePath" v-on:active-branch="setActiveBranch"
+            v-on:repo-name="updateBranches" />
 
         </pane>
         <!--end File Explorer Pane -->
 
         <pane>
           <Editor v-if="showEditor" style="height: 100%;" v-bind:filePath="filePath"
-            v-on:adr-file="setADRFile"/>
+            v-on:adr-file="setADRFile" />
         </pane>
       </splitpanes>
     </v-card-text>
@@ -72,7 +72,7 @@
       DialogAddRepositories
     },
     props: {
-      repoFullName : { // the path of the current adr
+      repoFullName: { // the path of the current adr
         type: String
       },
       adr: { // the name of the current adr, e. g. 0001-some-name.md
@@ -80,14 +80,13 @@
       },
       branch: {
         type: String
-      } 
+      }
     },
     data: () => ({
       selected: "",
       oldSelected: "",
       branchesName: [],
       nameAdr: "",
-      addedRepositories: [],
       currentRepo: "",
       initialEditedMd: undefined, // Change this for opening an ADR in the editor.
       userName: "adr",
@@ -115,9 +114,6 @@
       }
     },
     watch: {
-      addedRepositories(newValue) {
-        localStorage.setItem('addedRepositories', JSON.stringify(newValue));
-      },
       adr(newValue) {
         store.openAdrBy(this.repoFullName, newValue);
       }
@@ -156,20 +152,26 @@
           this.currentRepo.split("/")[1],
           this.currentRepo.split("/")[0],
           this.dataAuth
-          ).then((branchesObjectList) => {
-            let x = branchesObjectList.map((branches) => ({
-              brancheName: branches.name
-            }));
-            this.branchesName = [];
-            let i = "";
-            for (i = 0; i < x.length; i++) {
-              this.branchesName.push(x[i].brancheName);
-            }
-          })
+        ).then((branchesObjectList) => {
+          let x = branchesObjectList.map((branches) => ({
+            brancheName: branches.name
+          }));
+          this.branchesName = [];
+          let i = "";
+          for (i = 0; i < x.length; i++) {
+            this.branchesName.push(x[i].brancheName);
+          }
+        })
       },
       updateBranches(repoName) {
         this.currentRepo = repoName;
         this.loadBranchesName();
+      },
+
+      logOut() {
+        console.log('Logging out!');
+        localStorage.removeItem('authId');
+        this.$router.push('/');
       },
       logNotImplemented() {
         console.log("Not implemented.");

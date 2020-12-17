@@ -45,12 +45,6 @@
 
     <v-toolbar dense class="my-0 py-0">
       <v-tabs v-model="tab" background-color="primary" dark dense class="pt-0 mt-0 align-self-end">
-        <!--<v-checkbox v-if="tab !== 'Markdown Preview'"
-              v-model="alwaysShowMarkdownPreview"
-              class="align-self-center mx-4"
-              label="Show Markdown Preview">
-        </v-checkbox>-->
-
         <v-spacer></v-spacer>
         <v-tab v-for="(item, i) in displayedTabs" :key="i" :href="'#' + item">
           {{ item }}
@@ -82,7 +76,7 @@
       EditorMadr,
       EditorDiff,
       EditorRaw,
-      MarkdownPreview,
+      MarkdownPreview
     },
     props: {
       filePath: String,
@@ -122,6 +116,11 @@
         this.dValue = adr2md(this.adr)
       }
       store.$on('open-adr', this.openAdrFile)
+    },
+    
+    update() {
+      console.log('Update Editor.')
+      this.$mount();
     },
 
     watch: {

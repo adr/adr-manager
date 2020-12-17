@@ -97,7 +97,7 @@
       </div>
 
       <!-- Last Item with '+'-Button -->
-      <v-card class="my-1" flat :key="adr.consideredOptions.length">
+      <v-card class="my-1" flat :key="-1">
         <v-card flat class="d-flex">
           <v-card flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0" style="width: 64px; min-width:50px">
           </v-card>
