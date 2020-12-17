@@ -7,8 +7,10 @@
         :items="adr.consideredOptions.map((opt) => { return opt.title })" label="Chosen option"></v-combobox>
     </v-card>
     <div class="d-flex">
-      <v-card-title class="mt-0 pt-0 flex-grow-0 flex-shrink-0 align-baseline">because</v-card-title>
-      <codemirror class="mx-0 flex-grow-1" v-model="adr.decisionOutcome.explanation"></codemirror>
+      <v-card-title class="py-0 pl-0 flex-grow-0 flex-shrink-0 align-baseline">because</v-card-title>
+      <div class="mx-0 flex-grow-1 align-baseline">
+        <codemirror v-model="adr.decisionOutcome.explanation"></codemirror>
+      </div>
     </diV>
     <!--<v-textarea dense auto-grow rows="1" v-model="adr.decisionOutcome.explanation"></v-textarea>-->
 

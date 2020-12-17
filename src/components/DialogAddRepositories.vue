@@ -11,14 +11,14 @@
     <v-card class="d-flex flex-column">
       <v-card-title class="headline grey lighten-2">
         Add Repositories
+        <v-text-field v-model="searchText" class="pl-8 pr-4 pt-0 mt-0" hide-details clearable append-icon="mdi-magnify" placeholder="Search..." />
       </v-card-title>
-
       <v-card-text class="my-0">
         <v-list>
           <v-list-item-group v-model="repositoriesSelected" multiple>
 
             <v-list-item v-for="(item, index) in repositoriesDisplayed" class="my-0 py-0" :key="`item-${index}`"
-              :value="item">
+              :value="item" v-show="item.name.includes(searchText ? searchText.trim() : '')">
               <template v-slot:default="{ active }">
 
                 <v-list-item-content class="my-0 py-0">
@@ -64,12 +64,12 @@
       }
     },
     data: () => ({
-      dataAuth: "",
       showDialog: false, // Initial value is set by value-prob
       repositoriesSelected: [],
       allRepositories: [], // A list containing all repositories  (Raw Data fetched from GitHub)
       showLoadingOverlay: false,
       listHeight: 700,
+      searchText: ""
     }),
     computed: {
       notAddedRepositories() {
@@ -90,9 +90,8 @@
       }
     },
     mounted() {
-      this.dataAuth = this.$route.params.id;
       this.showDialog = this.value;
-      this.loadRepositoryList();
+      this.loadRepositoryList()
     },
     methods: {
 

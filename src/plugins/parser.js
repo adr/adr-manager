@@ -123,7 +123,7 @@ class MADRGenerator extends MADRListener {
         }, this);
         if (opt) { // If a fitting option was found, return it.
             return opt;
-        } 
+        }
         // Else check if there is another (less) similar title.
         opt = this.adr.consideredOptions.find(function (opt) {
             return this.matchOptionTitleMoreRelaxed(opt.title, optTitle)
@@ -201,15 +201,20 @@ export function md2adr(md) {
 
 export function adr2md(adr) {
     var md = '# ' + adr.title + '\n'
-    if (adr.status !== '' && adr.status !== 'null') {
-        md = md.concat('\n* Status: ' + adr.status)
+
+    if ((adr.status !== '' && adr.status !== 'null') || adr.deciders.length > 0 || adr.date !== '') {
+        if (adr.status !== '' && adr.status !== 'null') {
+            md = md.concat('\n* Status: ' + adr.status)
+        }
+        if (adr.deciders.length > 0) {
+            md = md.concat('\n* Deciders: ' + adr.deciders)
+        }
+        if (adr.date !== '') {
+            md = md.concat('\n* Date: ' + adr.date)
+        }
+        md = md.concat('\n')
     }
-    if (adr.deciders.length > 0) {
-        md = md.concat('\n* Deciders: ' + adr.deciders)
-    }
-    if (adr.date !== '') {
-        md = md.concat('\n* Date: ' + adr.date + '\n')
-    }
+
     if (adr.technicalStory !== '') {
         md = md.concat('\nTechnical Story: ' + adr.technicalStory + '\n')
     }

@@ -19,6 +19,7 @@
         "vue": "^2.6.11",
         "vue-codemirror": "^4.0.6",
         "vue-easy-dnd": "^1.10.2",
+        "vue-element-resize-detector": "^1.0.6",
         "vue-observe-visibility": "^0.4.6",
         "vue-resource": "^1.5.1",
         "vue-router": "^3.4.8",

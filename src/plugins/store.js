@@ -77,7 +77,7 @@ export const store = new Vue({
          * @param {object} repoToRemove 
          */
         removeRepository(repoToRemove) {
-            this.addedRepositories = this.addedRepositories.filter((repo) => (repo.fullName !== repoToRemove.fullName))
+            this.addedRepositories = this.addedRepositories.filter((repo) => (repo.fullName !== repoToRemove.fullName));
             this.assertSomeAdrIsOpened();
             this.updateLocalStorageRepositories();
         },
@@ -193,7 +193,6 @@ export const store = new Vue({
             this.currentlyEditedAdr.editedMd = md;
             
             /* Update the path of the file for now only for newly added files*/
-            console.log('Update current Markdown in Store.');
             if (this.currentRepository && this.currentRepository.addedAdrs && this.currentRepository.addedAdrs.includes(this.currentlyEditedAdr)) {
                 let path = this.currentlyEditedAdr.path.split('/');
                 let title = md.split('\n')[0].replace(/^#+/, '').trim();
@@ -239,13 +238,12 @@ export const store = new Vue({
          * @param {object} repo 
          */
         deleteAdr(adr, repo) {
-            console.log('Deleting requested!', adr, repo);
             let adrIndex = repo.adrs.findIndex(adrEl => (adrEl == adr));
-            console.log(adrIndex);
             if (!repo.deletedAdrs) {
                 repo.deletedAdrs = [];
             }
             repo.deletedAdrs.concat(repo.adrs.splice(adrIndex, 1));
+            this.assertSomeAdrIsOpened();
         },
 
         /**Sets the current mode and emits the 'set-mode' event.

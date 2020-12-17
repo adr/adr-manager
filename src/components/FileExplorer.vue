@@ -61,6 +61,8 @@
             </v-list-item-group>
           </v-list-group>
         </v-list>
+        <!-- Some vertical space at the end -->
+        <div class="my-16"></div>
       </div>
     </div>
     <!-- Bottom Buttons for adding a repository and commiting -->
@@ -97,16 +99,12 @@
       DialogAddRepositories,
       DialogRemoveRepository,
       DialogCommit,
-      DialogDeleteAdr,
+      DialogDeleteAdr
     },
     props: {
       user: String,
       firstUserName: String,
-      firstRepoName: String,
-      addedRepositories: {
-        type: Array,
-        required: true,
-      },
+      firstRepoName: String
     },
     data: function () {
       return {
@@ -126,13 +124,10 @@
           repo: "mdi-folder-star",
           folder: "mdi-folder",
         },
-        listFilesChanged: {},
+        listFilesChanged: {}
       };
     },
     computed: {
-      addedRepoFullNames() {
-        return this.addedRepositories.map((repository) => repository.fullName);
-      },
       /** Tree structure of the displayed repositories and their contents
        */
       folderTree() {
@@ -173,7 +168,7 @@
               return 1;
             }
             return 0;
-          })
+          });
           return fsRepoEntry;
         });
         // Sort Repositories by fullName
@@ -185,21 +180,17 @@
             return 1;
           }
           return 0;
-        })
+        });
         return folderTree;
       },
       openAdrPath: {
         get() {
-          return store.currentRepository.fullName + "/" + store.currentlyEditedAdr.path
+          return store.currentRepository.fullName + "/" + store.currentlyEditedAdr.path;
         },
         set() { }
       }
     },
-    watch: {
-      openAdrPath(newValue) {
-        console.log('adr path', newValue);
-      }
-    },
+    watch: {},
     mounted() { },
     created() {
       this.dataAuth = this.$route.params.id;
@@ -213,7 +204,7 @@
           this.listFilesChanged[file.path] = {
             title: file.name,
             value: file.adr.editedMd,
-            path: file.path,
+            path: file.path
           };
           return file.name + "*";
         }
@@ -223,20 +214,19 @@
       activeFilePath() {
         let activeFile = this.folderTree.reduce((total, repo) => {
           return total.concat(repo.children)
-        }, [])
-          .find(file => (file.adr === store.currentlyEditedAdr))
+        }, []).find(file => (file.adr === store.currentlyEditedAdr));
         if (activeFile) {
-          return activeFile.path
+          return activeFile.path;
         } else {
-          return ''
+          return "";
         }
       },
 
       /**
-       * @param {object} repo - the repo object (with attributes 'fullName', 'activeBranch' and 'adrs)
+       * @param {object} repo - the repo object (with attributes 'fullName', 'activeBranch' and 'adrs')
        */
       removeRepository(repo) {
-        store.removeRepository(repo)
+        store.removeRepository(repo);
       },
 
       sendRepo(repo) {
@@ -283,11 +273,11 @@
           this.$router.push({
             params: { // Opening a file is done via routing (EditorVie.vue will open the ADR based on route params)
               ...this.$route.params,
-              organization: file.path.split('/')[0],
-              repo: file.path.split('/')[1],
-              adr: file.adr.path.split('/').pop()
+              organization: file.path.split("/")[0],
+              repo: file.path.split("/")[1],
+              adr: file.adr.path.split("/").pop()
             }
-          })
+          });
         } else {
           console.log("Open File Failed :(");
         }
@@ -298,17 +288,17 @@
        * @param {object} repository - the repository to which the new adr is added. 
        */
       createNewAdr({ repository }) {
-        let newAdr = store.createNewAdr(repository.repository)
+        let newAdr = store.createNewAdr(repository.repository);
 
         // Open the new adr.
         this.$router.push({
-          params: { // Opening a file is done via routing (EditorVie.vue will open the ADR based on route params)
+          params: { // Opening a file is done via routing (EditorView.vue will open the ADR based on route params)
             ...this.$route.params,
-            organization: repository.fullName.split('/')[0],
-            repo: repository.fullName.split('/')[1],
-            adr: newAdr.path.split('/').pop()
+            organization: repository.fullName.split("/")[0],
+            repo: repository.fullName.split("/")[1],
+            adr: newAdr.path.split("/").pop()
           }
-        })
+        });
       },
     },
   };
