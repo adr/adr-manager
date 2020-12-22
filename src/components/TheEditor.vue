@@ -79,7 +79,7 @@
       MarkdownPreview
     },
     props: {
-      filePath: String,
+      filePath: String
     },
     data: () => ({
       adr: {},
@@ -87,7 +87,7 @@
       tab: "MADR Editor",
       tabs: ["MADR Editor", "Markdown Preview", "Raw Markdown"],
       alwaysShowMarkdownPreview: false,
-      _,
+      _
     }),
     computed: {
       editingAllowed() {
@@ -105,28 +105,23 @@
           })
           : this.tabs;
         return dTabs;
-      },
+      }
     },
 
     created() {
       if (store.currentlyEditedAdr) {
-        this.openAdrFile(store.currentlyEditedAdr)
+        this.openAdrFile(store.currentlyEditedAdr);
       } else {
-        this.adr = new ArchitecturalDecisionRecord()
-        this.dValue = adr2md(this.adr)
+        this.adr = new ArchitecturalDecisionRecord();
+        this.dValue = adr2md(this.adr);
       }
-      store.$on('open-adr', this.openAdrFile)
-    },
-    
-    update() {
-      console.log('Update Editor.')
-      this.$mount();
+      store.$on("open-adr", this.openAdrFile);
     },
 
     watch: {
       dValue(newValue) {
-        store.updateMdOfCurrentAdr(newValue)
-        this.$emit('input', newValue)
+        store.updateMdOfCurrentAdr(newValue);
+        this.$emit("input", newValue);
       }
     },
     methods: {
@@ -139,15 +134,15 @@
        */
       openAdrFile(adrFile) {
         let md = adrFile.editedMd;
-        this.dValue = md
-        let tmpAdr = md2adr(md)
+        this.dValue = md;
+        let tmpAdr = md2adr(md);
         if (this.dValue === adr2md(tmpAdr)) { // If the parser did a perfect job, update the ADR.
-          this.adr = tmpAdr
-          if (this.tab === 'Convert') {
-            this.tab = 'MADR Editor'
+          this.adr = tmpAdr;
+          if (this.tab === "Convert") {
+            this.tab = "MADR Editor";
           }
-        } else if (this.tab === 'MADR Editor') {  // Else ask the user to review his ADR.
-          this.tab = 'Convert'
+        } else if (this.tab === "MADR Editor") {  // Else ask the user to review his ADR.
+          this.tab = "Convert";
         }
       },
       updateAdrToMd(adr) {

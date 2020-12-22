@@ -1,5 +1,5 @@
 <template>
-    <v-tabs v-model="tab" background-color="primary" dark dense class="pl-8 pt-0 mt-0">
+    <v-tabs v-model="tab" class="pl-8 pt-0 mt-0" align-with-title>
 
       <v-tooltip v-for="item in modes" :key="item.name" open-delay="500" bottom>
         <template v-slot:activator="{ on, attrs }">
@@ -37,10 +37,16 @@
         default: () => ([])
       }
     },
+    computed: {
+    },
     created() {
       this.tab = this.modes.findIndex(m => (m.name === store.mode));
+      store.$on('set-mode', this.updateModeLocal);
     },
     methods: {
+      updateModeLocal(mode){
+        this.tab = this.modes.findIndex(m => (m.name === mode));
+      },
       setMode(mode) {
         store.setMode(mode);
       }
