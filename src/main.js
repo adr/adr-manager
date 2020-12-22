@@ -13,8 +13,13 @@ Vue.directive('observe-visibility', ObserveVisibility)
 import resize from "vue-element-resize-detector";
 Vue.use(resize)
 
+/* Import directive v-autowidth to resize an input field to fit its content. */
+import VueInputAutowidth from 'vue-input-autowidth'
+Vue.use(VueInputAutowidth)
+
 Vue.use(VueSimpleAlert);
 Vue.config.productionTip = false;
+
 
 new Vue({
   router,

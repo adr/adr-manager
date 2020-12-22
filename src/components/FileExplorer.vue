@@ -10,14 +10,11 @@
                 <v-list-item-title v-text="repo.name"></v-list-item-title>
               </v-list-item-content>
 
-              <DialogRemoveRepository v-bind:repo="{ name: repo.name }" v-if="repo.fileType === 'repo'"
-                @remove-repo="removeRepository(repo.repository)">
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn style="width: 30px; min-width: 30px; height: 100%;" class="mx-0 px-0" v-bind="attrs" v-on="on">
-                    <v-icon>mdi-folder-remove</v-icon>
-                  </v-btn>
-                </template>
-              </DialogRemoveRepository>
+              <!-- Remove Repository Button-->
+              <v-btn style="width: 30px; min-width: 30px; height: 100%;" class="mx-0 px-0"
+                @click.prevent.stop="removeRepository(repo.repository)">
+                <v-icon>mdi-folder-remove</v-icon>
+              </v-btn>
             </template>
 
             <!-- sub list containing the ADRs -->
@@ -37,18 +34,15 @@
                 <!-- Button-Icons for copy and delete -->
                 <v-list-item-icon>
                   <v-btn style="width: 30px; min-width: 30px; height: 100%;" class="mx-0 px-0"
-                    v-if="file.fileType === 'adr' || file.fileType === 'md'">
+                    v-if="file.fileType === 'adr' || file.fileType === 'md'" @click.prevent.stop="">
                     <v-icon>mdi-content-duplicate</v-icon>
                   </v-btn>
 
-                  <DialogDeleteAdr :adr="file.adr" :repo="repo.repository">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn style="width: 30px; min-width: 30px; height: 100%;" class="mx-0 px-0"
-                        v-if="file.fileType === 'adr' || file.fileType === 'md'" v-bind="attrs" v-on="on">
-                        <v-icon>mdi-delete</v-icon>
-                      </v-btn>
-                    </template>
-                  </DialogDeleteAdr>
+                  <v-btn style="width: 30px; min-width: 30px; height: 100%;" class="mx-0 px-0"
+                    v-if="file.fileType === 'adr' || file.fileType === 'md'"
+                    @click.prevent.stop="deleteAdr(file.adr, repo.repository)">
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
                 </v-list-item-icon>
               </v-list-item>
               <div class="d-flex justify-content-space-around justify-center">
@@ -91,15 +85,11 @@
 
   import DialogAddRepositories from "@/components/DialogAddRepositories.vue";
   import DialogCommit from "@/components/DialogCommit.vue";
-  import DialogDeleteAdr from "@/components/DialogDeleteAdr.vue";
-  import DialogRemoveRepository from "@/components/DialogRemoveRepository.vue";
 
   export default {
     components: {
       DialogAddRepositories,
-      DialogRemoveRepository,
-      DialogCommit,
-      DialogDeleteAdr
+      DialogCommit
     },
     props: {
       user: String,
@@ -222,11 +212,18 @@
         }
       },
 
-      /**
-       * @param {object} repo - the repo object (with attributes 'fullName', 'activeBranch' and 'adrs')
+      /** Requests the user to confirm the removal of the repository and removes it upon confirmation.
+       * 
+       * @param {{ fullName : string, activeBranch : string, adrs : object[] }} repo - the repo object (with attributes 'fullName', 'activeBranch' and 'adrs')
        */
       removeRepository(repo) {
-        store.removeRepository(repo);
+        this.$confirm(
+          "Do you really want to remove the repository " + repo.fullName + "?",
+          "Remove " + repo.fullName,
+          "warning"
+        ).then(() => {
+          store.removeRepository(repo);
+        }).catch(() => { });
       },
 
       sendRepo(repo) {
@@ -300,6 +297,25 @@
           }
         });
       },
+
+      /**Deletes the adr.
+       * 
+       * @param {object} adr - the ADR
+       * @param {Repository} repo - the repository that contains the ADR
+       */
+      deleteAdr(adr, repo) {
+        this.$confirm(
+          "Do you really want to delete \n"
+          + adr.path
+          + "\n from the repository \n"
+          + repo.fullName + "?",
+          "Delete " + adr.path.split('/').pop(),
+          "warning"
+        ).then(() => {
+          store.deleteAdr(adr, repo);
+        }).catch(() => {
+        });
+      }
     },
   };
 

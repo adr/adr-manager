@@ -7,7 +7,7 @@
         :items="adr.consideredOptions.map((opt) => { return opt.title })" label="Chosen option"></v-combobox>
     </v-card>
     <div class="d-flex">
-      <v-card-title class="py-0 pl-0 flex-grow-0 flex-shrink-0 align-baseline">because</v-card-title>
+      <h5 class="py-0 pl-0 mr-4 flex-grow-0 flex-shrink-0 align-baseline">because</h5>
       <div class="mx-0 flex-grow-1 align-baseline">
         <codemirror v-model="adr.decisionOutcome.explanation"></codemirror>
       </div>

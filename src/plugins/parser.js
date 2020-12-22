@@ -72,7 +72,7 @@ class MADRGenerator extends MADRListener {
             }
             let explanation = rawDecisionOutcome.slice(1).join()
             this.adr.decisionOutcome.chosenOption = chosenOption
-            this.adr.decisionOutcome.explanation = explanation
+            this.adr.decisionOutcome.explanation = explanation.trim()
         } else {
             console.log('Couldn\'t find chosen option.')
         }
@@ -186,6 +186,7 @@ class MADRGenerator extends MADRListener {
  * @returns {ArchitecturalDecisionRecord}
  */
 export function md2adr(md) {
+    console.log('parsing md2adr')
     const chars = new antlr4.InputStream(md);
     const lexer = new MADRLexer(chars);
     const tokens = new antlr4.CommonTokenStream(lexer);
@@ -200,11 +201,12 @@ export function md2adr(md) {
 }
 
 export function adr2md(adr) {
+    console.log('parsing adr 2 md')
     var md = '# ' + adr.title + '\n'
 
     if ((adr.status !== '' && adr.status !== 'null') || adr.deciders.length > 0 || adr.date !== '') {
         if (adr.status !== '' && adr.status !== 'null') {
-            md = md.concat('\n* Status: ' + adr.status)
+            md = md.concat('\n* Status: ' + adr.status.trim())
         }
         if (adr.deciders.length > 0) {
             md = md.concat('\n* Deciders: ' + adr.deciders)
@@ -238,7 +240,12 @@ export function adr2md(adr) {
     md = md.concat('\n## Decision Outcome\n\nChosen option: "' + adr.decisionOutcome.chosenOption)
 
     if (adr.decisionOutcome.explanation.trim() !== '') {
-        md = md.concat('", because ' + adr.decisionOutcome.explanation + '\n')
+        let isList = adr.decisionOutcome.explanation.trim().match(/^[*+-](.|\s)+(\s[*+-](.|\s)+)+/g)
+        if (isList) {
+            md = md.concat('", because\n\n' + adr.decisionOutcome.explanation + '\n')
+        } else {
+            md = md.concat('", because ' + adr.decisionOutcome.explanation + '\n')
+        }
     } else {
         md = md.concat('"\n')
     }
