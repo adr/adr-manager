@@ -27,7 +27,7 @@
 </template>
 
 <script>
-  import codemirror from './TheEditorMadrCodemirror.vue'
+  import codemirror from './EditorMadrCodemirror.vue'
 
   export default {
     name: 'EditorMadrList',

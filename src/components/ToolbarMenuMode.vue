@@ -1,10 +1,9 @@
 <template>
-    <v-tabs v-model="tab" class="pl-8 pt-0 mt-0" align-with-title>
-
+  <div>
+    <v-tabs v-model="tab" class="mx-0 px-0 pt-0 mt-0 flex-grow-0" background-color="transparent">
       <v-tooltip v-for="item in modes" :key="item.name" open-delay="500" bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-tab text dark v-on:click="setMode(item.name)" v-on="on"
-            v-bind="attrs">
+          <v-tab text v-on:click="setMode(item.name)" v-on="on" v-bind="attrs">
             {{ item.name }}
           </v-tab>
         </template>
@@ -13,6 +12,7 @@
         </span>
       </v-tooltip>
     </v-tabs>
+  </div>
 </template>
 
 <script>
@@ -44,7 +44,7 @@
       store.$on('set-mode', this.updateModeLocal);
     },
     methods: {
-      updateModeLocal(mode){
+      updateModeLocal(mode) {
         this.tab = this.modes.findIndex(m => (m.name === mode));
       },
       setMode(mode) {

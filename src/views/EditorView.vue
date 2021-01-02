@@ -1,9 +1,11 @@
 <template>
   <v-card class="editor text-center mx-auto d-flex flex-column" height="100%">
-    <v-toolbar dense color="primary" dark style="-webkit-flex: 0; flex: 0;">
-      <v-btn class="align-self-center" @click="logOut">Log Out</v-btn>
-      <ToolbarMenuMode />
+    <v-toolbar dense color="primary" dark class="flex-grow-0">
+      <img src="../assets/logo.png" alt="ADR-Manager" height="80%">
       <v-spacer></v-spacer>
+      <ToolbarMenuMode v-if="showEditor" class="mx-0 px-0 pt-0 mt-0 flex-grow-0" />
+      <v-spacer></v-spacer>
+      <v-btn class="align-self-center" @click="logOut">Disconnect</v-btn>
     </v-toolbar>
 
     <v-card-text class="mx-0 my-0 px-0 py-0" style="-webkit-flex-grow: 1; flex-grow: 1; position: relative;">
@@ -28,15 +30,16 @@
         </pane>
         <!--end File Explorer Pane -->
 
-        <pane>
-          <Editor v-if="showEditor" style="height: 100%;" v-bind:filePath="filePath"
-            v-on:adr-file="setADRFile" />
+        <pane v-if="showEditor">
+          <Editor style="height: 100%;" v-bind:filePath="filePath" v-on:adr-file="setADRFile" />
         </pane>
       </splitpanes>
     </v-card-text>
 
     <v-system-bar>
-      {{"Current ADR: " + setAdrName}}
+      <div style="position: absolute;">
+        {{"Current ADR: " + adrPath}}
+      </div>
       <v-spacer></v-spacer>
       Current branch:
       <select @change="onSelectedBranch" v-model="selected" name="current-branch" id="current-branch"
@@ -59,7 +62,7 @@
 
   import DialogAddRepositories from "@/components/DialogAddRepositories.vue";
   import ToolbarMenuMode from "@/components/ToolbarMenuMode.vue";
-  import Editor from "@/components/TheEditor.vue";
+  import Editor from "@/components/Editor.vue";
   import FileExplorer from "@/components/FileExplorer.vue";
 
   export default {
@@ -88,7 +91,6 @@
       branchesName: [],
       nameAdr: "",
       currentRepo: "",
-      initialEditedMd: undefined, // Change this for opening an ADR in the editor.
       userName: "adr",
       firstUserName: "",
       firstRepoName: "",
@@ -105,9 +107,10 @@
       currentAdr() {
         return store.currentlyEditedAdr;
       },
-      setAdrName() {
-        if (this.currentAdr !== undefined && this.currentAdr.path !== undefined) {
-          return this.currentAdr.path.split("/").pop();
+      adrPath() {
+        if (store.currentRepository && this.currentAdr !== undefined && this.currentAdr.path !== undefined) {
+          console.log("adrPath", store.currentRepo);
+          return store.currentRepository.fullName + "/" + this.currentAdr.path;
         } else {
           return "";
         }
@@ -120,6 +123,7 @@
     },
     mounted() {
       this.dataAuth = this.$route.params.id;
+      store.reload();
       store.openAdrBy(this.repoFullName, this.adr);
     },
     methods: {
@@ -170,7 +174,8 @@
 
       logOut() {
         console.log('Logging out!');
-        localStorage.removeItem('authId');
+        //localStorage.removeItem('authId');
+        localStorage.clear();
         this.$router.push('/');
       },
       logNotImplemented() {

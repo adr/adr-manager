@@ -2,58 +2,67 @@
   <v-card flat class="text-left d-flex flex-column" style="height: 100%;">
     <div style="-webkit-flex-grow: 1; flex-grow: 1; position: relative">
       <div style="height: 100%; width: 100%; position: absolute; overflow-y:auto">
-        <v-list dense multiple>
-          <v-list-group v-for="(repo, i) in folderTree" :key="repo.path"
-            :prepend-icon="fileTypeIconMapping[repo.fileType]" :value="i === 0" @click="sendRepo(repo)">
-            <template v-slot:activator>
-              <v-list-item-content>
-                <v-list-item-title v-text="repo.name"></v-list-item-title>
-              </v-list-item-content>
+        <v-list multiple dense>
+          <v-list-item-group>
+            <v-list-group v-for="(repo, i) in folderTree" :key="repo.path"
+              :prepend-icon="fileTypeIconMapping[repo.fileType]" :value="i === indexOfOpenedRepo"
+              @click="sendRepo(repo)">
+              <template v-slot:activator>
+                <v-list-item-content>
+                  <v-list-item-title v-text="repo.name"></v-list-item-title>
+                </v-list-item-content>
 
-              <!-- Remove Repository Button-->
-              <v-btn style="width: 30px; min-width: 30px; height: 100%;" class="mx-0 px-0"
-                @click.prevent.stop="removeRepository(repo.repository)">
-                <v-icon>mdi-folder-remove</v-icon>
-              </v-btn>
-            </template>
-
-            <!-- sub list containing the ADRs -->
-            <v-list-item-group mandatory v-model="openAdrPath">
-              <v-list-item v-for="file in repo.children" :key="file.path" @click="openFileByPath({ path: file.path })"
-                :value="file.path">
-                <v-tooltip bottom open-delay="500">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-list-item-icon> </v-list-item-icon>
-                    <v-list-item-content v-bind="attrs" v-on="on">
-                      <v-list-item-title v-text="displayInfo(file)">
-                      </v-list-item-title>
-                    </v-list-item-content>
-                  </template>
-                  <span v-text="file.tooltip"></span>
-                </v-tooltip>
-                <!-- Button-Icons for copy and delete -->
+                <!-- Remove Repository Button-->
                 <v-list-item-icon>
                   <v-btn style="width: 30px; min-width: 30px; height: 100%;" class="mx-0 px-0"
-                    v-if="file.fileType === 'adr' || file.fileType === 'md'" @click.prevent.stop="">
-                    <v-icon>mdi-content-duplicate</v-icon>
-                  </v-btn>
-
-                  <v-btn style="width: 30px; min-width: 30px; height: 100%;" class="mx-0 px-0"
-                    v-if="file.fileType === 'adr' || file.fileType === 'md'"
-                    @click.prevent.stop="deleteAdr(file.adr, repo.repository)">
-                    <v-icon>mdi-delete</v-icon>
+                    @click.prevent.stop="removeRepository(repo.repository)">
+                    <v-icon>mdi-folder-remove</v-icon>
                   </v-btn>
                 </v-list-item-icon>
-              </v-list-item>
-              <div class="d-flex justify-content-space-around justify-center">
-                <v-btn @click.native.prevent.stop="
+              </template>
+
+              <!-- sub list containing the ADRs -->
+              <v-list-item-group v-model="openAdrPath">
+                <v-hover v-for="file in repo.children" :key="file.path" v-slot="{ hover }">
+                  <v-list-item @click="openFileByPath({ path: file.path })" :value="file.path">
+                    <v-tooltip bottom open-delay="500">
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-list-item-icon> </v-list-item-icon>
+                        <v-list-item-content v-bind="attrs" v-on="on">
+                          <v-list-item-title v-text="displayInfo(file)">
+                          </v-list-item-title>
+                        </v-list-item-content>
+                      </template>
+                      <span v-text="file.tooltip"></span>
+                    </v-tooltip>
+                    <!-- Button-Icons for copy and delete -->
+                    <v-list-item-icon v-if="hover">
+                      <v-btn style="width: 30px; min-width: 30px; height: 100%;" class="mx-0 px-0"
+                        v-if="file.fileType === 'adr' || file.fileType === 'md'" @click.prevent.stop="">
+                        <v-icon>mdi-content-duplicate</v-icon>
+                      </v-btn>
+
+                      <v-btn style="width: 30px; min-width: 30px; height: 100%;" class="mx-0 px-0"
+                        v-if="file.fileType === 'adr' || file.fileType === 'md'"
+                        @click.prevent.stop="deleteAdr(file.adr, repo.repository)">
+                        <v-icon>mdi-delete</v-icon>
+                      </v-btn>
+                    </v-list-item-icon>
+                  </v-list-item>
+                </v-hover>
+                <div class="d-flex justify-content-space-around justify-center">
+                  <v-btn dark class="align-center" width="75%" 
+                  @click.native.prevent.stop="
                     createNewAdr({ repository: repo })
-                  " class="align-center" width="75%">
-                  <v-icon>mdi-plus</v-icon> New ADR
-                </v-btn>
-              </div>
-            </v-list-item-group>
-          </v-list-group>
+                  ">
+                    <v-icon>mdi-plus</v-icon>
+                    New ADR
+                  </v-btn>
+                </div>
+              </v-list-item-group>
+            </v-list-group>
+
+          </v-list-item-group>
         </v-list>
         <!-- Some vertical space at the end -->
         <div class="my-16"></div>
@@ -80,7 +89,7 @@
 </template>
 
 <script>
-  import { snakeCase2naturalCase } from "@/plugins/utilities";
+  import { snakeCase2naturalCase } from "@/plugins/parser";
   import { store } from "@/plugins/store";
 
   import DialogAddRepositories from "@/components/DialogAddRepositories.vue";
@@ -149,7 +158,7 @@
               tooltip: adr.path,
             };
           });
-          // Sort ADRs by path
+          // Sort ADRs alphabetically by path
           fsRepoEntry.children.sort((r1, r2) => {
             if (r1.path < r2.path) {
               return -1;
@@ -175,7 +184,24 @@
       },
       openAdrPath: {
         get() {
-          return store.currentRepository.fullName + "/" + store.currentlyEditedAdr.path;
+          if (store.currentRepository && store.currentlyEditedAdr) {
+            return store.currentRepository.fullName + "/" + store.currentlyEditedAdr.path;
+          } else if (store.currentRepository) {
+            return store.currentRepository.fullName;
+          } else {
+            return undefined;
+          }
+        },
+        set() { }
+      },
+      indexOfOpenedRepo: {
+        get() {
+          if (store.currentRepository) {
+            let index = this.folderTree.findIndex((repo) => repo.repository.fullName === store.currentRepository.fullName);
+            return index;
+          } else {
+            return -1;
+          }
         },
         set() { }
       }
@@ -217,13 +243,17 @@
        * @param {{ fullName : string, activeBranch : string, adrs : object[] }} repo - the repo object (with attributes 'fullName', 'activeBranch' and 'adrs')
        */
       removeRepository(repo) {
-        this.$confirm(
-          "Do you really want to remove the repository " + repo.fullName + "?",
-          "Remove " + repo.fullName,
-          "warning"
-        ).then(() => {
+        if (repo.hasChanges()) {
+          this.$confirm(
+            "Do you really want to remove the repository " + repo.fullName + "? All changes will be lost.",
+            "Remove " + repo.fullName,
+            "warning"
+          ).then(() => {
+            store.removeRepository(repo);
+          }).catch(() => { });
+        } else {
           store.removeRepository(repo);
-        }).catch(() => { });
+        }
       },
 
       sendRepo(repo) {

@@ -50,8 +50,8 @@
 
 <script>
   import _ from 'lodash';
-  import DatePickerMenu from "./UsefulComponents/DatePickerMenu.vue";
-  import codemirror from "./TheEditorMadrCodemirror.vue";
+  import DatePickerMenu from "./DatePickerMenu.vue";
+  import codemirror from "./EditorMadrCodemirror.vue";
   import { ArchitecturalDecisionRecord } from "@/plugins/classes.js";
 
   export default {

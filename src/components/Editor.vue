@@ -19,7 +19,7 @@
         </v-tab-item>
         <!--end 'MADR Editor'-->
         <v-tab-item :value="'Convert'" style="height: 100%;">
-          <EditorDiff :raw="dValue" v-on:accept="acceptAfterDiff" />
+          <EditorConvert :raw="dValue" v-on:accept="acceptAfterDiff" />
         </v-tab-item>
         <!--end 'Compare MD'-->
         <v-tab-item :value="'Markdown Preview'" style="height: 100%;" class="mx-auto overflow-y-auto">
@@ -63,10 +63,10 @@
   import { Splitpanes, Pane } from "splitpanes";
   import "splitpanes/dist/splitpanes.css";
 
-  import EditorMadr from "./TheEditorMadr.vue";
-  import EditorDiff from "./TheEditorDiff.vue";
-  import EditorRaw from "./TheEditorRaw.vue";
-  import MarkdownPreview from "./UsefulComponents/MarkdownPreview.vue";
+  import EditorMadr from "./EditorMadr.vue";
+  import EditorConvert from "./EditorConvert.vue";
+  import EditorRaw from "./EditorRaw.vue";
+  import MarkdownPreview from "./EditorMarkdownPreview.vue";
 
   export default {
     name: "Editor",
@@ -74,7 +74,7 @@
       Splitpanes,
       Pane,
       EditorMadr,
-      EditorDiff,
+      EditorConvert,
       EditorRaw,
       MarkdownPreview
     },

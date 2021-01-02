@@ -1,16 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Register from '../views/Register.vue'
+import LandingPage from '../views/LandingPage.vue'
 import EditorView from '../views/EditorView.vue'
 import ErrorPage from '../views/ErrorPage.vue'
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/login',
+    path: '/',
     name: 'Register',
-    alias: ['/register', '/'],
-    component: Register
+    alias: ['/register', '/login'],
+    component: LandingPage
   },
   /** Route to the Editor without branch. */
   {

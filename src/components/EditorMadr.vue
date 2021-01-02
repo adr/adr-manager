@@ -64,14 +64,12 @@
   import { ArchitecturalDecisionRecord } from '@/plugins/classes.js'
   import { store } from '@/plugins/store.js';
 
-  import codemirror from './TheEditorMadrCodemirror.vue'
-  //import NavigatorFab from './TheEditorMadrFab.vue'
-  import StatusDateDecidersStory from './TheEditorMadrStatusDateDecidersStory.vue'
-  import DecisionOutcome from './TheEditorMadrDecisionOutcome.vue'
-  //import ProsAndConsOfOptions from './TheEditorMadrProsCons.vue'
-  import ConsideredOptions from './TheEditorMadrConsideredOptions.vue'
+  import codemirror from './EditorMadrCodemirror.vue'
+  import StatusDateDecidersStory from './EditorMadrStatusDateDecidersStory.vue'
+  import DecisionOutcome from './EditorMadrDecisionOutcome.vue'
+  import ConsideredOptions from './EditorMadrConsideredOptions.vue'
 
-  import GenericList from './TheEditorMadrList.vue'
+  import GenericList from './EditorMadrList.vue'
 
   export default {
     name: 'EditorMADR',
