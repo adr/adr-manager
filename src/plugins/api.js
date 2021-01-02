@@ -10,11 +10,32 @@ let pizzly = new Pizzly({
   publishableKey: "dpWJ4TU2yCu7ys4Nb6eX5zhv32GV6YcVYYvDJZvS",
 });
 
-export async function getCommitSha(user, repoOwner, repoName, currentBranch) {
-  user = localStorage.getItem('authId')
+export async function getUserEmail() {
   return pizzly
     .integration("github")
-    .auth(user)
+    .auth(localStorage.getItem("authId"))
+    .get("/user/emails")
+    .then((response) => response.json())
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+export async function getUserName(repoOwner) {
+  return pizzly
+    .integration("github")
+    .auth(localStorage.getItem("authId"))
+    .get("/users/" + repoOwner)
+    .then((response) => response.json())
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+export async function getCommitSha(repoOwner, repoName, currentBranch) {
+  return pizzly
+    .integration("github")
+    .auth(localStorage.getItem("authId"))
     .get("/repos/" + repoOwner + "/" + repoName + "/branches/" + currentBranch)
     .then((response) => response.json())
     .catch((err) => {
@@ -22,13 +43,12 @@ export async function getCommitSha(user, repoOwner, repoName, currentBranch) {
     });
 }
 
-export async function createBlobs(user, repoOwner, repoName, file) {
-  user = localStorage.getItem('authId')
+export async function createBlobs(repoOwner, repoName, file) {
   return pizzly
     .integration("github")
-    .auth(user)
+    .auth(localStorage.getItem("authId"))
     .post("/repos/" + repoOwner + "/" + repoName + "/git/blobs", {
-      body: JSON.stringify({ content: file, encoding: "utf-8" }),
+      body: JSON.stringify({ content: file, encoding: "utf-8" })
     })
     .then((response) => response.json())
     .then((body) => body)
@@ -38,18 +58,16 @@ export async function createBlobs(user, repoOwner, repoName, file) {
 }
 
 export async function createFileTree(
-  user,
   repoOwner,
   repoName,
   lastCommitSha,
   folderTree
 ) {
-  user = localStorage.getItem('authId')
   return pizzly
     .integration("github")
-    .auth(user)
-    .post("/repos/" + repoOwner + "/" + repoName + "/git/trees", {
-      body: JSON.stringify({ base_tree: lastCommitSha, tree: folderTree }),
+    .auth(localStorage.getItem("authId"))
+    .post("/repos/" + repoOwner + "/" + repoName + "/git/trees?recursive=1", {
+      body: JSON.stringify({ base_tree: lastCommitSha, tree: folderTree })
     })
     .then((response) => response.json())
     .then((body) => body)
@@ -59,7 +77,6 @@ export async function createFileTree(
 }
 
 export async function createCommit(
-  user,
   repoOwner,
   repoName,
   commitMessage,
@@ -67,17 +84,16 @@ export async function createCommit(
   lastCommitSha,
   treeSha
 ) {
-  user = localStorage.getItem('authId')
   return pizzly
     .integration("github")
-    .auth(user)
+    .auth(localStorage.getItem("authId"))
     .post("/repos/" + repoOwner + "/" + repoName + "/git/commits", {
       body: JSON.stringify({
         message: commitMessage,
         author: authorInfos,
         parents: [lastCommitSha],
-        tree: treeSha,
-      }),
+        tree: treeSha
+      })
     })
     .then((response) => response.json())
     .then((body) => body)
@@ -86,23 +102,19 @@ export async function createCommit(
     });
 }
 
-export async function pushToGitHub(
-  user,
-  repoOwner,
-  repoName,
-  branch,
-  newCommitSha
-) {
-  user = localStorage.getItem('authId')
+export async function pushToGitHub(repoOwner, repoName, branch, newCommitSha) {
   return pizzly
     .integration("github")
-    .auth(user)
-    .post("/repos/" + repoOwner + "/" + repoName + "/git/refs/heads/" + branch, {
-      body: JSON.stringify({
-        ref: "refs/heads/" + branch,
-        sha: newCommitSha,
-      }),
-    })
+    .auth(localStorage.getItem("authId"))
+    .post(
+      "/repos/" + repoOwner + "/" + repoName + "/git/refs/heads/" + branch,
+      {
+        body: JSON.stringify({
+          ref: "refs/heads/" + branch,
+          sha: newCommitSha
+        })
+      }
+    )
     .then((response) => response.json())
     .then((body) => body)
     .catch((err) => {

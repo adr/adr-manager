@@ -180,8 +180,8 @@
       },
       logNotImplemented() {
         console.log("Not implemented.");
-      },
-    },
+      }
+    }
   };
 
 </script>

@@ -46,6 +46,6 @@ export default {
       console.error(err);
       alert("Something went wrong. Look at the logs.");
     }
-  },
+  }
 };
 </script>

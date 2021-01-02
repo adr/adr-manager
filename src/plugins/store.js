@@ -194,65 +194,168 @@ export const store = new Vue({
             this.updateLocalStorageRepositories();
         },
 
-        /**Creates a new ADR in the specified repository.
-         * 
-         * Get highest ID and adapt name of ADR based on title in Editor. 
-         * 
-         * @param {object} repo - must be one of the added repositories 
-         * @returns the created adr if repo is added, undefined otherwise
-         */
-        createNewAdr: function (repo) {
-            if (this.addedRepositories.includes(repo)) {
-                let md = adr2md(new ArchitecturalDecisionRecord());
-                let id = Math.max(...repo.adrs.map(adr => adr.id), -1) + 1;
-                let newAdr = {
-                    originalMd: undefined,
-                    editedMd: md,
-                    id : id,
-                    path: 'docs/adr/' + id.toString().padStart(4, '0') + '-unnamed.md'
-                };
-                repo.adrs.push(newAdr);
-                if (!repo.addedAdrs) {
-                    repo.addedAdrs = []
-                }
-                repo.addedAdrs.push(newAdr);
-                return newAdr;
-            }
-            this.updateLocalStorageRepositories();
-            return undefined;
-        },
-
-        /**Deletes the ADR. 
-         * The ADR is removed from the adr list of the repository and appended to the list of deleted ADRs 
-         * 
-         * @param {object} adr 
-         * @param {object} repo 
-         */
-        deleteAdr(adr, repo) {
-            let adrIndex = repo.adrs.findIndex(adrEl => (adrEl == adr));
-            if (!repo.deletedAdrs) {
-                repo.deletedAdrs = [];
-            }
-            repo.deletedAdrs.concat(repo.adrs.splice(adrIndex, 1));
-            this.assertSomeAdrIsOpened();
-        },
-
-        /**Sets the current mode and emits the 'set-mode' event.
-         * 
-         * @param {string} mode - the new mode (must be either 'basic', 'advanced' or 'professional') 
-         */
-        setMode(mode) {
-            if (['basic', 'advanced', 'professional'].includes(mode)) { // Double-check that passed mode is valid.
-                console.log('Set mode to', mode);
-                this.mode = mode;
-                localStorage.setItem('mode', mode);
-                this.$emit('set-mode', mode);
-            } else {
-                console.log('Error in Mode Selection');
+   /**Creates a new ADR in the specified repository.
+     *
+     * Get highest ID and adapt name of ADR based on title in Editor.
+     *
+     * @param {object} repo - must be one of the added repositories
+     * @returns the created adr if repo is added, undefined otherwise
+     */
+    createNewAdr: function (repo) {
+        if (this.addedRepositories.includes(repo)) {
+          let md = adr2md(new ArchitecturalDecisionRecord());
+          let id = Math.max(...repo.adrs.map((adr) => adr.id)) + 1;
+          let newAdr = {
+            originalMd: undefined,
+            editedMd: md,
+            id: id,
+            path: "docs/adr/" + id.toString().padStart(4, "0") + "-unnamed.md",
+            newAdr: true,
+          };
+          repo.adrs.push(newAdr);
+          if (!repo.addedAdrs) {
+            repo.addedAdrs = [];
+          }
+          repo.addedAdrs.push(newAdr);
+          return newAdr;
+        }
+        this.updateLocalStorageRepositories();
+        return undefined;
+      },
+  
+      /**Deletes the ADR.
+       * The ADR is removed from the adr list of the repository and appended to the list of deleted ADRs
+       *
+       * @param {object} adr
+       * @param {object} repo
+       */
+      deleteAdr(adr, repo) {
+        console.log("Deleting requested!", adr, repo);
+        let adrIndexAdr = repo.adrs.findIndex((adrEl) => adrEl == adr);
+        let adrIndexNewAdr = repo.addedAdrs.findIndex((adrEl) => adrEl == adr);
+        if (!repo.deletedAdrs) {
+          repo.deletedAdrs = [];
+        }
+  
+        let file = repo.adrs.splice(adrIndexAdr, 1)[0];
+        if (adrIndexNewAdr >= 0) {
+          repo.addedAdrs.splice(adrIndexNewAdr, 1)[0];
+        } else repo.deletedAdrs.push(file);
+        this.updateLocalStorageRepositories();
+      },
+  
+      /**Sets the current mode and emits the 'set-mode' event.
+       *
+       * @param {string} mode - the new mode (must be either 'basic', 'advanced' or 'professional')
+       */
+      setMode(mode) {
+        if (["basic", "advanced", "professional"].includes(mode)) {
+          // Double-check that passed mode is valid.
+          console.log("Set mode to", mode);
+          this.mode = mode;
+          localStorage.setItem("mode", mode);
+          this.$emit("set-mode", mode);
+        } else {
+          console.log("Error in Mode Selection");
+        }
+      },
+  
+      changedFilesInRepo() {
+        let changedFiles = [];
+        for (let changedFile of this.currentRepository.adrs) {
+          if (!("newAdr" in changedFile))
+            if (changedFile.editedMd != changedFile.originalMd) {
+              changedFiles.push(this.dataStructureDataCommit(changedFile, "changed"));
             }
         }
+        return changedFiles;
+      },
+  
+      deletedFilesInRepo() {
+        let deletedFiles = [];
+        for (let deletedFile of this.currentRepository.deletedAdrs) {
+          deletedFiles.push({ path: deletedFile.path, title: deletedFile.path.split("/")[2], fileSelected: false, fileStatus: "deleted" });
+        }
+        return deletedFiles;
+      },
+  
+      newFilesInRepo() {
+        let newFiles = [];
+        for (let newFile of this.currentRepository.addedAdrs) {
+          newFiles.push(this.dataStructureDataCommit(newFile, "new"));
+        }
+        return newFiles;
+      },
+  
+      dataStructureDataCommit(file, fileType) {
+        return {
+          title: file.path.split("/")[2],
+          value: file.editedMd,
+          path: file.path,
+          fileSelected: false,
+          fileStatus: fileType
+  
+        }
+      },
+  
+      getRepoInfoForCommit() {
+        return {
+          userName: this.currentRepository.fullName.split("/")[0],
+          repoName: this.currentRepository.fullName.split("/")[1],
+          activeBranch: this.currentRepository.activeBranch
+        };
+      },
+  
+      updateLocalStorageAfterCommit(pushedFiles) {
+        for (let file of pushedFiles) {
+          switch (file.type) {
+            case "new":
+              this.handleUpdateLocalStorageNew(file);
+              break;
+            case "changed":
+              this.handleUpdateLocalStorageChanged(file);
+              break;
+            case "deleted":
+              this.handleUpdateLocalStorageDeleted(file);
+              break;
+          }
+        }
+        this.updateLocalStorageRepositories();
+      },
+  
+      handleUpdateLocalStorageNew(file) {
+        for (let repoEntry of this.currentRepository.addedAdrs) {
+          if (file.path === repoEntry.path) {
+            let index = this.currentRepository.addedAdrs.indexOf(repoEntry);
+            this.currentRepository.addedAdrs.splice(index, 1);
+          }
+        }
+        for (let repoEntry of this.currentRepository.adrs) {
+          if (file.path === repoEntry.path) {
+            delete repoEntry["newAdr"];
+            repoEntry["originalMd"] = repoEntry.editedMd;
+          }
+        }
+      },
+  
+      handleUpdateLocalStorageChanged(file) {
+        for (let repoEntry of this.currentRepository.adrs) {
+          if (file.path === repoEntry.path) {
+            repoEntry.originalMd = repoEntry.editedMd;
+          }
+        }
+      },
+  
+      handleUpdateLocalStorageDeleted(file) {
+        for (let repoEntry of this.currentRepository.deletedAdrs) {
+          if (file.path === repoEntry.path) {
+            let index = this.currentRepository.deletedAdrs.indexOf(repoEntry);
+            this.currentRepository.deletedAdrs.splice(index, 1);
+          }
+        }
+      }
     }
-});
+  });
 
 /**Checks if each repo in the parameter array repos is a valid repository 
  * (that can be displayed in the file explorer, etc.)

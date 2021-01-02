@@ -32,7 +32,7 @@
   export default {
     name: 'EditorMadrList',
     components: {
-      codemirror,
+      codemirror
     },
     props: {
       list: {
