@@ -58,8 +58,8 @@
       raw: { // original MD pulled from GitHub
         type: String,
         default: 'Test String',
-        required: false, // For testing
-      },
+        required: false // For testing
+      }
     },
     data: () => ({
       cmOption: {
@@ -69,7 +69,7 @@
         lineWrapping: true,
         collapseIdentical: false,
         highlightDifferences: true,
-        viewPortMargin: Infinity,
+        viewPortMargin: Infinity
       },
       mergeMd: ' ',
     }),

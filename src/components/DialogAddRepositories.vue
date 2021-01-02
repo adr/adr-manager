@@ -109,7 +109,7 @@
         return this.filterUnstagedRepositories(this.allRepositories)
           .map((repo) => ({ name: repo.full_name, description: repo.description, repoData: repo }))
           .slice(0, this.perPage);
-      },
+      }
     },
     watch: {
       /** Reload repositories in case something went wrong while mounting, a new repo was created on GitHub or something similar. */
@@ -246,7 +246,6 @@
           this.showLoadingOverlay = false;
         });
       }
-
     }
   }
 </script>

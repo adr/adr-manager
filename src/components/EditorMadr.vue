@@ -83,10 +83,10 @@
       GenericList
     },
     props: {
-      value: { type: ArchitecturalDecisionRecord },
+      value: { type: ArchitecturalDecisionRecord }
     },
     data: () => ({
-      adr: {},
+      adr: {}
     }),
     computed: {
       mode() {
@@ -108,7 +108,7 @@
             break;
         }
         return false;
-      },
+      }
     },
     watch: {
       value() {

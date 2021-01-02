@@ -21,7 +21,7 @@
     },
     props: {
       value: {
-        type: String,
+        type: String
       }
     },
     data() {
@@ -31,9 +31,9 @@
           connect: 'align',
           lineWrapping: true,
           mode: 'text/x-markdown',
-          lineNumbers: true,
+          lineNumbers: true
         },
-        rawMd: this.value,
+        rawMd: this.value
       }
     },
     computed: {
@@ -56,7 +56,7 @@
         if (isVisible) {
           this.codemirror.refresh()
         }
-      },
+      }
     }
   }
 </script>

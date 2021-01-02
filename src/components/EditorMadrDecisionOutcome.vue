@@ -38,10 +38,10 @@
     props: {
       adr: {},
       mode: {
-        type: String,
+        type: String
       }
     },
     data: () => ({
-    }),
+    })
   };
 </script>

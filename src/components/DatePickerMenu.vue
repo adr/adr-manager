@@ -34,13 +34,13 @@
     computed: {
       computedDateFormatted() {
         return this.formatDate(this.date)
-      },
+      }
     },
 
     watch: {
       date() {
         this.dateFormatted = this.formatDate(this.date)
-      },
+      }
     },
 
     methods: {
@@ -59,7 +59,7 @@
       update(e) {
         this.menu = false; // Close menu
         this.$emit('input', e)
-      },
-    },
+      }
+    }
   }
 </script>

@@ -38,7 +38,7 @@ const routes = [
       repoFullName : route.params.organization  + '/' +  route.params.repo,
       branch : route.params.branch, 
       adr : route.params.adr
-    }),
+    })
   },
   {
     path: '/*',
