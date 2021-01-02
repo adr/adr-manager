@@ -1,5 +1,3 @@
-// This is a proposal on how global data could be managed.
-// This may be changed to using Vuex or be discarded completely, I don't mind!
 /** 
  * The store contains the global state of the ADR-Manager and can be used to communicate between components.
  * 
@@ -14,9 +12,8 @@
 
 import Vue from 'vue'
 import _ from 'lodash'
-import { ArchitecturalDecisionRecord } from './classes'
-import { adr2md } from './parser'
-import { naturalCase2snakeCase } from './utilities'
+import { ArchitecturalDecisionRecord, Repository } from './classes'
+import { adr2md, naturalCase2snakeCase } from './parser'
 
 export const store = new Vue({
     data: {
@@ -29,25 +26,30 @@ export const store = new Vue({
 
     created() {
         console.log('Created Store!');
-
-        /* Load data from local storage. */
-        let addedRepos = localStorage.getItem('addedRepositories');
-        if (addedRepos !== null) {
-            addedRepos = JSON.parse(addedRepos);
-            console.log('Loaded Repositories from local storage.', addedRepos);
-            // Validate storage
-            if (isValidRepoList(addedRepos)) {
-                console.log('Adding Repositories.', addedRepos);
-                this.addRepositories(addedRepos);
-            } else {
-                console.log('Invalid repos: ', addedRepos);
-            }
-        }
-        /* Load mode from local storage */
-        this.mode = localStorage.getItem('mode') || 'basic';
+        this.reload();
     },
 
     methods: {
+        /** Loads all data from local storage.
+         */
+        reload() {
+            /* Load data from local storage. */
+            let addedRepos = localStorage.getItem('addedRepositories');
+            if (addedRepos !== null) {
+                addedRepos = JSON.parse(addedRepos);
+                console.log('Loaded Repositories from local storage.', addedRepos);
+                // Validate storage
+                if (isValidRepoList(addedRepos)) {
+                    console.log('Adding Repositories.', addedRepos);
+                    this.addRepositories(addedRepos);
+                } else {
+                    console.log('Invalid repos: ', addedRepos);
+                }
+            }
+            /* Load mode from local storage */
+            this.mode = localStorage.getItem('mode') || 'basic';
+        },
+
         /**
          * Write the current value of the added repositories list array into the local storage.
          * Should be done regularly.
@@ -93,20 +95,6 @@ export const store = new Vue({
             this.updateLocalStorageRepositories();
         },
 
-        /**Returns the changed files in the repository. 
-         * 
-         * @param {string} repoFullName 
-         * @returns {{ added: ADR[], changed: ADR[], deleted: ADR[] }} repoFullName 
-         */
-        getChangesOfRepository(repoFullName) {
-            let repo = this.addedRepositories.find(repo => (repo.fullName === repoFullName));
-            return {
-                added: repo.addedAdrs,
-                changed: repo.adrs.filter(adr => (adr.originalMd !== adr.editedMd && !repo.addedAdrs.includes(adr))),
-                deleted: repo.deletedAdrs
-            };
-        },
-
         /**Sets the active branch.
          * 
          * @param {string} activeBranch 
@@ -123,6 +111,9 @@ export const store = new Vue({
             if (this.currentlyEditedAdr === undefined
                 || !isValidAdr(this.currentlyEditedAdr)
                 || !this.addedRepositories.some(repo => repo.adrs.includes(this.currentlyEditedAdr))) {
+                this.currentlyEditedAdr = undefined;
+                this.currentRepository = undefined;
+                this.currentBranch = undefined;
                 this.openAnyAdr();
             }
         },
@@ -213,7 +204,7 @@ export const store = new Vue({
         createNewAdr: function (repo) {
             if (this.addedRepositories.includes(repo)) {
                 let md = adr2md(new ArchitecturalDecisionRecord());
-                let id = Math.max(...repo.adrs.map(adr => adr.id)) + 1;
+                let id = Math.max(...repo.adrs.map(adr => adr.id), -1) + 1;
                 let newAdr = {
                     originalMd: undefined,
                     editedMd: md,
@@ -263,12 +254,18 @@ export const store = new Vue({
     }
 });
 
-
+/**Checks if each repo in the parameter array repos is a valid repository 
+ * (that can be displayed in the file explorer, etc.)
+ * 
+ * A valid repoitory r must be an instance of the Reppository class and each adr in r.adrs must 
+ * have the attributes originalMd, editedMd and path where path is the local path inside the repository (i.e. starting with 'docs/adr')
+ * 
+ * @param {object[]} repos 
+ */
 function isValidRepoList(repos) {
     console.log('Valid check.');
     return repos.every(repo => {
-        return _.has(repo, 'fullName') && _.has(repo, 'activeBranch')
-            && _.has(repo, 'adrs') && repo.adrs.every(isValidAdr);
+        return repo instanceof Repository && repo.adrs.every(isValidAdr);
     });
 }
 

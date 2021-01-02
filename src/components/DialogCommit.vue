@@ -18,7 +18,7 @@
       </v-card-title>
 
       <v-card-text>
-        <h6 style="margin-top: %">Changes staged for commit</h6>
+        <h6 style="margin-top: 2%">Changes staged for commit</h6>
 
         <v-container
           style="height: 150px;"

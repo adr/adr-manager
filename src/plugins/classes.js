@@ -68,12 +68,34 @@ export class ArchitecturalDecisionRecord {
 }
 
 export class Repository {
-   constructor ({ fullName, activeBranch, branches, adrs}) {
+  constructor({ fullName, activeBranch, branches, adrs }) {
     this.fullName = fullName || '';
     this.activeBranch = activeBranch || '';
     this.branches = branches || [];
     this.adrs = adrs || [];
     this.addedAdrs = [];
     this.deletedAdrs = [];
-   }
+  }
+
+  /**Returns the changed files in the repository. 
+   * 
+   * @returns {{ added: ADR[], changed: ADR[], deleted: ADR[] }} the changed ADRs 
+   */
+  getChanges() {
+    return {
+      added: this.addedAdrs,
+      changed: this.adrs.filter(adr => (adr.originalMd !== adr.editedMd && !this.addedAdrs.includes(adr))),
+      deleted: this.deletedAdrs
+    };
+  }
+
+  /**Returns true iff the repository contains changed ADRs. 
+   * 
+   * @param {string} repoFullName
+   * @returns {boolean} true, if the ADRs in the repository changed, else false.
+   */
+  hasChanges() {
+    let changes = this.getChanges();
+    return changes.changed.length !== 0 || changes.added.length !== 0 || changes.deleted.length !== 0;
+  }
 }

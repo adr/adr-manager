@@ -1,6 +1,7 @@
 <template>
   <div>
     <h3>Considered Options</h3>
+    <!-- Display an alert when there are pros and cons of options in basic mode. -->
     <v-alert v-if="isModeTooLow" border="left" colored-border type="warning" elevation="2" class="my-4 py-2">
       <div class="d-flex my-0 py-0">
         <span class="flex-grow-1 align-self-center my-0 py-0">
@@ -10,6 +11,7 @@
         </v-btn>
       </div>
     </v-alert>
+
     <v-card flat>
       <div v-for="(item, i) in adr.consideredOptions" :key="item.id">
         <drop @dragenter="(event) => moveOption(event.data, i)" class="my-0 py-0">
@@ -102,7 +104,8 @@
           <div v-if="mode === 'basic'" style="width: 32px"></div>
           <div v-else style="width: 64px"></div>
 
-          <codemirror :ref="'codemirror-' + adr.consideredOptions.length" class="my-0 py-0 mr-4 optiontitle"
+          <codemirror :ref="'codemirror-' + adr.consideredOptions.length"
+            :class="[ 'my-0', 'py-0', 'mr-4', mode==='basic' ? '' : 'optiontitle']"
             :color="mode==='basic' ? undefined : 'grey lighten-2'" v-model="lastItem" @blur="addLastItemToOptions">
           </codemirror>
           <div class="align-center flex-shrink-0 flex-grow-0  my-0 py-0">
@@ -120,8 +123,8 @@
 <script>
   import { ArchitecturalDecisionRecord } from '@/plugins/classes'
   import { store } from '@/plugins/store'
-  import codemirror from './TheEditorMadrCodemirror.vue'
-  import EditorMadrList from './TheEditorMadrList.vue'
+  import codemirror from './EditorMadrCodemirror.vue'
+  import EditorMadrList from './EditorMadrList.vue'
   import { Drag, Drop } from 'vue-easy-dnd'
 
   export default {

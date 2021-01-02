@@ -186,7 +186,6 @@ class MADRGenerator extends MADRListener {
  * @returns {ArchitecturalDecisionRecord}
  */
 export function md2adr(md) {
-    console.log('parsing md2adr')
     const chars = new antlr4.InputStream(md);
     const lexer = new MADRLexer(chars);
     const tokens = new antlr4.CommonTokenStream(lexer);
@@ -201,7 +200,6 @@ export function md2adr(md) {
 }
 
 export function adr2md(adr) {
-    console.log('parsing adr 2 md')
     var md = '# ' + adr.title + '\n'
 
     if ((adr.status !== '' && adr.status !== 'null') || adr.deciders.length > 0 || adr.date !== '') {
@@ -240,7 +238,7 @@ export function adr2md(adr) {
     md = md.concat('\n## Decision Outcome\n\nChosen option: "' + adr.decisionOutcome.chosenOption)
 
     if (adr.decisionOutcome.explanation.trim() !== '') {
-        let isList = adr.decisionOutcome.explanation.trim().match(/^[*+-](.|\s)+(\s[*+-](.|\s)+)+/g)
+        let isList = adr.decisionOutcome.explanation.trim().match(/^[*-+]/)
         if (isList) {
             md = md.concat('", because\n\n' + adr.decisionOutcome.explanation + '\n')
         } else {
@@ -249,7 +247,6 @@ export function adr2md(adr) {
     } else {
         md = md.concat('"\n')
     }
-
 
     if (adr.decisionOutcome.positiveConsequences.length > 0) {
         md = md.concat('\n### Positive Consequences\n\n')
@@ -283,3 +280,34 @@ export function adr2md(adr) {
     }
     return md
 }
+
+
+
+/**
+ * Converts an string in snake case into an natural-language-like string.
+ * 
+ * Example: '0001-add-status-field' is converted to '0001 Add Status Field'
+ * 
+ * @param {string} snake 
+ */
+export function snakeCase2naturalCase(snake) {
+    return snake.replace(
+        /([-_][a-z])/g,
+        (group) => group.toUpperCase()
+            .replace('-', ' ')
+            .replace('_', ' ')
+    )
+  }
+  
+  /**
+  * Converts an string in natural case into an snake case string.
+  * 
+  * Can be used to generate a file name from the title of an ADR.
+  * 
+  * Example: 'Add status Field' is converted to 'add-status-field'
+  * 
+  * @param {string} snake 
+  */
+ export function naturalCase2snakeCase(natural) {
+    return natural.toLowerCase().split(' ').join('-');
+  }

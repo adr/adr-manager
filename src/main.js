@@ -5,7 +5,7 @@ import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
 import VueSimpleAlert from "vue-simple-alert";
 
-import router from './router'
+import router from './plugins/router'
 
 /* Needed to refresh the code mirror, when it becomes visible or is resized. */
 import { ObserveVisibility } from 'vue-observe-visibility'

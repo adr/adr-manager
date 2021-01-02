@@ -111,22 +111,55 @@ export async function pushToGitHub(
 }
 
 /**
- * Returns a Promise with the list of all repositories accessible by the user.
+ * Returns a Promise with the list of repositories accessible by the user.
  *
  * An example of the returned JSON structure can be found at 'https://api.github.com/users/adr/repos'
  * @param {string} user - the authID of user'
  * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
  */
-export async function loadRepositoryList(user) {
-  user = localStorage.getItem('authId')
+export async function loadRepositoryList(user, page = 0, per_page = 5) {
+  user = localStorage.getItem('authId');
   return pizzly
     .integration("github")
     .auth(user)
-    .get("/user/repos")
+    .get("/user/repos?sort=updated&page=" + page + "&per_page=" + per_page)
     .then((response) => response.json())
     .catch((err) => {
       console.log(err);
     });
+}
+
+/**
+ * Returns a Promise with the list of repositories that are accessible by the user and which full name contains the search string.
+ *
+ * An example of the returned JSON structure can be found at 'https://api.github.com/users/adr/repos'
+ * @param {string} searchString - the string to search for
+ * @param {number} maxResults - the maximum number of repositories
+ * @param {number} searchResults - a list of results to append the 
+ * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
+ */
+export async function searchRepositoryList(searchString, maxResults = 2, searchResults = []) {
+  let user = localStorage.getItem('authId');
+  let promise;
+  let page = 0;
+  let perPage = 500;
+  let hasNextPage = true;
+  while (searchResults.length < maxResults && hasNextPage) {
+    promise = loadRepositoryList(user, page, perPage)
+      .then((repositoryList) => {
+          repositoryList.filter((repo) => (repo.full_name.includes(searchString)))
+            .forEach(repo => { if (searchResults.length < maxResults) { searchResults.push(repo) } });
+        if (repositoryList.length < perPage) {
+          hasNextPage = false;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    await promise;
+    page++;
+  }
+  return searchResults;
 }
 
 /**Returns a Promise with the the file tree of the repository.
@@ -266,7 +299,7 @@ export async function loadARepositoryContent(repoFullName, branchName, user) {
     .then((data) => {
       // Find all files in the folder 'docs/adr' or 'doc/adr'
       let adrList = data.tree.filter((file) => {
-        return file.path.startsWith('docs/adr/') || file.path.startsWith('doc/adr/') // Allow docs/adr and doc/adr as path .. maybe change this to demand mutual exclusion.
+        return file.path.startsWith('docs/adr/')
       })
       console.log('adrList', adrList)
 

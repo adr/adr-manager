@@ -28,8 +28,8 @@
 </template>
 
 <script>
-  import codemirror from './TheEditorMadrCodemirror.vue'
-  import EditorMadrList from './TheEditorMadrList.vue'
+  import codemirror from './EditorMadrCodemirror.vue'
+  import EditorMadrList from './EditorMadrList.vue'
   export default {
     name: 'EditorMADR',
     components: {
