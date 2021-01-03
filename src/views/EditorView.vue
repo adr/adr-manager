@@ -14,7 +14,7 @@
       <div v-if="!showFileExplorer" class="d-flex align-center justify-center" style="height: 75%; width: 100%;">
         <DialogAddRepositories>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn x-large class="align-center justify-center secondary" v-on="on" v-bind="attrs">Add Repositories
+            <v-btn data-cy="addRepo" x-large class="align-center justify-center secondary" v-on="on" v-bind="attrs">Add Repositories
             </v-btn>
           </template>
         </DialogAddRepositories>

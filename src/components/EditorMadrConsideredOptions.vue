@@ -37,7 +37,7 @@
                     <v-icon> mdi-drag-vertical </v-icon>
                   </drag>
                   <!-- Else, show the chosen-option-icon, if it's the chosen option -->
-                  <v-icon v-show="hoveredOption !== item && draggedOption !== item && isChosenOption(item)"
+                  <v-icon data-cy="checkConsOptAdr" v-show="hoveredOption !== item && draggedOption !== item && isChosenOption(item)"
                     color="success" class="pl-1">
                     mdi-check-decagram
                   </v-icon>
@@ -104,12 +104,12 @@
           <div v-if="mode === 'basic'" style="width: 32px"></div>
           <div v-else style="width: 64px"></div>
 
-          <codemirror :ref="'codemirror-' + adr.consideredOptions.length"
+          <codemirror data-cy="considerOptTextAdr" :ref="'codemirror-' + adr.consideredOptions.length"
             :class="[ 'my-0', 'py-0', 'mr-4', mode==='basic' ? '' : 'optiontitle']"
             :color="mode==='basic' ? undefined : 'grey lighten-2'" v-model="lastItem" @blur="addLastItemToOptions">
           </codemirror>
           <div class="align-center flex-shrink-0 flex-grow-0  my-0 py-0">
-            <v-btn v-on:click="addLastItemToOptions">
+            <v-btn data-cy="considerOptAddBtnAdr" v-on:click="addLastItemToOptions">
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </div>
