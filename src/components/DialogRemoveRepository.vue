@@ -34,7 +34,7 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn text color="success" @click="removeRepo"> Remove </v-btn>
+        <v-btn data-cy="removeRepoBtn" text color="success" @click="removeRepo"> Remove </v-btn>
         <v-btn text color="error" @click="showDialog = false"> Cancel </v-btn>
       </v-card-actions>
     </v-card>
