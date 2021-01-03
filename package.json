@@ -6,7 +6,7 @@
         "serve": "vue-cli-service serve --open",
         "build": "vue-cli-service build",
         "lint": "vue-cli-service lint",
-        "test:chrome": "cypress open"
+        "tests:chrome": "cypress open"
     },
     "dependencies": {
         "@mdi/font": "^3.6.95",
