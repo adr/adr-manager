@@ -6,7 +6,7 @@ name: General cypress report
 on: 
   push: 
     branches: 
-      - 'main'
+      - 'cypress-integration'
 
 jobs:
   cypress-tests:
