@@ -1,4 +1,4 @@
-# ADR-Manager
+# ADR-Manager 
 
 ## Project setup
 ```
