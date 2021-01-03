@@ -12,6 +12,7 @@
         "antlr4": "^4.9.0",
         "axios": "^0.21.0",
         "core-js": "^3.6.5",
+        "cypress": "^6.2.0",
         "marked": "^1.2.3",
         "pizzly-js": "^0.2.8",
         "roboto-fontface": "*",
