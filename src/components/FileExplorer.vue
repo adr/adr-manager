@@ -76,6 +76,7 @@
                     <DialogDeleteAdr :adr="file.adr" :repo="repo.repository">
                       <template v-slot:activator="{ on, attrs }">
                         <v-btn
+                          data-cy="deleteAdrBtn"
                           style="width: 30px; min-width: 30px; height: 100%"
                           class="mx-0 px-0"
                           v-if="
