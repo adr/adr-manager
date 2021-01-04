@@ -32,7 +32,7 @@ jobs:
         run: |
             mkdir cypress-report
             cp -r cypress/videos public/videos
-            cp -r cypress/screenshots public/screenshots
+            
 
       - name: Deploy report page to GitHub Page
         uses: peaceiris/actions-gh-pages@v3
