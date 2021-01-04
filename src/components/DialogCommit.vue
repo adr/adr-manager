@@ -37,6 +37,7 @@
           ><span class="spanAfterIcon spanTitle"> Select files</span>
           <template>
             <v-icon
+              data-cy="mdiCheckSelected"
               style="position: absolute; right: 0; bottom: 0"
               v-if="fileSelected"
               color="teal"
@@ -44,6 +45,7 @@
               mdi-check
             </v-icon>
             <v-icon
+              data-cy="mdiAlertNotSelected"
               style="position: absolute; right: 0; bottom: 0"
               v-if="!fileSelected"
               color="error"
@@ -57,13 +59,14 @@
             <v-expansion-panel-header>
               <div>
                 <v-icon>mdi-plus</v-icon
-                ><span class="spanAfterIcon spanSubTitle"> New files</span>
+                ><span data-cy="newFilesCommitMessage" class="spanAfterIcon spanSubTitle"> New files</span>
               </div>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
               <div v-for="(newFile, indexNew) in newFiles" :key="indexNew">
                 <v-flex>
                   <v-checkbox
+                    data-cy="newFileCheckBox"
                     :input-value="newFile.fileSelected"
                     @change="checkboxAction($event, newFile.path, newFiles)"
                     :label="newFile.title"
@@ -102,13 +105,14 @@
             <v-expansion-panel-header>
               <div>
                 <v-icon>mdi-delete</v-icon
-                ><span class="spanAfterIcon spanSubTitle"> Deleted files</span>
+                ><span data-cy="deletedFilesAdr" class="spanAfterIcon spanSubTitle"> Deleted files</span>
               </div>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
               <div v-for="(deletedFile, index) in deletedFiles" :key="index">
                 <v-flex>
                   <v-checkbox
+                    data-cy="deletedFileCheckBox"
                     :input-value="deletedFile.fileSelected"
                     @change="
                       checkboxAction($event, deletedFile.path, deletedFiles)
@@ -126,6 +130,7 @@
           ><span class="spanAfterIcon spanTitle"> Enter commit message</span>
           <template>
             <v-icon
+              data-cy="mdiCheckCommitMessage"
               style="position: absolute; right: 0; bottom: 0"
               v-if="!textFieldError"
               color="teal"
@@ -133,6 +138,7 @@
               mdi-check
             </v-icon>
             <v-icon
+              data-cy="mdiAlertCommitMessage"
               style="position: absolute; right: 0; bottom: 0"
               v-if="textFieldError"
               color="error"
@@ -142,6 +148,7 @@
           </template>
         </div>
         <v-text-field
+          data-cy="textFieldCommitMessage"
           class="textFieldFontSize textFieldHelpFontSize"
           label="Commit message"
           :error-messages="isTextfieldValid()"
@@ -164,6 +171,7 @@
       <v-card-actions class="buttonPadding">
         <v-spacer></v-spacer>
         <v-btn
+          data-cy="btnOfDialogCommitForPush"
           text
           color="success"
           :disabled="textFieldError || !fileSelected"
