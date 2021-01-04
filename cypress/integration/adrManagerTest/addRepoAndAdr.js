@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 
-context("Test add repository and new adr function", () => {
+context.only("Test add repository and new adr function", () => {
     beforeEach(() => {
         cy.visit("http://localhost:8080/manager");
         window.localStorage.clear();
