@@ -28,7 +28,7 @@
                       v-bind="attrs"
                       v-on="on"
                     >
-                      <v-icon>mdi-publish</v-icon>
+                      <v-icon data-cy="pushIcon">mdi-publish</v-icon>
                     </v-btn>
                   </template>
                 </DialogCommit>
@@ -101,7 +101,7 @@
                       createNewAdr({ repository: repo })
                     "
                   >
-                    <v-icon>mdi-plus</v-icon>
+                    <v-icon data-cy="NewAdrFile">mdi-plus</v-icon>
                     New ADR
                   </v-btn>
                 </div>
