@@ -1,6 +1,6 @@
 <template>
   <v-card class="text-left overflow-y-auto" height="100%">
-    <codemirror v-model="rawMd" @input="update" :options="cmOptions" ref="cm" v-observe-visibility="visibilityChanged">
+    <codemirror data-cy="markdownText" v-model="rawMd" @input="update" :options="cmOptions" ref="cm" v-observe-visibility="visibilityChanged">
     </codemirror>
   </v-card>
 </template>

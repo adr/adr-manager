@@ -15,7 +15,7 @@ context("Test commit and push file --> delete file in repo (push)", () => {
         cy.get('[data-cy=repoNameList]').click();
 
        // Add new file
-       cy.get('[data-cy=NewAdrFile]').click();
+       cy.get('[data-cy=NewAdrFile]').click({force: true});
        cy.contains('-Infinity-.md*').click();
        cy.get('[data-cy=pushIcon]').click();
        
