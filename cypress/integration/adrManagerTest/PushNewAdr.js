@@ -40,6 +40,8 @@ context("Test delete repository function", () => {
        cy.get('[data-cy=deletedFileCheckBox]').check({force: true});
        cy.get('[data-cy=textFieldCommitMessage]').type("Delet File");
        cy.get('[data-cy=btnOfDialogCommitForPush]').click();
+       cy.intercept('POST', '**/github/repos**').as('getRepos');
+       cy.contains('OK').click();
 
 
     });
