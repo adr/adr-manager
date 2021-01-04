@@ -22,8 +22,6 @@ context("Test new adr function", () => {
             expect(localStorage.getItem('addedRepositories')).to.not.eq('[]');
         });
 
-        // cy.log("localStorage", JSON.parse(window.localStorage.getItem('addedRepositories')));
-
         // Add title to new adr
         cy.get('[data-cy=titleAdr]').click();
         cy.get('[data-cy=titleAdr]').type("TestTitle");
