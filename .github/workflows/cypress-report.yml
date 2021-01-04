@@ -17,13 +17,14 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install cypress and verify
-        run: |  
+        run:  
           npm ci
           $(npm bin)/cypress verify
-          npm run serve
+          
         
       - name: Run Cypress tests
-        run: 
+        run: | 
+              npm run serve &
               npm run tests:chrome
         continue-on-error: false
       
