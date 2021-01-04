@@ -34,14 +34,14 @@ export const store = new Vue({
          */
         reload() {
             /* Load data from local storage. */
+            this.addedRepositories = [];
             let addedRepos = localStorage.getItem('addedRepositories');
             if (addedRepos !== null) {
                 addedRepos = JSON.parse(addedRepos);
                 console.log('Loaded Repositories from local storage.', addedRepos);
                 // Validate storage
                 if (isValidRepoList(addedRepos)) {
-                    console.log('Adding Repositories.', addedRepos);
-                    this.addRepositories(addedRepos);
+                    this.addRepositories(addedRepos.map((repo) => new Repository(repo)));
                 } else {
                     console.log('Invalid repos: ', addedRepos);
                 }
@@ -203,8 +203,8 @@ export const store = new Vue({
      */
     createNewAdr: function (repo) {
         if (this.addedRepositories.includes(repo)) {
-          let md = adr2md(new ArchitecturalDecisionRecord());
-          let id = Math.max(...repo.adrs.map((adr) => adr.id)) + 1;
+          let md = adr2md(ArchitecturalDecisionRecord.createNewAdr());
+          let id = Math.max(...repo.adrs.map((adr) => adr.id), -1) + 1;
           let newAdr = {
             originalMd: undefined,
             editedMd: md,
@@ -368,7 +368,8 @@ export const store = new Vue({
 function isValidRepoList(repos) {
     console.log('Valid check.');
     return repos.every(repo => {
-        return repo instanceof Repository && repo.adrs.every(isValidAdr);
+      return _.has(repo, 'fullName') && _.has(repo, 'activeBranch') && _.has(repo, 'branches') &&_.has(repo, 'addedAdrs') && _.has(repo, 'deletedAdrs') 
+        && _.has(repo, 'adrs') && repo.adrs.every(isValidAdr);
     });
 }
 

@@ -10,15 +10,17 @@ export class ArchitecturalDecisionRecord {
     this.title = title || '';
     this.status = status || '';
     this.deciders = deciders || '';
-    this.date = date || '';//new Date().toISOString().substr(0, 10);
+    this.date = date || '';
     this.technicalStory = technicalStory || '';
     this.contextAndProblemStatement = contextAndProblemStatement || '';
     this.decisionDrivers = decisionDrivers || [];
+    this.highestOptionId = 0;
     this.consideredOptions = [];
     if (consideredOptions && consideredOptions.length > 0) {
-      consideredOptions.forEach(function (opt) { this.addOption(opt) });
+      for (let i = 0; i < consideredOptions.length; i++) {
+        this.addOption(consideredOptions[i]);
+      }
     }
-    this.highestOptionId = 0;
     this.decisionOutcome = decisionOutcome || {
       chosenOption: '',
       explanation: '',
@@ -41,6 +43,7 @@ export class ArchitecturalDecisionRecord {
       this.decisionOutcome.negativeConsequences = []
     }
   }
+
   /**
    * Creates, adds and returns a new option.
    * 
@@ -64,6 +67,16 @@ export class ArchitecturalDecisionRecord {
     return this.consideredOptions.find((el) => {
       return el.title.startsWith(title)
     })
+  }
+
+  /**
+   * Creates a new ADR with default values already set.
+   */
+  static createNewAdr() {
+    return new ArchitecturalDecisionRecord({
+        status : 'proposed',
+        date : new Date().toISOString().substr(0, 10),
+      })
   }
 }
 

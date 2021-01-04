@@ -109,7 +109,6 @@
       },
       adrPath() {
         if (store.currentRepository && this.currentAdr !== undefined && this.currentAdr.path !== undefined) {
-          console.log("adrPath", store.currentRepo);
           return store.currentRepository.fullName + "/" + this.currentAdr.path;
         } else {
           return "";
@@ -122,7 +121,6 @@
       }
     },
     mounted() {
-      this.dataAuth = this.$route.params.id;
       store.reload();
       store.openAdrBy(this.repoFullName, this.adr);
     },
@@ -140,7 +138,7 @@
       },
       onSelectedBranch() {
         this.$confirm("Do you really want to change branch?").then(() => {
-          loadARepositoryContent(this.currentRepo, this.selected, this.dataAuth)
+          loadARepositoryContent(this.currentRepo, this.selected)
             .then((repoObject) => {
               if (typeof repoObject !== "undefined") {
                 store.updateRepository(repoObject);
@@ -154,8 +152,7 @@
       loadBranchesName() {
         loadBranchesName(
           this.currentRepo.split("/")[1],
-          this.currentRepo.split("/")[0],
-          this.dataAuth
+          this.currentRepo.split("/")[0]
         ).then((branchesObjectList) => {
           let x = branchesObjectList.map((branches) => ({
             brancheName: branches.name

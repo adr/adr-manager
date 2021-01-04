@@ -75,11 +75,9 @@
     name: 'EditorMADR',
     components: {
       codemirror,
-      //NavigatorFab,
       StatusDateDecidersStory,
       ConsideredOptions,
       DecisionOutcome,
-      //ProsAndConsOfOptions,
       GenericList
     },
     props: {
