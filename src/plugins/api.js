@@ -152,13 +152,13 @@ export async function loadRepositoryList(page = 1, per_page = 5) {
  * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
  */
 export async function searchRepositoryList(searchString, maxResults = 2, searchResults = []) {
-  let user = localStorage.getItem('authId');
+  let page = 1;
+  let perPage = 100;
+
   let promise;
-  let page = 0;
-  let perPage = 500;
   let hasNextPage = true;
   while (searchResults.length < maxResults && hasNextPage) {
-    promise = loadRepositoryList(user, page, perPage)
+    promise = loadRepositoryList(page, perPage)
       .then((repositoryList) => {
           repositoryList.filter((repo) => (repo.full_name.includes(searchString)))
             .forEach(repo => { if (searchResults.length < maxResults) { searchResults.push(repo) } });
