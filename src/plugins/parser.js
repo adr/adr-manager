@@ -191,6 +191,8 @@ export function md2adr(md) {
     const tokens = new antlr4.CommonTokenStream(lexer);
     const parser = new MADRParser(tokens);
     parser.buildParseTrees = true;
+    parser.removeErrorListeners();
+
     const tree = parser.start(); // 'start' is the name of the starting rule.
     // console.log('Created Parse Tree! ', tree)
     const printer = new MADRGenerator();
