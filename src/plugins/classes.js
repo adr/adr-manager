@@ -31,16 +31,16 @@ export class ArchitecturalDecisionRecord {
 
     // Assure invariants for decisionOutcome attribute
     if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, 'chosenOption')) {
-      this.decisionOutcome.positiveConsequences = ''
+      this.decisionOutcome.decisionOutcome = '';
     }
     if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, 'explanation')) {
-      this.decisionOutcome.explanation = ''
+      this.decisionOutcome.explanation = '';
     }
     if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, 'positiveConsequences')) {
-      this.decisionOutcome.positiveConsequences = []
+      this.decisionOutcome.positiveConsequences = [];
     }
     if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, 'negativeConsequences')) {
-      this.decisionOutcome.negativeConsequences = []
+      this.decisionOutcome.negativeConsequences = [];
     }
   }
 
@@ -51,22 +51,22 @@ export class ArchitecturalDecisionRecord {
    *  optionData - an object with optional attributes title, description, pros, cons  
    */
   addOption({ title, description, pros, cons } = {}) {
-    let id = this.highestOptionId
-    this.highestOptionId = this.highestOptionId + 1
+    let id = this.highestOptionId;
+    this.highestOptionId = this.highestOptionId + 1;
     let newOpt = {
       title: title || '',
       description: description || '',
       pros: pros || [],
       cons: cons || [],
       id: id // needed as key/id (for referencing an option or as key in v-for or drag'n'drop)
-    }
-    this.consideredOptions.push(newOpt)
-    return newOpt
+    };
+    this.consideredOptions.push(newOpt);
+    return newOpt;
   }
   getOptionByTitle(title) {
     return this.consideredOptions.find((el) => {
-      return el.title.startsWith(title)
-    })
+      return el.title.startsWith(title);
+    });
   }
 
   /**
@@ -74,9 +74,12 @@ export class ArchitecturalDecisionRecord {
    */
   static createNewAdr() {
     return new ArchitecturalDecisionRecord({
-        status : 'proposed',
-        date : new Date().toISOString().substr(0, 10),
-      })
+      status: 'proposed',
+      date: new Date().toISOString().substr(0, 10),
+      decisionOutcome: {
+        explanation: 'comes out best (see below).'
+      }
+    });
   }
 }
 

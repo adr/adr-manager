@@ -49,11 +49,11 @@ class MADRGenerator extends MADRListener {
     enterConsideredOptions(ctx) {
         let tmpOptionList = []
         this.addListItemsFromListToList(ctx.children[0], tmpOptionList)
-        tmpOptionList.forEach(opt => this.adr.addOption({ title: opt }))
-    }
-
-    enterChosenOption(ctx) {
-        this.adr.decisionOutcome.chosenOption = ctx.getText()
+        tmpOptionList.forEach(opt => {
+            if (opt.trim() !== "") {
+                this.adr.addOption({ title: opt })
+            }
+        })
     }
 
     enterChosenOptionAndExplanation(ctx) {
@@ -87,7 +87,6 @@ class MADRGenerator extends MADRListener {
     }
 
     enterOptionTitle(ctx) {
-        // console.log('Option Title in Pros and Cons: ', ctx.getText())
         this.currentOption = this.getMostSimilarOptionTo(ctx.getText())
     }
 
@@ -173,8 +172,9 @@ class MADRGenerator extends MADRListener {
      */
     addListItemsFromListToList(parseTreeList, targetList) {
         for (let i = 0; i < parseTreeList.children.length; i++) {
-            if (parseTreeList.children[i].ruleIndex === MADRParser.ruleNames.indexOf('textLine')) { // if it is not a token 
-                targetList.push(parseTreeList.children[i].getText())
+            if (parseTreeList.children[i].ruleIndex === MADRParser.ruleNames.indexOf('textLine') // if it is a text line 
+                && parseTreeList.children[i].getText().trim() !== "") {
+                targetList.push(parseTreeList.children[i].getText());
             }
         }
     }
@@ -299,17 +299,17 @@ export function snakeCase2naturalCase(snake) {
             .replace('-', ' ')
             .replace('_', ' ')
     )
-  }
-  
-  /**
-  * Converts an string in natural case into an snake case string.
-  * 
-  * Can be used to generate a file name from the title of an ADR.
-  * 
-  * Example: 'Add status Field' is converted to 'add-status-field'
-  * 
-  * @param {string} snake 
-  */
- export function naturalCase2snakeCase(natural) {
+}
+
+/**
+* Converts an string in natural case into an snake case string.
+* 
+* Can be used to generate a file name from the title of an ADR.
+* 
+* Example: 'Add status Field' is converted to 'add-status-field'
+* 
+* @param {string} snake
+*/
+export function naturalCase2snakeCase(natural) {
     return natural.toLowerCase().split(' ').join('-');
-  }
+}

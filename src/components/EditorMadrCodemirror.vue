@@ -63,8 +63,8 @@
     watch: {
       value(newValue) {
         if (this.dValue !== newValue) {
-          this.codemirror.setValue(newValue)
-          this.codemirror.clearHistory()
+          this.codemirror.setValue(newValue);
+          this.codemirror.clearHistory();
         }
       }
     },
@@ -72,29 +72,42 @@
       this.codemirror.refresh()
     },
     created() {
-      this.dValue = this.value
+      this.dValue = this.value;
     },
     mounted() {
-      this.codemirror.getDoc().setValue(this.value)
+      this.dValue = this.value;
+      this.codemirror.setValue(this.value);
     },
     methods: {
       /** Emit 'input' event.
        */
       update: _.debounce(function () {
         this.$emit('input', this.dValue)
-      }, 500),
+      }, 0),
       visibilityChanged(isVisible) {
         this.isVisible = isVisible;
         if(isVisible) {
           this.codemirror.refresh();
         }
+      },
+      
+      /**
+       * Focuses the text field of this component.
+       * May be called by parent components.
+       */
+      focus() {
+        this.codemirror.focus();
+        this.codemirror.setCursor({
+             line: 1,
+             ch: 1,
+           });
       }
     }
   };
 </script>
 
 <style scoped>
-  .customizedcm>>>.CodeMirror {
+  .customizedcm >>> .CodeMirror {
     background-color: transparent;
     font-family: Arial, monospace;
     font-size: 11pt;
