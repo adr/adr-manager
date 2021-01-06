@@ -13,12 +13,12 @@
     </v-list-item>
 
     <!-- last item with '+'-Button -->
-    <v-list-item dense class="align-self-center mx-0 px-0" :key="list.length">
+    <v-list-item dense class="align-self-center mx-0 px-0" :key="list.length + 1">
       <codemirror v-model="lastItem" :color="cmColor" @blur="addItemIfNotEmpty"></codemirror>
 
       <!-- Show the add icon next to the last. -->
       <v-list-item-icon class="align-center flex-shrink-0">
-        <v-btn v-on:click="addItem">
+        <v-btn @click="addItem">
           <v-icon>mdi-plus</v-icon>
         </v-btn>
       </v-list-item-icon>
@@ -27,12 +27,12 @@
 </template>
 
 <script>
-  import codemirror from './TheEditorMadrCodemirror.vue'
+  import codemirror from './EditorMadrCodemirror.vue'
 
   export default {
     name: 'EditorMadrList',
     components: {
-      codemirror,
+      codemirror
     },
     props: {
       list: {
@@ -57,8 +57,8 @@
       },
       addItem() {
         this.list.push(this.lastItem);
-        this.lastItem = '';
-        this.$emit('input', this.list)
+          this.lastItem = '';
+        this.$emit('input', this.list);
       }
     }
   };

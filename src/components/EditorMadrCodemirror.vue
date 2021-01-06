@@ -1,9 +1,8 @@
 <template>
-  <v-card flat class="flex-grow-1 py-1 pl-2 text-left flex-shrink-1" :color="color">
-    <codemirror v-model="dValue" :options="cmOptions" v-on:input="(ev) => update(ev)" ref="cm"
-      v-observe-visibility="visibilityChanged" class="customizedcm"
-      @blur="$emit('blur')"
-      @focus="$emit('focus')"></codemirror>
+  <v-card flat class="flex-grow-1 py-1 pl-2 text-left flex-shrink-1" :color="color"
+    v-observe-visibility="visibilityChanged" v-resize @resize="refresh()">
+    <codemirror v-model="dValue" :options="cmOptions" v-on:input="(ev) => update(ev)" ref="cm" class="customizedcm"
+      @blur="$emit('blur')" @focus="$emit('focus')"></codemirror>
   </v-card>
 </template>
 
@@ -18,9 +17,6 @@
   import 'codemirror/mode/markdown/markdown.js'
   // theme
   import 'codemirror/theme/lesser-dark.css'
-
-  import 'vue-observe-visibility'
-
 
   export default {
     name: 'EditorMadrCodemirror',
@@ -45,9 +41,18 @@
           connect: 'align',
           lineWrapping: true,
           mode: 'text/x-markdown',
-          lineNumbers: false,
-          autoRefresh: true,
-        }
+          lineNumbers: false
+        },
+
+        isVisible: true,
+        /**Refreshes the code mirror to avoid update anomalies.
+         * This method is a data property, because it must be unique for every cm instance.
+         */
+        refresh: _.debounce(function () {
+          if (this.isVisible) {
+            this.codemirror.refresh();
+          }
+        }, 100)
       }
     },
     computed: {
@@ -78,19 +83,18 @@
       update: _.debounce(function () {
         this.$emit('input', this.dValue)
       }, 500),
-      /** Refresh code mirror, when it becomes visible, to avoid anomalies.
-       */
       visibilityChanged(isVisible) {
-        if (isVisible) {
-          this.codemirror.refresh()
+        this.isVisible = isVisible;
+        if(isVisible) {
+          this.codemirror.refresh();
         }
-      },
+      }
     }
   };
 </script>
 
 <style scoped>
-  .customizedcm >>> .CodeMirror {
+  .customizedcm>>>.CodeMirror {
     background-color: transparent;
     font-family: Arial, monospace;
     font-size: 11pt;

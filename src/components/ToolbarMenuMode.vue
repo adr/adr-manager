@@ -1,32 +1,34 @@
 <template>
-  <v-menu offset-y>
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn class="align-self-center ml-4" dark text v-bind="attrs" v-on="on">
-        Mode
-      </v-btn>
-    </template>
-    <v-list>
-      <v-list-item v-on:click="switchMode('basic')">
-        <v-list-item-title>Basic</v-list-item-title>
-      </v-list-item>
-      <v-list-item v-on:click="switchMode('advanced')">
-        <v-list-item-title>Advanced</v-list-item-title>
-      </v-list-item>
-      <v-list-item v-on:click="switchMode('professional')">
-        <v-list-item-title>Professional</v-list-item-title>
-      </v-list-item>
-    </v-list>
-  </v-menu>
+  <div>
+    <v-tabs v-model="tab" class="mx-0 px-0 pt-0 mt-0 flex-grow-0" background-color="transparent">
+      <v-tooltip v-for="item in modes" :key="item.name" open-delay="500" bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-tab text v-on:click="setMode(item.name)" v-on="on" v-bind="attrs">
+            {{ item.name }}
+          </v-tab>
+        </template>
+        <span>
+          {{ item.tooltip }}
+        </span>
+      </v-tooltip>
+    </v-tabs>
+  </div>
 </template>
 
 <script>
-  import { EventBus } from '@/plugins/event-bus.js'
+  import { store } from '@/plugins/store.js'
 
   export default {
     name: 'MenuMode',
     components: {
     },
     data: () => ({
+      tab: 0,
+      modes: [
+        { name: 'basic', tooltip: 'Only show required fields.' },
+        { name: 'advanced', tooltip: 'Show advanced fields.' },
+        { name: 'professional', tooltip: 'Show all fields.' }
+      ]
     }),
     props: {
       consideredOptions: {
@@ -35,17 +37,18 @@
         default: () => ([])
       }
     },
+    computed: {
+    },
     created() {
+      this.tab = this.modes.findIndex(m => (m.name === store.mode));
+      store.$on('set-mode', this.updateModeLocal);
     },
     methods: {
-      switchMode(mode) {
-        if (['basic', 'advanced', 'professional'].includes(mode)) { // Double-check that passed mode is valid.
-          localStorage.setItem('mode', mode)
-          this.$emit('change-mode', mode)
-          EventBus.$emit('change-mode', mode)
-        } else {
-          console.log('Error in Mode Selection')
-        }
+      updateModeLocal(mode) {
+        this.tab = this.modes.findIndex(m => (m.name === mode));
+      },
+      setMode(mode) {
+        store.setMode(mode);
       }
     }
   };

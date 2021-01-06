@@ -72,7 +72,7 @@ class MADRGenerator extends MADRListener {
             }
             let explanation = rawDecisionOutcome.slice(1).join()
             this.adr.decisionOutcome.chosenOption = chosenOption
-            this.adr.decisionOutcome.explanation = explanation
+            this.adr.decisionOutcome.explanation = explanation.trim()
         } else {
             console.log('Couldn\'t find chosen option.')
         }
@@ -123,7 +123,7 @@ class MADRGenerator extends MADRListener {
         }, this);
         if (opt) { // If a fitting option was found, return it.
             return opt;
-        } 
+        }
         // Else check if there is another (less) similar title.
         opt = this.adr.consideredOptions.find(function (opt) {
             return this.matchOptionTitleMoreRelaxed(opt.title, optTitle)
@@ -191,6 +191,8 @@ export function md2adr(md) {
     const tokens = new antlr4.CommonTokenStream(lexer);
     const parser = new MADRParser(tokens);
     parser.buildParseTrees = true;
+    parser.removeErrorListeners();
+
     const tree = parser.start(); // 'start' is the name of the starting rule.
     // console.log('Created Parse Tree! ', tree)
     const printer = new MADRGenerator();
@@ -201,15 +203,20 @@ export function md2adr(md) {
 
 export function adr2md(adr) {
     var md = '# ' + adr.title + '\n'
-    if (adr.status !== '' && adr.status !== 'null') {
-        md = md.concat('\n* Status: ' + adr.status)
+
+    if ((adr.status !== '' && adr.status !== 'null') || adr.deciders.length > 0 || adr.date !== '') {
+        if (adr.status !== '' && adr.status !== 'null') {
+            md = md.concat('\n* Status: ' + adr.status.trim())
+        }
+        if (adr.deciders.length > 0) {
+            md = md.concat('\n* Deciders: ' + adr.deciders)
+        }
+        if (adr.date !== '') {
+            md = md.concat('\n* Date: ' + adr.date)
+        }
+        md = md.concat('\n')
     }
-    if (adr.deciders.length > 0) {
-        md = md.concat('\n* Deciders: ' + adr.deciders)
-    }
-    if (adr.date !== '') {
-        md = md.concat('\n* Date: ' + adr.date + '\n')
-    }
+
     if (adr.technicalStory !== '') {
         md = md.concat('\nTechnical Story: ' + adr.technicalStory + '\n')
     }
@@ -233,11 +240,15 @@ export function adr2md(adr) {
     md = md.concat('\n## Decision Outcome\n\nChosen option: "' + adr.decisionOutcome.chosenOption)
 
     if (adr.decisionOutcome.explanation.trim() !== '') {
-        md = md.concat('", because ' + adr.decisionOutcome.explanation + '\n')
+        let isList = adr.decisionOutcome.explanation.trim().match(/^[*-+]/)
+        if (isList) {
+            md = md.concat('", because\n\n' + adr.decisionOutcome.explanation + '\n')
+        } else {
+            md = md.concat('", because ' + adr.decisionOutcome.explanation + '\n')
+        }
     } else {
         md = md.concat('"\n')
     }
-
 
     if (adr.decisionOutcome.positiveConsequences.length > 0) {
         md = md.concat('\n### Positive Consequences\n\n')
@@ -271,3 +282,34 @@ export function adr2md(adr) {
     }
     return md
 }
+
+
+
+/**
+ * Converts an string in snake case into an natural-language-like string.
+ * 
+ * Example: '0001-add-status-field' is converted to '0001 Add Status Field'
+ * 
+ * @param {string} snake 
+ */
+export function snakeCase2naturalCase(snake) {
+    return snake.replace(
+        /([-_][a-z])/g,
+        (group) => group.toUpperCase()
+            .replace('-', ' ')
+            .replace('_', ' ')
+    )
+  }
+  
+  /**
+  * Converts an string in natural case into an snake case string.
+  * 
+  * Can be used to generate a file name from the title of an ADR.
+  * 
+  * Example: 'Add status Field' is converted to 'add-status-field'
+  * 
+  * @param {string} snake 
+  */
+ export function naturalCase2snakeCase(natural) {
+    return natural.toLowerCase().split(' ').join('-');
+  }

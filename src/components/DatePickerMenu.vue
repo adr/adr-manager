@@ -6,11 +6,8 @@
             offset-y
             max-width="290px"
             min-width="290px">
-      <template v-slot:activator="{ on, attrs }">
-        <v-text-field v-model="date" dense filled
-                   v-bind="attrs"
-                   v-on="on"
-                   min-width="200px"></v-text-field>
+      <template v-slot:activator="{ on }">
+        <v-chip v-on="on" outlined> <v-icon class="mr-2">mdi-calendar</v-icon> {{ value }} </v-chip>
       </template>
       <v-date-picker v-model="date"
                      no-title
@@ -37,13 +34,13 @@
     computed: {
       computedDateFormatted() {
         return this.formatDate(this.date)
-      },
+      }
     },
 
     watch: {
       date() {
         this.dateFormatted = this.formatDate(this.date)
-      },
+      }
     },
 
     methods: {
@@ -62,7 +59,7 @@
       update(e) {
         this.menu = false; // Close menu
         this.$emit('input', e)
-      },
-    },
+      }
+    }
   }
 </script>

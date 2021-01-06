@@ -1,6 +1,5 @@
 <template>
   <v-card class="d-flex flex-column">
-
     <v-card-text class="px-0 py-0 my-0" style="position: relative; height: 100%">
       <v-tabs-items v-model="tab" style="position: absolute; height: 100%; width: 100%; ">
         <v-tab-item :value="'MADR Editor'" style="height: 100%; ">
@@ -20,7 +19,7 @@
         </v-tab-item>
         <!--end 'MADR Editor'-->
         <v-tab-item :value="'Convert'" style="height: 100%;">
-          <EditorDiff :raw="dValue" v-on:accept="acceptAfterDiff" />
+          <EditorConvert :raw="dValue" v-on:accept="acceptAfterDiff" />
         </v-tab-item>
         <!--end 'Compare MD'-->
         <v-tab-item :value="'Markdown Preview'" style="height: 100%;" class="mx-auto overflow-y-auto">
@@ -46,129 +45,124 @@
 
     <v-toolbar dense class="my-0 py-0">
       <v-tabs v-model="tab" background-color="primary" dark dense class="pt-0 mt-0 align-self-end">
-        <!--<v-checkbox v-if="tab !== 'Markdown Preview'"
-              v-model="alwaysShowMarkdownPreview"
-              class="align-self-center mx-4"
-              label="Show Markdown Preview">
-        </v-checkbox>-->
-
         <v-spacer></v-spacer>
-        <v-tab v-for="(item, i) in displayedTabs" :key="i" :href="'#'+item">
+        <v-tab v-for="(item, i) in displayedTabs" :key="i" :href="'#' + item">
           {{ item }}
         </v-tab>
       </v-tabs>
     </v-toolbar>
-
   </v-card>
-
 </template>
 
 <script>
-  import _ from 'lodash'
-  import { ArchitecturalDecisionRecord } from '@/plugins/classes'
-  import { md2adr, adr2md } from '@/plugins/parser'
+  import _ from "lodash";
+  import { ArchitecturalDecisionRecord } from "@/plugins/classes";
+  import { md2adr, adr2md } from "@/plugins/parser";
+  import { store } from "@/plugins/store";
 
-  import { Splitpanes, Pane } from 'splitpanes'
-  import 'splitpanes/dist/splitpanes.css'
+  import { Splitpanes, Pane } from "splitpanes";
+  import "splitpanes/dist/splitpanes.css";
 
-  import EditorMadr from './TheEditorMadr.vue'
-  import EditorDiff from './TheEditorDiff.vue'
-  import EditorRaw from './TheEditorRaw.vue'
-  import MarkdownPreview from './UsefulComponents/MarkdownPreview.vue'
+  import EditorMadr from "./EditorMadr.vue";
+  import EditorConvert from "./EditorConvert.vue";
+  import EditorRaw from "./EditorRaw.vue";
+  import MarkdownPreview from "./EditorMarkdownPreview.vue";
 
   export default {
-    name: 'Editor',
+    name: "Editor",
     components: {
-      Splitpanes, Pane,
+      Splitpanes,
+      Pane,
       EditorMadr,
-      EditorDiff,
+      EditorConvert,
       EditorRaw,
       MarkdownPreview
     },
     props: {
-      value: {
-        type: String,
-        default: adr2md(new ArchitecturalDecisionRecord())
-      },
-      userName: {
-        type: String,
-        default: 'adr'
-      },
-      repoName: {
-        type: String,
-        default: 'madr'
-      },
-      branchName: {
-        type: String,
-        default: 'master'
-      }
+      filePath: String
     },
     data: () => ({
       adr: {},
       dValue: "# Default ADR Editor heading",
-      tab: 'MADR Editor',
-      tabs: ['MADR Editor', 'Markdown Preview', 'Raw Markdown'],
+      tab: "MADR Editor",
+      tabs: ["MADR Editor", "Markdown Preview", "Raw Markdown"],
       alwaysShowMarkdownPreview: false,
       _
     }),
     computed: {
       editingAllowed() {
-        return Boolean(this.tab === 'MADR Editor' || (typeof this.dValue === 'string' && adr2md(md2adr(this.dValue)) === this.dValue));
+        return Boolean(
+          this.tab === "MADR Editor" ||
+          (typeof this.dValue === "string" &&
+            adr2md(md2adr(this.dValue)) === this.dValue)
+        );
       },
       displayedTabs() {
-        let dTabs = !this.editingAllowed ? this.tabs.map((val) => {
-          if (val === 'MADR Editor') return 'Convert'
-          else return val
-        }) : this.tabs;
-        return dTabs
+        let dTabs = !this.editingAllowed
+          ? this.tabs.map((val) => {
+            if (val === "MADR Editor") return "Convert";
+            else return val;
+          })
+          : this.tabs;
+        return dTabs;
       }
     },
+
     created() {
-      this.dValue = (' ' + this.value).slice(1);
-      this.adr = md2adr(this.value);
-      this.currentBranch = this.branchName;
+      if (store.currentlyEditedAdr) {
+        this.openAdrFile(store.currentlyEditedAdr);
+      } else {
+        this.adr = new ArchitecturalDecisionRecord();
+        this.dValue = adr2md(this.adr);
+      }
+      store.$on("open-adr", this.openAdrFile);
     },
 
     watch: {
-      /**This method is called whenever the value prop changes. 
-       * When the MADR Editor is opened and the new value cannot be parsed perfectly, the Convert-Tab will be opened.
-       * (This is the main reason, why the parent component should not change the value-prop unless when opening an other ADR.)
-       */
-      value(newValue) {
-        this.dValue = (' ' + newValue).slice(1)
-        let tmpAdr = md2adr(newValue)
-        if (this.dValue === adr2md(tmpAdr)) { // If the parser did a perfect job, update the ADR.
-          this.adr = tmpAdr
-          if (this.tab === 'Convert') {
-            this.tab = 'MADR Editor'
-          }
-          console.log('Updated ADR')
-        } else if (this.tab === 'MADR Editor') {  // Else ask the user to review his ADR.
-          this.tab = 'Convert'
-        }
-      },
       dValue(newValue) {
-        this.$emit('input', newValue)
+        store.updateMdOfCurrentAdr(newValue);
+        this.$emit("input", newValue);
       }
     },
     methods: {
+      /**Opens the ADR.
+       * 
+       * Checks for parsing issues.
+       * Opens the edited markdown of the parameter adr file.
+       * 
+       * @param {object} adrFile - the adr file to be opened (must have an edited md attribute)
+       */
+      openAdrFile(adrFile) {
+        let md = adrFile.editedMd;
+        this.dValue = md;
+        let tmpAdr = md2adr(md);
+        if (this.dValue === adr2md(tmpAdr)) { // If the parser did a perfect job, update the ADR.
+          this.adr = tmpAdr;
+          if (this.tab === "Convert") {
+            this.tab = "MADR Editor";
+          }
+        } else if (this.tab === "MADR Editor") {  // Else ask the user to review his ADR.
+          this.tab = "Convert";
+        }
+      },
       updateAdrToMd(adr) {
         if (this.tab === "MADR Editor") {
           this.dValue = adr2md(adr);
+          this.$emit("adr-file", adr);
         }
       },
       updateMdToAdr(md) {
         if (this.tab !== "MADR Editor") {
-          this.adr = md2adr(md)
+          this.adr = md2adr(md);
         }
       },
       acceptAfterDiff(md) {
-        console.log('Accept in Editor - Switching Tab.')
-        this.updateMdToAdr(md)
-        this.tab = 'MADR Editor'
+        console.log("Accept in Editor - Switching Tab.");
+        this.updateMdToAdr(md);
+        this.tab = "MADR Editor";
       },
       logNotImplemented() {
-        console.log('Not implemented.')
+        console.log("Not implemented.");
       }
     }
   };

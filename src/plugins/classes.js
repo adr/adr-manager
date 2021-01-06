@@ -1,23 +1,25 @@
 
 // MADR-Type Definition
 export class ArchitecturalDecisionRecord {
-  constructor({ id, title, status, deciders,
+  constructor({ title, status, deciders,
     date, technicalStory, contextAndProblemStatement,
     decisionDrivers, consideredOptions,
     decisionOutcome,
     links
   } = {}) {
-    this.id = id || 'Unknown ID'
-    this.title = title || 'Default Title';
+    this.title = title || '';
     this.status = status || '';
-    this.deciders = deciders || [];
-    this.date = date || '';//new Date().toISOString().substr(0, 10);
+    this.deciders = deciders || '';
+    this.date = date || '';
     this.technicalStory = technicalStory || '';
     this.contextAndProblemStatement = contextAndProblemStatement || '';
     this.decisionDrivers = decisionDrivers || [];
-    this.consideredOptions = []
+    this.highestOptionId = 0;
+    this.consideredOptions = [];
     if (consideredOptions && consideredOptions.length > 0) {
-      consideredOptions.forEach(function (opt) { this.addOption(opt) })
+      for (let i = 0; i < consideredOptions.length; i++) {
+        this.addOption(consideredOptions[i]);
+      }
     }
     this.decisionOutcome = decisionOutcome || {
       chosenOption: '',
@@ -41,6 +43,7 @@ export class ArchitecturalDecisionRecord {
       this.decisionOutcome.negativeConsequences = []
     }
   }
+
   /**
    * Creates, adds and returns a new option.
    * 
@@ -48,7 +51,8 @@ export class ArchitecturalDecisionRecord {
    *  optionData - an object with optional attributes title, description, pros, cons  
    */
   addOption({ title, description, pros, cons } = {}) {
-    let id = this.consideredOptions.length
+    let id = this.highestOptionId
+    this.highestOptionId = this.highestOptionId + 1
     let newOpt = {
       title: title || '',
       description: description || '',
@@ -63,5 +67,48 @@ export class ArchitecturalDecisionRecord {
     return this.consideredOptions.find((el) => {
       return el.title.startsWith(title)
     })
+  }
+
+  /**
+   * Creates a new ADR with default values already set.
+   */
+  static createNewAdr() {
+    return new ArchitecturalDecisionRecord({
+        status : 'proposed',
+        date : new Date().toISOString().substr(0, 10),
+      })
+  }
+}
+
+export class Repository {
+  constructor({ fullName, activeBranch, branches, adrs }) {
+    this.fullName = fullName || '';
+    this.activeBranch = activeBranch || '';
+    this.branches = branches || [];
+    this.adrs = adrs || [];
+    this.addedAdrs = [];
+    this.deletedAdrs = [];
+  }
+
+  /**Returns the changed files in the repository. 
+   * 
+   * @returns {{ added: ADR[], changed: ADR[], deleted: ADR[] }} the changed ADRs 
+   */
+  getChanges() {
+    return {
+      added: this.addedAdrs,
+      changed: this.adrs.filter(adr => (adr.originalMd !== adr.editedMd && !this.addedAdrs.includes(adr))),
+      deleted: this.deletedAdrs
+    };
+  }
+
+  /**Returns true iff the repository contains changed ADRs. 
+   * 
+   * @param {string} repoFullName
+   * @returns {boolean} true, if the ADRs in the repository changed, else false.
+   */
+  hasChanges() {
+    let changes = this.getChanges();
+    return changes.changed.length !== 0 || changes.added.length !== 0 || changes.deleted.length !== 0;
   }
 }

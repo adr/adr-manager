@@ -10,6 +10,6 @@
 <script>
   // @ is an alias to /src
   export default {
-    name: 'ErrorPage',
+    name: 'ErrorPage'
   }
 </script>

@@ -38,6 +38,7 @@ export default {
     connectSuccess: function(data) {
       // On success, we update the user object
       this.user = data.authId;
+      localStorage.setItem('authId', data.authId);
       this.$router.push({ name: "Editor", params: { id: this.user } });
     },
     connectError: function(err) {
@@ -45,6 +46,6 @@ export default {
       console.error(err);
       alert("Something went wrong. Look at the logs.");
     }
-  },
+  }
 };
 </script>
