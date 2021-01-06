@@ -233,11 +233,9 @@
 
       addLastItemIfNotEmpty() {
         if (this.lastItem.trim() !== '') {
-          console.log(this.lastItem);
           this.addLastItemToOptions();
           this.$nextTick(() => {
             this.$refs[ "codemirror-" + this.adr.consideredOptions[this.adr.consideredOptions.length - 1].id ][0].focus();
-            console.log(this.lastItem);
           });
         }
       },

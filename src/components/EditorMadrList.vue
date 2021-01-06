@@ -17,8 +17,8 @@
           <div flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0 mx-0 d-flex"
             style="width: 32px; min-width: 32px">
             <!-- Show the drag-icon (dots) when the item is hovered or dragged -->
-            <drag v-show="hoveredItem === item || draggedItem === item" :data="item"
-              @dragstart="draggedItem = item" @dragend="draggedItem = null" class="flex-grow-1">
+            <drag v-show="hoveredItem === item || draggedItem === item" :data="item" @dragstart="draggedItem = item"
+              @dragend="draggedItem = null" class="flex-grow-1">
               <template v-slot:drag-image>{{ item.content }}</template> <!-- Show the title while dragging. -->
               <v-icon> mdi-drag-vertical </v-icon>
             </drag>
@@ -28,7 +28,8 @@
 
           <!-- Text field -->
           <v-card flat class="flex-grow-1">
-            <codemirror :ref="'cm-' + idx" v-model="list[idx]" @input="$emit('input', list)" :color="cmColor" @blur="removeItemIfEmptyAt(idx)">
+            <codemirror :ref="'codemirror-' + item.id" v-model="list[idx]" @input="$emit('input', list)" :color="cmColor"
+              @blur="removeItemIfEmptyAt(idx)">
             </codemirror>
           </v-card>
 
@@ -43,10 +44,9 @@
     </v-list-item>
 
     <!-- last item with '+'-Button -->
-    <v-list-item dense class="align-self-center mx-0 px-0 d-flex" :key="-list.length - 1">
+    <v-list-item dense class="align-self-center mx-0 px-0 d-flex" :key="-list.length - 2">
       <!-- Reserve space to fit the drag icon indent -->
-      <div class="align-center flex-shrink-0 flex-grow-0 my-0 py-0"
-            style="width: 32px; min-width: 32px">
+      <div class="align-center flex-shrink-0 flex-grow-0 my-0 py-0" style="width: 32px; min-width: 32px">
       </div>
 
       <codemirror :ref="'last-cm'" v-model="lastItem" :color="cmColor" @input="addItemIfNotEmpty"></codemirror>
@@ -92,12 +92,14 @@
         }
       },
       list(newList) {
-        console.log("Displayed List", this.displayedList);
-        console.log("Changed List", this.list);
-        this.displayedList = newList.map((str, idx) => ({
-          content: str,
-          id: idx
-        }))
+        this.displayedList.length = newList.length;
+        for (let i = 0; i < newList.length; i ++) {
+          if (this.displayedList[i]) {
+            this.displayedList[i].content = newList[i];
+          } else {
+            this.displayedList[i] = { content: this.lastItem, id: Math.max(...this.displayedList.map((item) => item.id), 0) + 1 };
+          }
+        }
       }
     },
     mounted() {
@@ -108,21 +110,20 @@
     },
     methods: {
       addItemIfNotEmpty() {
-          console.log("Add if not empty 1");
         if (this.lastItem.trim() !== '') {
-          console.log("Add if not empty 2");
           this.addItem();
           this.$nextTick(() => {
-            this.$refs["cm-" + (this.list.length - 1)][0].focus();
+            this.$refs["codemirror-" + this.displayedList[this.displayedList.length - 1].id][0].focus();
           });
         }
       },
 
       addItem() {
-        console.log("Last item", this.lastItem);
-        this.displayedList.push({ content: this.lastItem, id: Math.max(...this.displayedList.map((item) => item.id), 0) + 1 });
+        let item = { content: this.lastItem, id: Math.max(...this.displayedList.map((item) => item.id), 0) + 1 };
+        this.displayedList.push(item);
         this.lastItem = "";
         this.$emit("input", this.displayedList.map((el) => (el.content)));
+        return item;
       },
 
       /**Removes the item at the specifie index.
@@ -145,12 +146,8 @@
        */
       moveItem(id, newIndex) {
         if (typeof newIndex === 'number' && this.displayedList.find((el) => (el.id === id))) {
-          console.log("List: ", this.displayedList);
-          console.log("Dragged Item", this.draggedItem);
-          console.log("Id", id);
           let oldIndex = this.displayedList.findIndex((el) => (el.id === id));
           let item = this.displayedList[oldIndex];
-          console.log("Dragged Item", item);
           this.displayedList.splice(oldIndex, 1);
           this.displayedList.splice(newIndex, 0, item);
         }
