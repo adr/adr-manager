@@ -7,15 +7,70 @@
         <span class="flex-grow-1 align-self-center my-0 py-0">
           Some options have a more detailed description that is not displayed in Basic Mode.
         </span>
-        <v-btn class="justify-self-end align-self-end my-0 py-0" @click="switchToAdvancedMode()">Switch to Advanced Mode
+        <v-btn class="justify-self-end align-self-end my-0 py-0" @click="switchToAdvancedMode()">
+          Switch to Advanced Mode
         </v-btn>
       </div>
     </v-alert>
 
-    <v-card flat>
+    <v-list v-if="mode === 'basic'" class="my-0 py-0">
+      <v-list-item dense class="align-self-center mx-0 px-0 d-flex" v-for="(item, idx) in adr.consideredOptions"
+        :key="item.id">
+
+        <drop @dragenter="(event) => moveOption(event.data, idx)" class="my-0 py-0 flex-grow-1">
+          <v-card flat class="d-flex" :style=" draggedOption === item ? {
+                          borderLeft: '2px solid #1976D2',
+                          marginLeft: '-2px',
+                        }
+                      : {}
+              " @mouseenter="hoveredOption = item" @mouseleave="hoveredOption = null">
+
+            <!-- Left Icon for dragging -->
+            <div flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0 mx-0 d-flex"
+              style="width: 32px; min-width: 32px">
+              <!-- Show the drag-icon (dots) when the item is hovered or dragged -->
+              <drag v-show="hoveredOption === item || draggedOption === item" :data="item"
+                @dragstart="draggedOption = item" @dragend="draggedOption = null" class="flex-grow-1">
+                <template v-slot:drag-image>{{ item.content }}</template> <!-- Show the title while dragging. -->
+                <v-icon> mdi-drag-vertical </v-icon>
+              </drag>
+              <!-- Else, show nothing, but reserve space -->
+              <v-icon v-show="hoveredOption !== item && draggedOption !== item"></v-icon>
+            </div>
+
+            <!-- Text field -->
+            <v-card flat class="flex-grow-1">
+              <codemirror :ref="'codemirror-' + item.id" v-model="item.title">
+              </codemirror>
+            </v-card>
+
+            <!-- Delete Icon on the right. -->
+            <v-list-item-icon class="align-center flex-shrink-0">
+              <v-btn v-on:click="removeOption(item)">
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </v-list-item-icon>
+          </v-card>
+        </drop>
+      </v-list-item>
+
+      <!-- last item with '+'-Button -->
+      <v-list-item dense class="align-self-center mx-0 px-0 d-flex" :key="adr.consideredOptions.length + 1">
+        <!-- Reserve space to fit the drag icon indent -->
+        <div class="align-center flex-shrink-0 flex-grow-0 my-0 py-0" style="width: 32px; min-width: 32px">
+        </div>
+
+        <codemirror v-model="lastItem" @input="addLastItemIfNotEmpty()"></codemirror>
+
+        <!-- Show the add icon next to the last. -->
+        <v-list-item-icon class="align-center flex-shrink-0" style="width: 64px">
+        </v-list-item-icon>
+      </v-list-item>
+    </v-list>
+    <v-card v-else flat>
+
       <div v-for="(item, i) in adr.consideredOptions" :key="item.id">
         <drop @dragenter="(event) => moveOption(event.data, i)" class="my-0 py-0">
-
           <v-card flat :class="['my-1', activeOptions.includes(item) ? 'mb-8' : '']" :style="
                     draggedOption === item
                       ? {
@@ -46,7 +101,7 @@
                 </div>
 
               </div>
-              <div v-if="mode !== 'basic'" flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0 d-flex"
+              <div flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0 d-flex"
                 style="width: 32px; min-width: 32px">
                 <!-- Icon for collapsed option -->
                 <v-btn v-show="!activeOptions.includes(item)" text class="mx-0 px-0 flex-grow-1 flex-shrink-1"
@@ -60,9 +115,8 @@
                 </v-btn>
               </div>
               <!-- Option Title -->
-              <codemirror :ref="'codemirror-' + item.id"
-                :class="[ 'my-0', 'py-0', 'mr-4', mode==='basic' ? '' : 'optiontitle']" v-model="item.title"
-                :color="mode==='basic' ? undefined : 'grey lighten-2'"></codemirror>
+              <codemirror :ref="'codemirror-' + item.id" :class="[ 'my-0', 'py-0', 'mr-4', 'optiontitle']"
+                v-model="item.title" :color="'grey lighten-2'"></codemirror>
               <!-- Right Icons -->
               <div class="align-center flex-shrink-0 flex-grow-0  my-0 py-0">
                 <v-btn v-on:click="removeOption(item)">
@@ -72,7 +126,7 @@
             </v-card>
 
             <!-- Expandable Description -->
-            <v-expand-transition v-if="mode !== 'basic'">
+            <v-expand-transition>
               <div v-show="activeOptions.includes(item)" class="pl-12">
                 <h6 class="py-4 pl-4"> Description </h6>
                 <div class="pb-2 ml-4" style="margin-right: 80px">
@@ -99,19 +153,18 @@
       </div>
 
       <!-- Last Item with '+'-Button -->
-      <v-card class="my-1" flat :key="-1">
+      <v-card class="my-1" flat :key="adr.consideredOptions.length + 1">
         <v-card flat class="d-flex">
-          <div v-if="mode === 'basic'" style="width: 32px"></div>
-          <div v-else style="width: 64px"></div>
-
-          <codemirror :ref="'codemirror-' + adr.consideredOptions.length"
-            :class="[ 'my-0', 'py-0', 'mr-4', mode==='basic' ? '' : 'optiontitle']"
-            :color="mode==='basic' ? undefined : 'grey lighten-2'" v-model="lastItem" @blur="addLastItemToOptions">
+          <div style="width: 64px"></div>
+          
+          <codemirror
+            :class="[ 'my-0', 'py-0', 'mr-4', 'optiontitle']" :color="'grey lighten-2'" :value="lastItem"
+            @input="(val) => { if(mode !== 'basic') { lastItem = val; addLastItemIfNotEmpty() } }">
           </codemirror>
-          <div class="align-center flex-shrink-0 flex-grow-0  my-0 py-0">
-            <v-btn v-on:click="addLastItemToOptions">
+          <div class="align-center flex-shrink-0 flex-grow-0  my-0 py-0" style="width: 64px">
+            <!-- <v-btn v-on:click="addLastItemToOptions">
               <v-icon>mdi-plus</v-icon>
-            </v-btn>
+            </v-btn> -->
           </div>
         </v-card>
       </v-card>
@@ -146,7 +199,7 @@
       lastItem: '',
       activeOptions: [], // Expanded options
       hoveredOption: null, // Option, which the mouse hovers over (relevant to e.g. show Icons on hover)
-      draggedOption: null, // Option, which is currently dragged (relevant to e.g. show Icons on hover)
+      draggedOption: null // Option, which is currently dragged
     }),
     computed: {
       optionTitleList() {
@@ -160,11 +213,8 @@
     mounted() {
     },
     methods: {
-      scrollTo(target) {
-        this.$emit('scroll-to', target);
-      },
-
-      /**Used in Drag'n'Drop
+      /**
+       * Used in Drag'n'Drop
        */
       insertOption(event) {
         this.adr.consideredOptions.splice(event.index, 0, event.data);
@@ -181,10 +231,21 @@
         }
       },
 
+      addLastItemIfNotEmpty() {
+        if (this.lastItem.trim() !== '') {
+          console.log(this.lastItem);
+          this.addLastItemToOptions();
+          this.$nextTick(() => {
+            this.$refs[ "codemirror-" + this.adr.consideredOptions[this.adr.consideredOptions.length - 1].id ][0].focus();
+            console.log(this.lastItem);
+          });
+        }
+      },
+
       addLastItemToOptions() {
         if (this.lastItem.trim() !== '') {
           this.adr.addOption({ title: this.lastItem });
-          this.lastItem = '';
+          this.lastItem = "";
         }
       },
 
