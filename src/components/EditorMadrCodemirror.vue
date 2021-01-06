@@ -86,28 +86,30 @@
       }, 0),
       visibilityChanged(isVisible) {
         this.isVisible = isVisible;
-        if(isVisible) {
+        if (isVisible) {
           this.codemirror.refresh();
         }
       },
-      
+
       /**
        * Focuses the text field of this component.
        * May be called by parent components.
        */
       focus() {
-        this.codemirror.focus();
-        this.codemirror.setCursor({
-             line: 1,
-             ch: 1,
-           });
+        this.$nextTick(() => {
+          this.codemirror.focus();
+          this.codemirror.setCursor({
+            line: 1,
+            ch: 1,
+          });
+        })
       }
     }
   };
 </script>
 
 <style scoped>
-  .customizedcm >>> .CodeMirror {
+  .customizedcm>>>.CodeMirror {
     background-color: transparent;
     font-family: Arial, monospace;
     font-size: 11pt;
