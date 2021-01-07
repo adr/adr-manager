@@ -147,14 +147,15 @@
             </v-icon>
           </template>
         </div>
-        <v-text-field
+        <v-textarea
           data-cy="textFieldCommitMessage"
-          class="textFieldFontSize textFieldHelpFontSize"
           label="Commit message"
-          :error-messages="isTextfieldValid()"
+          auto-grow
+          rows="1"
           v-model="comMessage"
+          :error-messages="isTextfieldValid()"
           @input="handleCommitMessage($event)"
-        ></v-text-field>
+        ></v-textarea>
 
         <div class="distanceToTextField">
           <v-icon color="primary">mdi-information-outline</v-icon>
@@ -469,6 +470,7 @@ export default {
 
       createFileTree(this.currUser, this.currRepo, this.lastCommitSha, fileTree)
         .then((res) => {
+          console.log("res Tree", res)
           this.createCommitRequest(res.sha);
         })
         .catch((error) => console.error(error));
@@ -508,8 +510,8 @@ export default {
     nothingToCommitAlert() {
       this.$alert(
         "No changes have been made since the last push",
-        "Error",
-        "error",
+        "Everything up to date",
+        "success",
         {
           confirmButtonText: "Close",
         }
@@ -594,5 +596,8 @@ export default {
 }
 .divSpan {
   white-space: pre;
+}
+textarea {
+  font-family: roboto;
 }
 </style>
