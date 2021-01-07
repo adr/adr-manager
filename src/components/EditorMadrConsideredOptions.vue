@@ -23,7 +23,8 @@
                           marginLeft: '-2px',
                         }
                       : {}
-              " @mouseenter="hoveredOption = item" @mouseleave="hoveredOption = null">
+              " :color="isChosenOption(item) ? 'light-green lighten-5' : 'transparent'"
+            @mouseenter="hoveredOption = item" @mouseleave="hoveredOption = null">
 
             <!-- Left Icon for dragging -->
             <div flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0 mx-0 d-flex"
@@ -34,8 +35,13 @@
                 <template v-slot:drag-image>{{ item.content }}</template> <!-- Show the title while dragging. -->
                 <v-icon> mdi-drag-vertical </v-icon>
               </drag>
+              <!-- Else, show the chosen-option-icon, if it's the chosen option -->
+              <v-icon v-show="hoveredOption !== item && draggedOption !== item && isChosenOption(item)" color="success"
+                class="pl-1">
+                mdi-check-decagram
+              </v-icon>
               <!-- Else, show nothing, but reserve space -->
-              <v-icon v-show="hoveredOption !== item && draggedOption !== item"></v-icon>
+              <v-icon v-show="hoveredOption !== item && draggedOption !== item && !isChosenOption(item)"></v-icon>
             </div>
 
             <!-- Text field -->
@@ -45,8 +51,8 @@
             </v-card>
 
             <!-- Delete Icon on the right. -->
-            <v-list-item-icon class="align-center flex-shrink-0">
-              <v-btn v-on:click="removeOption(item)">
+            <v-list-item-icon v-show="hoveredOption === item" class="align-center flex-shrink-0">
+              <v-btn icon v-on:click="removeOption(item)">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </v-list-item-icon>
@@ -55,23 +61,22 @@
       </v-list-item>
 
       <!-- last item with '+'-Button -->
-      <v-list-item dense class="align-self-center mx-0 px-0 d-flex" :key="adr.consideredOptions.length + 1">
+      <v-list-item dense class="align-self-center mx-0 px-0 d-flex" :key="adr.highestOptionId">
         <!-- Reserve space to fit the drag icon indent -->
         <div class="align-center flex-shrink-0 flex-grow-0 my-0 py-0" style="width: 32px; min-width: 32px">
         </div>
 
         <codemirror v-model="lastItem" @input="addLastItemIfNotEmpty()"></codemirror>
 
-        <!-- Show the add icon next to the last. -->
-        <v-list-item-icon class="align-center flex-shrink-0" style="width: 64px">
-        </v-list-item-icon>
       </v-list-item>
     </v-list>
+
+    <!-- Advanced and professional mode -->
     <v-card v-else flat>
 
       <div v-for="(item, i) in adr.consideredOptions" :key="item.id">
         <drop @dragenter="(event) => moveOption(event.data, i)" class="my-0 py-0">
-          <v-card flat :class="['my-1', activeOptions.includes(item) ? 'mb-8' : '']" :style="
+          <v-card flat :class="['my-1', expandedOptions.includes(item) ? 'mb-8' : '']" :style="
                     draggedOption === item
                       ? {
                           borderLeft: '2px solid #1976D2',
@@ -80,7 +85,8 @@
                       : {}
               " @mouseenter="hoveredOption = item" @mouseleave="hoveredOption = null">
             <!-- Title and Icons -->
-            <v-card flat class="d-flex" :color="isChosenOption(item) ? 'light-green lighten-5' : 'transparent'">
+            <v-card flat class="d-flex" :color="isChosenOption(item) ? 'light-green lighten-5' : 'transparent'"
+              min-height="36px">
               <!-- Left Icons -->
               <div flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0 d-flex"
                 style="width: 32px; min-width: 32px">
@@ -99,37 +105,56 @@
                   <!-- Else, show nothing, but reserve space -->
                   <v-icon v-show="hoveredOption !== item && draggedOption !== item && !isChosenOption(item)"></v-icon>
                 </div>
-
               </div>
+
+
+              <!-- Option Title -->
+              <div class="flex-grow-1 d-flex">
+                <codemirror v-if="editedOptions.includes(item)" :ref="'codemirror-' + item.id"
+                  :class="[ 'my-0', 'py-0', 'mr-4']" v-model="item.title">
+                </codemirror>
+                <button v-else class="flex-grow-1 text-left" @click="toggleExpansionOfOption(item)">
+                  <div v-if="!expandedOptions.includes(item)">
+                    <span v-text="item.title"></span>
+                  </div>
+                  <div v-else>
+                    <h6 class="mb-0" v-text="item.title"></h6>
+                  </div>
+                </button>
+                <!--<h6 class="flex-grow-1 align-self-center" v-text="item.title"></h6>-->
+              </div>
+
+              <!-- Right Icons -->
+              <div v-show="hoveredOption === item || editedOptions.includes(item)"
+                class="align-center flex-shrink-0 flex-grow-0 my-0 py-0" style="position: absolute right;">
+                <v-btn icon class="mx-0 px-0 flex-grow-0 flex-shrink-0" @click="toggleEditingOfOption(item)">
+                  <v-icon v-if="editedOptions.includes(item)">mdi-check</v-icon>
+                  <v-icon v-else>mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn icon class="mx-1" v-on:click="removeOption(item)">
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </div>
+
+              <!-- Icon for expanding -->
               <div flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0 d-flex"
                 style="width: 32px; min-width: 32px">
-                <!-- Icon for collapsed option -->
-                <v-btn v-show="!activeOptions.includes(item)" text class="mx-0 px-0 flex-grow-1 flex-shrink-1"
-                  style="min-width: 0" @click="activeOptions.push(item)">
+                <v-btn v-show="!expandedOptions.includes(item)" text class="mx-0 px-0 flex-grow-1 flex-shrink-1"
+                  style="min-width: 0" @click="expandedOptions.push(item)">
                   <v-icon>mdi-chevron-down</v-icon>
                 </v-btn>
-                <!-- Icon for expanded option -->
-                <v-btn v-show="activeOptions.includes(item)" text class="mx-0 px-0 flex-grow-1 flex-shrink-1"
-                  style="min-width: 0" @click="activeOptions = activeOptions.filter((val) => (val !== item))">
+                <v-btn v-show="expandedOptions.includes(item)" text class="mx-0 px-0 flex-grow-1 flex-shrink-1"
+                  style="min-width: 0" @click="expandedOptions = expandedOptions.filter((val) => (val !== item))">
                   <v-icon>mdi-chevron-up</v-icon>
-                </v-btn>
-              </div>
-              <!-- Option Title -->
-              <codemirror :ref="'codemirror-' + item.id" :class="[ 'my-0', 'py-0', 'mr-4', 'optiontitle']"
-                v-model="item.title" :color="'grey lighten-2'"></codemirror>
-              <!-- Right Icons -->
-              <div class="align-center flex-shrink-0 flex-grow-0  my-0 py-0">
-                <v-btn v-on:click="removeOption(item)">
-                  <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </div>
             </v-card>
 
             <!-- Expandable Description -->
             <v-expand-transition>
-              <div v-show="activeOptions.includes(item)" class="pl-12">
+              <div v-show="expandedOptions.includes(item)" class="pl-12">
                 <h6 class="py-4 pl-4"> Description </h6>
-                <div class="pb-2 ml-4" style="margin-right: 80px">
+                <div class="pb-2 ml-4">
                   <codemirror hint="Description of the option" v-model="item.description" color="grey lighten-3">
                   </codemirror>
                 </div>
@@ -153,19 +178,15 @@
       </div>
 
       <!-- Last Item with '+'-Button -->
-      <v-card class="my-1" flat :key="adr.consideredOptions.length + 1">
+      <v-card class="my-1 mx-0" flat :key="adr.highestOptionId">
         <v-card flat class="d-flex">
-          <div style="width: 64px"></div>
-          
-          <codemirror
-            :class="[ 'my-0', 'py-0', 'mr-4', 'optiontitle']" :color="'grey lighten-2'" :value="lastItem"
+          <div style="width: 32px"></div>
+
+          <codemirror :class="[ 'my-0', 'py-0', 'mr-0']" :value="lastItem"
             @input="(val) => { if(mode !== 'basic') { lastItem = val; addLastItemIfNotEmpty() } }">
           </codemirror>
-          <div class="align-center flex-shrink-0 flex-grow-0  my-0 py-0" style="width: 64px">
-            <!-- <v-btn v-on:click="addLastItemToOptions">
-              <v-icon>mdi-plus</v-icon>
-            </v-btn> -->
-          </div>
+          <!--<div class="align-center flex-shrink-0 flex-grow-0 mx-1 my-0 py-0" style="width: 64px">
+          </div>-->
         </v-card>
       </v-card>
 
@@ -181,7 +202,7 @@
   import { Drag, Drop } from 'vue-easy-dnd'
 
   export default {
-    name: 'EditorMadrProsCons',
+    name: 'EditorMadrConsideredOptions',
     components: {
       codemirror,
       EditorMadrList,
@@ -197,7 +218,8 @@
     },
     data: () => ({
       lastItem: '',
-      activeOptions: [], // Expanded options
+      editedOptions: [], // Expanded options
+      expandedOptions: [], // Expanded options
       hoveredOption: null, // Option, which the mouse hovers over (relevant to e.g. show Icons on hover)
       draggedOption: null // Option, which is currently dragged
     }),
@@ -233,37 +255,30 @@
 
       addLastItemIfNotEmpty() {
         if (this.lastItem.trim() !== '') {
-          this.addLastItemToOptions();
+          let newOption = this.addLastItemToOptions();
+          if (this.mode !== "basic") {
+            this.editedOptions.push(newOption);
+            this.expandedOptions.push(newOption);
+          }
           this.$nextTick(() => {
-            this.$refs[ "codemirror-" + this.adr.consideredOptions[this.adr.consideredOptions.length - 1].id ][0].focus();
+            try {
+              this.$refs["codemirror-" + newOption.id][0].focus();
+            } catch (e) {
+              console.log("Failed to focus the option ", newOption, " after adding it to ", this.adr.consideredOptions);
+              console.log(e);
+            }
           });
         }
       },
 
       addLastItemToOptions() {
         if (this.lastItem.trim() !== '') {
-          this.adr.addOption({ title: this.lastItem });
+          let option = this.adr.addOption({ title: this.lastItem });
           this.lastItem = "";
+          return option;
         }
       },
 
-      /** Put option titles in option list of ADR. 
-       * When in basic mode and only option titles are shown, this method is used to update the ADR solely based on the option titles. 
-       * @param {string[]} titleList
-       */
-      updateOptionTitles(titleList) {
-        if (titleList.length < this.adr.consideredOptions.length) { // An item was removed.
-          this.adr.consideredOptions.filter((opt) => (titleList.includes(opt.title)));
-        } else {
-          titleList.forEach((val, idx) => {
-            if (idx < this.adr.consideredOptions.length) {
-              this.adr.consideredOptions[idx].title = val;
-            } else {
-              this.adr.addOption({ title: val });
-            }
-          });
-        }
-      },
       /** Remove the option. 
        * @param {object} option
        * @param {int} idx
@@ -275,6 +290,30 @@
           this.adr.consideredOptions.splice(this.adr.consideredOptions.indexOf(option), 1);
         }
       },
+
+      toggleExpansionOfOption(option) {
+        if (this.expandedOptions.includes(option)) {
+          this.expandedOptions = this.expandedOptions.filter((val) => (val !== option));
+        } else {
+          this.expandedOptions.push(option);
+        }
+      },
+      toggleEditingOfOption(option) {
+        if (this.editedOptions.includes(option)) {
+          this.editedOptions = this.editedOptions.filter((val) => (val !== option));
+        } else {
+          this.editedOptions.push(option);
+          this.$nextTick(() => {
+            try {
+              this.$refs["codemirror-" + option.id][0].focus();
+            } catch (e) {
+              console.log("Failed to focus the option ", option, " when starting to edit.");
+              console.log(e);
+            }
+          });
+        }
+      },
+
       /** 
        * @param {object} option - an option object (i.e. has the attribute 'title') 
        * @returns true iff the option is the chosen option
@@ -282,8 +321,14 @@
       isChosenOption(option) {
         return this.adr.decisionOutcome.chosenOption === option.title && this.adr.decisionOutcome.chosenOption !== '';
       },
+
       switchToAdvancedMode() {
         store.setMode('advanced');
+      },
+
+      htmlOf(value) {
+        var marked = require('marked');
+        return marked(value);
       }
     }
   };
