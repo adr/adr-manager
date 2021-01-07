@@ -2,45 +2,46 @@
 <template>
   <v-list class="my-0 py-0">
     <v-list-item dense class="align-self-center mx-0 px-0 d-flex" v-for="(item, idx) in displayedList" :key="item.id">
+      <v-hover v-slot="{ hover }">
+        <drop @dragenter="(event) => moveItem(event.data.id, idx)" class="my-0 py-0 flex-grow-1">
+          <v-card flat class="d-flex" :style="
+                    draggedItem === item
+                      ? {
+                          borderLeft: '2px solid #1976D2',
+                          marginLeft: '-2px',
+                        }
+                      : {}
+              " min-height="36px" @mouseenter="hoveredItem = item" @mouseleave="hoveredItem = null">
 
-      <drop @dragenter="(event) => moveItem(event.data.id, idx)" class="my-0 py-0 flex-grow-1">
-        <v-card flat class="d-flex" :style="
-                  draggedItem === item
-                    ? {
-                        borderLeft: '2px solid #1976D2',
-                        marginLeft: '-2px',
-                      }
-                    : {}
-            " @mouseenter="hoveredItem = item" @mouseleave="hoveredItem = null">
+            <!-- Left Icon for dragging -->
+            <div flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0 mx-0 d-flex"
+              style="width: 32px; min-width: 32px">
+              <!-- Show the drag-icon (dots) when the item is hovered or dragged -->
+              <drag v-show="hoveredItem === item || draggedItem === item" :data="item" @dragstart="draggedItem = item"
+                @dragend="draggedItem = null" class="flex-grow-1">
+                <template v-slot:drag-image>{{ item.content }}</template> <!-- Show the title while dragging. -->
+                <v-icon> mdi-drag-vertical </v-icon>
+              </drag>
+              <!-- Else, show nothing, but reserve space -->
+              <v-icon v-show="hoveredItem !== item && draggedItem !== item"></v-icon>
+            </div>
 
-          <!-- Left Icon for dragging -->
-          <div flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0 mx-0 d-flex"
-            style="width: 32px; min-width: 32px">
-            <!-- Show the drag-icon (dots) when the item is hovered or dragged -->
-            <drag v-show="hoveredItem === item || draggedItem === item" :data="item" @dragstart="draggedItem = item"
-              @dragend="draggedItem = null" class="flex-grow-1">
-              <template v-slot:drag-image>{{ item.content }}</template> <!-- Show the title while dragging. -->
-              <v-icon> mdi-drag-vertical </v-icon>
-            </drag>
-            <!-- Else, show nothing, but reserve space -->
-            <v-icon v-show="hoveredItem !== item && draggedItem !== item"></v-icon>
-          </div>
+            <!-- Text field -->
+            <v-card flat class="flex-grow-1">
+              <codemirror :ref="'codemirror-' + item.id" v-model="list[idx]" @input="$emit('input', list)" :color="cmColor"
+                @blur="removeItemIfEmptyAt(idx)">
+              </codemirror>
+            </v-card>
 
-          <!-- Text field -->
-          <v-card flat class="flex-grow-1">
-            <codemirror :ref="'codemirror-' + item.id" v-model="list[idx]" @input="$emit('input', list)" :color="cmColor"
-              @blur="removeItemIfEmptyAt(idx)">
-            </codemirror>
+            <!-- Delete Icon on the right. -->
+            <v-list-item-icon v-show="hover" class="align-center flex-shrink-0 flex-grow-0">
+              <v-btn icon v-on:click="removeItemAt(idx)">
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </v-list-item-icon>
           </v-card>
-
-          <!-- Delete Icon on the right. -->
-          <v-list-item-icon class="align-center flex-shrink-0">
-            <v-btn v-on:click="removeItemAt(idx)">
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-          </v-list-item-icon>
-        </v-card>
-      </drop>
+        </drop>
+      </v-hover>
     </v-list-item>
 
     <!-- last item with '+'-Button -->
@@ -51,9 +52,6 @@
 
       <codemirror :ref="'last-cm'" v-model="lastItem" :color="cmColor" @input="addItemIfNotEmpty"></codemirror>
 
-      <!-- Place holder for delete button -->
-      <v-list-item-icon class="align-center flex-shrink-0" style="width: 64px">
-      </v-list-item-icon>
     </v-list-item>
   </v-list>
 </template>
@@ -92,12 +90,14 @@
         }
       },
       list(newList) {
-        this.displayedList.length = newList.length;
+        if (this.displayedList.length > newList.length) {
+          this.displayedList.length = newList.length;
+        }
         for (let i = 0; i < newList.length; i ++) {
-          if (this.displayedList[i]) {
+          if (i < this.displayedList.length) {
             this.displayedList[i].content = newList[i];
           } else {
-            this.displayedList[i] = { content: this.lastItem, id: Math.max(...this.displayedList.map((item) => item.id), 0) + 1 };
+            this.displayedList.push({ content: newList[i], id: Math.max(...this.displayedList.map((item) => item.id), 0) + 1 });
           }
         }
       }

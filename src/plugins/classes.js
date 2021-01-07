@@ -70,6 +70,48 @@ export class ArchitecturalDecisionRecord {
   }
 
   /**
+   * Trims all strings.
+   */
+  cleanUp() {
+    this.title = this.title.trim();
+    this.status = this.status.trim();
+    this.deciders = this.deciders.trim();
+    this.date = this.date.trim();
+    this.contextAndProblemStatement = this.contextAndProblemStatement.trim();
+    this.decisionDrivers.forEach((el, idx) => {
+      this.decisionDrivers[idx] = el.trim();
+    })
+    this.decisionDrivers = this.decisionDrivers.filter((el) => (el !== ''));
+    this.consideredOptions.forEach((opt) => {
+      opt.title = opt.title.trim();
+      opt.description = opt.description.trim();
+      opt.pros.forEach((el, idx) => {
+        opt.pros[idx] = el.trim();
+      });
+      opt.pros = opt.pros.filter((el) => (el !== ''));
+      opt.cons.forEach((el, idx) => {
+        opt.cons[idx] = el.trim();
+      });
+      opt.cons = opt.cons.filter((el) => (el !== ''));
+    })
+
+    this.decisionOutcome.chosenOption = this.decisionOutcome.chosenOption.trim();
+    this.decisionOutcome.explanation = this.decisionOutcome.explanation.trim();
+    
+    this.decisionOutcome.positiveConsequences.forEach((el, idx) => {
+      this.decisionOutcome.positiveConsequences[idx] = el.trim();
+    })
+    this.decisionOutcome.positiveConsequences.forEach((el, idx) => {
+      this.decisionOutcome.positiveConsequences[idx] = el.trim();
+    })
+
+    this.links.forEach((el, idx) => {
+      this.links[idx] = el.trim();
+    });
+    this.links.filter((el) => (el !== ''));
+  }
+
+  /**
    * Creates a new ADR with default values already set.
    */
   static createNewAdr() {
@@ -93,6 +135,33 @@ export class Repository {
     this.deletedAdrs = [];
   }
 
+  /**
+   * Constructs a repositoryy object from a string.
+   * Useffull when loading repositories from LocalStorage
+   * @param {string} json 
+   */
+  static constructFromString(json) {
+    let repoData = JSON.parse(json);
+    let repo = new Repository(repoData);
+    repoData.addedAdrs.forEach((adr) => {
+      let equalAdr = repoData.adrs.find((el) => el.path === adr.path && el.editedMd === adr.editedMd && el.originalMd === adr.originalMd);
+      if (equalAdr) {
+        repo.addedAdrs.push(equalAdr);
+      } else {
+        throw "There was an added adr in the parameter string that didn't match!";
+      }
+    });
+    repoData.deletedAdrs.forEach((adr) => {
+      let equalAdr = repoData.adrs.find((el) => el.path === adr.path && el.editedMd === adr.editedMd && el.originalMd === adr.originalMd);
+      if (equalAdr) {
+        repo.deletedAdrs.push(equalAdr);
+      } else {
+        throw "There was a deleted adr in the parameter string that didn't match!";
+      }
+    });
+    return repo;
+  }
+
   /**Returns the changed files in the repository. 
    * 
    * @returns {{ added: ADR[], changed: ADR[], deleted: ADR[] }} the changed ADRs 
@@ -113,5 +182,10 @@ export class Repository {
   hasChanges() {
     let changes = this.getChanges();
     return changes.changed.length !== 0 || changes.added.length !== 0 || changes.deleted.length !== 0;
+  }
+
+  addAdr(newAdr) {
+    this.adrs.push(newAdr);
+    this.addedAdrs.push(newAdr);
   }
 }

@@ -1,3 +1,5 @@
+import { cloneDeep } from "lodash";
+
 import antlr4 from 'antlr4';
 import MADRLexer from './parser/MADRLexer.js';
 import MADRParser from './parser/MADRParser.js';
@@ -198,10 +200,13 @@ export function md2adr(md) {
     const printer = new MADRGenerator();
     antlr4.tree.ParseTreeWalker.DEFAULT.walk(printer, tree);
     // console.log('Result ADR ', printer.adr)
+    printer.adr.cleanUp();
     return printer.adr;
 }
 
-export function adr2md(adr) {
+export function adr2md(adrToParse) {
+    let adr = cloneDeep(adrToParse)
+    adr.cleanUp();
     var md = '# ' + adr.title + '\n'
 
     if ((adr.status !== '' && adr.status !== 'null') || adr.deciders.length > 0 || adr.date !== '') {
