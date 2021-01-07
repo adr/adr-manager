@@ -66,7 +66,7 @@ export async function createFileTree(
   return pizzly
     .integration("github")
     .auth(localStorage.getItem("authId"))
-    .post("/repos/" + repoOwner + "/" + repoName + "/git/trees?recursive=1", {
+    .post("/repos/" + repoOwner + "/" + repoName + "/git/trees", {
       body: JSON.stringify({ base_tree: lastCommitSha, tree: folderTree })
     })
     .then((response) => response.json())
