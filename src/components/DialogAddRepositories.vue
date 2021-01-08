@@ -43,8 +43,8 @@
         <div data-cy="noRepo" v-if="unstagedRepositories.length === 0 && countLoadingPromises === 0" class="text-center">
           Sorry, no repositories were found!
         </div>
-        <v-list data-cy="listRepo">
-          <v-list-item v-for="(item, index) in unstagedRepositories" class="my-0 py-0" :key="`item-${index}`"
+        <v-list >
+          <v-list-item data-cy="listRepo" v-for="(item, index) in unstagedRepositories" class="my-0 py-0" :key="`item-${index}`"
             :value="item" @click="stageRepostiory(item)">
             <v-list-item-content class="my-0 py-0">
               <v-list-item-title class="d-flex"> {{ item.name }} <v-spacer></v-spacer>
