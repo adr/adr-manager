@@ -16,7 +16,7 @@ context("Test new adr function", () => {
 
 
         // One adr in list
-        cy.get('[data-cy=newADR]').click();
+        cy.get('[data-cy=newADR]').click({force: true});
         cy.get('[data-cy=adrList]').should('have.length', 1);
         cy.get('[data-cy=adrList]').should(() => {
             expect(localStorage.getItem('addedRepositories')).to.not.eq('[]');
