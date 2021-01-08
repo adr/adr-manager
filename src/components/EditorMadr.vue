@@ -75,11 +75,9 @@
     name: 'EditorMADR',
     components: {
       codemirror,
-      //NavigatorFab,
       StatusDateDecidersStory,
       ConsideredOptions,
       DecisionOutcome,
-      //ProsAndConsOfOptions,
       GenericList
     },
     props: {
@@ -133,8 +131,6 @@
           return 'professional'
         } else if (
           adr.technicalStory.trim().length > 0
-          || adr.status.trim().length > 0
-          || adr.date.trim().length > 0
           || adr.consideredOptions.some((opt) => (opt.description.length > 0 || opt.pros.length > 0 || opt.cons.length > 0))
           || adr.decisionOutcome.positiveConsequences.length > 0
           || adr.decisionOutcome.negativeConsequences.length > 0

@@ -1,3 +1,5 @@
+import { cloneDeep } from "lodash";
+
 import antlr4 from 'antlr4';
 import MADRLexer from './parser/MADRLexer.js';
 import MADRParser from './parser/MADRParser.js';
@@ -49,11 +51,11 @@ class MADRGenerator extends MADRListener {
     enterConsideredOptions(ctx) {
         let tmpOptionList = []
         this.addListItemsFromListToList(ctx.children[0], tmpOptionList)
-        tmpOptionList.forEach(opt => this.adr.addOption({ title: opt }))
-    }
-
-    enterChosenOption(ctx) {
-        this.adr.decisionOutcome.chosenOption = ctx.getText()
+        tmpOptionList.forEach(opt => {
+            if (opt.trim() !== "") {
+                this.adr.addOption({ title: opt })
+            }
+        })
     }
 
     enterChosenOptionAndExplanation(ctx) {
@@ -87,7 +89,6 @@ class MADRGenerator extends MADRListener {
     }
 
     enterOptionTitle(ctx) {
-        // console.log('Option Title in Pros and Cons: ', ctx.getText())
         this.currentOption = this.getMostSimilarOptionTo(ctx.getText())
     }
 
@@ -173,8 +174,9 @@ class MADRGenerator extends MADRListener {
      */
     addListItemsFromListToList(parseTreeList, targetList) {
         for (let i = 0; i < parseTreeList.children.length; i++) {
-            if (parseTreeList.children[i].ruleIndex === MADRParser.ruleNames.indexOf('textLine')) { // if it is not a token 
-                targetList.push(parseTreeList.children[i].getText())
+            if (parseTreeList.children[i].ruleIndex === MADRParser.ruleNames.indexOf('textLine') // if it is a text line 
+                && parseTreeList.children[i].getText().trim() !== "") {
+                targetList.push(parseTreeList.children[i].getText());
             }
         }
     }
@@ -191,15 +193,20 @@ export function md2adr(md) {
     const tokens = new antlr4.CommonTokenStream(lexer);
     const parser = new MADRParser(tokens);
     parser.buildParseTrees = true;
+    parser.removeErrorListeners();
+
     const tree = parser.start(); // 'start' is the name of the starting rule.
     // console.log('Created Parse Tree! ', tree)
     const printer = new MADRGenerator();
     antlr4.tree.ParseTreeWalker.DEFAULT.walk(printer, tree);
     // console.log('Result ADR ', printer.adr)
+    printer.adr.cleanUp();
     return printer.adr;
 }
 
-export function adr2md(adr) {
+export function adr2md(adrToParse) {
+    let adr = cloneDeep(adrToParse)
+    adr.cleanUp();
     var md = '# ' + adr.title + '\n'
 
     if ((adr.status !== '' && adr.status !== 'null') || adr.deciders.length > 0 || adr.date !== '') {
@@ -297,17 +304,17 @@ export function snakeCase2naturalCase(snake) {
             .replace('-', ' ')
             .replace('_', ' ')
     )
-  }
-  
-  /**
-  * Converts an string in natural case into an snake case string.
-  * 
-  * Can be used to generate a file name from the title of an ADR.
-  * 
-  * Example: 'Add status Field' is converted to 'add-status-field'
-  * 
-  * @param {string} snake 
-  */
- export function naturalCase2snakeCase(natural) {
+}
+
+/**
+* Converts an string in natural case into an snake case string.
+* 
+* Can be used to generate a file name from the title of an ADR.
+* 
+* Example: 'Add status Field' is converted to 'add-status-field'
+* 
+* @param {string} snake
+*/
+export function naturalCase2snakeCase(natural) {
     return natural.toLowerCase().split(' ').join('-');
-  }
+}
