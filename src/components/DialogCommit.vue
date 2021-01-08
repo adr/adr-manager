@@ -59,7 +59,12 @@
             <v-expansion-panel-header>
               <div>
                 <v-icon>mdi-plus</v-icon
-                ><span data-cy="newFilesCommitMessage" class="spanAfterIcon spanSubTitle"> New files</span>
+                ><span
+                  data-cy="newFilesCommitMessage"
+                  class="spanAfterIcon spanSubTitle"
+                >
+                  New files</span
+                >
               </div>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
@@ -105,7 +110,12 @@
             <v-expansion-panel-header>
               <div>
                 <v-icon>mdi-delete</v-icon
-                ><span data-cy="deletedFilesAdr" class="spanAfterIcon spanSubTitle"> Deleted files</span>
+                ><span
+                  data-cy="deletedFilesAdr"
+                  class="spanAfterIcon spanSubTitle"
+                >
+                  Deleted files</span
+                >
               </div>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
@@ -202,7 +212,7 @@ import {
   createCommit,
   pushToGitHub,
   getUserName,
-  getUserEmail
+  getUserEmail,
 } from "@/plugins/api.js";
 import { store } from "../plugins/store";
 
@@ -213,8 +223,8 @@ export default {
     value: {
       type: Boolean,
       required: false,
-      default: false
-    }
+      default: false,
+    },
   },
   data: () => ({
     showDialog: false,
@@ -244,7 +254,7 @@ export default {
     deletedSelected: false,
     newSelected: false,
     changedSelected: false,
-    openedPanel: null
+    openedPanel: null,
   }),
 
   watch: {
@@ -268,7 +278,7 @@ export default {
     },
     value() {
       this.dialog = this.value;
-    }
+    },
   },
   methods: {
     setUserInfo() {
@@ -448,7 +458,7 @@ export default {
           path: value[1].path,
           mode: "100644",
           type: "blob",
-          sha: value[1].blobSha
+          sha: value[1].blobSha,
         });
       });
       if (this.deletedFileBool) {
@@ -456,13 +466,13 @@ export default {
           if (value[1].fileSelected) {
             this.filesPushed.push({
               path: value[1].path,
-              type: value[1].fileStatus
+              type: value[1].fileStatus,
             });
             fileTree.push({
               path: value[1].path,
               mode: "100644",
               type: "blob",
-              sha: null
+              sha: null,
             });
           }
         });
@@ -470,7 +480,7 @@ export default {
 
       createFileTree(this.currUser, this.currRepo, this.lastCommitSha, fileTree)
         .then((res) => {
-          console.log("res Tree", res)
+          console.log("res Tree", res);
           this.createCommitRequest(res.sha);
         })
         .catch((error) => console.error(error));
@@ -482,7 +492,7 @@ export default {
         this.comMessage,
         {
           name: this.name,
-          email: this.email
+          email: this.email,
         },
         this.lastCommitSha,
         treeSha
@@ -523,8 +533,8 @@ export default {
     gitHubTimeoutAlert() {
       this.$alert(
         "Latency problem with GitHub Api. Please wait ~60 seconds!",
-        "Error",
-        "error",
+        "Warning",
+        "warning",
         {
           confirmButtonText: "Close",
         }
@@ -532,8 +542,8 @@ export default {
         console.log("val", val);
         this.closeDialog();
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
