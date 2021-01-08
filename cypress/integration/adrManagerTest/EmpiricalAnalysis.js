@@ -14,6 +14,8 @@ context("Should test empirical add and open function of adr-manager", () => {
     })
 
     it('Should test empirical add and open function of jabref repo', () => {
+        cy.writeFile('cypress/fixtures/CounterDiff.json', { counter: "0" });
+        cy.writeFile('cypress/fixtures/CounterAdrs.json', { counter: "0" });
         cy.get('[data-cy=listRepo]').should('have.length', 5).eq(0).click();
         cy.get('[data-cy=addRepoDialog]').click();
         cy.get('[data-cy=adrList]').should('have.length', 21).each(($adr, index, $adrs) => {
@@ -40,7 +42,6 @@ context("Should test empirical add and open function of adr-manager", () => {
         cy.get('[data-cy=adrList]').should('have.length', 0);
         cy.get('[data-cy=removeRepo]').click();
         cy.get('[data-cy=removeRepoBtn]').click();
-        cy.log('diffs', counterDiffs)
     });
 
     it('Should test empirical add and open function of adr-log repo', () => {
@@ -64,16 +65,7 @@ context("Should test empirical add and open function of adr-manager", () => {
         cy.get('[data-cy=removeRepoBtn]').click();
     });
 
-    it.only('Should test empirical add and open function of madr repo', () => {
-
-        cy.writeFile('cypress/fixtures/CounterDiff.json', { counter: "0" });
-        cy.writeFile('cypress/fixtures/CounterAdrs.json', { counter: "0" });
-        cy.readFile('cypress/fixtures/CounterAdrs.json').then((counter) => {
-            cy.log('adrs', counter.counter);
-        })
-        cy.readFile('cypress/fixtures/CounterDiff.json').then((counter) => {
-            cy.log('diff', (parseInt(counter.counter) + 1).toString());
-        })
+    it('Should test empirical add and open function of madr repo', () => {
         cy.get('[data-cy=listRepo]').should('have.length', 5).eq(3).click();
         cy.get('[data-cy=addRepoDialog]').click();
         cy.get('[data-cy=adrList]').should('have.length', 14).each(($adr, index, $adrs) => {
@@ -92,5 +84,12 @@ context("Should test empirical add and open function of adr-manager", () => {
         })
         cy.get('[data-cy=removeRepo]').click();
         cy.get('[data-cy=removeRepoBtn]').click();
+
+        cy.readFile('cypress/fixtures/CounterDiff.json').then((counter) => {
+            cy.log('diff', counter.counter)
+        })
+        cy.readFile('cypress/fixtures/CounterAdrs.json').then((counter) => {
+            cy.log('adr', counter.counter)
+        })
     });
 })
