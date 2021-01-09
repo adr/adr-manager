@@ -1,4 +1,10 @@
 # ADR-Manager 
+![General cypress report](https://github.com/koppor/adr-manager/workflows/General%20cypress%20report/badge.svg?branch=cypress-integration)
+[![GitHub license](https://img.shields.io/github/license/koppor/adr-manager)](https://github.com/koppor/adr-manager/blob/main/LICENSE)
+[![Last Updated](https://img.shields.io/github/last-commit/nccgroup/sobelow.svg)](https://github.com/koppor/adr-manager/commits/master)
+[![GitHub issues](https://img.shields.io/github/issues/koppor/adr-manager)](https://github.com/koppor/adr-manager/issues)
+[![GitHub stars](https://img.shields.io/github/stars/koppor/adr-manager)](https://github.com/koppor/adr-manager/stargazers)
+
 
 ## Project setup
 ```
