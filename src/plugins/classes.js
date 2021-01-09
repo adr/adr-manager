@@ -42,6 +42,8 @@ export class ArchitecturalDecisionRecord {
     if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, 'negativeConsequences')) {
       this.decisionOutcome.negativeConsequences = [];
     }
+
+    this.cleanUp();
   }
 
   /**
@@ -70,43 +72,46 @@ export class ArchitecturalDecisionRecord {
   }
 
   /**
-   * Trims all strings.
+   * Cleans up the ADR:
+   *  - Asserts that all string attributes contain a string value.
+   *  - Trims all strings.
    */
   cleanUp() {
-    this.title = this.title.trim();
-    this.status = this.status.trim();
-    this.deciders = this.deciders.trim();
-    this.date = this.date.trim();
-    this.contextAndProblemStatement = this.contextAndProblemStatement.trim();
+    const stringFieldNames = ['title', 'status', 'date', 'deciders', 'technicalStory', 'contextAndProblemStatement'];
+    
+    stringFieldNames.forEach((attr) => {
+      this[attr] = cleanUpString(this[attr]);
+    })
+    
     this.decisionDrivers.forEach((el, idx) => {
-      this.decisionDrivers[idx] = el.trim();
+      this.decisionDrivers[idx] = cleanUpString(el);
     })
     this.decisionDrivers = this.decisionDrivers.filter((el) => (el !== ''));
+
     this.consideredOptions.forEach((opt) => {
-      opt.title = opt.title.trim();
-      opt.description = opt.description.trim();
+      opt.title = cleanUpString(opt.title);
+      opt.description = cleanUpString(opt.description);
       opt.pros.forEach((el, idx) => {
-        opt.pros[idx] = el.trim();
+        opt.pros[idx] = cleanUpString(el);
       });
       opt.pros = opt.pros.filter((el) => (el !== ''));
       opt.cons.forEach((el, idx) => {
-        opt.cons[idx] = el.trim();
+        opt.cons[idx] = cleanUpString(el);
       });
       opt.cons = opt.cons.filter((el) => (el !== ''));
     })
 
-    this.decisionOutcome.chosenOption = this.decisionOutcome.chosenOption.trim();
-    this.decisionOutcome.explanation = this.decisionOutcome.explanation.trim();
-    
+    this.decisionOutcome.chosenOption = cleanUpString(this.decisionOutcome.chosenOption);
+    this.decisionOutcome.explanation = cleanUpString(this.decisionOutcome.explanation);
     this.decisionOutcome.positiveConsequences.forEach((el, idx) => {
-      this.decisionOutcome.positiveConsequences[idx] = el.trim();
+      this.decisionOutcome.positiveConsequences[idx] = cleanUpString(el);
     })
     this.decisionOutcome.positiveConsequences.forEach((el, idx) => {
-      this.decisionOutcome.positiveConsequences[idx] = el.trim();
+      this.decisionOutcome.positiveConsequences[idx] = cleanUpString(el);
     })
 
     this.links.forEach((el, idx) => {
-      this.links[idx] = el.trim();
+      this.links[idx] = cleanUpString(el);
     });
     this.links.filter((el) => (el !== ''));
   }
@@ -122,6 +127,20 @@ export class ArchitecturalDecisionRecord {
         explanation: 'comes out best (see below).'
       }
     });
+  }
+}
+
+/**
+ * Helper function for clean up. 
+ * If a string is passed, it is trimmed. Otherwise, an empty string is returned.
+ * @param {string|undefined|null} string 
+ * @returns {string} the trimmed string or an empty string
+ */
+function cleanUpString(string) {
+  if (typeof string === "string") {
+    return string.trim();
+  } else {
+    return "";
   }
 }
 
