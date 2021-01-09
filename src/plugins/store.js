@@ -38,10 +38,9 @@ export const store = new Vue({
             let addedRepos = localStorage.getItem('addedRepositories');
             if (addedRepos !== null) {
                 addedRepos = JSON.parse(addedRepos);
-                console.log('Loaded Repositories from local storage.', addedRepos);
                 // Validate storage
                 if (isValidRepoList(addedRepos)) {
-                    this.addRepositories(addedRepos.map((repo) => new Repository(repo)));
+                    this.addRepositories(addedRepos.map((repo) => Repository.constructFromString(JSON.stringify(repo))));
                 } else {
                     console.log('Invalid repos: ', addedRepos);
                 }
@@ -53,10 +52,9 @@ export const store = new Vue({
         /**
          * Write the current value of the added repositories list array into the local storage.
          * Should be done regularly.
-         * Delays for 1000 ms to reduce spamming.
          */
         updateLocalStorageRepositories: function () {
-            localStorage.setItem('addedRepositories', JSON.stringify(this.addedRepositories));
+          localStorage.setItem('addedRepositories', JSON.stringify(this.addedRepositories));
         },
 
         /** Adds the repositories to the added repositories.
@@ -203,24 +201,22 @@ export const store = new Vue({
      */
     createNewAdr: function (repo) {
         if (this.addedRepositories.includes(repo)) {
-          let md = adr2md(ArchitecturalDecisionRecord.createNewAdr());
+          let adr = ArchitecturalDecisionRecord.createNewAdr();
+          let md = adr2md(adr);
           let id = Math.max(...repo.adrs.map((adr) => adr.id), -1) + 1;
           let newAdr = {
-            originalMd: undefined,
+            originalMd: '',
             editedMd: md,
             id: id,
-            path: "docs/adr/" + id.toString().padStart(4, "0") + "-unnamed.md",
+            path: "docs/adr/" + id.toString().padStart(4, "0") + "-" + adr.title + ".md",
             newAdr: true,
           };
-          repo.adrs.push(newAdr);
-          if (!repo.addedAdrs) {
-            repo.addedAdrs = [];
-          }
-          repo.addedAdrs.push(newAdr);
+          repo.addAdr(newAdr);
+          this.updateLocalStorageRepositories();
           return newAdr;
+        } else {
+          return undefined;
         }
-        this.updateLocalStorageRepositories();
-        return undefined;
       },
   
       /**Deletes the ADR.
@@ -366,10 +362,13 @@ export const store = new Vue({
  * @param {object[]} repos 
  */
 function isValidRepoList(repos) {
-    console.log('Valid check.');
     return repos.every(repo => {
-      return _.has(repo, 'fullName') && _.has(repo, 'activeBranch') && _.has(repo, 'branches') &&_.has(repo, 'addedAdrs') && _.has(repo, 'deletedAdrs') 
-        && _.has(repo, 'adrs') && repo.adrs.every(isValidAdr);
+      let valid = _.has(repo, 'fullName') && _.has(repo, 'activeBranch') && _.has(repo, 'branches') &&_.has(repo, 'addedAdrs') && _.has(repo, 'deletedAdrs') 
+      && _.has(repo, 'adrs') && repo.adrs.every(isValidAdr);
+      if (!valid) {
+        console.log('Invalid repository', repo)
+      } 
+      return valid;
     });
 }
 
