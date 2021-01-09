@@ -11,15 +11,21 @@ context("Test add repository", () => {
         cy.intercept('GET', '**/user/repos**').as('getRepos');
         cy.wait('@getRepos').its('response.statusCode').should('eq', 200);
 
-        cy.get('[data-cy=listRepo]').should('have.length', 1);
-        cy.get('[data-cy=listRepo]').click();
+        cy.get('[data-cy=listRepo]').should('have.length', 5);
+        cy.get('[data-cy=listRepo]').eq(0).click();
+        cy.get('[data-cy=listRepo]').eq(0).click();
+        cy.get('[data-cy=listRepo]').eq(0).click();
+        cy.get('[data-cy=listRepo]').eq(0).click();
+        cy.get('[data-cy=listRepo]').eq(0).click();
 
         cy.get('[data-cy=noRepo]').should('have.text', ' Sorry, no repositories were found! ');
 
         cy.get('[data-cy=addRepoDialog]').click();
-        cy.get('[data-cy=repoNameList]').should('have.length', 1);
+        cy.intercept('GET', '**/repos**').as('showRepos');
+        cy.wait('@showRepos');
+        cy.get('[data-cy=repoNameList]').children().should('have.length', 5);
         cy.get('[data-cy=repoNameList]').click();
 
-        cy.get('[data-cy=adrList]').should('have.length', 0);
+        cy.get('[data-cy=adrList]').contains('ResearchProject').should('have.length', 0);
     });
 })

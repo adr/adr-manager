@@ -5,7 +5,7 @@
         style="height: 100%; width: 100%; position: absolute; overflow-y: auto"
       >
         <v-list multiple dense>
-          <v-list-item-group>
+          <v-list-item-group data-cy="repoNameList">
             <v-list-group
               v-for="(repo, i) in folderTree"
               :key="repo.path"
@@ -15,7 +15,7 @@
             >
               <template v-slot:activator>
                 <v-list-item-content>
-                  <v-list-item-title data-cy="repoNameList" v-text="repo.name"></v-list-item-title>
+                  <v-list-item-title  v-text="repo.name"></v-list-item-title>
                 </v-list-item-content>
                 <DialogCommit
                   v-bind:repo="{ name: repo.name }"
