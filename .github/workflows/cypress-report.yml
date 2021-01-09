@@ -25,7 +25,8 @@ jobs:
       - name: Run Cypress tests
         run: | 
               npm run serve &
-              npm run tests:chrome
+              npm run tests:chrome &
+              npm run test
         continue-on-error: false
       
       - name: Copy test execution videos and screenshots
