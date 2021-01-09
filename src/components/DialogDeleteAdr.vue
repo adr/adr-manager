@@ -30,7 +30,7 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn text color="success" @click="deleteAdr"> Delete </v-btn>
+        <v-btn data-cy="dialogDeleteAdrBtn" text color="success" @click="deleteAdr"> Delete </v-btn>
         <v-btn text color="error" @click="showDialog = false"> Cancel </v-btn>
       </v-card-actions>
     </v-card>

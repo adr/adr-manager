@@ -4,7 +4,7 @@
     <template v-slot:activator="{ on, attrs }">
       <slot name="activator" v-bind:on="on" v-bind:attrs="attrs">
       </slot>
-      <v-overlay :value="showLoadingOverlay">
+      <v-overlay data-cy="loadReposBool" :value="showLoadingOverlay">
         <v-progress-circular indeterminate size="64"></v-progress-circular>
       </v-overlay>
     </template>
@@ -40,11 +40,11 @@
 
       <!-- Unstaged Repositories -->
       <v-card-text class="my-0">
-        <div v-if="unstagedRepositories.length === 0 && countLoadingPromises === 0" class="text-center">
+        <div data-cy="noRepo" v-if="unstagedRepositories.length === 0 && countLoadingPromises === 0" class="text-center">
           Sorry, no repositories were found!
         </div>
-        <v-list>
-          <v-list-item v-for="(item, index) in unstagedRepositories" class="my-0 py-0" :key="`item-${index}`"
+        <v-list >
+          <v-list-item data-cy="listRepo" v-for="(item, index) in unstagedRepositories" class="my-0 py-0" :key="`item-${index}`"
             :value="item" @click="stageRepostiory(item)">
             <v-list-item-content class="my-0 py-0">
               <v-list-item-title class="d-flex"> {{ item.name }} <v-spacer></v-spacer>
@@ -65,7 +65,7 @@
       <v-card-title>Repositories to be added</v-card-title>
       <v-card-text class="my-0 flex-grow-0 flex-shrink-0" :style="{ 'max-height' : '25%' }">
         <v-list>
-          <v-list-item v-for="(item, index) in repositoriesSelected" class="my-0 py-0" :key="`item-${index}`"
+          <v-list-item  v-for="(item, index) in repositoriesSelected" class="my-0 py-0" :key="`item-${index}`"
             :value="item" @click="unstageRepostiory(item)">
             <v-list-item-content class="my-0 py-0">
               <v-list-item-title v-text="item.name"></v-list-item-title>
@@ -81,7 +81,7 @@
       <v-divider></v-divider>
       <v-card-actions class="buttonPadding">
         <v-spacer></v-spacer>
-        <v-btn text color="success" :disabled="repositoriesSelected.length===0"
+        <v-btn data-cy="addRepoDialog" text color="success" :disabled="repositoriesSelected.length===0"
           @click="() => { showDialog = false; addRepositories() }">
           Add Repositories
         </v-btn>

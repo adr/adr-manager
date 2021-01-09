@@ -8,7 +8,7 @@
 
         <v-menu v-model="showStatusDropdown" :close-on-content-click="false" bottom right origin="top left">
           <template v-slot:activator="{ on, attrs }">
-            <v-chip outlined :color="statusColor" class="mx-5" v-on="on" v-bind="attrs">
+            <v-chip data-cy="statusPro" outlined :color="statusColor" class="mx-5" v-on="on" v-bind="attrs">
               {{ displayedStatus }}
             </v-chip>
           </template>
@@ -29,7 +29,7 @@
           <div @click="focusDecidersTextField">
 
           <v-icon class="mr-2">mdi-account</v-icon>
-          <input type="text" ref="deciderstextfield" v-autowidth="{maxWidth: '960px', minWidth: '60px', comfortZone: 0}" v-model="adr.deciders">
+          <input data-cy="authorPro" type="text" ref="deciderstextfield" v-autowidth="{maxWidth: '960px', minWidth: '60px', comfortZone: 0}" v-model="adr.deciders">
           </div>
         </v-chip>
       </v-card>
@@ -41,7 +41,7 @@
         <h5> Technical Story: </h5>
       </v-col>
       <v-col no-cols class="my-0 py-0">
-        <codemirror v-model="adr.technicalStory"></codemirror>
+        <codemirror data-cy="technicalStoryPro" v-model="adr.technicalStory"></codemirror>
       </v-col>
     </v-row>
   </div>

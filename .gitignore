@@ -37,6 +37,10 @@ bower_components
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 
+# Cypress videos
+cypress/videos/**
+cypress/screenshots/**
+
 # Dependency directories
 node_modules/
 jspm_packages/

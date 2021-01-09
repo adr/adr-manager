@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div data-cy="considerOptTextAdr">
     <h3>Considered Options</h3>
     <!-- Display an alert when there are pros and cons of options in basic mode. -->
     <v-alert v-if="isModeTooLow" border="left" colored-border type="warning" elevation="2" class="my-4 py-2">
@@ -27,7 +27,7 @@
             @mouseenter="hoveredOption = item" @mouseleave="hoveredOption = null">
 
             <!-- Left Icon for dragging -->
-            <div flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0 mx-0 d-flex"
+            <div data-cy="checkConsOptAdr" flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0 mx-0 d-flex"
               style="width: 32px; min-width: 32px">
               <!-- Show the drag-icon (dots) when the item is hovered or dragged -->
               <drag v-show="hoveredOption === item || draggedOption === item" :data="item"
@@ -72,7 +72,7 @@
     </v-list>
 
     <!-- Advanced and professional mode -->
-    <v-card v-else flat>
+    <v-card data-cy="consOptPro" v-else flat>
 
       <div v-for="(item, i) in adr.consideredOptions" :key="item.id">
         <drop @dragenter="(event) => moveOption(event.data, i)" class="my-0 py-0">
@@ -98,7 +98,7 @@
                     <v-icon> mdi-drag-vertical </v-icon>
                   </drag>
                   <!-- Else, show the chosen-option-icon, if it's the chosen option -->
-                  <v-icon v-show="hoveredOption !== item && draggedOption !== item && isChosenOption(item)"
+                  <v-icon data-cy="checkConsOptAdr" v-show="hoveredOption !== item && draggedOption !== item && isChosenOption(item)"
                     color="success" class="pl-1">
                     mdi-check-decagram
                   </v-icon>
@@ -155,19 +155,19 @@
               <div v-show="expandedOptions.includes(item)" class="pl-12">
                 <h6 class="py-4 pl-4"> Description </h6>
                 <div class="pb-2 ml-4">
-                  <codemirror hint="Description of the option" v-model="item.description" color="grey lighten-3">
+                  <codemirror data-cy="descriptionConsOpt" hint="Description of the option" v-model="item.description" color="grey lighten-3">
                   </codemirror>
                 </div>
 
                 <div class="d-flex flex-wrap mx-0 px-0 pb-4 py-0 my-0">
                   <div class="flex-grow-1 mx-0 px-0 py-0 my-0" style="width: 50%; min-width: 600px">
                     <h6 class="py-4 pl-4"> Good, because ... </h6>
-                    <EditorMadrList :list="item.pros" class="ml-4 mr-0 px-0" cm-color="grey lighten-3" />
+                    <EditorMadrList data-cy="goodConsOpt" :list="item.pros" class="ml-4 mr-0 px-0" cm-color="grey lighten-3" />
 
                   </div>
                   <div class="flex-grow-1 mx-0 px-0 py-0 my-0" style="width: 50%; min-width: 600px">
                     <h6 class="py-4 pl-4"> Bad, because ... </h6>
-                    <EditorMadrList :list="item.cons" class="ml-4 mr-0 px-0" cm-color="grey lighten-3" />
+                    <EditorMadrList data-cy="badConsOpt" :list="item.cons" class="ml-4 mr-0 px-0" cm-color="grey lighten-3" />
                   </div>
                 </div>
                 <v-divider />
@@ -182,7 +182,7 @@
         <v-card flat class="d-flex">
           <div style="width: 32px"></div>
 
-          <codemirror :class="[ 'my-0', 'py-0', 'mr-0']" :value="lastItem"
+          <codemirror data-cy="considerOptTextAdr" :class="[ 'my-0', 'py-0', 'mr-0']" :value="lastItem"
             @input="(val) => { if(mode !== 'basic') { lastItem = val; addLastItemIfNotEmpty() } }">
           </codemirror>
           <!--<div class="align-center flex-shrink-0 flex-grow-0 mx-1 my-0 py-0" style="width: 64px">

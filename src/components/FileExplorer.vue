@@ -5,7 +5,7 @@
         style="height: 100%; width: 100%; position: absolute; overflow-y: auto"
       >
         <v-list multiple dense>
-          <v-list-item-group>
+          <v-list-item-group data-cy="repoNameList">
             <v-list-group
               v-for="(repo, i) in folderTree"
               :key="repo.path"
@@ -15,7 +15,7 @@
             >
               <template v-slot:activator>
                 <v-list-item-content>
-                  <v-list-item-title v-text="repo.name"></v-list-item-title>
+                  <v-list-item-title  v-text="repo.name"></v-list-item-title>
                 </v-list-item-content>
                 <DialogCommit
                   v-bind:repo="{ name: repo.name }"
@@ -28,7 +28,7 @@
                       v-bind="attrs"
                       v-on="on"
                     >
-                      <v-icon>mdi-publish</v-icon>
+                      <v-icon data-cy="pushIcon">mdi-publish</v-icon>
                     </v-btn>
                   </template>
                 </DialogCommit>
@@ -40,6 +40,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
+                    data-cy="removeRepo"
                       style="width: 30px; min-width: 30px; height: 100%"
                       class="mx-0 px-0"
                       v-bind="attrs"
@@ -54,6 +55,7 @@
               <!-- sub list containing the ADRs -->
               <v-list-item-group v-model="openAdrPath">
                 <v-list-item
+                data-cy="adrList"
                   v-for="file in repo.children"
                   :key="file.path"
                   @click="openFileByPath({ path: file.path })"
@@ -74,6 +76,7 @@
                     <DialogDeleteAdr :adr="file.adr" :repo="repo.repository">
                       <template v-slot:activator="{ on, attrs }">
                         <v-btn
+                          data-cy="deleteAdrBtn"
                           style="width: 30px; min-width: 30px; height: 100%"
                           class="mx-0 px-0"
                           v-if="
@@ -90,6 +93,7 @@
                 </v-list-item>
                 <div class="d-flex justify-content-space-around justify-center">
                   <v-btn
+                    data-cy="newADR"
                     dark
                     class="align-center"
                     width="75%"
@@ -97,7 +101,7 @@
                       createNewAdr({ repository: repo })
                     "
                   >
-                    <v-icon>mdi-plus</v-icon>
+                    <v-icon data-cy="NewAdrFile">mdi-plus</v-icon>
                     New ADR
                   </v-btn>
                 </div>
@@ -113,7 +117,7 @@
     <div class="flex-grow-0 d-flex flex-wrap">
       <DialogAddRepositories>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn v-bind="attrs" v-on="on" class="flex-grow-1 secondary">
+          <v-btn data-cy="addRepo" v-bind="attrs" v-on="on" class="flex-grow-1 secondary">
             Add Repository
           </v-btn>
         </template>
