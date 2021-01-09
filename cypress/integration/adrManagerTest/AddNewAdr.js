@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
 context("Test new adr function", () => {
-    it.only('Should create and fill a new adr', () => {
+    it('Should create and fill a new adr', () => {
         cy.visit("http://localhost:8080/manager");
         window.localStorage.clear();
         window.localStorage.setItem("authId", "8a555390-4db1-11eb-a06d-f3ebfa774e63");
