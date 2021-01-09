@@ -6,7 +6,7 @@
       <v-container fluid class="mx-auto overflow-y-auto scroll px-8" style="height: 100%;">
 
         <!-- Title Style ! -->
-        <v-text-field v-if="true" filled dense
+        <v-text-field data-cy="titleAdr" v-if="true" filled dense
           hint="Changing the title, changes the file name. Do not use special characters." v-model="adr.title"
           @input="$emit('input', adr)" style="font-family: Roboto, sans-serif;
           font-size: 28px;
@@ -29,7 +29,7 @@
 
         <h3 class="mt-8">Context and Problem Statement</h3>
         <v-card flat class="mb-8">
-          <codemirror v-model="adr.contextAndProblemStatement"
+          <codemirror data-cy="contextAdr" v-model="adr.contextAndProblemStatement"
             @input="(val) => { adr.contextAndProblemStatement = val; $emit('input', adr) }" />
         </v-card>
 
@@ -50,7 +50,7 @@
         <div v-if="mode === 'professional'">
           <v-divider class="my-8" />
           <h3>Links</h3>
-          <GenericList :list="adr.links" />
+          <GenericList data-cy="linkPro" :list="adr.links" />
         </div>
 
         <div class="my-16"></div>

@@ -37,6 +37,7 @@
           ><span class="spanAfterIcon spanTitle"> Select files</span>
           <template>
             <v-icon
+              data-cy="mdiCheckSelected"
               style="position: absolute; right: 0; bottom: 0"
               v-if="fileSelected"
               color="teal"
@@ -44,6 +45,7 @@
               mdi-check
             </v-icon>
             <v-icon
+              data-cy="mdiAlertNotSelected"
               style="position: absolute; right: 0; bottom: 0"
               v-if="!fileSelected"
               color="error"
@@ -57,13 +59,19 @@
             <v-expansion-panel-header>
               <div>
                 <v-icon>mdi-plus</v-icon
-                ><span class="spanAfterIcon spanSubTitle"> New files</span>
+                ><span
+                  data-cy="newFilesCommitMessage"
+                  class="spanAfterIcon spanSubTitle"
+                >
+                  New files</span
+                >
               </div>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
               <div v-for="(newFile, indexNew) in newFiles" :key="indexNew">
                 <v-flex>
                   <v-checkbox
+                    data-cy="newFileCheckBox"
                     :input-value="newFile.fileSelected"
                     @change="checkboxAction($event, newFile.path, newFiles)"
                     :label="newFile.title"
@@ -102,13 +110,19 @@
             <v-expansion-panel-header>
               <div>
                 <v-icon>mdi-delete</v-icon
-                ><span class="spanAfterIcon spanSubTitle"> Deleted files</span>
+                ><span
+                  data-cy="deletedFilesAdr"
+                  class="spanAfterIcon spanSubTitle"
+                >
+                  Deleted files</span
+                >
               </div>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
               <div v-for="(deletedFile, index) in deletedFiles" :key="index">
                 <v-flex>
                   <v-checkbox
+                    data-cy="deletedFileCheckBox"
                     :input-value="deletedFile.fileSelected"
                     @change="
                       checkboxAction($event, deletedFile.path, deletedFiles)
@@ -126,6 +140,7 @@
           ><span class="spanAfterIcon spanTitle"> Enter commit message</span>
           <template>
             <v-icon
+              data-cy="mdiCheckCommitMessage"
               style="position: absolute; right: 0; bottom: 0"
               v-if="!textFieldError"
               color="teal"
@@ -133,6 +148,7 @@
               mdi-check
             </v-icon>
             <v-icon
+              data-cy="mdiAlertCommitMessage"
               style="position: absolute; right: 0; bottom: 0"
               v-if="textFieldError"
               color="error"
@@ -141,13 +157,15 @@
             </v-icon>
           </template>
         </div>
-        <v-text-field
-          class="textFieldFontSize textFieldHelpFontSize"
+        <v-textarea
+          data-cy="textFieldCommitMessage"
           label="Commit message"
-          :error-messages="isTextfieldValid()"
+          auto-grow
+          rows="1"
           v-model="comMessage"
+          :error-messages="isTextfieldValid()"
           @input="handleCommitMessage($event)"
-        ></v-text-field>
+        ></v-textarea>
 
         <div class="distanceToTextField">
           <v-icon color="primary">mdi-information-outline</v-icon>
@@ -164,6 +182,7 @@
       <v-card-actions class="buttonPadding">
         <v-spacer></v-spacer>
         <v-btn
+          data-cy="btnOfDialogCommitForPush"
           text
           color="success"
           :disabled="textFieldError || !fileSelected"
@@ -235,7 +254,8 @@ export default {
     deletedSelected: false,
     newSelected: false,
     changedSelected: false,
-    openedPanel: null
+    openedPanel: null,
+    errorRequest: false
   }),
 
   watch: {
@@ -268,6 +288,8 @@ export default {
           this.name = res.name;
         })
         .catch((error) => {
+          this.errorRequest = true;
+          this.errorDialog(error);
           console.error(error);
         });
 
@@ -279,7 +301,11 @@ export default {
             }
           }
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {
+          this.errorRequest = true;
+          this.errorDialog(error);
+          console.error(error);
+        });
     },
 
     setRepoInfo() {
@@ -314,6 +340,7 @@ export default {
       this.newFileBool = false;
       this.deletedFileBool = false;
       this.changedFileBool = false;
+      this.errorRequest = false;
       this.openedPanel = null;
     },
 
@@ -322,7 +349,7 @@ export default {
         this.commitFiles = this.commitFiles.concat(this.changedFiles);
         this.commitFiles = this.commitFiles.concat(this.newFiles);
         this.requestLastCommitSha();
-      } else this.gitHubTimeoutAlert();
+      } else;
     },
 
     isTextfieldValid() {
@@ -393,14 +420,18 @@ export default {
     requestLastCommitSha() {
       this.loading = true;
 
-      getCommitSha(this.currUser, this.currRepo, this.branch)
-        .then((res) => {
-          this.lastCommitSha = res.commit.sha;
-          this.createBlobsRequest();
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      if (!this.errorRequest) {
+        getCommitSha(this.currUser, this.currRepo, this.branch)
+          .then((res) => {
+            this.lastCommitSha = res.commit.sha;
+            this.createBlobsRequest();
+          })
+          .catch((error) => {
+            this.errorRequest = true;
+            this.errorDialog(error);
+            console.error(error);
+          });
+      }
     },
 
     createBlobsRequest() {
@@ -411,22 +442,26 @@ export default {
           if (value.fileSelected) {
             this.filesPushed.push({
               path: value.path,
-              type: value.fileStatus,
+              type: value.fileStatus
             });
-            createBlobs(this.currUser, this.currRepo, value.value)
-              .then((res) => {
-                countForEach++;
-                this.blobSha[value.title] = {
-                  blobSha: res.sha,
-                  path: value.path,
-                };
-                if (countForEach === countKeysList) {
-                  this.createFolderTreeRequest();
-                }
-              })
-              .catch((error) => {
-                console.error(error);
-              });
+            if (!this.errorRequest) {
+              createBlobs(this.currUser, this.currRepo, value.value)
+                .then((res) => {
+                  countForEach++;
+                  this.blobSha[value.title] = {
+                    blobSha: res.sha,
+                    path: value.path
+                  };
+                  if (countForEach === countKeysList) {
+                    this.createFolderTreeRequest();
+                  }
+                })
+                .catch((error) => {
+                  this.errorRequest = true;
+                  this.errorDialog(error);
+                  console.error(error);
+                });
+            }
           } else countForEach++;
         }
       } else this.createFolderTreeRequest();
@@ -458,68 +493,102 @@ export default {
           }
         });
       }
-
-      createFileTree(this.currUser, this.currRepo, this.lastCommitSha, fileTree)
-        .then((res) => {
-          this.createCommitRequest(res.sha);
-        })
-        .catch((error) => console.error(error));
+      if (!this.errorRequest) {
+        createFileTree(
+          this.currUser,
+          this.currRepo,
+          this.lastCommitSha,
+          fileTree
+        )
+          .then((res) => {
+            this.createCommitRequest(res.sha);
+          })
+          .catch((error) => {
+            this.errorRequest = true;
+            this.errorDialog(error);
+            console.error(error);
+          });
+      }
     },
     createCommitRequest(treeSha) {
-      createCommit(
-        this.currUser,
-        this.currRepo,
-        this.comMessage,
-        {
-          name: this.name,
-          email: this.email
-        },
-        this.lastCommitSha,
-        treeSha
-      )
-        .then((res) => this.pushToGitHubRequest(res.sha))
-        .catch((error) => console.error(error));
+      if (!this.errorRequest) {
+        createCommit(
+          this.currUser,
+          this.currRepo,
+          this.comMessage,
+          {
+            name: this.name,
+            email: this.email,
+          },
+          this.lastCommitSha,
+          treeSha
+        )
+          .then((res) => this.pushToGitHubRequest(res.sha))
+          .catch((error) => {
+            this.errorRequest = true;
+            this.errorDialog(error);
+            console.error(error);
+          });
+      }
     },
 
     pushToGitHubRequest(newCommitSha) {
-      pushToGitHub(this.currUser, this.currRepo, this.branch, newCommitSha)
-        .then((res) => {
-          console.log("resPush", res);
-          this.gitHubTimeout = true;
-          setTimeout(() => {
-            this.gitHubTimeout = false;
-          }, 60000);
-          this.loading = false;
-          store.updateLocalStorageAfterCommit(this.filesPushed);
+      if (!this.errorRequest) {
+        pushToGitHub(this.currUser, this.currRepo, this.branch, newCommitSha)
+          .then(() => {
+            this.gitHubTimeout = true;
+            setTimeout(() => {
+              this.gitHubTimeout = false;
+            }, 60000);
+            this.loading = false;
+            if (!this.errorRequest) {
+              store.updateLocalStorageAfterCommit(this.filesPushed);
+              this.$alert("Successfully pushed", "Success", "success");
+            }
+          })
+          .catch((error) => {
+            this.errorRequest = true;
+            this.errorDialog(error);
+            console.error(error);
+          });
+      }
+    },
 
-          this.$alert("Successfully pushed", "Success", "success");
-        })
-        .catch((error) => console.error(error));
+    errorDialog(currentError) {
+      this.$alert(
+        "Error during pushing. Your changes were not pushed. Please try again later. \nError code: " +
+          currentError,
+        "Error",
+        "error",
+        {
+          confirmButtonText: "Close"
+        }
+      ).then(() => {
+        this.closeDialog();
+      });
     },
 
     nothingToCommitAlert() {
       this.$alert(
         "No changes have been made since the last push",
-        "Error",
-        "error",
+        "Everything up to date",
+        "success",
         {
-          confirmButtonText: "Close",
+          confirmButtonText: "Close"
         }
-      ).then((val) => {
-        console.log("val", val);
+      ).then(() => {
         this.closeDialog();
       });
     },
     gitHubTimeoutAlert() {
       this.$alert(
         "Latency problem with GitHub Api. Please wait ~60 seconds!",
-        "Error",
-        "error",
+        "Warning",
+        "warning",
         {
-          confirmButtonText: "Close",
+          confirmButtonText: "Close"
         }
-      ).then((val) => {
-        console.log("val", val);
+      ).then(() => {
         this.closeDialog();
       });
     }
@@ -586,5 +655,8 @@ export default {
 }
 .divSpan {
   white-space: pre;
+}
+textarea {
+  font-family: roboto;
 }
 </style>

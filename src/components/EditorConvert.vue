@@ -20,7 +20,7 @@
 
     </div>
 
-    <v-btn color="success" @click="accept">Accept</v-btn>
+    <v-btn data-cy="acceptDiv" color="success" @click="accept">Accept</v-btn>
   </v-card>
 </template>
 

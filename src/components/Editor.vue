@@ -18,18 +18,18 @@
           </splitpanes>
         </v-tab-item>
         <!--end 'MADR Editor'-->
-        <v-tab-item :value="'Convert'" style="height: 100%;">
+        <v-tab-item data-cy="convert" :value="'Convert'" style="height: 100%;">
           <EditorConvert :raw="dValue" v-on:accept="acceptAfterDiff" />
         </v-tab-item>
         <!--end 'Compare MD'-->
-        <v-tab-item :value="'Markdown Preview'" style="height: 100%;" class="mx-auto overflow-y-auto">
+        <v-tab-item data-cy="markdownPreview" :value="'Markdown Preview'" style="height: 100%;" class="mx-auto overflow-y-auto">
           <MarkdownPreview v-model="dValue"></MarkdownPreview>
         </v-tab-item>
         <!--end 'Markdown Preview'-->
-        <v-tab-item :value="'Raw Markdown'" style="height: 100%;">
+        <v-tab-item data-cy="editorRaw" :value="'Raw Markdown'" style="height: 100%;">
           <splitpanes class="default-theme">
             <pane class="mx-auto overflow-y-hidden height: 100%">
-              <EditorRaw v-model="dValue" v-on:input="updateMdToAdr"
+              <EditorRaw  v-model="dValue" v-on:input="updateMdToAdr"
                 style="max-width: 100%; min-width: 100%; height: 100%"></EditorRaw>
             </pane>
             <pane v-if="alwaysShowMarkdownPreview" class="mx-auto overflow-y-auto">
