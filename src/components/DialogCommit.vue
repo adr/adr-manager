@@ -212,7 +212,7 @@ import {
   createCommit,
   pushToGitHub,
   getUserName,
-  getUserEmail,
+  getUserEmail
 } from "@/plugins/api.js";
 import { store } from "../plugins/store";
 
@@ -223,8 +223,8 @@ export default {
     value: {
       type: Boolean,
       required: false,
-      default: false,
-    },
+      default: false
+    }
   },
   data: () => ({
     showDialog: false,
@@ -255,7 +255,7 @@ export default {
     newSelected: false,
     changedSelected: false,
     openedPanel: null,
-    errorRequest: false,
+    errorRequest: false
   }),
 
   watch: {
@@ -279,7 +279,7 @@ export default {
     },
     value() {
       this.dialog = this.value;
-    },
+    }
   },
   methods: {
     setUserInfo() {
@@ -442,7 +442,7 @@ export default {
           if (value.fileSelected) {
             this.filesPushed.push({
               path: value.path,
-              type: value.fileStatus,
+              type: value.fileStatus
             });
             if (!this.errorRequest) {
               createBlobs(this.currUser, this.currRepo, value.value)
@@ -450,7 +450,7 @@ export default {
                   countForEach++;
                   this.blobSha[value.title] = {
                     blobSha: res.sha,
-                    path: value.path,
+                    path: value.path
                   };
                   if (countForEach === countKeysList) {
                     this.createFolderTreeRequest();
@@ -474,7 +474,7 @@ export default {
           path: value[1].path,
           mode: "100644",
           type: "blob",
-          sha: value[1].blobSha,
+          sha: value[1].blobSha
         });
       });
       if (this.deletedFileBool) {
@@ -482,13 +482,13 @@ export default {
           if (value[1].fileSelected) {
             this.filesPushed.push({
               path: value[1].path,
-              type: value[1].fileStatus,
+              type: value[1].fileStatus
             });
             fileTree.push({
               path: value[1].path,
               mode: "100644",
               type: "blob",
-              sha: null,
+              sha: null
             });
           }
         });
@@ -561,7 +561,7 @@ export default {
         "Error",
         "error",
         {
-          confirmButtonText: "Close",
+          confirmButtonText: "Close"
         }
       ).then(() => {
         this.closeDialog();
@@ -574,7 +574,7 @@ export default {
         "Everything up to date",
         "success",
         {
-          confirmButtonText: "Close",
+          confirmButtonText: "Close"
         }
       ).then(() => {
         this.closeDialog();
@@ -586,13 +586,13 @@ export default {
         "Warning",
         "warning",
         {
-          confirmButtonText: "Close",
+          confirmButtonText: "Close"
         }
       ).then(() => {
         this.closeDialog();
       });
-    },
-  },
+    }
+  }
 };
 </script>
 

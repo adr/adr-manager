@@ -10,13 +10,13 @@ context("Test commit and push file --> delete file in repo (push)", () => {
         cy.get('[data-cy=addRepo]').click();
         cy.intercept('GET', '**/user/repos**').as('getRepos');
         cy.wait('@getRepos').its('response.statusCode').should('eq', 200);
-        cy.get('[data-cy=listRepo]').click();
+        cy.get('[data-cy=listRepo]').should('have.length', 5).eq(0).click();
         cy.get('[data-cy=addRepoDialog]').click();
         cy.get('[data-cy=repoNameList]').click();
 
        // Add new file
        cy.get('[data-cy=NewAdrFile]').click({force: true});
-       cy.contains('-Infinity-.md*').click();
+       cy.contains('0000-*').click();
        cy.get('[data-cy=pushIcon]').click();
        
        // Check dialogn commit & push
@@ -42,7 +42,5 @@ context("Test commit and push file --> delete file in repo (push)", () => {
        cy.get('[data-cy=btnOfDialogCommitForPush]').click();
        cy.intercept('POST', '**/github/repos**').as('getRepos');
        cy.contains('OK').click();
-
-
     });
 })

@@ -72,7 +72,7 @@
     </v-list>
 
     <!-- Advanced and professional mode -->
-    <v-card v-else flat>
+    <v-card data-cy="consOptPro" v-else flat>
 
       <div v-for="(item, i) in adr.consideredOptions" :key="item.id">
         <drop @dragenter="(event) => moveOption(event.data, i)" class="my-0 py-0">
@@ -155,19 +155,19 @@
               <div v-show="expandedOptions.includes(item)" class="pl-12">
                 <h6 class="py-4 pl-4"> Description </h6>
                 <div class="pb-2 ml-4">
-                  <codemirror hint="Description of the option" v-model="item.description" color="grey lighten-3">
+                  <codemirror data-cy="descriptionConsOpt" hint="Description of the option" v-model="item.description" color="grey lighten-3">
                   </codemirror>
                 </div>
 
                 <div class="d-flex flex-wrap mx-0 px-0 pb-4 py-0 my-0">
                   <div class="flex-grow-1 mx-0 px-0 py-0 my-0" style="width: 50%; min-width: 600px">
                     <h6 class="py-4 pl-4"> Good, because ... </h6>
-                    <EditorMadrList :list="item.pros" class="ml-4 mr-0 px-0" cm-color="grey lighten-3" />
+                    <EditorMadrList data-cy="goodConsOpt" :list="item.pros" class="ml-4 mr-0 px-0" cm-color="grey lighten-3" />
 
                   </div>
                   <div class="flex-grow-1 mx-0 px-0 py-0 my-0" style="width: 50%; min-width: 600px">
                     <h6 class="py-4 pl-4"> Bad, because ... </h6>
-                    <EditorMadrList :list="item.cons" class="ml-4 mr-0 px-0" cm-color="grey lighten-3" />
+                    <EditorMadrList data-cy="badConsOpt" :list="item.cons" class="ml-4 mr-0 px-0" cm-color="grey lighten-3" />
                   </div>
                 </div>
                 <v-divider />
