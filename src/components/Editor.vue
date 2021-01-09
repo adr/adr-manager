@@ -78,9 +78,6 @@
       EditorRaw,
       MarkdownPreview
     },
-    props: {
-      filePath: String
-    },
     data: () => ({
       adr: {},
       dValue: "# Default ADR Editor heading",
