@@ -10,7 +10,7 @@ context("Test new adr function", () => {
         cy.get('[data-cy=addRepo]').click();
         cy.intercept('GET', '**/user/repos**').as('getRepos');
         cy.wait('@getRepos').its('response.statusCode').should('eq', 200);
-        cy.get('[data-cy=listRepo]').eq(4).click();
+        cy.get('[data-cy=listRepo]').contains('ResearchProject').click();
         cy.get('[data-cy=addRepoDialog]').click();
         cy.get('[data-cy=repoNameList]').click();
 
@@ -35,16 +35,9 @@ context("Test new adr function", () => {
         // Error here!!!!!!!!!!! Check tests if they are correct when bug fixed!!!!!!!!!!!
         // Check comment down there
 
-        cy.get('[data-cy=considerOptTextAdr]').click();
-        cy.get('[data-cy=considerOptTextAdr]').type('Con. Opt 1)');
-        cy.get('[data-cy=considerOptTextAdr]').should('have.length', 1);
-        cy.get('[data-cy=considerOptAddBtnAdr]').click();
-        cy.get('[data-cy=considerOptAddBtnAdr]').click();
-        cy.get('[data-cy=considerOptAddBtnAdr]').click();
-        cy.get('[data-cy=considerOptAddBtnAdr]').click();
-        cy.get('[data-cy=considerOptAddBtnAdr]').click();
-        cy.get('[data-cy=considerOptAddBtnAdr]').click();
-        cy.get('[data-cy=considerOptTextAdr]').should('have.length', 1);
+        cy.get('[data-cy=considerOptTextAdr]').children().eq(1).type('Con. Opt 1)')
+            .should('have.length', 1);
+        cy.get('[data-cy=considerOptTextAdr]').children().should('have.length', 2);
 
         // Choose decision outcome
         cy.get('[data-cy=decOutChooseAdr]').click();
