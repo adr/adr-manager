@@ -20,15 +20,17 @@ jobs:
         run:  
           npm ci
           $(npm bin)/cypress verify
-          
         
       - name: Run Cypress tests
         run: | 
               npm run serve &
-              npm run tests:chrome &
-              npm run test
+              npm run tests:chrome 
+
         continue-on-error: false
       
+      - name: Run unit tests
+        run:  npm run test
+
       - name: Copy test execution videos and screenshots
         run: |
             mkdir cypress-report
