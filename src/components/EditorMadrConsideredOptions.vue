@@ -27,7 +27,7 @@
             @mouseenter="hoveredOption = item" @mouseleave="hoveredOption = null">
 
             <!-- Left Icon for dragging -->
-            <div flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0 mx-0 d-flex"
+            <div data-cy="checkConsOptAdr" flat class="align-center flex-shrink-0 flex-grow-0 my-0 py-0 mx-0 d-flex"
               style="width: 32px; min-width: 32px">
               <!-- Show the drag-icon (dots) when the item is hovered or dragged -->
               <drag v-show="hoveredOption === item || draggedOption === item" :data="item"
