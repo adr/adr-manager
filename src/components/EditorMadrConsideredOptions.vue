@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div data-cy="considerOptTextAdr">
     <h3>Considered Options</h3>
     <!-- Display an alert when there are pros and cons of options in basic mode. -->
     <v-alert v-if="isModeTooLow" border="left" colored-border type="warning" elevation="2" class="my-4 py-2">
