@@ -38,8 +38,8 @@ bower_components
 build/Release
 
 # Cypress videos
-cypress/videos
-cypress/screenshots
+cypress/videos/**
+cypress/screenshots/**
 
 # Dependency directories
 node_modules/
