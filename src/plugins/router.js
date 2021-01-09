@@ -14,30 +14,53 @@ const routes = [
   },
   /** Route to the Editor without branch. */
   {
-    path: '/manager/:organization?/:repo?/:adr?',
+    path: '/manager',
+    alias: ['/editor'],
     name: 'Editor',
-    alias: ['/editor/:organization?/:repo?/:adr?'],
     component: EditorView,
     meta: { requiresAuth: true },
-    /** Pass the route as props to EditorView. */
-    props: route => ({ ...route.query, ...route.params, 
-      repoFullName : route.params.organization  + '/' +  route.params.repo,
-      branch : '',
-      adr : route.params.adr
+    redirect: to => {
+      if (to.params.organization && to.params.repo && to.params.branch && to.params.adr) {
+        return { name: 'EditorWithSpecifiedAdr' };
+      } else if (to.params.organization && to.params.repo && to.params.branch) {
+        console.log("Route to spec repo");
+        return { name: 'EditorWithSpecifiedRepo' };
+      } else {
+        return { name: 'EditorUnspecified' };
+      }
+    },
+  },
+  {
+    // FileExplorer will be rendered inside EditorView's <router-view>
+    path: '/manager',
+    name: 'EditorUnspecified',
+    component: EditorView,
+    meta: { requiresAuth: true },
+    props: route => ({ ...route.query, ...route.params })
+  },
+  {
+    // FileExplorer will be rendered inside EditorView's <router-view>
+    path: '/manager/:organization/:repo/:branch',
+    name: 'EditorWithSpecifiedRepo',
+    component: EditorView,
+    meta: { requiresAuth: true },
+    props: route => ({
+      ...route.query, ...route.params,
+      repoFullName: route.params.organization + '/' + route.params.repo,
+      branch: route.params.branch,
     })
   },
-  /** Route to the Editor with branch. */
   {
-    path: '/manager/:organization?/:repo?/:branch?/:adr?',
-    name: 'Editor',
-    alias: ['/editor/:organization?/:repo?/:branch?/:adr?'],
+    // FileExplorer will be rendered inside EditorView's <router-view>
+    path: '/manager/:organization/:repo/:branch/file/:adr/',
+    name: 'EditorWithSpecifiedAdr',
     component: EditorView,
-    meta: { requiresAuth: true },
-    /** Pass the route as props to EditorView. */
-    props: route => ({ ...route.query, ...route.params, 
-      repoFullName : route.params.organization  + '/' +  route.params.repo,
-      branch : route.params.branch, 
-      adr : route.params.adr
+    /** Pass the route as props to the FileExplorer. */
+    props: route => ({
+      ...route.query, ...route.params,
+      repoFullName: route.params.organization + '/' + route.params.repo,
+      branch: route.params.branch,
+      adr: route.params.adr
     })
   },
   {
