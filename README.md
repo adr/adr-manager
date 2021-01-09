@@ -1,4 +1,7 @@
-# ADR-Manager ![General cypress report](https://github.com/koppor/adr-manager/workflows/General%20cypress%20report/badge.svg?branch=cypress-integration)
+# ADR-Manager 
+![General cypress report](https://github.com/koppor/adr-manager/workflows/General%20cypress%20report/badge.svg?branch=cypress-integration)
+![APM](https://img.shields.io/apm/l/vim-mode)
+[![Last Updated](https://img.shields.io/github/last-commit/nccgroup/sobelow.svg)](https://github.com/koppor/adr-manager/commits/master)
 
 ## Project setup
 ```
