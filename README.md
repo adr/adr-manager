@@ -1,4 +1,4 @@
-# ADR-Manager
+# ADR-Manager ![General cypress report](https://github.com/koppor/adr-manager/workflows/General%20cypress%20report/badge.svg?branch=cypress-integration)
 
 ## Project setup
 ```
