@@ -255,6 +255,7 @@ export default {
     newSelected: false,
     changedSelected: false,
     openedPanel: null,
+    errorRequest: false,
   }),
 
   watch: {
@@ -287,6 +288,8 @@ export default {
           this.name = res.name;
         })
         .catch((error) => {
+          this.errorRequest = true;
+          this.errorDialog(error);
           console.error(error);
         });
 
@@ -298,7 +301,11 @@ export default {
             }
           }
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {
+          this.errorRequest = true;
+          this.errorDialog(error);
+          console.error(error);
+        });
     },
 
     setRepoInfo() {
@@ -333,6 +340,7 @@ export default {
       this.newFileBool = false;
       this.deletedFileBool = false;
       this.changedFileBool = false;
+      this.errorRequest = false;
       this.openedPanel = null;
     },
 
@@ -341,7 +349,7 @@ export default {
         this.commitFiles = this.commitFiles.concat(this.changedFiles);
         this.commitFiles = this.commitFiles.concat(this.newFiles);
         this.requestLastCommitSha();
-      } else this.gitHubTimeoutAlert();
+      } else;
     },
 
     isTextfieldValid() {
@@ -412,14 +420,18 @@ export default {
     requestLastCommitSha() {
       this.loading = true;
 
-      getCommitSha(this.currUser, this.currRepo, this.branch)
-        .then((res) => {
-          this.lastCommitSha = res.commit.sha;
-          this.createBlobsRequest();
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      if (!this.errorRequest) {
+        getCommitSha(this.currUser, this.currRepo, this.branch)
+          .then((res) => {
+            this.lastCommitSha = res.commit.sha;
+            this.createBlobsRequest();
+          })
+          .catch((error) => {
+            this.errorRequest = true;
+            this.errorDialog(error);
+            console.error(error);
+          });
+      }
     },
 
     createBlobsRequest() {
@@ -432,20 +444,24 @@ export default {
               path: value.path,
               type: value.fileStatus,
             });
-            createBlobs(this.currUser, this.currRepo, value.value)
-              .then((res) => {
-                countForEach++;
-                this.blobSha[value.title] = {
-                  blobSha: res.sha,
-                  path: value.path,
-                };
-                if (countForEach === countKeysList) {
-                  this.createFolderTreeRequest();
-                }
-              })
-              .catch((error) => {
-                console.error(error);
-              });
+            if (!this.errorRequest) {
+              createBlobs(this.currUser, this.currRepo, value.value)
+                .then((res) => {
+                  countForEach++;
+                  this.blobSha[value.title] = {
+                    blobSha: res.sha,
+                    path: value.path,
+                  };
+                  if (countForEach === countKeysList) {
+                    this.createFolderTreeRequest();
+                  }
+                })
+                .catch((error) => {
+                  this.errorRequest = true;
+                  this.errorDialog(error);
+                  console.error(error);
+                });
+            }
           } else countForEach++;
         }
       } else this.createFolderTreeRequest();
@@ -477,44 +493,79 @@ export default {
           }
         });
       }
-
-      createFileTree(this.currUser, this.currRepo, this.lastCommitSha, fileTree)
-        .then((res) => {
-          console.log("res Tree", res);
-          this.createCommitRequest(res.sha);
-        })
-        .catch((error) => console.error(error));
+      if (!this.errorRequest) {
+        createFileTree(
+          this.currUser,
+          this.currRepo,
+          this.lastCommitSha,
+          fileTree
+        )
+          .then((res) => {
+            this.createCommitRequest(res.sha);
+          })
+          .catch((error) => {
+            this.errorRequest = true;
+            this.errorDialog(error);
+            console.error(error);
+          });
+      }
     },
     createCommitRequest(treeSha) {
-      createCommit(
-        this.currUser,
-        this.currRepo,
-        this.comMessage,
-        {
-          name: this.name,
-          email: this.email,
-        },
-        this.lastCommitSha,
-        treeSha
-      )
-        .then((res) => this.pushToGitHubRequest(res.sha))
-        .catch((error) => console.error(error));
+      if (!this.errorRequest) {
+        createCommit(
+          this.currUser,
+          this.currRepo,
+          this.comMessage,
+          {
+            name: this.name,
+            email: this.email,
+          },
+          this.lastCommitSha,
+          treeSha
+        )
+          .then((res) => this.pushToGitHubRequest(res.sha))
+          .catch((error) => {
+            this.errorRequest = true;
+            this.errorDialog(error);
+            console.error(error);
+          });
+      }
     },
 
     pushToGitHubRequest(newCommitSha) {
-      pushToGitHub(this.currUser, this.currRepo, this.branch, newCommitSha)
-        .then((res) => {
-          console.log("resPush", res);
-          this.gitHubTimeout = true;
-          setTimeout(() => {
-            this.gitHubTimeout = false;
-          }, 60000);
-          this.loading = false;
-          store.updateLocalStorageAfterCommit(this.filesPushed);
+      if (!this.errorRequest) {
+        pushToGitHub(this.currUser, this.currRepo, this.branch, newCommitSha)
+          .then(() => {
+            this.gitHubTimeout = true;
+            setTimeout(() => {
+              this.gitHubTimeout = false;
+            }, 60000);
+            this.loading = false;
+            if (!this.errorRequest) {
+              store.updateLocalStorageAfterCommit(this.filesPushed);
+              this.$alert("Successfully pushed", "Success", "success");
+            }
+          })
+          .catch((error) => {
+            this.errorRequest = true;
+            this.errorDialog(error);
+            console.error(error);
+          });
+      }
+    },
 
-          this.$alert("Successfully pushed", "Success", "success");
-        })
-        .catch((error) => console.error(error));
+    errorDialog(currentError) {
+      this.$alert(
+        "Error during pushing. Your changes were not pushed. Please try again later. \nError code: " +
+          currentError,
+        "Error",
+        "error",
+        {
+          confirmButtonText: "Close",
+        }
+      ).then(() => {
+        this.closeDialog();
+      });
     },
 
     nothingToCommitAlert() {
@@ -525,8 +576,7 @@ export default {
         {
           confirmButtonText: "Close",
         }
-      ).then((val) => {
-        console.log("val", val);
+      ).then(() => {
         this.closeDialog();
       });
     },
@@ -538,8 +588,7 @@ export default {
         {
           confirmButtonText: "Close",
         }
-      ).then((val) => {
-        console.log("val", val);
+      ).then(() => {
         this.closeDialog();
       });
     },
