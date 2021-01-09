@@ -18,7 +18,7 @@ context("Should test empirical add and open function of adr-manager", () => {
     it('Should test empirical add and open function of jabref repo', () => {
         cy.writeFile('cypress/fixtures/CounterDiffAllRepos.json', { counter: "0" });
         cy.writeFile('cypress/fixtures/CounterAdrsAllRepos.json', { counter: "0" });
-        cy.get('[data-cy=listRepo]').should('have.length', 5).eq(0).click();
+        cy.get('[data-cy=listRepo]').should('have.length', 5).eq(1).click();
         cy.get('[data-cy=addRepoDialog]').click();
         cy.get('[data-cy=adrList]').should('have.length', 21).each(($adr, index, $adrs) => {
             cy.get($adr).click();
@@ -53,7 +53,7 @@ context("Should test empirical add and open function of adr-manager", () => {
     });
 
     it('Should test empirical add and open function of adr-tools repo', () => {
-        cy.get('[data-cy=listRepo]').should('have.length', 5).eq(1).click();
+        cy.get('[data-cy=listRepo]').should('have.length', 5).eq(2).click();
         cy.get('[data-cy=addRepoDialog]').click();
         cy.get('[data-cy=adrList]').should('have.length', 0);
         cy.get('[data-cy=removeRepo]').click();
@@ -61,7 +61,7 @@ context("Should test empirical add and open function of adr-manager", () => {
     });
 
     it('Should test empirical add and open function of adr-log repo', () => {
-        cy.get('[data-cy=listRepo]').should('have.length', 5).eq(2).click();
+        cy.get('[data-cy=listRepo]').should('have.length', 5).eq(3).click();
         cy.get('[data-cy=addRepoDialog]').click();
         cy.get('[data-cy=adrList]').should('have.length', 7).each(($adr, index, $adrs) => {
             cy.get($adr).click();
@@ -96,7 +96,7 @@ context("Should test empirical add and open function of adr-manager", () => {
     });
 
     it('Should test empirical add and open function of madr repo', () => {
-        cy.get('[data-cy=listRepo]').should('have.length', 5).eq(3).click();
+        cy.get('[data-cy=listRepo]').should('have.length', 5).eq(4).click();
         cy.get('[data-cy=addRepoDialog]').click();
         cy.get('[data-cy=adrList]').should('have.length', 14).each(($adr, index, $adrs) => {
             cy.get($adr).click();

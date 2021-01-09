@@ -10,7 +10,7 @@ context("Test new adr function", () => {
         cy.get('[data-cy=addRepo]').click();
         cy.intercept('GET', '**/user/repos**').as('getRepos');
         cy.wait('@getRepos').its('response.statusCode').should('eq', 200);
-        cy.get('[data-cy=listRepo]').click();
+        cy.get('[data-cy=listRepo]').should('have.length', 5).eq(0).click();
         cy.get('[data-cy=addRepoDialog]').click();
         cy.get('[data-cy=repoNameList]').click();
 

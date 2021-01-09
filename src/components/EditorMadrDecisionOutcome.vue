@@ -17,11 +17,11 @@
     <v-row flat v-if="mode !== 'basic'">
       <v-col lg="6" md="12" flat class="flex-grow-1" min-width="600px" max-width="100%">
         <h5 class="my-4">Positive Consequences</h5>
-        <EditorMadrList :list="adr.decisionOutcome.positiveConsequences" />
+        <EditorMadrList data-cy="posConseqPro" :list="adr.decisionOutcome.positiveConsequences" />
       </v-col>
       <v-col lg="6" md="12" flat class="flex-grow-1" min-width="600px" max-width="100%">
         <h5 class="my-4">Negative Consequences</h5>
-        <EditorMadrList :list="adr.decisionOutcome.negativeConsequences" />
+        <EditorMadrList data-cy="negConseqPro"  :list="adr.decisionOutcome.negativeConsequences" />
       </v-col>
     </v-row>
   </div>

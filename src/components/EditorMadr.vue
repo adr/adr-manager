@@ -50,7 +50,7 @@
         <div v-if="mode === 'professional'">
           <v-divider class="my-8" />
           <h3>Links</h3>
-          <GenericList :list="adr.links" />
+          <GenericList data-cy="linkPro" :list="adr.links" />
         </div>
 
         <div class="my-16"></div>
