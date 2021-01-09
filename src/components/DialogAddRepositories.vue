@@ -27,7 +27,7 @@
         </v-row>
       </v-card-title>
 
-      <v-divider></v-divider>
+      <v-divider class="mb-0"></v-divider>
 
       <div v-if="showPagination" class="text-center">
         <v-btn :disabled="!hasPreviousPage" @click="goToPreviousPage">

@@ -160,8 +160,12 @@ export async function searchRepositoryList(searchString, maxResults = 2, searchR
   while (searchResults.length < maxResults && hasNextPage) {
     promise = loadRepositoryList(page, perPage)
       .then((repositoryList) => {
+        if (repositoryList instanceof Array) {
           repositoryList.filter((repo) => (repo.full_name.includes(searchString)))
             .forEach(repo => { if (searchResults.length < maxResults) { searchResults.push(repo) } });
+        } else {
+          hasNextPage = false;
+        }
         if (repositoryList.length < perPage) {
           hasNextPage = false;
         }
