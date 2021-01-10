@@ -6,10 +6,9 @@ context("Test add repository", () => {
         window.localStorage.setItem("authId", "8a555390-4db1-11eb-a06d-f3ebfa774e63");
         cy.visit("http://localhost:8080/manager");
 
+        cy.intercept('GET', '**/user/repos**').as('getRepos');
         cy.get('[data-cy=addRepo]').click();
-
-        //cy.intercept('GET', '**/user/repos**').as('getRepos');
-        //cy.wait('@getRepos').its('response.statusCode').should('eq', 200);
+        cy.wait('@getRepos').its('response.statusCode').should('eq', 200);
 
         cy.get('[data-cy=listRepo]').should('have.length', 5);
         cy.get('[data-cy=listRepo]').eq(0).click();
@@ -20,10 +19,10 @@ context("Test add repository", () => {
 
         cy.get('[data-cy=noRepo]').should('have.text', ' Sorry, no repositories were found! ');
 
-        cy.get('[data-cy=addRepoDialog]').click();
         cy.intercept('GET', '**/repos**').as('showRepos');
-        //cy.wait(5000);
-        //cy.wait('@showRepos')
+        cy.get('[data-cy=addRepoDialog]').click();
+        cy.wait('@showRepos');
+        cy.wait(5000);
 
         cy.get('[data-cy=repoNameList]').children().should('have.length', 5);
         cy.get('[data-cy=repoNameList]').click();

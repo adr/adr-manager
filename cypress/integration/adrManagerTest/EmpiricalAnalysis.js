@@ -7,10 +7,11 @@ context("Should test empirical add and open function of adr-manager", () => {
         cy.visit("http://localhost:8080/manager");
         window.localStorage.clear();
         window.localStorage.setItem("authId", "8a555390-4db1-11eb-a06d-f3ebfa774e63");
-        cy.get('[data-cy=addRepo]').click();
-
+        
         cy.intercept('GET', '**/user/repos**').as('getRepos');
+        cy.get('[data-cy=addRepo]').click();
         cy.wait('@getRepos').its('response.statusCode').should('eq', 200);
+        
         cy.writeFile('cypress/fixtures/CounterDiffPerRepo.json', { counter: "0" });
         cy.writeFile('cypress/fixtures/CounterAdrsPerRepo.json', { counter: "0" });
     })
@@ -20,6 +21,12 @@ context("Should test empirical add and open function of adr-manager", () => {
         cy.writeFile('cypress/fixtures/CounterAdrsAllRepos.json', { counter: "0" });
         cy.get('[data-cy=listRepo]').should('have.length', 5).eq(1).click();
         cy.get('[data-cy=addRepoDialog]').click();
+        
+        cy.intercept('GET', '**/repos**').as('showRepos');
+        cy.get('[data-cy=addRepoDialog]').click();
+        cy.wait('@showRepos');
+        cy.wait(5000);
+
         cy.get('[data-cy=adrList]').should('have.length', 21).each(($adr, index, $adrs) => {
             cy.get($adr).click();
             cy.get('header').then(($a) => {
