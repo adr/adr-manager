@@ -10,6 +10,7 @@ context("Should test empirical add and open function of adr-manager", () => {
         cy.get('[data-cy=addRepo]').click();
 
         cy.intercept('GET', '**/user/repos**').as('getRepos');
+        cy.wait(5000);
         cy.wait('@getRepos').its('response.statusCode').should('eq', 200);
         cy.writeFile('cypress/fixtures/CounterDiffPerRepo.json', { counter: "0" });
         cy.writeFile('cypress/fixtures/CounterAdrsPerRepo.json', { counter: "0" });
