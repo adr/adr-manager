@@ -18,7 +18,7 @@
                   <v-list-item-title  v-text="repo.name"></v-list-item-title>
                 </v-list-item-content>
                 <DialogCommit
-                  v-bind:repo="{ name: repo.name }"
+                  v-bind:repo="repo.name"
                   v-if="repo.fileType === 'repo'"
                 >
                   <template v-slot:activator="{ on, attrs }">
