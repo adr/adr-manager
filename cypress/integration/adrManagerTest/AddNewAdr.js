@@ -7,9 +7,9 @@ context("Test new adr function", () => {
         cy.visit("http://localhost:8080/manager");
 
         // Add repo
+        cy.intercept('GET', '**/user/repos**').as('getRepos');
         cy.get('[data-cy=addRepo]').click();
-        //cy.intercept('GET', '**/user/repos**').as('getRepos');
-        //cy.wait('@getRepos').its('response.statusCode').should('eq', 200);
+        cy.wait('@getRepos').its('response.statusCode').should('eq', 200);
         cy.get('[data-cy=listRepo]').contains('ResearchProject').click();
         cy.get('[data-cy=addRepoDialog]').click();
         

@@ -7,15 +7,20 @@ context("Test commit and push file --> delete file in repo (push)", () => {
         cy.visit("http://localhost:8080/manager");
 
         // Add repo
+        cy.intercept('GET', '**/user/repos**').as('getRepos');
         cy.get('[data-cy=addRepo]').click();
-        //cy.intercept('GET', '**/user/repos**').as('getRepos');
-        //cy.wait('@getRepos').its('response.statusCode').should('eq', 200);
+        cy.wait('@getRepos').its('response.statusCode').should('eq', 200);
+        
         cy.get('[data-cy=listRepo]').should('have.length', 5).eq(0).click();
+        
+        cy.intercept('GET', '**/repos**').as('showRepos');
         cy.get('[data-cy=addRepoDialog]').click();
+        cy.wait(5000);
+        cy.wait('@showRepos');
         
         // If the repository is not expanded automatically, click on it.
-        cy.get("[data-cy=newADR]").then($header => {
-            if ($header.is(':visible')) {
+        cy.get("[data-cy=newADR]").then($button => {
+            if ($button.is(':visible')) {
                 //you get here only if button EXISTS and is VISIBLE
             } else {
                 //you get here only if button EXISTS but is INVISIBLE
@@ -28,7 +33,7 @@ context("Test commit and push file --> delete file in repo (push)", () => {
        cy.contains('0000-*').click();
        cy.get('[data-cy=pushIcon]').click();
        
-       // Check dialogn commit & push
+       // Check dialog commit & push
        cy.get('[data-cy=btnOfDialogCommitForPush]').should('be.disabled');
        cy.get('[data-cy=mdiAlertNotSelected]').should('be.visible');
        cy.get('[data-cy=mdiAlertCommitMessage]').should('be.visible');
@@ -39,9 +44,11 @@ context("Test commit and push file --> delete file in repo (push)", () => {
        cy.get('[data-cy=mdiCheckCommitMessage]').should('be.visible');
        cy.get('[data-cy=btnOfDialogCommitForPush]').click();
        cy.intercept('POST', '**/github/repos**').as('getRepos');
+       cy.wait('@getRepos');
        cy.contains('OK').click();
+
        // Delete AdrFile
-       cy.wait(60000)
+       cy.wait(60000);
        cy.get('[data-cy=deleteAdrBtn]').click();
        cy.get('[data-cy=dialogDeleteAdrBtn').click();
        cy.get('[data-cy=pushIcon]').click();

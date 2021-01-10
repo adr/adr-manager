@@ -7,9 +7,10 @@ context("Test modes", () => {
         cy.visit("http://localhost:8080/manager");
 
         // Add repo
+        cy.intercept('GET', '**/user/repos**').as('getRepos');
         cy.get('[data-cy=addRepo]').click();
-        //cy.intercept('GET', '**/user/repos**').as('getRepos');
-        //cy.wait('@getRepos').its('response.statusCode').should('eq', 200);
+        cy.wait('@getRepos').its('response.statusCode').should('eq', 200);
+        
         cy.get('[data-cy=listRepo]').should('have.length', 5).eq(0).click();
         cy.get('[data-cy=addRepoDialog]').click();
         

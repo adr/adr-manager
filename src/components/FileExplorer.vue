@@ -75,7 +75,7 @@
         <div class="my-16"></div>
       </div>
     </div>
-    <!-- Bottom Buttons for adding a repository and commiting -->
+    <!-- Bottom Button for adding a repository -->
     <div class="flex-grow-0 d-flex flex-wrap">
       <DialogAddRepositories>
         <template v-slot:activator="{ on, attrs }">
