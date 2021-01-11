@@ -10,9 +10,10 @@ const routes = [
     path: '/',
     name: 'Register',
     alias: ['/register', '/login'],
-    component: LandingPage
+    component: LandingPage,
+    meta: { title: () => { return "ADR Manager - Connect" } }
   },
-  /** Route to the Editor without branch. */
+  /** Route to the Editor (selects fitting sub-route) */
   {
     path: '/manager',
     alias: ['/editor'],
@@ -30,16 +31,16 @@ const routes = [
       }
     },
   },
+  // Sub-route 1: If the route does not specify a repo
   {
-    // FileExplorer will be rendered inside EditorView's <router-view>
     path: '/manager',
     name: 'EditorUnspecified',
     component: EditorView,
     meta: { requiresAuth: true },
     props: route => ({ ...route.query, ...route.params })
   },
+  // Sub-route 2: If the route does not specify ADR but specifies a repo
   {
-    // FileExplorer will be rendered inside EditorView's <router-view>
     path: '/manager/:organization/:repo/:branch',
     name: 'EditorWithSpecifiedRepo',
     component: EditorView,
@@ -50,12 +51,12 @@ const routes = [
       branch: route.params.branch,
     })
   },
+  // Sub-route 2: If the route does repo and ADR 
   {
-    // FileExplorer will be rendered inside EditorView's <router-view>
-    path: '/manager/:organization/:repo/:branch/file/:adr/',
+    path: '/manager/:organization/:repo/:branch/file/:adr',
     name: 'EditorWithSpecifiedAdr',
     component: EditorView,
-    /** Pass the route as props to the FileExplorer. */
+    meta: { requiresAuth: true, title: route => { return route.params.adr } },
     props: route => ({
       ...route.query, ...route.params,
       repoFullName: route.params.organization + '/' + route.params.repo,
@@ -71,7 +72,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   routes
 })
 
@@ -90,6 +91,13 @@ router.beforeEach((to, from, next) => {
   } else {
     next() // make sure to always call next()!
   }
+})
+
+const DEFAULT_TITLE = "ADR Manager"
+router.afterEach((to) => {
+  Vue.nextTick(() => {
+    document.title = to.meta.title ? to.meta.title(to) : DEFAULT_TITLE;
+  })
 })
 
 export default router
