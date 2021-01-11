@@ -3,15 +3,12 @@
 context("Test for correct URLs", () => {
     beforeEach(() => {
         // Clean up local storage
-        cy.visit("http://localhost:8080/manager");
-        cy.wait(100);
         window.localStorage.clear();
         window.localStorage.setItem("authId", "8a555390-4db1-11eb-a06d-f3ebfa774e63");
         cy.visit("http://localhost:8080/manager");
     })
 
-    it('URL should not contain any repo name at the start.', () => {
-        cy.visit("http://localhost:8080/manager");
+    it('URL should correspond to opened repo/ADR.', () => {
 
         cy.url().should('equal', "http://localhost:8080/manager");
 
@@ -58,7 +55,7 @@ context("Test for correct URLs", () => {
         // The repo does not contain an ADR again, so the URL should contain: full name and branch.
         cy.url().should('equal', "http://localhost:8080/manager/researchproject2020/ResearchProject/main");
 
-        cy.get('[data-cy=removeRepoBtn]').click();
+        cy.get('[data-cy=removeRepo]').click();
     });
     
     it('If the local storage does not contain the auth ID, redirect to /login.', () => {
