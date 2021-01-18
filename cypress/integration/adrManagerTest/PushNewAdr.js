@@ -2,7 +2,7 @@
 /// <reference types="cypress" />
 context("Test commit and push file --> delete file in repo (push)", () => {
     it('Should create a new file, then push it to GitHub. Then delete file in GitHub', () => {
-        cy.visit("http://localhost:8080/manager");
+        cy.visit("http://localhost:8080/#/manager");
         window.localStorage.clear();
         window.localStorage.setItem("authId", "8a555390-4db1-11eb-a06d-f3ebfa774e63");
 
