@@ -51,9 +51,9 @@ const routes = [
       branch: route.params.branch,
     })
   },
-  // Sub-route 2: If the route does repo and ADR 
+  // Sub-route 2: If the route does specify repo and ADR 
   {
-    path: '/manager/:organization/:repo/:branch/file/:adr',
+    path: '/manager/:organization/:repo/:branch/:adr',
     name: 'EditorWithSpecifiedAdr',
     component: EditorView,
     meta: { requiresAuth: true, title: route => { return route.params.adr } },

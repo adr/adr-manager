@@ -17,7 +17,6 @@ import { adr2md, naturalCase2snakeCase } from "./parser";
 export const store = new Vue({
   data: {
     currentRepository: undefined,
-    currentBranch: undefined,
     currentlyEditedAdr: undefined,
     addedRepositories: [],
     mode: "basic"
@@ -56,7 +55,7 @@ export const store = new Vue({
      * Write the current value of the added repositories list array into the local storage.
      * Should be done regularly.
      */
-    updateLocalStorageRepositories: function() {
+    updateLocalStorageRepositories: function () {
       localStorage.setItem(
         "addedRepositories",
         JSON.stringify(this.addedRepositories)
@@ -76,11 +75,11 @@ export const store = new Vue({
       );
       if (alreadyAddedRepos.length > 0) {
         throw "I won't add an already added repository to the store! " +
-          alreadyAddedRepos.map((repo) => repo.fullName).join(", ");
+        alreadyAddedRepos.map((repo) => repo.fullName).join(", ");
       }
       this.addedRepositories = this.addedRepositories.concat(repoList);
       this.updateLocalStorageRepositories();
-      this.assertSomeAdrIsOpened();
+      this.ensureSomeAdrIsOpened();
     },
 
     /** Removes the repository from the added repositories.
@@ -91,7 +90,7 @@ export const store = new Vue({
       this.addedRepositories = this.addedRepositories.filter(
         (repo) => repo.fullName !== repoToRemove.fullName
       );
-      this.assertSomeAdrIsOpened();
+      this.ensureSomeAdrIsOpened();
       this.updateLocalStorageRepositories();
     },
 
@@ -124,7 +123,7 @@ export const store = new Vue({
      * Make sure that there is one ADR currently edited.
      * If there is no currently edited ADR (or it isn't valid), open some ADR.
      */
-    assertSomeAdrIsOpened() {
+    ensureSomeAdrIsOpened() {
       if (
         this.currentlyEditedAdr === undefined ||
         !isValidAdr(this.currentlyEditedAdr) ||
@@ -134,7 +133,6 @@ export const store = new Vue({
       ) {
         this.currentlyEditedAdr = undefined;
         this.currentRepository = undefined;
-        this.currentBranch = undefined;
         this.openAnyAdr();
       }
     },
@@ -180,14 +178,13 @@ export const store = new Vue({
      *
      * @param {object} adr
      */
-    openAdr: function(adr) {
+    openAdr: function (adr) {
       if (adr !== this.currentlyEditedAdr) {
         let repo = this.addedRepositories.find((repo) =>
           repo.adrs.includes(adr)
         );
         if (isValidAdr(adr) && repo !== undefined) {
           this.currentRepository = repo;
-          this.currentBranch = repo.activeBranch;
           this.currentlyEditedAdr = adr;
           console.log("Open ADR in store.js ", adr);
           this.$emit("open-adr", adr);
@@ -237,7 +234,7 @@ export const store = new Vue({
      * @param {object} repo - must be one of the added repositories
      * @returns the created adr if repo is added, undefined otherwise
      */
-    createNewAdr: function(repo) {
+    createNewAdr: function (repo) {
       if (this.addedRepositories.includes(repo)) {
         let adr = ArchitecturalDecisionRecord.createNewAdr();
         let md = adr2md(adr);
@@ -280,6 +277,7 @@ export const store = new Vue({
       if (adrIndexNewAdr >= 0) {
         repo.addedAdrs.splice(adrIndexNewAdr, 1)[0];
       } else repo.deletedAdrs.push(file);
+      this.ensureSomeAdrIsOpened();
       this.updateLocalStorageRepositories();
     },
 
