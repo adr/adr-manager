@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
 context("Test delete adr function", () => {
-    
+
     it('Should create a new adr and then delete it', () => {
         window.localStorage.clear();
         window.localStorage.setItem("authId", "8a555390-4db1-11eb-a06d-f3ebfa774e63");
@@ -15,6 +15,21 @@ context("Test delete adr function", () => {
         cy.get('[data-cy=addRepoDialog]').click();
 
         // If the repository is not expanded automatically, click on it.
+        cy.get("body").then($body => {
+            if ($body.find("[data-cy=newADR]").length > 0) {
+                //if button exists at all
+                cy.get("[data-cy=newADR]").then($header => {
+                    if (!$header.is(':visible')) {
+                        //if button is INVISIBLE
+                        cy.get('[data-cy=repoNameList]').click();
+                    }
+                });
+            } else {
+                //if the button DOESN'T EXIST
+                cy.get('[data-cy=repoNameList]').click();
+            }
+        });
+
         cy.get("[data-cy=newADR]").then($header => {
             if ($header.is(':visible')) {
                 //you get here only if button EXISTS and is VISIBLE

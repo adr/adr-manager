@@ -26,10 +26,9 @@ context("Test add repository", () => {
 
                 cy.get('[data-cy=noRepo]').should('have.text', ' Sorry, no repositories were found! ');
 
-                cy.intercept('GET', '**/repos**').as('showRepos');
                 cy.get('[data-cy=addRepoDialog]').click();
-                cy.wait('@showRepos');
-                cy.wait(5000);
+                cy.intercept('GET', '**/repos**').as('showRepos');
+                cy.wait('@showRepos', {timeout: 15000});
 
                 cy.get('[data-cy=repoNameList]').children().should('have.length', listingCount);
                 cy.get('[data-cy=repoNameList]').click();
@@ -45,10 +44,9 @@ context("Test add repository", () => {
         cy.get('[data-cy=listRepo]').eq(0).click();
         cy.get('[data-cy=listRepo]').eq(0).click();
 
-        cy.intercept('GET', '**/repos**').as('showRepos');
         cy.get('[data-cy=addRepoDialog]').click();
-        cy.wait('@showRepos');
-        cy.wait(5000);
+        cy.intercept('GET', '**/repos**').as('showRepos');
+        cy.wait('@showRepos', {timeout: 10000});
 
         cy.get('[data-cy=repoNameList]').children().should('have.length', 3);
         cy.get('[data-cy=repoNameList]').click();
