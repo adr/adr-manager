@@ -224,7 +224,8 @@ export default {
       type: Boolean,
       required: false,
       default: false
-    }
+    },
+    repo: String
   },
   data: () => ({
     showDialog: false,
@@ -285,7 +286,7 @@ export default {
     setUserInfo() {
       getUserName(this.currUser)
         .then((res) => {
-          this.name = res.name;
+          this.name = res.login;
         })
         .catch((error) => {
           this.errorRequest = true;
@@ -309,22 +310,22 @@ export default {
     },
 
     setRepoInfo() {
-      let repoInfos = store.getRepoInfoForCommit();
+      let repoInfos = store.getRepoInfoForCommit(this.repo);
       this.currUser = repoInfos.userName;
       this.currRepo = repoInfos.repoName;
       this.branch = repoInfos.activeBranch;
     },
 
     setFilesForCommit() {
-      this.changedFiles = store.changedFilesInRepo();
+      this.changedFiles = store.changedFilesInRepo(this.repo);
       if (this.changedFiles.length > 0) {
         this.changedFileBool = true;
       }
-      this.newFiles = store.newFilesInRepo();
+      this.newFiles = store.newFilesInRepo(this.repo);
       if (this.newFiles.length > 0) {
         this.newFileBool = true;
       }
-      this.deletedFiles = store.deletedFilesInRepo();
+      this.deletedFiles = store.deletedFilesInRepo(this.repo);
       if (this.deletedFiles.length > 0) {
         this.deletedFileBool = true;
       }
@@ -542,7 +543,7 @@ export default {
             }, 60000);
             this.loading = false;
             if (!this.errorRequest) {
-              store.updateLocalStorageAfterCommit(this.filesPushed);
+              store.updateLocalStorageAfterCommit(this.filesPushed, this.repo);
               this.$alert("Successfully pushed", "Success", "success");
             }
           })

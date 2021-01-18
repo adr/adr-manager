@@ -72,8 +72,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: 'hash',
-  routes
+  routes: routes
 })
 
 router.beforeEach((to, from, next) => {
