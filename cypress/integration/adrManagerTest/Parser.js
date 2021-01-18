@@ -13,6 +13,8 @@ context("Test parser function", () => {
         
         cy.get('[data-cy=listRepo]').should('have.length', 5).eq(0).click();
         cy.get('[data-cy=addRepoDialog]').click();
+        cy.intercept('GET', '**/repos**').as('showRepos');
+        cy.wait('@showRepos', {timeout: 10000});
         
         // If the repository is not expanded automatically, click on it.
         cy.get("body").then($body => {

@@ -12,7 +12,10 @@ context("Test delete adr function", () => {
         cy.get('[data-cy=addRepo]').click();
         cy.wait('@getRepos').its('response.statusCode').should('eq', 200);
         cy.get('[data-cy=listRepo]').contains('ResearchProject').click();
+        
         cy.get('[data-cy=addRepoDialog]').click();
+        cy.intercept('GET', '**/repos**').as('showRepos');
+        cy.wait('@showRepos', {timeout: 10000});
 
         // If the repository is not expanded automatically, click on it.
         cy.get("body").then($body => {
