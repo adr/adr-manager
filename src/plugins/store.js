@@ -141,12 +141,15 @@ export const store = new Vue({
      * Opens any ADR.
      */
     openAnyAdr() {
-      let reposWithAdrs = this.addedRepositories.filter(
-        (repo) => repo.adrs && repo.adrs[0]
-      );
-      if (reposWithAdrs.length > 0) {
+      let reposWithAdrs = this.addedRepositories.filter(repo => (repo.adrs && repo.adrs[0]));
+      if (reposWithAdrs.includes(this.currentRepository)) {
+        let someAdr = this.currentRepository.adrs[0];
+        this.openAdr(someAdr);
+      } else if (reposWithAdrs.length > 0) {
         let someAdr = reposWithAdrs[0].adrs[0];
         this.openAdr(someAdr);
+      } else if (this.currentRepository === undefined) {
+        this.currentRepository = this.addedRepositories[0];
       }
     },
 

@@ -15,11 +15,17 @@ context("Test parser function", () => {
         cy.get('[data-cy=addRepoDialog]').click();
         
         // If the repository is not expanded automatically, click on it.
-        cy.get("[data-cy=newADR]").then($header => {
-            if ($header.is(':visible')) {
-                //you get here only if button EXISTS and is VISIBLE
+        cy.get("body").then($body => {
+            if ($body.find("[data-cy=newADR]").length > 0) {
+                //if button exists at all
+                cy.get("[data-cy=newADR]").then($header => {
+                    if (!$header.is(':visible')) {
+                        //if button is INVISIBLE
+                        cy.get('[data-cy=repoNameList]').click();
+                    }
+                });
             } else {
-                //you get here only if button EXISTS but is INVISIBLE
+                //if the button DOESN'T EXIST
                 cy.get('[data-cy=repoNameList]').click();
             }
         });
