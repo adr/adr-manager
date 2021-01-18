@@ -4,7 +4,7 @@ context("Test add repository", () => {
     beforeEach(() => {
         window.localStorage.clear();
         window.localStorage.setItem("authId", "8a555390-4db1-11eb-a06d-f3ebfa774e63");
-        cy.visit("http://localhost:8080/manager");
+        cy.visit("http://localhost:8080/#/manager");
 
         cy.intercept('GET', '**/user/repos**').as('getRepos');
         cy.get('[data-cy=addRepo]').click();

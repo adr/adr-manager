@@ -4,7 +4,7 @@
 
 
 ## Overview
-This project presents a web-based application to manage architectural decision records. An architectural decisionis any decision which may influence the architecture of the system. Documenting these decisions is substantialfor the maintainability of a system. A lightweight format to capture these decisions are Markdown ArchitecturalDecision  Records  (MADRs).  Each  decision  is  stored  in  a  separate  file.  MADR  offers  a  naming  scheme  and  atemplate to keep the layout of recorded decisions consistent. This leads to the need for management of the decisions.Currently, there exists no graphical user interface specialized for ADRs. This project closes this gap.
+This project presents a web-based application to manage architectural decision records. An architectural decisionis any decision which may influence the architecture of the system. Documenting these decisions is substantialfor the maintainability of a system. A lightweight format to capture these decisions are Markdown ArchitecturalDecision  Records  (MADRs).  Each  decision  is  stored  in  a  separate  file.  MADR  offers  a  naming  scheme  and  atemplate to keep the layout of recorded decisions consistent. This leads to the need for management of the decisions.Currently, there exists no graphical user interface specialized for ADRs. This project closes this gap.  You can find the site through the following [link](https://adr-manager.github.io/).
 
 ## Project setup
 ```
