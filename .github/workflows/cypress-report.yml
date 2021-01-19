@@ -27,15 +27,3 @@ jobs:
       
       - name: Run unit tests
         run:  npm run test
-
-      - name: Copy test execution videos and screenshots
-        run: |
-            mkdir cypress-report
-            cp -r cypress/videos public/videos
-            
-
-      - name: Deploy report page to GitHub Page
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{secrets.GITHUB_TOKEN}}
-          publish_dir: ./public
