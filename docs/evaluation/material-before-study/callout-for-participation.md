@@ -1,15 +1,6 @@
-# Study Preamble
+# Callout for participation
 
-University of Stuttgart
-
-|Name|Email|
-|---|---|
-|Daniel Abajirov|st155165@stud.uni-stuttgart.de|
-|Katrin Bauer|st161700@stud.uni-stuttgart.de|
-|Manuel Merkel|st155131@stud.uni-stuttgart.de|
-
-
-This document describes the general guidelines and ethical considerations of this interview study.
+Hey, we're three motivated students planning to perform a study to evaluate our tool to manage ADRs on GitHub. We're looking for software professionals to test our tool and give feedback on the practical usage.
 
 ## Purpose of this Study
 
@@ -26,3 +17,13 @@ Everything that is said in the study is treated as strictly confidential and wil
 
 Participants will be notified about the study and will be sent the material.
 The study is split into two parts: Firstly, the participant will use the tool while thinking aloud. Secondly, there will be an interview. Study time is estimated between 20 to 40 minutes. We kindly ask your permission to record the screen and audio during the entire study for transcription. The written transcript will be sent back to the participant for his/her final approval. This is the last chance to remove or redact statements from the study. After that, the recording will be destroyed and the potentially redacted and approved transcript will be the sole base for our qualitative content analysis.
+
+
+We're very happy about everyone participanting! 
+If you have any questions, feel free to contact us.
+
+Daniel Abajirov, st155165@stud.uni-stuttgart.de
+
+Katrin Bauer, st161700@stud.uni-stuttgart.de
+
+Manuel Merkel, st155131@stud.uni-stuttgart.de
