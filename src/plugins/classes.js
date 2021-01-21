@@ -170,14 +170,6 @@ export class Repository {
         throw "There was an added adr in the parameter string that didn't match!";
       }
     });
-    repoData.deletedAdrs.forEach((adr) => {
-      let equalAdr = repoData.adrs.find((el) => el.path === adr.path && el.editedMd === adr.editedMd && el.originalMd === adr.originalMd);
-      if (equalAdr) {
-        repo.deletedAdrs.push(equalAdr);
-      } else {
-        throw "There was a deleted adr in the parameter string that didn't match!";
-      }
-    });
     return repo;
   }
 
