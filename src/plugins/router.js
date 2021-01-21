@@ -10,34 +10,58 @@ const routes = [
     path: '/',
     name: 'Register',
     alias: ['/register', '/login'],
-    component: LandingPage
+    component: LandingPage,
+    meta: { title: () => { return "ADR Manager - Connect" } }
   },
-  /** Route to the Editor without branch. */
+  /** Route to the Editor (selects fitting sub-route) */
   {
-    path: '/manager/:organization?/:repo?/:adr?',
+    path: '/manager',
+    alias: ['/editor'],
     name: 'Editor',
-    alias: ['/editor/:organization?/:repo?/:adr?'],
     component: EditorView,
     meta: { requiresAuth: true },
-    /** Pass the route as props to EditorView. */
-    props: route => ({ ...route.query, ...route.params, 
-      repoFullName : route.params.organization  + '/' +  route.params.repo,
-      branch : '',
-      adr : route.params.adr
+    redirect: to => {
+      if (to.params.organization && to.params.repo && to.params.branch && to.params.adr) {
+        return { name: 'EditorWithSpecifiedAdr' };
+      } else if (to.params.organization && to.params.repo && to.params.branch) {
+        console.log("Route to spec repo");
+        return { name: 'EditorWithSpecifiedRepo' };
+      } else {
+        return { name: 'EditorUnspecified' };
+      }
+    },
+  },
+  // Sub-route 1: If the route does not specify a repo
+  {
+    path: '/manager',
+    name: 'EditorUnspecified',
+    component: EditorView,
+    meta: { requiresAuth: true },
+    props: route => ({ ...route.query, ...route.params })
+  },
+  // Sub-route 2: If the route does not specify ADR but specifies a repo
+  {
+    path: '/manager/:organization/:repo/:branch',
+    name: 'EditorWithSpecifiedRepo',
+    component: EditorView,
+    meta: { requiresAuth: true },
+    props: route => ({
+      ...route.query, ...route.params,
+      repoFullName: route.params.organization + '/' + route.params.repo,
+      branch: route.params.branch,
     })
   },
-  /** Route to the Editor with branch. */
+  // Sub-route 2: If the route does specify repo and ADR 
   {
-    path: '/manager/:organization?/:repo?/:branch?/:adr?',
-    name: 'Editor',
-    alias: ['/editor/:organization?/:repo?/:branch?/:adr?'],
+    path: '/manager/:organization/:repo/:branch/:adr',
+    name: 'EditorWithSpecifiedAdr',
     component: EditorView,
-    meta: { requiresAuth: true },
-    /** Pass the route as props to EditorView. */
-    props: route => ({ ...route.query, ...route.params, 
-      repoFullName : route.params.organization  + '/' +  route.params.repo,
-      branch : route.params.branch, 
-      adr : route.params.adr
+    meta: { requiresAuth: true, title: route => { return route.params.adr } },
+    props: route => ({
+      ...route.query, ...route.params,
+      repoFullName: route.params.organization + '/' + route.params.repo,
+      branch: route.params.branch,
+      adr: route.params.adr
     })
   },
   {
@@ -48,7 +72,6 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  // mode: 'history',
   routes: routes
 })
 
@@ -67,6 +90,13 @@ router.beforeEach((to, from, next) => {
   } else {
     next() // make sure to always call next()!
   }
+})
+
+const DEFAULT_TITLE = "ADR Manager"
+router.afterEach((to) => {
+  Vue.nextTick(() => {
+    document.title = to.meta.title ? to.meta.title(to) : DEFAULT_TITLE;
+  })
 })
 
 export default router

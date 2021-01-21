@@ -14,24 +14,21 @@
       <div v-if="!showFileExplorer" class="d-flex align-center justify-center" style="height: 75%; width: 100%;">
         <DialogAddRepositories>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn data-cy="addRepo" x-large class="align-center justify-center secondary" v-on="on" v-bind="attrs">Add Repositories
+            <v-btn data-cy="addRepo" x-large class="align-center justify-center secondary" v-on="on" v-bind="attrs">
+              Add Repositories
             </v-btn>
           </template>
         </DialogAddRepositories>
       </div>
-
       <splitpanes v-else class="default-theme" style="height: 100%; width: 100%; ">
         <pane size="30%" class="d-flex flex-column" style="-webkit-flex-grow: 1; flex-grow: 1; position: relative;">
 
-          <FileExplorer v-bind:user="userName" v-bind:firstUserName="firstUserName" v-bind:firstRepoName="firstRepoName"
-            v-bind:editedADR="editedADR" v-on:file-path="setFilePath" v-on:active-branch="setActiveBranch"
-            v-on:repo-name="updateBranches" />
+          <FileExplorer />
 
         </pane>
-        <!--end File Explorer Pane -->
 
         <pane v-if="showEditor">
-          <Editor style="height: 100%;" v-bind:filePath="filePath" v-on:adr-file="setADRFile" />
+          <Editor style="height: 100%;" />
         </pane>
       </splitpanes>
     </v-card-text>
@@ -62,8 +59,8 @@
 
   import DialogAddRepositories from "@/components/DialogAddRepositories.vue";
   import ToolbarMenuMode from "@/components/ToolbarMenuMode.vue";
-  import Editor from "@/components/Editor.vue";
   import FileExplorer from "@/components/FileExplorer.vue";
+  import Editor from "@/components/Editor.vue";
 
   export default {
     components: {
@@ -75,13 +72,16 @@
       DialogAddRepositories
     },
     props: {
+      /**
+       * The full name of the repo, the branch and the adr name are passed by the router.
+       */
       repoFullName: { // the path of the current adr
         type: String
       },
-      adr: { // the name of the current adr, e. g. 0001-some-name.md
+      branch: {
         type: String
       },
-      branch: {
+      adr: { // the name of the current adr, e. g. 0001-some-name.md
         type: String
       }
     },
@@ -89,13 +89,7 @@
       selected: "",
       oldSelected: "",
       branchesName: [],
-      nameAdr: "",
-      currentRepo: "",
-      userName: "adr",
-      firstUserName: "",
-      firstRepoName: "",
-      filePath: "",
-      editedADR: {}
+      currentRepo: ""
     }),
     computed: {
       showFileExplorer() {
@@ -113,24 +107,68 @@
         } else {
           return "";
         }
+      },
+      routeDataFromStore() {
+        return {
+          repoFullName: store.currentRepository && typeof store.currentRepository.fullName === "string" ? store.currentRepository.fullName : undefined,
+          branch: store.currentRepository && typeof store.currentRepository.activeBranch === "string" ? store.currentRepository.activeBranch : undefined,
+          adrName: store.currentlyEditedAdr && typeof store.currentlyEditedAdr.path === "string" ? store.currentlyEditedAdr.path.split("/").pop() : undefined
+        }
       }
     },
     watch: {
-      adr(newValue) {
-        store.openAdrBy(this.repoFullName, newValue);
+      /**
+       * If the relevant state in the store changes, adapt the route. 
+       */
+      routeDataFromStore: {
+        handler(newRouteData) {
+          console.log("Watching", store.currentRepository);
+          console.log("Changed Store", newRouteData);
+          console.log("Current Route", this.$route.params);
+          if (this.repoFullName !== newRouteData.repoFullName || this.branch !== newRouteData.branch || this.adr !== newRouteData.adrName) {
+            this.$router.push({
+              name: 'Editor',
+              params: {
+                ...this.$route.params,
+                organization: newRouteData.repoFullName ? newRouteData.repoFullName.split("/")[0] : undefined,
+                repo: newRouteData.repoFullName ? newRouteData.repoFullName.split("/")[1] : undefined,
+                branch: newRouteData.branch,
+                adr: newRouteData.adrName
+              }
+            })
+          } else {
+            console.log("Avoided routing to same route.");
+          }
+        }
+      },
+
+      /**
+       * Params from route
+       */
+      repoFullName(newVal) { // the path of the current adr
+        if (this.routeDataFromStore.repoFullName !== newVal) {
+          store.openAdrBy(newVal, this.adr);
+        }
+      },
+      branch(newVal) {
+        if (this.routeDataFromStore.branch !== newVal && store.currentRepository.branches.include(newVal)) {
+          store.setActiveBranch(newVal);
+        }
+      },
+      adr(newVal) {
+        if (this.routeDataFromStore.adrName !== newVal) {
+          store.openAdrBy(this.repoFullName, this.adr);
+        }
       }
     },
     mounted() {
       store.reload();
       store.openAdrBy(this.repoFullName, this.adr);
+      this.$nextTick(()=> {
+        console.log("Route Data from Store", this.routeDataFromStore);
+      })
     },
     methods: {
-      setFilePath(path) {
-        this.filePath = path;
-      },
-      setADRFile(adr) {
-        this.editedADR = adr;
-      },
       setActiveBranch(activeBranch) {
         store.setActiveBranch(activeBranch);
         this.oldSelected = this.selected;

@@ -217,7 +217,7 @@ import {
 import { store } from "../plugins/store";
 
 export default {
-  name: "EditorAddRepositoryDialog",
+  name: "DialogCommit",
   props: {
     // value is true, iff showDialog == true, iff the dialog is shown. (value-prop enables v-model)
     value: {
