@@ -3,7 +3,7 @@
 
 name: General cypress report
 
-on: [push, pull_request] 
+on: [push] 
 
 jobs:
   cypress-tests:
