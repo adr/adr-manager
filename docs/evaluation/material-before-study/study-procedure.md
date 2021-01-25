@@ -1,6 +1,8 @@
 # Study Procedure
 
-During the first part of the study the participants will be thinking aloud while using the tool. The second part is a semi-structured interview. The questions are described in a seperate file.
+During the first part of the study, the participants will use the tool to solve a small written task while thinking aloud.
+The second part is a short semi-structured interview.
+The questions are described in a separate file.
 
 ## Prerequisites
 
@@ -9,13 +11,13 @@ Provided by participants:
 * PC or laptop with mouse, keyboard, microphone and Internet access
 * Webex
 * Webcam (if possible but not necessary)
-* Internet browser (preferrably Chrome or Firefox)
+* Internet browser (preferably Chrome or Firefox)
 
 Provided by the organizers:
 
 * Small explanation and task list
 * Access to GitHub through a test-account
-* A meeting summary, which contains an architecture decision
+* A meeting summary with an architecture decision
 * Privacy policy
 
 ## Study Procedure
