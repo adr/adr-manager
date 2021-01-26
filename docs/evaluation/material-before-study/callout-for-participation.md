@@ -3,7 +3,7 @@
 Hello! We are three motivated students planning to perform a study to evaluate  a web editor. During our research project at the University of Stuttgart, which was supervised by Justus Bogner, we built a tool to manage and edit ADRs on GitHub. Architectural Decision Records (ADRs) [1] are a  simple format to document decisions made during the development of a software project. Our tool specializes on MADR [2] which is  a markdown template for ADRs.
 We are looking for software professionals to test our tool and give feedback on the practical usage.
 
-All materials for the study are provided in English. For the study itself, the participant can choose between in German or English.
+All materials for the study are provided in English. For the study itself, the participant can choose between German or English.
 
 ## Purpose of this Study
 
