@@ -30,14 +30,7 @@ Artifacts that are used during the study are in the folder [material-during-stud
 
 ### Context
 
-The purpose of this study is to evaluate the ADR Manager, a web-based tool to manage and edit ADRs on GitHub. The tool was created by undergraduate students in the context of a research project at the University of Stuttgart. The tool was also submitted to the ICSE score 2021 contest. Results will be published on GitHub. Aggregated results will also be published in the final submission for the research project and, if the tool gets selected as semi-finalist at ICSE score, results will also be published in the final submission.
-
-1. Which data are analyzed?
-2. How are the data defined?
-3. From what population are data drawn?
-4. What is the relevant context?
-5. What are the boundaries of the analysis?
-6. What is to be measured?
+The purpose of this study is to evaluate the ADR Manager, a web-based tool to manage and edit ADRs on GitHub. The tool was created by undergraduate students in the context of a research project at the University of Stuttgart. The tool was also submitted to the ICSE score 2021 contest. Results will be published on GitHub. Aggregated results will also be published in the final submission for the research project and, if the tool gets selected as semi-finalist at ICSE score, results will also be published in the final submission.is?
 
 ### Study Process 
 
