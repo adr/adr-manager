@@ -13,7 +13,7 @@
 
 ## Meeting Topic
 
-Use of e2e test frameworks
+Using an end-to-end (e2e) testing framework
 
 **Context**
 
