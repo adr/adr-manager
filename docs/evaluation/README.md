@@ -34,7 +34,7 @@ The purpose of this study is to evaluate the ADR Manager, a web-based tool to ma
 
 ### Study Process 
 
-Participants will be notified about the study and will be sent the material. The study is split into two parts: First, the participant will use the tool to solve a small written task while thinking aloud. Second, there will be a short interview about the experience. Study time is estimated between 30 to 45 minutes. 
+Participants will be notified about the study and will be sent the material, this can be found in [material-before-study](material-before-study). The study is split into two parts: First, the participant will use the tool to solve a small written task while thinking aloud. Second, there will be a short interview about the experience. Study time is estimated between 30 to 45 minutes. 
 
 ### Data Collection
 
