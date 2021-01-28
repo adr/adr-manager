@@ -4,16 +4,16 @@
 
 
 
-|**Name**|**Anwesend**|
-| - | - |
-|Anna Mustermann|Ja|
-|Bob Musterfrau|Ja|
-|Marco Mayer|Ja|
-|Matt Müller|Nein|
+| **Name**        | **Anwesend** |
+| --------------- | ------------ |
+| Anna Mustermann | Ja           |
+| Bob Musterfrau  | Ja           |
+| Marco Mayer     | Ja           |
+| Matt Müller     | Nein         |
 
 ## Thema des Meetings
 
-Einsetzung von E2E Frameworks
+Einsatz von E2E Test Frameworks
 
 **Kontext**:
 
@@ -22,7 +22,7 @@ Wir brauchen ein E2E Test Framework für unsere Anwendung. Es muss JavaScript un
 **Vorschläge**:
 
 - Anna schlägt die Anwendung von Cypress vor
-- Bilbo ist eher für Selenium
+- Bob ist eher für Selenium
 - Marco ist gegen E2E
 
 **Beschlüsse**:
@@ -57,16 +57,16 @@ Wir brauchen ein E2E Test Framework für unsere Anwendung. Es muss JavaScript un
         - Testüberdeckung wird nicht erhöht
         - Bugs können unentdeckt bleiben
 
-- Cypress wurde für E2E-Tests als Framework entschieden
+- Cypress wurde für E2E-Tests als Framework ausgewählt
     - Positive Konsequenzen:
         - Gute Abdeckung vom Code durch Cypress E2E-tests
         - Schnelle Implementierung
         - Fehler lassen sich leicht debuggen
-        - Erstellung von Screenshots und Videos in der pipeline
+        - Erstellung von Screenshots und Videos in der Pipeline
     - Negative Konsequenzen:
         - Aufwendige Ausführung der Pipeline
         - Aufwendige Anpassung von Tests bei Änderungen vom Code
 - Links
     - https://www.cypress.io
 
-**Nächster Protokollant mit voraussichtlichem Termin**: Bilbo Musterfrau, Nächstes Treffen: 22.01.2023, 14 Uhr
+**Nächster Protokollant mit voraussichtlichem Termin**: Bob Musterfrau, Nächstes Treffen: 22.01.2023, 14 Uhr
