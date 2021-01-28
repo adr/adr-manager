@@ -30,7 +30,7 @@ We need an e2e test framework for our application. It needs to support JavaScrip
 - Cypress
     - Advantages
         - Cypress runs directly in the browser and is fast
-        - It is installed in a short amount of time and no configuration is required
+        - It can be installed quickly and no configuration is required
         - Tests can be debugged easily
         - No previous knowledge is required
         - Captures snapshots at the time of test execution
