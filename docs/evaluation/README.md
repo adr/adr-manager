@@ -39,7 +39,7 @@ Participants will be notified about the study and will be sent the material. The
 ### Data Collection
 
 During the entire study, the screen of the participant and audio is recorded. 
-The recording will be summarised in written case descriptions ([for examples see here](https://github.com/xJREB/ms-scenario-evaluation/tree/master/_docs/evaluation/interviews/interview-case-descriptions)).
+The recording will be summarised into a written case description to document the most important statements and observations.
 The written transcript will be sent back to the participant for his/her final approval. This is the last chance to remove or redact statements from the study. After that, the recording will be destroyed and the potentially redacted and approved transcript will be the sole base for our qualitative content analysis.
 
 ### Data Analysis
