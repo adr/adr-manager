@@ -29,7 +29,7 @@ After that, the recording will be destroyed and the potentially redacted and app
 Participation is strictly voluntary and participants can abort the study at any time without a reason.
 Everything that is said in the study is treated as strictly confidential and will not be disclosed to anyone outside our research team without the participant’s permission. Results are aggregated and anonymized before publication. In no way can individual statements be traced back to a participant or company. After the study, participants also have the possibility to exclude or redact statements before the analysis.
 Anonymized, redacted and approved case descriptions as well as the analysis will be made publicly available on GitHub. This study is part of a research project at the University of Stuttgart. Results might also be included in the final submission for [ICSE SCORE 2021](https://conf.researchr.org/home/icse-2021/score-2021).
-Participants only have access to the GitHub test account during the study. The ADR created by the participant will be deleted immediately after the study. 
+During the study, participants will use a GitHub test account created by us. ADRs created by participants will be deleted immediately after the study. 
 The video recordings and unapproved transcripts will _**NOT**_ be published and will be deleted until April 30, 2021.
 
 
