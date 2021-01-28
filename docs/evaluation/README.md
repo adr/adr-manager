@@ -44,7 +44,7 @@ The written case description will be sent back to the participant for his/her fi
 
 ### Data Analysis
 
-Quantitative Results will be aggregated to give an overview of the impression of the participants.
+Quantitative results will be aggregated to give an overview of the impression of the participants.
 
 Free-text feedback will be summarised with respect to these categories:
 
