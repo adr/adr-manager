@@ -18,7 +18,7 @@ Participants will be notified about the study and will be sent the material.
 The study is split into two parts:
 First, the participant will use the tool to solve a small written task while thinking aloud.
 Second, there will be a short interview about the experience.
-Study time is estimated between 20 to 40 minutes.
+Study time is estimated between 30 to 50 minutes.
 We kindly ask your permission to record the screen and audio during the entire study for transcription.
 The written transcript will be sent back to the participant for his/her final approval.
 This is the last chance to remove or redact statements from the study.

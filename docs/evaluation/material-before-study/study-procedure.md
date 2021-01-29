@@ -18,11 +18,9 @@ Provided by the organizers:
 * Small explanation and task list
 * Access to GitHub through a test-account
 * A meeting summary with an architecture decision
-* Privacy policy
 
 ## Study Procedure
 
-* The participant agrees to the privacy policy.
 * The screen is shared using Webex.
 * The organizers will record the shared screen and the audio.
 * The participant is given the login data for a test GitHub Account.
