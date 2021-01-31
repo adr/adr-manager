@@ -7,7 +7,7 @@ We will loosely follow these questions based on the participant's responses.
 ## Demographic and Professional Background
 
 * Role (e.g. (lead) developer, (lead) architect, data engineer, etc.)
-* General domain (e. g. web, frontend, backend, data science, something completely different)
+* General domain (e.g. web, frontend, backend, data science, something completely different)
 * Years of professional experience
 * Experience with ADRs (any document containing ADs)
   * For how long have you used ADRs?

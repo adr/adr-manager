@@ -23,7 +23,7 @@ Provided by the organizers:
 
 * The screen is shared using Webex.
 * The organizers will record the shared screen and the audio.
-* The participant is given the login data for a test GitHub Account.
+* The participant is given the login data for a test GitHub account.
 * The participant is given a meeting summary.
 * Next, the participant will do the tasks of the task list.
 * The participant thinks aloud while performing the tasks.
