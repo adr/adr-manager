@@ -2,7 +2,6 @@
 
 During the first part of the study, the participants will use the tool to solve a small written task while thinking aloud.
 The second part is a short semi-structured interview.
-The questions are described in a separate file.
 
 ## Prerequisites
 
@@ -13,7 +12,7 @@ Provided by participants:
 * Webcam (if possible but not necessary)
 * Internet browser (preferably Chrome or Firefox)
 
-Provided by the organizers:
+Provided by the organizers during the study:
 
 * Small explanation and task list
 * Access to GitHub through a test-account
