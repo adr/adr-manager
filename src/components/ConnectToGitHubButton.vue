@@ -18,8 +18,8 @@ export default {
     // Here we initialize Pizzly.
     console.log("mounted");
     this.$pizzly = new Pizzly({
-      host: "https://adr-manager.herokuapp.com",
-      publishableKey: "dpWJ4TU2yCu7ys4Nb6eX5zhv32GV6YcVYYvDJZvS",
+      host: "https://adr-testt.herokuapp.com/",
+      publishableKey: "dpWJ4TU2yCu7ys4Nb6eX5zhv32GV6YcVYYvDJZvSs",
     });
   },
   destroyed() {
