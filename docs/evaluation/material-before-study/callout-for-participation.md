@@ -1,13 +1,18 @@
 # Callout for Participation
 
-Hello! We are three motivated students planning to perform a study to evaluate a web-based tool. During our research project at the University of Stuttgart, which was supervised by Oliver Kopp and Justus Bogner, we built a tool to manage and edit Architectural Decision Records (ADRs) on GitHub. ADRs [1] are a simple format to document decisions made during the development of a software project. Our tool uses MADR [2], which is a markdown template for ADRs.
+Hello! We are three motivated students planning to perform a study to evaluate a web-based tool. During our research project at the University of Stuttgart, which was supervised by Oliver Kopp and Justus Bogner, we built a tool to manage and edit Architectural Decision Records (ADRs) on GitHub. [ADRs](1) are a simple format to document decisions made during the development of a software project. Our tool uses [MADR](2), which is a markdown template for ADRs.
 We are looking for software professionals to test our tool and give feedback on the practical usage.
 
 All materials for the study are provided in English. For the study itself, the participant can choose between German or English.
 
+Please sign up at <https://terminplaner.dfn.de/adr-manager-study> for a 45 to 60min study.
+You do not need to prepare anyhting on your side.
+Your email adress won't be published, however, your name will appear at that DFN page.
+Thus, choose a pseudonym if you like.
+
 ## Purpose of this Study
 
-The ADR Manager is a web-based tool to create and edit Markdown-based ADRs (MADRs) [2] on GitHub.
+The ADR Manager is a web-based tool to create and edit Markdown-based ADRs [MADRs](2) on GitHub.
 The purpose of this study is to evaluate the functional suitability and usability of the ADR Manager to support the creation and editing of ADRs. By involving software professionals who have experience with ADRs, we hope to gain insights to further improve the tool.
 
 The goal of this study is _**NOT**_ to evaluate the abilities of participants.
@@ -41,5 +46,6 @@ Katrin Bauer, st161700@stud.uni-stuttgart.de<br>
 Manuel Merkel, st155131@stud.uni-stuttgart.de
 
 <hr>
-[1] https://adr.github.io<br>
-[2] https://adr.github.io/madr
+
+1: https://adr.github.io
+2: https://adr.github.io/madr
