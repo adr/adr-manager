@@ -7,7 +7,7 @@
 
 This project presents a web-based application to manage Markdown architectural decision records.
 
-The focus of this project is on [MADR](https://adr.github.io/madr/), which is a markdown template for quickly capturing architectural decisions.. 
+The focus of this project is on [MADR](https://adr.github.io/madr/), which is a markdown template for quickly capturing architectural decisions.
 MADR offers a naming scheme and a markdown template to keep the layout of recorded decisions consistent. 
 Each decision is stored in a separate file.
 The tool only supports management of ADRs stored in the folder `docs/adr` in GitHub repositories.
@@ -15,6 +15,10 @@ The tool only supports management of ADRs stored in the folder `docs/adr` in Git
 ## Quick start
 
 You can find the tool at https://koppor.github.io/adr-manager.
+
+## Supported browsers
+
+Currently our tool runs successfully only on some browsers: Chrome, Firefox and Opera.
 
 ### Usage
 
