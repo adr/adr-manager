@@ -126,6 +126,12 @@
           console.log("Changed Store", newRouteData);
           console.log("Current Route", this.$route.params);
           this.branchesName.push(newRouteData.branch);
+          this.branchesName =this.branchesName.filter(function(elem, index, self) {
+              return index === self.indexOf(elem);
+            })
+          this.branchesName =this.branchesName.filter(function(elem) {
+              return elem != null;
+            })
           this.selected = newRouteData.branch;
           this.oldSelected = newRouteData.branch;
           console.log("Cmon man do something!" + this.branchesName[0]);
