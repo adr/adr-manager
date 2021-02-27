@@ -5,7 +5,7 @@
         style="height: 100%; width: 100%; position: absolute; overflow-y: auto"
       >
         <v-list multiple dense>
-          <v-list-item-group data-cy="repoNameList">
+          <v-list-item-group data-cy="repoNameList" mandatory>
             <v-list-group
               v-for="(repo, i) in folderTree"
               :key="repo.path"
@@ -121,7 +121,7 @@
     </div>
     <!-- Bottom Button for adding a repository -->
     <div class="flex-grow-0 d-flex flex-wrap">
-      <DialogAddRepositories>
+      <DialogAddRepositories v-on:repo-added-name="updateBranch">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             data-cy="addRepo"
@@ -292,11 +292,17 @@ export default {
      */
     removeRepository(repo) {
       store.removeRepository(repo);
+      this.$emit("repo-name", "");
+      this.$emit("active-branch", "");
     },
 
     sendRepo(repo) {
       this.$emit("repo-name", repo.name);
       this.$emit("active-branch", repo.repository.activeBranch);
+    },
+
+    updateBranch(repo) {
+      console.log("Just a test with repo-added-name: ", repo);
     },
 
     /**

@@ -40,7 +40,7 @@
       <v-spacer></v-spacer>
       Current branch:
       <select @change="onSelectedBranch" v-model="selected" name="current-branch" id="current-branch"
-        style="width: 20%">
+        style="width: 20%" @click="clickForBranches">
         <option v-for="(branchName, index) in branchesName" :key="index" v-text="branchName">
           {{branchName}}
         </option>
@@ -89,7 +89,7 @@
       selected: "",
       oldSelected: "",
       branchesName: [],
-      currentRepo: ""
+      currentRepo: "",
     }),
     computed: {
       showFileExplorer() {
@@ -125,6 +125,10 @@
           console.log("Watching", store.currentRepository);
           console.log("Changed Store", newRouteData);
           console.log("Current Route", this.$route.params);
+          this.branchesName.push(newRouteData.branch);
+          this.selected = newRouteData.branch;
+          this.oldSelected = newRouteData.branch;
+          console.log("Cmon man do something!" + this.branchesName[0]);
           if (this.repoFullName !== newRouteData.repoFullName || this.branch !== newRouteData.branch || this.adr !== newRouteData.adrName) {
             this.$router.push({
               name: 'Editor',
@@ -171,22 +175,34 @@
     methods: {
       setActiveBranch(activeBranch) {
         store.setActiveBranch(activeBranch);
-        this.oldSelected = this.selected;
+        this.oldSelected = activeBranch;
         this.selected = activeBranch;
       },
+      /**
+       * Display Confirm-Dialog when the user selects a new branch. 
+       */
       onSelectedBranch() {
-        this.$confirm("Do you really want to change branch?").then(() => {
+        // Check if current select is undefined/null to prevent the display of the dialog
+        // after a repository is removed.
+        if(this.selected != null){
+          this.$confirm("Do you really want to change branch?").then(() => {
           loadARepositoryContent(this.currentRepo, this.selected)
             .then((repoObject) => {
+              this.oldSelected = this.selected;
               if (typeof repoObject !== "undefined") {
                 store.updateRepository(repoObject);
               }
             });
         }).catch(() => {
+          console.log("What is the old? " +  this.oldSelected)
           this.selected = this.oldSelected;
           store.setActiveBranch(this.oldSelected);
         });
+        }
       },
+      /**
+       * Method from api.js to retrieve branches of currentRepository from GitHub.
+       */
       loadBranchesName() {
         loadBranchesName(
           this.currentRepo.split("/")[1],
@@ -200,11 +216,40 @@
           for (i = 0; i < x.length; i++) {
             this.branchesName.push(x[i].brancheName);
           }
+          this.branchesName =this.branchesName.filter(function(elem, index, self) {
+              return index === self.indexOf(elem);
+            })
         })
       },
+      /**
+       * We need to update the branches according to the event that is triggered. When the user removes a repository, 
+       * we need to reset the branches to []. When the user clicks on the "current-branch-select" field, loadBranchesName 
+       * is called to get the branches of the current repositories.
+       */
       updateBranches(repoName) {
-        this.currentRepo = repoName;
-        this.loadBranchesName();
+        console.log("Removedsomething: " + store.addedRepositories.length);
+        if (repoName === "") {
+          this.branchesName = [];
+        } else {
+          this.currentRepo = repoName;
+          this.loadBranchesName();
+        }
+       
+      },
+      /**
+       * We need an event that can trigger the loadBranchesName() function. When a user clicks on the current-branch-select field, 
+       * the loadBranchesName-method is triggered and the branches of the current repositories are retrieved and displayed. 
+       */
+      clickForBranches() {
+        console.log("Curent repo? : " + this.repoFullName)
+        if(this.currentRepo !== ""){
+          console.log("Something");
+        }
+        else if(this.routeDataFromStore.repoFullName != null){
+          this.currentRepo = this.routeDataFromStore.repoFullName;
+          this.loadBranchesName();
+        }
+        
       },
 
       logOut() {
