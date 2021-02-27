@@ -263,8 +263,9 @@
         ).then((repoObjectList) => {
           if (typeof repoObjectList !== "undefined") {
             this.showLoadingOverlay = false;
+            this.$emit("repo-added-name", repoObjectList);
             store.addRepositories(repoObjectList);
-
+            
             /* Reset the selected repositories. */
             this.repositoriesSelected = [];
             this.searchText = "";
