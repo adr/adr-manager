@@ -200,7 +200,6 @@
               }
             });
         }).catch(() => {
-          console.log("What is the old? " +  this.oldSelected)
           this.selected = this.oldSelected;
           store.setActiveBranch(this.oldSelected);
         });
@@ -249,7 +248,14 @@
       clickForBranches() {
         console.log("Curent repo? : " + this.repoFullName)
         if(this.currentRepo !== ""){
-          console.log("Something");
+          if(this.branchesName.length === 1){
+
+            this.currentRepo = this.routeDataFromStore.repoFullName;
+            this.loadBranchesName();
+          }else{
+            console.log("Nothing to see here!");
+          }
+         
         }
         else if(this.routeDataFromStore.repoFullName != null){
           this.currentRepo = this.routeDataFromStore.repoFullName;
