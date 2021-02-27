@@ -291,9 +291,12 @@ export default {
      * @param {object} repo - the repo object (with attributes 'fullName', 'activeBranch' and 'adrs)
      */
     removeRepository(repo) {
+      if(repo.fullName === store.currentRepository.fullName){  
+        this.$emit("repo-name", "");
+        this.$emit("active-branch", "");
+      }
       store.removeRepository(repo);
-      this.$emit("repo-name", "");
-      this.$emit("active-branch", "");
+     
     },
 
     sendRepo(repo) {
