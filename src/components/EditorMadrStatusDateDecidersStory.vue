@@ -5,10 +5,13 @@
     <v-card flat v-if="true" class="d-flex flex-wrap">
       <v-card flat class="mb-4" min-width="400px">
         <DatePickerMenu v-model="adr.date"></DatePickerMenu>
+        <HelpIcon>
+          The date of the last update
+        </HelpIcon>
 
         <v-menu v-model="showStatusDropdown" :close-on-content-click="false" bottom right origin="top left">
           <template v-slot:activator="{ on, attrs }">
-            <v-chip data-cy="statusPro" outlined :color="statusColor" class="mx-5" v-on="on" v-bind="attrs">
+            <v-chip data-cy="statusPro" outlined :color="statusColor" class="ml-5" v-on="on" v-bind="attrs">
               {{ displayedStatus }}
             </v-chip>
           </template>
@@ -23,26 +26,36 @@
             </v-list-item>
           </v-list>
         </v-menu>
+              <HelpIcon>
+                The status of the ADR
+              </HelpIcon>
       </v-card>
       <v-card flat class="mb-4">
         <v-chip outlined>
           <div @click="focusDecidersTextField">
 
-          <v-icon class="mr-2">mdi-account</v-icon>
+          <v-icon class="mr-2">mdi-account-multiple</v-icon>
           <input data-cy="authorPro" type="text" ref="deciderstextfield" v-autowidth="{maxWidth: '960px', minWidth: '60px', comfortZone: 0}" v-model="adr.deciders">
           </div>
         </v-chip>
+        <HelpIcon>
+          List everyone involved in the decision.
+        </HelpIcon>
       </v-card>
     </v-card>
 
     <!-- Technical Story Field-->
-    <v-row class="pl-4">
+    <v-row class="pl-0 mx-0">
       <v-col class="my-0 py-0 px-0 mx-0 px-0 align-self-center" style="max-width: 150px">
-        <h5> Technical Story: </h5>
+        <h5> Technical Story: 
+        </h5> 
       </v-col>
       <v-col no-cols class="my-0 py-0">
         <codemirror data-cy="technicalStoryPro" v-model="adr.technicalStory"></codemirror>
       </v-col>
+      <HelpIcon >
+        Technical context of the ADR, e.g. a ticket or issue URL
+      </HelpIcon>
     </v-row>
   </div>
 
@@ -50,14 +63,17 @@
 
 <script>
   import _ from 'lodash';
+  import { ArchitecturalDecisionRecord } from "@/plugins/classes.js";
+
   import DatePickerMenu from "./DatePickerMenu.vue";
   import codemirror from "./EditorMadrCodemirror.vue";
-  import { ArchitecturalDecisionRecord } from "@/plugins/classes.js";
+  import HelpIcon from "./HelpIcon.vue";
 
   export default {
     components: {
       DatePickerMenu,
-      codemirror
+      codemirror,
+      HelpIcon
     },
     data: () => ({
       showStatusDropdown: false,
