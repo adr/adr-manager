@@ -125,6 +125,7 @@
           console.log("Watching", store.currentRepository);
           console.log("Changed Store", newRouteData);
           console.log("Current Route", this.$route.params);
+          this.branchesName = [];
           this.branchesName.push(newRouteData.branch);
           this.branchesName =this.branchesName.filter(function(elem, index, self) {
               return index === self.indexOf(elem);
@@ -134,7 +135,6 @@
             })
           this.selected = newRouteData.branch;
           this.oldSelected = newRouteData.branch;
-          console.log("Cmon man do something!" + this.branchesName[0]);
           if (this.repoFullName !== newRouteData.repoFullName || this.branch !== newRouteData.branch || this.adr !== newRouteData.adrName) {
             this.$router.push({
               name: 'Editor',
@@ -232,7 +232,6 @@
        * is called to get the branches of the current repositories.
        */
       updateBranches(repoName) {
-        console.log("Removedsomething: " + store.addedRepositories.length);
         if (repoName === "") {
           this.branchesName = [];
         } else {
@@ -252,10 +251,10 @@
             this.currentRepo = this.routeDataFromStore.repoFullName;
             this.loadBranchesName();
           }else{
-            this.branchesName = [];
+            // this.branchesName = [];
             console.log("Nothing to see here!");
-            this.currentRepo = this.routeDataFromStore.repoFullName;
-            this.loadBranchesName();
+            // this.currentRepo = this.routeDataFromStore.repoFullName;
+            // this.loadBranchesName();
           }
          
         }
