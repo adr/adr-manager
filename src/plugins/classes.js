@@ -124,7 +124,7 @@ export class ArchitecturalDecisionRecord {
       status: 'proposed',
       date: new Date().toISOString().substr(0, 10),
       decisionOutcome: {
-        explanation: 'comes out best (see below).'
+        explanation: 'comes out best.'
       }
     });
   }

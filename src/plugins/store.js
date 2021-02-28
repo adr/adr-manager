@@ -11,6 +11,7 @@
 
 import Vue from "vue";
 import _ from "lodash";
+import sanitize from "sanitize-filename";
 import { ArchitecturalDecisionRecord, Repository } from "./classes";
 import { adr2md, naturalCase2snakeCase } from "./parser";
 import { setInfosForApi, getUserName, getUserEmail } from "./api";
@@ -229,10 +230,10 @@ export const store = new Vue({
           .replace(/^#+/, "")
           .trim();
         path[path.length - 1] =
-          this.currentlyEditedAdr.id.toString().padStart(4, "0") +
+        sanitize(this.currentlyEditedAdr.id.toString().padStart(4, "0") +
           "-" +
           naturalCase2snakeCase(title) +
-          ".md";
+          ".md");
         this.currentlyEditedAdr.path = path.join("/");
       }
 
