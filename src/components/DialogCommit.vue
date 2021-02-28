@@ -170,9 +170,7 @@
         <div class="distanceToTextField">
           <v-icon color="primary">mdi-information-outline</v-icon>
           <span class="spanAfterIcon">
-            Your selected files will be pushed to {{ currUser }}/{{
-              currRepo
-            }}
+            Your selected files will be pushed to {{ repo  }}
             on {{ branch }} branch.</span
           >
         </div>
@@ -236,8 +234,6 @@ export default {
     newFiles: [],
     deletedFiles: [],
     deletedTree: [],
-    currUser: "manue",
-    currRepo: "Fp",
     dialogVisible: false,
     commitFiles: [],
     branch: "",
@@ -268,6 +264,8 @@ export default {
         this.resetDialog();
         store.setCurrentRepositoryForCommit(this.repo);
         store.setInfoForCommit();
+        
+        this.branch = store.getBranchCommit();
 
         this.setFilesForCommit();
         if (
@@ -361,7 +359,6 @@ export default {
             if (!tempBool) {
               this.newSelected = false;
             }
-
             break;
           case "changed":
             if (file.path === path) {
