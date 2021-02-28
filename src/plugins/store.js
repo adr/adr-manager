@@ -13,13 +13,19 @@ import Vue from "vue";
 import _ from "lodash";
 import { ArchitecturalDecisionRecord, Repository } from "./classes";
 import { adr2md, naturalCase2snakeCase } from "./parser";
+import { setInfosForApi, getUserName, getUserEmail } from "./api";
+
 
 export const store = new Vue({
   data: {
     currentRepository: undefined,
     currentlyEditedAdr: undefined,
     addedRepositories: [],
-    mode: "basic"
+    mode: "basic",
+    currentRepositoryForCommit: undefined,
+    // If available the full name of the user, else the username from the GitHub account
+    name: "",
+    userMail: "",
   },
 
   created() {
@@ -55,7 +61,7 @@ export const store = new Vue({
      * Write the current value of the added repositories list array into the local storage.
      * Should be done regularly.
      */
-    updateLocalStorageRepositories: function () {
+    updateLocalStorageRepositories: function() {
       localStorage.setItem(
         "addedRepositories",
         JSON.stringify(this.addedRepositories)
@@ -75,7 +81,7 @@ export const store = new Vue({
       );
       if (alreadyAddedRepos.length > 0) {
         throw "I won't add an already added repository to the store! " +
-        alreadyAddedRepos.map((repo) => repo.fullName).join(", ");
+          alreadyAddedRepos.map((repo) => repo.fullName).join(", ");
       }
       this.addedRepositories = this.addedRepositories.concat(repoList);
       this.updateLocalStorageRepositories();
@@ -141,7 +147,9 @@ export const store = new Vue({
      * Opens any ADR.
      */
     openAnyAdr() {
-      let reposWithAdrs = this.addedRepositories.filter(repo => (repo.adrs && repo.adrs[0]));
+      let reposWithAdrs = this.addedRepositories.filter(
+        (repo) => repo.adrs && repo.adrs[0]
+      );
       if (reposWithAdrs.includes(this.currentRepository)) {
         let someAdr = this.currentRepository.adrs[0];
         this.openAdr(someAdr);
@@ -181,7 +189,7 @@ export const store = new Vue({
      *
      * @param {object} adr
      */
-    openAdr: function (adr) {
+    openAdr: function(adr) {
       if (adr !== this.currentlyEditedAdr) {
         let repo = this.addedRepositories.find((repo) =>
           repo.adrs.includes(adr)
@@ -237,7 +245,7 @@ export const store = new Vue({
      * @param {object} repo - must be one of the added repositories
      * @returns the created adr if repo is added, undefined otherwise
      */
-    createNewAdr: function (repo) {
+    createNewAdr: function(repo) {
       if (this.addedRepositories.includes(repo)) {
         let adr = ArchitecturalDecisionRecord.createNewAdr();
         let md = adr2md(adr);
@@ -252,7 +260,7 @@ export const store = new Vue({
             "-" +
             adr.title +
             ".md",
-          newAdr: true
+          newAdr: true,
         };
         repo.addAdr(newAdr);
         this.updateLocalStorageRepositories();
@@ -300,55 +308,89 @@ export const store = new Vue({
       }
     },
 
-    changedFilesInRepo(repoName) {
-      let changedFiles = [];
+    setCurrentRepositoryForCommit(repoName) {
       for (let repo of this.addedRepositories) {
         if (repoName === repo.fullName) {
-          for (let changedFile of repo.adrs) {
-            if (!("newAdr" in changedFile)) {
-              if (changedFile.editedMd != changedFile.originalMd) {
-                changedFiles.push(
-                  this.dataStructureDataCommit(changedFile, "changed")
-                );
-              }
+          this.currentRepositoryForCommit = repo;
+          console.log("repoCommit", this.currentRepositoryForCommit);
+        }
+      }
+    },
+
+    setName() {
+      getUserName()
+        .then((res) => {
+          // Does not use the name for the commit, despite uses default the username
+          if (res.name === null) {
+            this.name = res.login;
+          } else {
+            this.name = res.name;
+          }
+          console.log("setName", this.name)
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+
+    setEmail() {
+      getUserEmail()
+        .then((res) => {
+          for (let emailEntry of res) {
+            if (emailEntry.primary) {
+              this.userMail = emailEntry.email;
             }
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+
+    getUserEmail() {
+      return this.userMail;
+    },
+
+    getUserName() {
+      console.log("getName", this.name)
+
+      return this.name;
+    },
+
+    changedFilesInRepo() {
+      let changedFiles = [];
+      for (let changedFile of this.currentRepositoryForCommit.adrs) {
+        if (!("newAdr" in changedFile)) {
+          if (changedFile.editedMd != changedFile.originalMd) {
+            changedFiles.push(this.dataStructureCommit(changedFile, "changed"));
           }
         }
       }
-
       return changedFiles;
     },
 
-    deletedFilesInRepo(repoName) {
+    deletedFilesInRepo() {
       let deletedFiles = [];
-      for (let repo of this.addedRepositories) {
-        if (repoName === repo.fullName) {
-          for (let deletedFile of repo.deletedAdrs) {
-            deletedFiles.push({
-              path: deletedFile.path,
-              title: deletedFile.path.split("/")[2],
-              fileSelected: false,
-              fileStatus: "deleted",
-            });
-          }
-        }
+      for (let deletedFile of this.currentRepositoryForCommit.deletedAdrs) {
+        deletedFiles.push({
+          path: deletedFile.path,
+          title: deletedFile.path.split("/")[2],
+          fileSelected: false,
+          fileStatus: "deleted",
+        });
       }
       return deletedFiles;
     },
 
-    newFilesInRepo(repoName) {
+    newFilesInRepo() {
       let newFiles = [];
-      for (let repo of this.addedRepositories) {
-        if (repoName === repo.fullName) {
-          for (let newFile of repo.addedAdrs) {
-            newFiles.push(this.dataStructureDataCommit(newFile, "new"));
-          }
-        }
+      for (let newFile of this.currentRepositoryForCommit.addedAdrs) {
+        newFiles.push(this.dataStructureCommit(newFile, "new"));
       }
       return newFiles;
     },
 
-    dataStructureDataCommit(file, fileType) {
+    dataStructureCommit(file, fileType) {
       return {
         title: file.path.split("/")[2],
         value: file.editedMd,
@@ -358,79 +400,69 @@ export const store = new Vue({
       };
     },
 
-    getRepoInfoForCommit(repoName) {
-      for (let repo of this.addedRepositories) {
-        if (repoName === repo.fullName) {
-          return {
-            userName: repo.fullName.split("/")[0],
-            repoName: repo.fullName.split("/")[1],
-            activeBranch: repo.activeBranch,
-          };
-        }
-      }
+    setInfoForCommit() {
+      this.name = this.setName();
+      this.userMail = this.setEmail();
+      setInfosForApi(
+        this.currentRepositoryForCommit.fullName.split("/")[0],
+        this.currentRepositoryForCommit.fullName.split("/")[1],
+        this.currentRepositoryForCommit.activeBranch
+      );
     },
 
-    updateLocalStorageAfterCommit(pushedFiles, repoName) {
+    updateLocalStorageAfterCommit(pushedFiles) {
       for (let file of pushedFiles) {
         switch (file.type) {
           case "new":
-            this.handleUpdateLocalStorageNew(file, repoName);
+            this.handleUpdateLocalStorageNew(file);
             break;
           case "changed":
-            this.handleUpdateLocalStorageChanged(file, repoName);
+            this.handleUpdateLocalStorageChanged(file);
             break;
           case "deleted":
-            this.handleUpdateLocalStorageDeleted(file, repoName);
+            this.handleUpdateLocalStorageDeleted(file);
             break;
         }
       }
       this.updateLocalStorageRepositories();
     },
 
-    handleUpdateLocalStorageNew(file, repoName) {
-      for (let repo of this.addedRepositories) {
-        if (repoName === repo.fullName) {
-          for (let repoEntry of repo.addedAdrs) {
-            if (file.path === repoEntry.path) {
-              let index = repo.addedAdrs.indexOf(repoEntry);
-              repo.addedAdrs.splice(index, 1);
-            }
-          }
-          for (let repoEntry of repo.adrs) {
-            if (file.path === repoEntry.path) {
-              delete repoEntry["newAdr"];
-              repoEntry["originalMd"] = repoEntry.editedMd;
-            }
-          }
+    handleUpdateLocalStorageNew(file) {
+      for (let repoEntry of this.currentRepositoryForCommit.addedAdrs) {
+        if (file.path === repoEntry.path) {
+          let index = this.currentRepositoryForCommit.addedAdrs.indexOf(
+            repoEntry
+          );
+          this.currentRepositoryForCommit.addedAdrs.splice(index, 1);
+        }
+      }
+      for (let repoEntry of this.currentRepositoryForCommit.adrs) {
+        if (file.path === repoEntry.path) {
+          delete repoEntry["newAdr"];
+          repoEntry["originalMd"] = repoEntry.editedMd;
         }
       }
     },
 
-    handleUpdateLocalStorageChanged(file, repoName) {
-      for (let repo of this.addedRepositories) {
-        if (repoName === repo.fullName) {
-          for (let repoEntry of repo.adrs) {
-            if (file.path === repoEntry.path) {
-              repoEntry.originalMd = repoEntry.editedMd;
-            }
-          }
+    handleUpdateLocalStorageChanged(file) {
+      for (let repoEntry of this.currentRepositoryForCommit.adrs) {
+        if (file.path === repoEntry.path) {
+          repoEntry.originalMd = repoEntry.editedMd;
         }
       }
     },
 
-    handleUpdateLocalStorageDeleted(file, repoName) {
-      for (let repo of this.addedRepositories) {
-        if (repoName === repo.fullName) {
-          for (let repoEntry of repo.deletedAdrs) {
-            if (file.path === repoEntry.path) {
-              let index = repo.deletedAdrs.indexOf(repoEntry);
-              repo.deletedAdrs.splice(index, 1);
-            }
-          }
+    handleUpdateLocalStorageDeleted(file) {
+      for (let repoEntry of this.currentRepositoryForCommit.deletedAdrs) {
+        if (file.path === repoEntry.path) {
+          let index = this.currentRepositoryForCommit.deletedAdrs.indexOf(
+            repoEntry
+          );
+          this.currentRepositoryForCommit.deletedAdrs.splice(index, 1);
         }
       }
-    }
-  }
+    },
+  },
 });
 
 /**Checks if each repo in the parameter array repos is a valid repository

@@ -23,7 +23,7 @@
       <splitpanes v-else class="default-theme" style="height: 100%; width: 100%; ">
         <pane size="30%" class="d-flex flex-column" style="-webkit-flex-grow: 1; flex-grow: 1; position: relative;">
 
-          <FileExplorer />
+          <FileExplorer v-on:repo-name="updateBranches" v-on:active-branch="setActiveBranch"/>
 
         </pane>
 
