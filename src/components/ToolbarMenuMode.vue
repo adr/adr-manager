@@ -1,6 +1,9 @@
 <template>
   <div>
     <v-tabs v-model="tab" class="mx-0 px-0 pt-0 mt-0 flex-grow-0" background-color="transparent">
+      <div class="align-self-center pr-4" >
+        Editor Mode: 
+      </div>
       <v-tooltip v-for="item in modes" :key="item.name" open-delay="500" bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-tab text v-on:click="setMode(item.name)" v-on="on" v-bind="attrs">

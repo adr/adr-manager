@@ -5,7 +5,7 @@
         style="height: 100%; width: 100%; position: absolute; overflow-y: auto"
       >
         <v-list multiple dense>
-          <v-list-item-group data-cy="repoNameList">
+          <v-list-item-group data-cy="repoNameList" mandatory>
             <v-list-group
               v-for="(repo, i) in folderTree"
               :key="repo.path"
@@ -291,7 +291,12 @@ export default {
      * @param {object} repo - the repo object (with attributes 'fullName', 'activeBranch' and 'adrs)
      */
     removeRepository(repo) {
+      if(repo.fullName === store.currentRepository.fullName){  
+        this.$emit("repo-name", "");
+        this.$emit("active-branch", "");
+      }
       store.removeRepository(repo);
+     
     },
 
     sendRepo(repo) {
