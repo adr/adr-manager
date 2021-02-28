@@ -178,7 +178,6 @@ export async function pushToGitHub(newCommitSha) {
     .then((response) => response.json())
     .then((body) => body)
     .catch((err) => {
-      console.log("Haloooooo")
       console.log(err);
     });
 }
