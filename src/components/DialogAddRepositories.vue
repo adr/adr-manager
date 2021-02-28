@@ -271,10 +271,21 @@
             this.searchText = "";
           }
         }).catch((e) => {
-          alert('Sorry, we couldn\'t load the repositories you requested!');
+          this.errorDialog();
           console.log(e);
           this.showLoadingOverlay = false;
         });
+      },
+      
+      errorDialog() {
+        this.$alert(
+        "Sorry, we couldn't load the repositories you requested!",
+        "Error",
+        "error",
+        {
+          confirmButtonText: "Close",
+        }
+      );
       }
     }
   }
