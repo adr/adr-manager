@@ -18,6 +18,7 @@
         "marked": "^1.2.3",
         "pizzly-js": "^0.2.8",
         "roboto-fontface": "*",
+        "sanitize-filename": "^1.6.3",
         "splitpanes": "^2.3.4",
         "vue": "^2.6.11",
         "vue-codemirror": "^4.0.6",

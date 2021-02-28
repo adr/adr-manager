@@ -1,6 +1,19 @@
 <template>
   <div data-cy="considerOptTextAdr">
-    <h3>Considered Options</h3>
+    <h3>
+      <v-row class="mx-0">
+        Considered Options
+        <HelpIcon v-if="mode === 'basic'">
+          List all considered options. <br>
+
+          Only write a concise description. You can add a more detailed description in Advanced or Professional mode. 
+        </HelpIcon>
+        <HelpIcon v-else>
+          List all considered options. <br>
+          Expand options by clicking on them.
+        </HelpIcon>
+      </v-row>
+    </h3>
     <!-- Display an alert when there are pros and cons of options in basic mode. -->
     <v-alert v-if="isModeTooLow" border="left" colored-border type="warning" elevation="2" class="my-4 py-2">
       <div class="d-flex my-0 py-0">
@@ -153,7 +166,14 @@
             <!-- Expandable Description -->
             <v-expand-transition>
               <div v-show="expandedOptions.includes(item)" class="pl-12">
-                <h6 class="py-4 pl-4"> Description </h6>
+                <h6 class="py-4 pl-4"> 
+                  <v-row class="mx-0">
+                    Description
+                    <HelpIcon>
+                      Describe the option in free form, e.g., by giving examples or a pointer to more information.
+                    </HelpIcon>
+                  </v-row>
+                </h6>
                 <div class="pb-2 ml-4">
                   <codemirror data-cy="descriptionConsOpt" hint="Description of the option" v-model="item.description" color="grey lighten-3">
                   </codemirror>
@@ -161,12 +181,26 @@
 
                 <div class="d-flex flex-wrap mx-0 px-0 pb-4 py-0 my-0">
                   <div class="flex-grow-1 mx-0 px-0 py-0 my-0" style="width: 50%; min-width: 600px">
-                    <h6 class="py-4 pl-4"> Good, because ... </h6>
+                    <h6 class="py-4 pl-4"> 
+                      <v-row class="mx-0">
+                        Good, because ... 
+                        <HelpIcon>
+                          Give arguments supporting this option.
+                        </HelpIcon>
+                      </v-row>
+                    </h6>
                     <EditorMadrList data-cy="goodConsOpt" :list="item.pros" class="ml-4 mr-0 px-0" cm-color="grey lighten-3" />
 
                   </div>
                   <div class="flex-grow-1 mx-0 px-0 py-0 my-0" style="width: 50%; min-width: 600px">
-                    <h6 class="py-4 pl-4"> Bad, because ... </h6>
+                    <h6 class="py-4 pl-4"> 
+                      <v-row class="mx-0">
+                        Bad, because ...
+                        <HelpIcon>
+                          Give arguments against using this option.
+                        </HelpIcon>
+                      </v-row> 
+                    </h6>
                     <EditorMadrList data-cy="badConsOpt" :list="item.cons" class="ml-4 mr-0 px-0" cm-color="grey lighten-3" />
                   </div>
                 </div>
@@ -197,8 +231,10 @@
 <script>
   import { ArchitecturalDecisionRecord } from '@/plugins/classes'
   import { store } from '@/plugins/store'
+
   import codemirror from './EditorMadrCodemirror.vue'
   import EditorMadrList from './EditorMadrList.vue'
+  import HelpIcon from './HelpIcon.vue'
   import { Drag, Drop } from 'vue-easy-dnd'
 
   export default {
@@ -206,6 +242,7 @@
     components: {
       codemirror,
       EditorMadrList,
+      HelpIcon,
       Drag, Drop
     },
     props: {
