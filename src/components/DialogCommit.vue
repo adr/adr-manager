@@ -264,7 +264,7 @@ export default {
         this.resetDialog();
         store.setCurrentRepositoryForCommit(this.repo);
         store.setInfoForCommit();
-        
+
         this.branch = store.getBranchCommit();
 
         this.setFilesForCommit();
@@ -283,7 +283,7 @@ export default {
   },
   methods: {
     /**
-     * Gets the three different type of files from the store
+     * Gets the three different types of files from the store
      */
     setFilesForCommit() {
       this.changedFiles = store.changedFilesInRepo(this.repo);
