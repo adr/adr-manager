@@ -261,7 +261,7 @@ export const store = new Vue({
             "-" +
             adr.title +
             ".md",
-          newAdr: true,
+          newAdr: true
         };
         repo.addAdr(newAdr);
         this.updateLocalStorageRepositories();
@@ -399,7 +399,7 @@ export const store = new Vue({
           path: deletedFile.path,
           title: deletedFile.path.split("/")[2],
           fileSelected: false,
-          fileStatus: "deleted",
+          fileStatus: "deleted"
         });
       }
       return deletedFiles;
@@ -430,7 +430,7 @@ export const store = new Vue({
         value: file.editedMd,
         path: file.path,
         fileSelected: false,
-        fileStatus: fileType,
+        fileStatus: fileType
       };
     },
 
@@ -518,8 +518,8 @@ export const store = new Vue({
           this.currentRepositoryForCommit.deletedAdrs.splice(index, 1);
         }
       }
-    },
-  },
+    }
+  }
 });
 
 /**Checks if each repo in the parameter array repos is a valid repository

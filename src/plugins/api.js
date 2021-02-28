@@ -18,9 +18,6 @@ export function setInfosForApi(currRepoOwner, currRepoName, currBranch) {
   repoName = currRepoName;
   repoOwner = currRepoOwner;
   branch = currBranch;
-  console.log("repoName", repoName)
-  console.log("repoOwner", repoOwner)
-  console.log("branch", branch)
 }
 
 /**
