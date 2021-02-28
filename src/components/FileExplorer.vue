@@ -121,7 +121,7 @@
     </div>
     <!-- Bottom Button for adding a repository -->
     <div class="flex-grow-0 d-flex flex-wrap">
-      <DialogAddRepositories v-on:repo-added-name="updateBranch">
+      <DialogAddRepositories>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             data-cy="addRepo"
@@ -302,10 +302,6 @@ export default {
     sendRepo(repo) {
       this.$emit("repo-name", repo.name);
       this.$emit("active-branch", repo.repository.activeBranch);
-    },
-
-    updateBranch(repo) {
-      console.log("Just a test with repo-added-name: ", repo);
     },
 
     /**
