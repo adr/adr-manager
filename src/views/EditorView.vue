@@ -249,11 +249,13 @@
         console.log("Curent repo? : " + this.repoFullName)
         if(this.currentRepo !== ""){
           if(this.branchesName.length === 1){
-
             this.currentRepo = this.routeDataFromStore.repoFullName;
             this.loadBranchesName();
           }else{
+            this.branchesName = [];
             console.log("Nothing to see here!");
+            this.currentRepo = this.routeDataFromStore.repoFullName;
+            this.loadBranchesName();
           }
          
         }
