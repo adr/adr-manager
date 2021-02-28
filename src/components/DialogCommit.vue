@@ -214,6 +214,9 @@ import {
 } from "@/plugins/api.js";
 import { store } from "../plugins/store";
 
+/**
+ * To see further information, look at the GitHub repository. There will be a paper with some informations to the "Commiting and pushing" procedure. 
+ */
 export default {
   name: "DialogCommit",
   props: {
@@ -281,6 +284,9 @@ export default {
     },
   },
   methods: {
+    /**
+     * Gets the three different type of files from the store
+     */
     setFilesForCommit() {
       this.changedFiles = store.changedFilesInRepo(this.repo);
       if (this.changedFiles.length > 0) {
@@ -310,12 +316,15 @@ export default {
       this.openedPanel = null;
     },
 
+    /**
+     * When the commit button is pushed, the last commit sha will be requestet to github
+     */
     handleCommitButtonAction() {
       if (!this.gitHubTimeout) {
         this.commitFiles = this.commitFiles.concat(this.changedFiles);
         this.commitFiles = this.commitFiles.concat(this.newFiles);
         this.requestLastCommitSha();
-      } else;
+      }
     },
 
     isTextfieldValid() {
@@ -335,6 +344,8 @@ export default {
     handleCommitMessage(message) {
       this.comMessage = message;
     },
+
+    // One file must be checked or the commit button wont be visible
     checkboxAction(checkboxVal, path, listFiles) {
       let tempBool = false;
       for (let file of listFiles) {
@@ -383,6 +394,7 @@ export default {
       } else this.fileSelected = false;
     },
 
+    // Requests last commit sha hash from GitHub (Returned in response) 
     requestLastCommitSha() {
       this.loading = true;
 
@@ -400,6 +412,11 @@ export default {
       }
     },
 
+    /**
+     * Only the selected files will be marked. These marked will be created and in response from 
+     * GitHub there is the blob sha hash.
+     * When every file is created, the tree of the file will be created.
+     */
     createBlobsRequest() {
       let countKeysList = this.commitFiles.length;
       let countForEach = 0;
@@ -433,6 +450,12 @@ export default {
       } else this.createFolderTreeRequest();
     },
 
+    /**
+     * The files will be prepaired for the tree structure. (We add the last commit SHA-1 hash, which 
+     * will be used as base for the new tree). Then the new/changed/deleted files will be added. 
+     * To delete a file we set the sha to null.
+     * As response we get the sha hash of the tree.
+     */
     createFolderTreeRequest() {
       let fileTree = [];
       Object.entries(this.blobSha).forEach((value) => {
@@ -472,6 +495,11 @@ export default {
       }
     },
 
+    /**
+     * We create a new commit with the commit message, the author infos, the last commit sha and 
+     * the newly created tree sha.
+     * As respoonse we get the new commit sha hash.
+     */
     createCommitRequest(treeSha) {
       if (!this.errorRequest) {
         createCommit(
@@ -489,6 +517,11 @@ export default {
       }
     },
 
+    /**
+     * We have to move the HEAD reference on the branch to the new commit with the help of the 
+     * newly created commit sha hash.
+     * The files in the local storage will be updatetd.
+     */
     pushToGitHubRequest(newCommitSha) {
       if (!this.errorRequest) {
         pushToGitHub(newCommitSha)
@@ -511,6 +544,7 @@ export default {
       }
     },
 
+    // Displays the error
     errorDialog(currentError) {
       this.$alert(
         "Error during pushing. Your changes were not pushed. Please try again later. \nError code: " +
@@ -525,6 +559,7 @@ export default {
       });
     },
 
+    // No file has been changed/created/deleted
     nothingToCommitAlert() {
       this.$alert(
         "No changes have been made since the last push",
@@ -537,6 +572,13 @@ export default {
         this.closeDialog();
       });
     },
+
+    /**
+     * we can only push once per minute due to the GitHub API. It takes a certain amount of time  
+     * to update the reference and if we then make another request too quickly, we get
+     * an outdated SHA-1 hash of the commit. This leads to the fact that we would overwrite the
+     * changes of the last push. Therefore, we allow pushing only once per minute.
+     */
     gitHubTimeoutAlert() {
       this.$alert(
         "Latency problem with GitHub Api. Please wait ~60 seconds!",

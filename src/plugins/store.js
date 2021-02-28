@@ -308,15 +308,22 @@ export const store = new Vue({
       }
     },
 
+    /**
+     * Sets the current mode for the commit and change dialog.
+     * 
+     * @param {string} repoName 
+     */
     setCurrentRepositoryForCommit(repoName) {
       for (let repo of this.addedRepositories) {
         if (repoName === repo.fullName) {
           this.currentRepositoryForCommit = repo;
-          console.log("repoCommit", this.currentRepositoryForCommit);
         }
       }
     },
 
+    /**
+     * Gets the username from GitHub in the response.
+     */
     setName() {
       getUserName()
         .then((res) => {
@@ -326,13 +333,15 @@ export const store = new Vue({
           } else {
             this.name = res.name;
           }
-          console.log("setName", this.name)
         })
         .catch((error) => {
           console.error(error);
         });
     },
 
+    /**
+     * Gets the email from GitHub in the response.
+     */
     setEmail() {
       getUserEmail()
         .then((res) => {
@@ -352,11 +361,14 @@ export const store = new Vue({
     },
 
     getUserName() {
-      console.log("getName", this.name)
-
       return this.name;
     },
 
+    /**
+     * Files that are not new and have only been changed are saved in an array.
+     * 
+     * @returns An array of the changed files
+     */
     changedFilesInRepo() {
       let changedFiles = [];
       for (let changedFile of this.currentRepositoryForCommit.adrs) {
@@ -369,6 +381,11 @@ export const store = new Vue({
       return changedFiles;
     },
 
+    /**
+     * Files that have been deleted are saved in an array.
+     * 
+     * @returns An array of the deleted files
+     */
     deletedFilesInRepo() {
       let deletedFiles = [];
       for (let deletedFile of this.currentRepositoryForCommit.deletedAdrs) {
@@ -382,6 +399,11 @@ export const store = new Vue({
       return deletedFiles;
     },
 
+    /**
+     * Files that are completly new are saved in an array.
+     * 
+     * @returns An array of the new files
+     */
     newFilesInRepo() {
       let newFiles = [];
       for (let newFile of this.currentRepositoryForCommit.addedAdrs) {
@@ -390,6 +412,12 @@ export const store = new Vue({
       return newFiles;
     },
 
+    /**
+     * The structure of an file that will be saved in an array.
+     * 
+     * @param {string} file 
+     * @param {string} fileType Only new, changed or deleted
+     */
     dataStructureCommit(file, fileType) {
       return {
         title: file.path.split("/")[2],
@@ -400,6 +428,9 @@ export const store = new Vue({
       };
     },
 
+    /**
+     * The necassary infos from the author and the repo for the commit.
+     */
     setInfoForCommit() {
       this.name = this.setName();
       this.userMail = this.setEmail();
@@ -410,6 +441,11 @@ export const store = new Vue({
       );
     },
 
+    /**
+     * After a push the local storage must be updated.
+     * 
+     * @param {Object} pushedFiles 
+     */
     updateLocalStorageAfterCommit(pushedFiles) {
       for (let file of pushedFiles) {
         switch (file.type) {
@@ -427,6 +463,11 @@ export const store = new Vue({
       this.updateLocalStorageRepositories();
     },
 
+    /**
+     * Deletes the new attribute of the adr file in the local storage and saves the changes.
+     * 
+     * @param {string} file 
+     */
     handleUpdateLocalStorageNew(file) {
       for (let repoEntry of this.currentRepositoryForCommit.addedAdrs) {
         if (file.path === repoEntry.path) {
@@ -444,6 +485,11 @@ export const store = new Vue({
       }
     },
 
+    /**
+     * Saves the changes in the local storage.
+     * 
+     * @param {string} file 
+     */
     handleUpdateLocalStorageChanged(file) {
       for (let repoEntry of this.currentRepositoryForCommit.adrs) {
         if (file.path === repoEntry.path) {
@@ -452,6 +498,11 @@ export const store = new Vue({
       }
     },
 
+    /**
+     * Deletes the file from the local storage.
+     * 
+     * @param {string} file 
+     */
     handleUpdateLocalStorageDeleted(file) {
       for (let repoEntry of this.currentRepositoryForCommit.deletedAdrs) {
         if (file.path === repoEntry.path) {
