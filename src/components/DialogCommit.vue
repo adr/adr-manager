@@ -170,9 +170,7 @@
         <div class="distanceToTextField">
           <v-icon color="primary">mdi-information-outline</v-icon>
           <span class="spanAfterIcon">
-            Your selected files will be pushed to {{ currUser }}/{{
-              currRepo
-            }}
+            Your selected files will be pushed to {{ repo  }}
             on {{ branch }} branch.</span
           >
         </div>
@@ -210,12 +208,13 @@ import {
   createBlobs,
   createFileTree,
   createCommit,
-  pushToGitHub,
-  getUserName,
-  getUserEmail
+  pushToGitHub
 } from "@/plugins/api.js";
 import { store } from "../plugins/store";
 
+/**
+ * To see further information, look at the GitHub repository. There will be a paper with some informations to the "Commiting and pushing" procedure. 
+ */
 export default {
   name: "DialogCommit",
   props: {
@@ -235,14 +234,10 @@ export default {
     newFiles: [],
     deletedFiles: [],
     deletedTree: [],
-    currUser: "",
-    currRepo: "",
     dialogVisible: false,
     commitFiles: [],
     branch: "",
     comMessage: "",
-    name: "",
-    email: "",
     loading: false,
     fileSelected: false,
     newFileBool: false,
@@ -264,8 +259,14 @@ export default {
       if (visible) {
         if (this.gitHubTimeout) {
           this.gitHubTimeoutAlert();
+          return;
         }
         this.resetDialog();
+        store.setCurrentRepositoryForCommit(this.repo);
+        store.setInfoForCommit();
+
+        this.branch = store.getBranchCommit();
+
         this.setFilesForCommit();
         if (
           !this.newFileBool &&
@@ -274,8 +275,6 @@ export default {
         ) {
           this.nothingToCommitAlert();
         }
-        this.setRepoInfo();
-        this.setUserInfo();
       }
     },
     value() {
@@ -283,39 +282,9 @@ export default {
     }
   },
   methods: {
-    setUserInfo() {
-      getUserName(this.currUser)
-        .then((res) => {
-          this.name = res.login;
-        })
-        .catch((error) => {
-          this.errorRequest = true;
-          this.errorDialog(error);
-          console.error(error);
-        });
-
-      getUserEmail()
-        .then((res) => {
-          for (let emailEntry of res) {
-            if (emailEntry.primary) {
-              this.email = emailEntry.email;
-            }
-          }
-        })
-        .catch((error) => {
-          this.errorRequest = true;
-          this.errorDialog(error);
-          console.error(error);
-        });
-    },
-
-    setRepoInfo() {
-      let repoInfos = store.getRepoInfoForCommit(this.repo);
-      this.currUser = repoInfos.userName;
-      this.currRepo = repoInfos.repoName;
-      this.branch = repoInfos.activeBranch;
-    },
-
+    /**
+     * Gets the three different types of files from the store
+     */
     setFilesForCommit() {
       this.changedFiles = store.changedFilesInRepo(this.repo);
       if (this.changedFiles.length > 0) {
@@ -345,12 +314,15 @@ export default {
       this.openedPanel = null;
     },
 
+    /**
+     * When the commit button is pushed, the last commit sha will be requestet to github
+     */
     handleCommitButtonAction() {
       if (!this.gitHubTimeout) {
         this.commitFiles = this.commitFiles.concat(this.changedFiles);
         this.commitFiles = this.commitFiles.concat(this.newFiles);
         this.requestLastCommitSha();
-      } else;
+      }
     },
 
     isTextfieldValid() {
@@ -370,6 +342,8 @@ export default {
     handleCommitMessage(message) {
       this.comMessage = message;
     },
+
+    // One file must be checked or the commit button wont be visible
     checkboxAction(checkboxVal, path, listFiles) {
       let tempBool = false;
       for (let file of listFiles) {
@@ -385,7 +359,6 @@ export default {
             if (!tempBool) {
               this.newSelected = false;
             }
-
             break;
           case "changed":
             if (file.path === path) {
@@ -418,11 +391,12 @@ export default {
       } else this.fileSelected = false;
     },
 
+    // Requests last commit sha hash from GitHub (Returned in response) 
     requestLastCommitSha() {
       this.loading = true;
 
       if (!this.errorRequest) {
-        getCommitSha(this.currUser, this.currRepo, this.branch)
+        getCommitSha()
           .then((res) => {
             this.lastCommitSha = res.commit.sha;
             this.createBlobsRequest();
@@ -435,6 +409,11 @@ export default {
       }
     },
 
+    /**
+     * Only the selected files will be marked. These marked will be created and in response from 
+     * GitHub there is the blob sha hash.
+     * When every file is created, the tree of the file will be created.
+     */
     createBlobsRequest() {
       let countKeysList = this.commitFiles.length;
       let countForEach = 0;
@@ -446,7 +425,7 @@ export default {
               type: value.fileStatus
             });
             if (!this.errorRequest) {
-              createBlobs(this.currUser, this.currRepo, value.value)
+              createBlobs(value.value)
                 .then((res) => {
                   countForEach++;
                   this.blobSha[value.title] = {
@@ -468,6 +447,12 @@ export default {
       } else this.createFolderTreeRequest();
     },
 
+    /**
+     * The files will be prepaired for the tree structure. (We add the last commit SHA-1 hash, which 
+     * will be used as base for the new tree). Then the new/changed/deleted files will be added. 
+     * To delete a file we set the sha to null.
+     * As response we get the sha hash of the tree.
+     */
     createFolderTreeRequest() {
       let fileTree = [];
       Object.entries(this.blobSha).forEach((value) => {
@@ -495,12 +480,7 @@ export default {
         });
       }
       if (!this.errorRequest) {
-        createFileTree(
-          this.currUser,
-          this.currRepo,
-          this.lastCommitSha,
-          fileTree
-        )
+        createFileTree(this.lastCommitSha, fileTree)
           .then((res) => {
             this.createCommitRequest(res.sha);
           })
@@ -511,16 +491,17 @@ export default {
           });
       }
     },
+
+    /**
+     * We create a new commit with the commit message, the author infos, the last commit sha and 
+     * the newly created tree sha.
+     * As respoonse we get the new commit sha hash.
+     */
     createCommitRequest(treeSha) {
       if (!this.errorRequest) {
         createCommit(
-          this.currUser,
-          this.currRepo,
           this.comMessage,
-          {
-            name: this.name,
-            email: this.email,
-          },
+          { name: store.getUserName(), email: store.getUserEmail() },
           this.lastCommitSha,
           treeSha
         )
@@ -533,9 +514,14 @@ export default {
       }
     },
 
+    /**
+     * We have to move the HEAD reference on the branch to the new commit with the help of the 
+     * newly created commit sha hash.
+     * The files in the local storage will be updatetd.
+     */
     pushToGitHubRequest(newCommitSha) {
       if (!this.errorRequest) {
-        pushToGitHub(this.currUser, this.currRepo, this.branch, newCommitSha)
+        pushToGitHub(newCommitSha)
           .then(() => {
             this.gitHubTimeout = true;
             setTimeout(() => {
@@ -555,6 +541,7 @@ export default {
       }
     },
 
+    // Displays the error
     errorDialog(currentError) {
       this.$alert(
         "Error during pushing. Your changes were not pushed. Please try again later. \nError code: " +
@@ -562,32 +549,40 @@ export default {
         "Error",
         "error",
         {
-          confirmButtonText: "Close"
+          confirmButtonText: "Close",
         }
       ).then(() => {
         this.closeDialog();
       });
     },
 
+    // No file has been changed/created/deleted
     nothingToCommitAlert() {
       this.$alert(
         "No changes have been made since the last push",
         "Everything up to date",
         "success",
         {
-          confirmButtonText: "Close"
+          confirmButtonText: "Close",
         }
       ).then(() => {
         this.closeDialog();
       });
     },
+
+    /**
+     * we can only push once per minute due to the GitHub API. It takes a certain amount of time  
+     * to update the reference and if we then make another request too quickly, we get
+     * an outdated SHA-1 hash of the commit. This leads to the fact that we would overwrite the
+     * changes of the last push. Therefore, we allow pushing only once per minute.
+     */
     gitHubTimeoutAlert() {
       this.$alert(
         "Latency problem with GitHub Api. Please wait ~60 seconds!",
         "Warning",
         "warning",
         {
-          confirmButtonText: "Close"
+          confirmButtonText: "Close",
         }
       ).then(() => {
         this.closeDialog();
