@@ -6,8 +6,8 @@ import { Repository } from "./classes.js";
 // API-Calls (functions return promises)
 // A pizzy-object to make request to github
 let pizzly = new Pizzly({
-  host: "https://adr-manager.herokuapp.com",
-  publishableKey: "dpWJ4TU2yCu7ys4Nb6eX5zhv32GV6YcVYYvDJZvS",
+  host: "https://adr-testt.herokuapp.com/",
+  publishableKey: "dpWJ4TU2yCu7ys4Nb6eX5zhv32GV6YcVYYvDJZvSs",
 });
 
 let repoOwner = "";

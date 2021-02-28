@@ -17,6 +17,24 @@ Vue.use(resize)
 import VueInputAutowidth from 'vue-input-autowidth'
 Vue.use(VueInputAutowidth)
 
+import VueTippy, { TippyComponent } from "vue-tippy";
+Vue.use(VueTippy, {
+  directive: "tippy", // => v-tippy
+  flipDuration: 0,
+  popperOptions: {
+    modifiers: {
+      preventOverflow: {
+        enabled: false
+      },
+      hide: {
+        enabled: false
+      }
+    }
+  }
+});
+
+Vue.component("tippy", TippyComponent);
+
 Vue.use(VueSimpleAlert);
 Vue.config.productionTip = false;
 
