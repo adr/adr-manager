@@ -26,6 +26,7 @@ export const store = new Vue({
     // If available the full name of the user, else the username from the GitHub account
     name: "",
     userMail: "",
+    branchCommit: ""
   },
 
   created() {
@@ -317,6 +318,7 @@ export const store = new Vue({
       for (let repo of this.addedRepositories) {
         if (repoName === repo.fullName) {
           this.currentRepositoryForCommit = repo;
+          this.branchCommit = repo.activeBranch;
         }
       }
     },
@@ -362,6 +364,10 @@ export const store = new Vue({
 
     getUserName() {
       return this.name;
+    },
+
+    getBranchCommit() {
+      return this.branchCommit;
     },
 
     /**
