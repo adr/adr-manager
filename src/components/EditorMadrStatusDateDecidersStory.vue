@@ -26,9 +26,9 @@
             </v-list-item>
           </v-list>
         </v-menu>
-              <HelpIcon>
-                The status of the ADR
-              </HelpIcon>
+        <HelpIcon>
+          The status of the ADR
+        </HelpIcon>
       </v-card>
       <v-card flat class="mb-4">
         <v-chip outlined>
@@ -39,7 +39,7 @@
           </div>
         </v-chip>
         <HelpIcon>
-          List everyone involved in the decision.
+          List everyone involved in the decision, e.g., separated with commas.
         </HelpIcon>
       </v-card>
     </v-card>
@@ -47,14 +47,13 @@
     <!-- Technical Story Field-->
     <v-row class="pl-0 mx-0">
       <v-col class="my-0 py-0 px-0 mx-0 px-0 align-self-center" style="max-width: 150px">
-        <h5> Technical Story: 
-        </h5> 
+        <h5> Technical Story: </h5> 
       </v-col>
       <v-col no-cols class="my-0 py-0">
         <codemirror data-cy="technicalStoryPro" v-model="adr.technicalStory"></codemirror>
       </v-col>
       <HelpIcon >
-        Technical context of the ADR, e.g. a ticket or issue URL
+        Technical context of the ADR, e.g., a ticket or issue URL
       </HelpIcon>
     </v-row>
   </div>

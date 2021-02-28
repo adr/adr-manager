@@ -2,7 +2,7 @@
   <div>
     <v-tabs v-model="tab" class="mx-0 px-0 pt-0 mt-0 flex-grow-0" background-color="transparent">
       <div class="align-self-center pr-4" >
-        Usage Mode: 
+        Editor Mode: 
       </div>
       <v-tooltip v-for="item in modes" :key="item.name" open-delay="500" bottom>
         <template v-slot:activator="{ on, attrs }">
