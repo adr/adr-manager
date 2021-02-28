@@ -248,16 +248,12 @@
        * the loadBranchesName-method is triggered and the branches of the current repositories are retrieved and displayed. 
        */
       clickForBranches() {
-        console.log("Curent repo? : " + this.repoFullName)
         if(this.currentRepo !== ""){
           if(this.branchesName.length === 1 && this.boolClick){
             this.currentRepo = this.routeDataFromStore.repoFullName;
             this.loadBranchesName();
           }else{
-            // this.branchesName = [];
             console.log("Nothing to see here!");
-            // this.currentRepo = this.routeDataFromStore.repoFullName;
-            // this.loadBranchesName();
           }
          
         }
