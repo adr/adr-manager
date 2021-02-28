@@ -2,6 +2,7 @@
     <v-tooltip bottom>
       <template v-slot:activator="{ on }">
         <v-icon
+        class="mx-2"
           v-on="on"
         >mdi-help-circle-outline</v-icon>
       </template>

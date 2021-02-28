@@ -4,7 +4,6 @@
     <h3>
       <v-row class="mx-0">
         Decision Outcome
-        <v-spacer></v-spacer>
         <HelpIcon>
           Select the option that you chose to use.
           <div v-if="mode === 'basic'">
@@ -31,7 +30,6 @@
         <h5 class="my-4">
           <v-row class="mx-0">
             Positive Consequences
-            <v-spacer></v-spacer>
             <HelpIcon>
               Give positive consequences, e.g., improvement of a quality attribute, follow-up decisions required, ...
             </HelpIcon>
@@ -43,7 +41,6 @@
         <h5 class="my-4">
           <v-row class="mx-0">
             Negative Consequences
-            <v-spacer></v-spacer>
             <HelpIcon>
               Give negative consequences, e.g., afflicted quality attributes, follow-up decisions required, ...
             </HelpIcon>

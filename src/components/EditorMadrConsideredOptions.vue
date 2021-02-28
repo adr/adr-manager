@@ -3,7 +3,6 @@
     <h3>
       <v-row class="mx-0">
         Considered Options
-        <v-spacer></v-spacer>
         <HelpIcon v-if="mode === 'basic'">
           List all considered options. <br>
 
@@ -170,7 +169,6 @@
                 <h6 class="py-4 pl-4"> 
                   <v-row class="mx-0">
                     Description
-                    <v-spacer></v-spacer>
                     <HelpIcon>
                       Describe the option in free form, e.g., by giving examples or a pointer to more information.
                     </HelpIcon>
@@ -186,7 +184,6 @@
                     <h6 class="py-4 pl-4"> 
                       <v-row class="mx-0">
                         Good, because ... 
-                        <v-spacer></v-spacer>
                         <HelpIcon>
                           Give arguments supporting this option.
                         </HelpIcon>
@@ -199,7 +196,6 @@
                     <h6 class="py-4 pl-4"> 
                       <v-row class="mx-0">
                         Bad, because ...
-                        <v-spacer></v-spacer>
                         <HelpIcon>
                           Give arguments against using this option.
                         </HelpIcon>

@@ -41,7 +41,6 @@
         <h3 class="mt-8">
           <v-row class="mx-0">
             Context and Problem Statement
-            <v-spacer></v-spacer>
             <HelpIcon>
                Describe the context and problem statement, e.g., in free form using two to three sentences. <br>
                You may want to articulate the problem in form of a question.
@@ -59,7 +58,6 @@
           <h3>
             <v-row class="mx-0">
               Decision Drivers
-              <v-spacer></v-spacer>
               <HelpIcon>
                 Decision Drivers are competing forces or facing concerns that influence the decision.
               </HelpIcon>
@@ -80,7 +78,6 @@
           <h3>
             <v-row class="mx-0">
               Links
-              <v-spacer></v-spacer>
               <HelpIcon>
                 Add referenes, e.g., to related ADRs
               </HelpIcon>
