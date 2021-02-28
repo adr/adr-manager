@@ -211,8 +211,6 @@ import {
   createFileTree,
   createCommit,
   pushToGitHub,
-  getUserName,
-  getUserEmail
 } from "@/plugins/api.js";
 import { store } from "../plugins/store";
 
@@ -223,9 +221,9 @@ export default {
     value: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
-    repo: String
+    repo: String,
   },
   data: () => ({
     showDialog: false,
@@ -235,14 +233,12 @@ export default {
     newFiles: [],
     deletedFiles: [],
     deletedTree: [],
-    currUser: "",
-    currRepo: "",
+    currUser: "manue",
+    currRepo: "Fp",
     dialogVisible: false,
     commitFiles: [],
     branch: "",
     comMessage: "",
-    name: "",
-    email: "",
     loading: false,
     fileSelected: false,
     newFileBool: false,
@@ -256,7 +252,7 @@ export default {
     newSelected: false,
     changedSelected: false,
     openedPanel: null,
-    errorRequest: false
+    errorRequest: false,
   }),
 
   watch: {
@@ -264,8 +260,12 @@ export default {
       if (visible) {
         if (this.gitHubTimeout) {
           this.gitHubTimeoutAlert();
+          return;
         }
         this.resetDialog();
+        store.setCurrentRepositoryForCommit(this.repo);
+        store.setInfoForCommit();
+
         this.setFilesForCommit();
         if (
           !this.newFileBool &&
@@ -274,48 +274,13 @@ export default {
         ) {
           this.nothingToCommitAlert();
         }
-        this.setRepoInfo();
-        this.setUserInfo();
       }
     },
     value() {
       this.dialog = this.value;
-    }
+    },
   },
   methods: {
-    setUserInfo() {
-      getUserName(this.currUser)
-        .then((res) => {
-          this.name = res.login;
-        })
-        .catch((error) => {
-          this.errorRequest = true;
-          this.errorDialog(error);
-          console.error(error);
-        });
-
-      getUserEmail()
-        .then((res) => {
-          for (let emailEntry of res) {
-            if (emailEntry.primary) {
-              this.email = emailEntry.email;
-            }
-          }
-        })
-        .catch((error) => {
-          this.errorRequest = true;
-          this.errorDialog(error);
-          console.error(error);
-        });
-    },
-
-    setRepoInfo() {
-      let repoInfos = store.getRepoInfoForCommit(this.repo);
-      this.currUser = repoInfos.userName;
-      this.currRepo = repoInfos.repoName;
-      this.branch = repoInfos.activeBranch;
-    },
-
     setFilesForCommit() {
       this.changedFiles = store.changedFilesInRepo(this.repo);
       if (this.changedFiles.length > 0) {
@@ -422,7 +387,7 @@ export default {
       this.loading = true;
 
       if (!this.errorRequest) {
-        getCommitSha(this.currUser, this.currRepo, this.branch)
+        getCommitSha()
           .then((res) => {
             this.lastCommitSha = res.commit.sha;
             this.createBlobsRequest();
@@ -443,15 +408,15 @@ export default {
           if (value.fileSelected) {
             this.filesPushed.push({
               path: value.path,
-              type: value.fileStatus
+              type: value.fileStatus,
             });
             if (!this.errorRequest) {
-              createBlobs(this.currUser, this.currRepo, value.value)
+              createBlobs(value.value)
                 .then((res) => {
                   countForEach++;
                   this.blobSha[value.title] = {
                     blobSha: res.sha,
-                    path: value.path
+                    path: value.path,
                   };
                   if (countForEach === countKeysList) {
                     this.createFolderTreeRequest();
@@ -475,7 +440,7 @@ export default {
           path: value[1].path,
           mode: "100644",
           type: "blob",
-          sha: value[1].blobSha
+          sha: value[1].blobSha,
         });
       });
       if (this.deletedFileBool) {
@@ -483,24 +448,19 @@ export default {
           if (value[1].fileSelected) {
             this.filesPushed.push({
               path: value[1].path,
-              type: value[1].fileStatus
+              type: value[1].fileStatus,
             });
             fileTree.push({
               path: value[1].path,
               mode: "100644",
               type: "blob",
-              sha: null
+              sha: null,
             });
           }
         });
       }
       if (!this.errorRequest) {
-        createFileTree(
-          this.currUser,
-          this.currRepo,
-          this.lastCommitSha,
-          fileTree
-        )
+        createFileTree(this.lastCommitSha, fileTree)
           .then((res) => {
             this.createCommitRequest(res.sha);
           })
@@ -511,16 +471,12 @@ export default {
           });
       }
     },
+
     createCommitRequest(treeSha) {
       if (!this.errorRequest) {
         createCommit(
-          this.currUser,
-          this.currRepo,
           this.comMessage,
-          {
-            name: this.name,
-            email: this.email,
-          },
+          { name: store.getUserName(), email: store.getUserEmail() },
           this.lastCommitSha,
           treeSha
         )
@@ -535,7 +491,7 @@ export default {
 
     pushToGitHubRequest(newCommitSha) {
       if (!this.errorRequest) {
-        pushToGitHub(this.currUser, this.currRepo, this.branch, newCommitSha)
+        pushToGitHub(newCommitSha)
           .then(() => {
             this.gitHubTimeout = true;
             setTimeout(() => {
@@ -562,7 +518,7 @@ export default {
         "Error",
         "error",
         {
-          confirmButtonText: "Close"
+          confirmButtonText: "Close",
         }
       ).then(() => {
         this.closeDialog();
@@ -575,7 +531,7 @@ export default {
         "Everything up to date",
         "success",
         {
-          confirmButtonText: "Close"
+          confirmButtonText: "Close",
         }
       ).then(() => {
         this.closeDialog();
@@ -587,13 +543,13 @@ export default {
         "Warning",
         "warning",
         {
-          confirmButtonText: "Close"
+          confirmButtonText: "Close",
         }
       ).then(() => {
         this.closeDialog();
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

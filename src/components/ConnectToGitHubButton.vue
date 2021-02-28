@@ -6,6 +6,7 @@
 
 <script>
 import Pizzly from "pizzly-js";
+import { store } from '../plugins/store';
 
 export default {
   name: "connectGitHub",
@@ -44,6 +45,7 @@ export default {
       // On success, we update the user object
       this.user = data.authId;
       localStorage.setItem("authId", data.authId);
+      store.setName();
       this.$router.push({ name: "Editor", params: { id: this.user } });
     },
     connectError: function (err) {
