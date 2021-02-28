@@ -10,6 +10,22 @@ let pizzly = new Pizzly({
   publishableKey: "dpWJ4TU2yCu7ys4Nb6eX5zhv32GV6YcVYYvDJZvSs",
 });
 
+let repoOwner = "";
+let repoName = "";
+let branch = "";
+
+export function setInfosForApi(currRepoOwner, currRepoName, currBranch) {
+  repoName = currRepoName;
+  repoOwner = currRepoOwner;
+  branch = currBranch;
+}
+
+/**
+ * Returns a Promise with the list of all email addresses from the user.
+ *
+ * An example of the returned JSON structure can be found at 'https://docs.github.com/en/rest/reference/users#emails'
+ * @returns {Promise<object[]>} the array of eamils with attributes 'email', 'primary', 'verified', 'visibility'
+ */
 export async function getUserEmail() {
   return pizzly
     .integration("github")
@@ -21,29 +37,48 @@ export async function getUserEmail() {
     });
 }
 
-export async function getUserName(repoOwner) {
+/**
+ * Returns a Promise with all available information about the user.
+ *
+ * An example of the returned JSON structure can be found at 'https://docs.github.com/en/rest/reference/users#get-the-authenticated-user'
+ * @returns {Promise<object[]>} the array of informations with attributes 'login', 'name', etc.
+ */
+export async function getUserName() {
   return pizzly
     .integration("github")
     .auth(localStorage.getItem("authId"))
-    .get("/users/" + repoOwner)
+    .get("/user")
     .then((response) => response.json())
     .catch((err) => {
       console.log(err);
     });
 }
 
-export async function getCommitSha(repoOwner, repoName, currentBranch) {
+/**
+ * Returns a Promise with all informations about a branch.
+ *
+ * An example of the returned JSON structure can be found at 'https://docs.github.com/en/rest/reference/repos#get-a-branch'
+ * @returns {Promise<object[]>} informations about the branch with attributes 'commit: { sha }', etc.
+ */
+export async function getCommitSha() {
   return pizzly
     .integration("github")
     .auth(localStorage.getItem("authId"))
-    .get("/repos/" + repoOwner + "/" + repoName + "/branches/" + currentBranch)
+    .get("/repos/" + repoOwner + "/" + repoName + "/branches/" + branch)
     .then((response) => response.json())
     .catch((err) => {
       console.log(err);
     });
 }
 
-export async function createBlobs(repoOwner, repoName, file) {
+/**
+ * Returns a Promise with all informations about the newly created file.
+ *
+ * An example of the returned JSON structure can be found at 'https://docs.github.com/en/rest/reference/git#create-a-blob'
+ * @param {string} file - the file we want to register for commit
+ * @returns {Promise<object[]>} informations about the newly created file with attributes 'sha', etc.
+ */
+export async function createBlobs(file) {
   return pizzly
     .integration("github")
     .auth(localStorage.getItem("authId"))
@@ -57,9 +92,15 @@ export async function createBlobs(repoOwner, repoName, file) {
     });
 }
 
+/**
+ * Returns a Promise with all informations about the newly created tree of files for the commit. 
+ *
+ * An example of the returned JSON structure can be found at 'https://docs.github.com/en/rest/reference/git#create-a-tree'
+ * @param {string} lastCommitSha
+ * @param {string} folderTree - tree of files that we want to register for commit
+ * @returns {Promise<object[]>} informations about the newly created tree with attributes 'sha', etc.
+ */
 export async function createFileTree(
-  repoOwner,
-  repoName,
   lastCommitSha,
   folderTree
 ) {
@@ -76,9 +117,17 @@ export async function createFileTree(
     });
 }
 
+/**
+ * Returns a Promise with all informations about the newly created commit of file tree for the commit. 
+ *
+ * An example of the returned JSON structure can be found at 'https://docs.github.com/en/rest/reference/git#create-a-commit'
+ * @param {string} commitMessage - message that will be displayed as commit message
+ * @param {object} authorInfos - name and email adress of author
+ * @param {string} lastCommitSha
+ * @param {string} treeSha - sha from the newly created tree
+ * @returns {Promise<object[]>} informations about the created commit with attributes 'sha', etc.
+ */
 export async function createCommit(
-  repoOwner,
-  repoName,
   commitMessage,
   authorInfos,
   lastCommitSha,
@@ -102,7 +151,14 @@ export async function createCommit(
     });
 }
 
-export async function pushToGitHub(repoOwner, repoName, branch, newCommitSha) {
+/**
+ * Returns a Promise with all informations about the updated reference. 
+ *
+ * An example of the returned JSON structure can be found at 'https://docs.github.com/en/rest/reference/git#update-a-reference'
+ * @param {string} newCommitSha - the commit sha of the newly created commit
+ * @returns {Promise<object[]>} informations about the reference.
+ */
+export async function pushToGitHub(newCommitSha) {
   return pizzly
     .integration("github")
     .auth(localStorage.getItem("authId"))
