@@ -155,7 +155,6 @@ export async function createCommit(
  * Returns a Promise with all informations about the updated reference. 
  *
  * An example of the returned JSON structure can be found at 'https://docs.github.com/en/rest/reference/git#update-a-reference'
- * @param {string} branch - the branch to which is pushed
  * @param {string} newCommitSha - the commit sha of the newly created commit
  * @returns {Promise<object[]>} informations about the reference.
  */
