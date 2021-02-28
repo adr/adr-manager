@@ -51,7 +51,6 @@ export default {
     connectError: function (err) {
       console.log("error");
       console.error(err);
-      alert("Something went wrong. Look at the logs.");
     },
   },
 };
