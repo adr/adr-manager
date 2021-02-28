@@ -90,6 +90,7 @@
       oldSelected: "",
       branchesName: [],
       currentRepo: "",
+      boolClick: false,
     }),
     computed: {
       showFileExplorer() {
@@ -126,6 +127,7 @@
           console.log("Changed Store", newRouteData);
           console.log("Current Route", this.$route.params);
           this.branchesName = [];
+          this.boolClick = true;
           this.branchesName.push(newRouteData.branch);
           this.branchesName =this.branchesName.filter(function(elem, index, self) {
               return index === self.indexOf(elem);
@@ -232,6 +234,7 @@
        * is called to get the branches of the current repositories.
        */
       updateBranches(repoName) {
+        this.boolClick = false;
         if (repoName === "") {
           this.branchesName = [];
         } else {
@@ -247,7 +250,7 @@
       clickForBranches() {
         console.log("Curent repo? : " + this.repoFullName)
         if(this.currentRepo !== ""){
-          if(this.branchesName.length === 1){
+          if(this.branchesName.length === 1 && this.boolClick){
             this.currentRepo = this.routeDataFromStore.repoFullName;
             this.loadBranchesName();
           }else{
