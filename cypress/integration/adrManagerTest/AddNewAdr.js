@@ -1,9 +1,10 @@
 /* eslint-disable no-undef */
+import { authId } from "./constants.js"
 
 context("Test new adr function", () => {
     it('Should create and fill a new adr', () => {
         window.localStorage.clear();
-        window.localStorage.setItem("authId", "8a555390-4db1-11eb-a06d-f3ebfa774e63");
+        window.localStorage.setItem("authId", authId);
         cy.visit("http://localhost:8080/#/manager");
 
         // Add repo
