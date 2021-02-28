@@ -5,12 +5,23 @@
 
       <v-container fluid class="mx-auto overflow-y-auto scroll px-8" style="height: 100%;">
 
-        <!-- Title Style ! -->
+        <!-- Title Style -->
+        <v-row>
         <v-text-field data-cy="titleAdr" v-if="true" filled dense
-          hint="Changing the title, changes the file name. Do not use special characters." v-model="adr.title"
-          @input="$emit('input', adr)" style="font-family: Roboto, sans-serif;
-          font-size: 28px;
-          font-weight: 500" />
+        placeholder="Title"
+        hint="Changing the title, changes the file name. Do not use special characters." v-model="adr.title"
+        @input="$emit('input', adr)" style="font-family: Roboto, sans-serif;
+        font-size: 28px;
+        font-weight: 500">
+        <template v-slot:append="">
+          <HelpIcon>
+            This is the Title. <br> 
+            It should describe the solved problem and the solution concisely.  <br> 
+            The title is also used as file name, so keep it short and avoid using special characters.
+          </HelpIcon>
+        </template>
+        </v-text-field>
+        </v-row>
 
         <v-alert v-if="isModeTooLow" border="left" colored-border type="warning" elevation="2" class="my-4 py-2">
           <div class="d-flex my-0 py-0">
@@ -27,7 +38,15 @@
 
         <v-divider class="my-0" />
 
-        <h3 class="mt-8">Context and Problem Statement</h3>
+        <h3 class="mt-8">
+          <v-row class="mx-0">
+            Context and Problem Statement
+            <HelpIcon>
+               Describe the context and problem statement, e.g., in free form using two to three sentences. <br>
+               You may want to articulate the problem in form of a question.
+            </HelpIcon>
+          </v-row>
+        </h3>
         <v-card flat class="mb-8">
           <codemirror data-cy="contextAdr" v-model="adr.contextAndProblemStatement"
             @input="(val) => { adr.contextAndProblemStatement = val; $emit('input', adr) }" />
@@ -36,7 +55,14 @@
 
         <div v-if="mode === 'professional'">
           <v-divider class="my-8" />
-          <h3>Decision Drivers</h3>
+          <h3>
+            <v-row class="mx-0">
+              Decision Drivers
+              <HelpIcon>
+                Decision Drivers are competing forces or facing concerns that influence the decision.
+              </HelpIcon>
+            </v-row>
+          </h3>
           <GenericList :list="adr.decisionDrivers" />
         </div>
 
@@ -49,7 +75,14 @@
 
         <div v-if="mode === 'professional'">
           <v-divider class="my-8" />
-          <h3>Links</h3>
+          <h3>
+            <v-row class="mx-0">
+              Links
+              <HelpIcon>
+                Add referenes, e.g., to related ADRs
+              </HelpIcon>
+            </v-row>
+          </h3>
           <GenericList data-cy="linkPro" :list="adr.links" />
         </div>
 
@@ -68,6 +101,7 @@
   import StatusDateDecidersStory from './EditorMadrStatusDateDecidersStory.vue'
   import DecisionOutcome from './EditorMadrDecisionOutcome.vue'
   import ConsideredOptions from './EditorMadrConsideredOptions.vue'
+  import HelpIcon from './HelpIcon.vue'
 
   import GenericList from './EditorMadrList.vue'
 
@@ -78,7 +112,8 @@
       StatusDateDecidersStory,
       ConsideredOptions,
       DecisionOutcome,
-      GenericList
+      GenericList,
+      HelpIcon
     },
     props: {
       value: { type: ArchitecturalDecisionRecord }
