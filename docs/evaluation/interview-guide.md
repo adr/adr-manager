@@ -6,32 +6,39 @@ We will loosely follow these questions based on the participant's responses.
 <!-- before the think aloud study -->
 ## Demographic and Professional Background
 
-* Role (e. g. (Lead) Developer, (Lead) Architect, Data Engineer)
-* General Domain (e. g. Web, Front end, Back end, data science, something completely different)
+* Role (e.g. (lead) developer, (lead) architect, data engineer, etc.)
+* General domain (e.g. web, frontend, backend, data science, something completely different)
 * Years of professional experience
-* Experience with ADRs (used for how long?, what team size?)
-  * How standardized are the used ADRs? If there is a standard which template?
-  * Experience with MADRs?
-* Which tools do you use to manage ADRs? (e. g. adr-tools + GitHub editor or local text editor like VSC, IntelliJ, etc.)
+* Experience with ADRs (any document containing ADs)
+  * For how long have you used ADRs?
+  * What was the average size of the teams you used ADRs with?
+  * What formats do you use for ADRs?
+    * How standardized are the formats? Are there templates?
+    * Do you have experience with MADRs?
+* Which tools do you use to manage ADRs? (e.g. adr-tools + GitHub, local text editor like VSC, IntelliJ, Confluence, PowerPoint, etc.)
 
 
 <!-- after the think aloud study -->
 ## Functional Suitability
 
-* Which functionality did you find lacking?
-* Which functionality would you need to consider using the tool in your professional work?
+* Which provided functionality needs to be improved?
+* Which additional functionality would you need to consider using the tool in your professional work?
 
 ## Usability
 
-* Do you like the interface?
-* Is the interface intuitive for you?
+* How understandable was the user interface for you?
+* How efficiently usable was the user interface for you?
 * Which modes would you use most often? Would you switch between modes? 
 <!--or some question asking whether we need three vs. two vs. one mode-->
 
-Some semi-quantitative questions: <!-- maybe some generic questionnaire that I don't know yet -->
-* In general: Would you prefer to have a GUI-based tool specifically for ADRs? (1-5)
-* Would you prefer the ADR Manager over existing tools? (1-5)
-* How likely are you to use the ADR Manager in the future? (1-5)
+## Final Verdict
+
+Please indicate your (dis)agreement to the following statements with these 5 labels:
+`strongly disagree`, `disagree`, `neutral`, `agree`, `strongly agree`
+
+* The functional suitability of the tool is fitting for its purpose.
+* The usability of the tool allows its convenient usage.
+* It is likely that I will use the tool in the future.
 
 <!-- ToDo -->
 <!-- Add more questions -->
