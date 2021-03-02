@@ -14,7 +14,7 @@ Should the ADR Manager have a backend? If so, how should it look?
 
 ## Decision Outcome
 
-Chosen option: "Use Pizzly as Backend ", because comes out best (see below).
+Chosen option: "Use Pizzly as Backend", because comes out best (see below).
 
 ## Pros and Cons of the Options
 
