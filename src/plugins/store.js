@@ -251,7 +251,7 @@ export const store = new Vue({
       if (this.addedRepositories.includes(repo)) {
         let adr = ArchitecturalDecisionRecord.createNewAdr();
         let md = adr2md(adr);
-        let id = Math.max(...repo.adrs.map((adr) => adr.id), -1) + 1;
+        let id = Math.max(...repo.adrs.map((adr) => adr.id), 0) + 1;
         let newAdr = {
           originalMd: "",
           editedMd: md,
