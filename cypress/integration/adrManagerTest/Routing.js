@@ -49,7 +49,7 @@ context("Test for correct URLs", () => {
         cy.get('[data-cy=newADR]').click({force: true});
 
         // With an opened ADR, the URL should contain: full name, branch, adr name.
-        cy.url().should('equal', "http://localhost:8080/#/manager/researchproject2020/ResearchProject/main/0000-.md");
+        cy.url().should('equal', "http://localhost:8080/#/manager/researchproject2020/ResearchProject/main/0001-.md");
 
         cy.get('[data-cy=adrList]').contains('ResearchProject').should('have.length', 0);
 
