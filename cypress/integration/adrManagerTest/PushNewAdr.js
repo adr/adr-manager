@@ -39,7 +39,7 @@ context("Test commit and push file --> delete file in repo (push)", () => {
 
        // Add new file
        cy.get('[data-cy=NewAdrFile]').click({force: true});
-       cy.contains('0000-*').click();
+       cy.contains('0001-*').click();
        cy.get('[data-cy=pushIcon]').click();
        
        // Check dialog commit & push
