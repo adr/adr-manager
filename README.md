@@ -14,7 +14,7 @@ The tool only supports management of ADRs stored in the folder `docs/adr` in Git
 
 ## Quick start
 
-You can find the tool at https://koppor.github.io/adr-manager.
+You can find the tool at https://adr.github.io/adr-manager.
 
 ## Supported browsers
 
@@ -125,3 +125,4 @@ It was also submitted to the [ICSE Score Contest 2021](https://conf.researchr.or
 2021-03-01 Final Submission for ICSE Score 2021 <br>
 2021-03 Analysis of the User Study and bug fixes <br>
 2021-04-16 Submission deadline for the research project at the University of Stuttgart
+2021-05-25 ICSE Score 2021 Final Presentation
