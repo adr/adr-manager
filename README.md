@@ -124,5 +124,5 @@ It was also submitted to the [ICSE Score Contest 2021](https://conf.researchr.or
 2021-02 User Study to gather feedback <br>
 2021-03-01 Final Submission for ICSE Score 2021 <br>
 2021-03 Analysis of the User Study and bug fixes <br>
-2021-04-16 Submission deadline for the research project at the University of Stuttgart
+2021-04-16 Submission deadline for the research project at the University of Stuttgart <br>
 2021-05-25 ICSE Score 2021 Final Presentation
