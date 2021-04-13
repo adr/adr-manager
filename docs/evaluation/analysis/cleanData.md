@@ -23,7 +23,7 @@
   * Easy: Implementing a field for resubmission date (Participant ID: 7) 
   * Easy: Selecting multiple options (Participant ID: 2)
   * Easy: Weighting "Decision Drivers" and pros/cons with stars (Participant ID: 1)
-* Editing
+* Editor Usability
   * Hard: Supporting graphics and images (Participant ID: 3, 4, 6, 7, 8)
   * Medium: Implementing undo function (Participant ID: 8)
   * Medium: Spelling correction would be very helpful (Participant ID: 8)
@@ -34,7 +34,7 @@
 * Management
   * Medium: Generating automatically a concise report as pretty presentation (Participant ID: 2)
   * Medium: Searching for "Decisions" as well as within "Decisions" (Participant ID: 4)
-  * Easy: Implementing a field for vote (Participant ID: 7, 9)
+  * Easy: Implement a voting function for "Decision Outcome" (Participant ID: 7, 9)
   * Easy: Importing existing ADRs (Participant ID: 2)
   * Easy: Resetting content of a single file and repository (Participant ID: 8)
 * Support for different Workflows
