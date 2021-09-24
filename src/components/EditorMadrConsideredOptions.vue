@@ -6,7 +6,7 @@
         <HelpIcon v-if="mode === 'basic'">
           List all considered options. <br>
 
-          Only write a concise description. You can add a more detailed description in Advanced or Professional mode. 
+          Only write a concise description. You can add a more detailed description in Professional mode. 
         </HelpIcon>
         <HelpIcon v-else>
           List all considered options. <br>
@@ -20,8 +20,8 @@
         <span class="flex-grow-1 align-self-center my-0 py-0">
           Some options have a more detailed description that is not displayed in Basic Mode.
         </span>
-        <v-btn class="justify-self-end align-self-end my-0 py-0" @click="switchToAdvancedMode()">
-          Switch to Advanced Mode
+        <v-btn class="justify-self-end align-self-end my-0 py-0" @click="switchToProfessionalMode()">
+          Switch to Professional Mode
         </v-btn>
       </div>
     </v-alert>
@@ -84,7 +84,7 @@
       </v-list-item>
     </v-list>
 
-    <!-- Advanced and professional mode -->
+    <!-- Professional mode -->
     <v-card data-cy="consOptPro" v-else flat>
 
       <div v-for="(item, i) in adr.consideredOptions" :key="item.id">
@@ -359,8 +359,8 @@
         return this.adr.decisionOutcome.chosenOption === option.title && this.adr.decisionOutcome.chosenOption !== '';
       },
 
-      switchToAdvancedMode() {
-        store.setMode('advanced');
+      switchToProfessionalMode() {
+        store.setMode('professional');
       },
 
       htmlOf(value) {

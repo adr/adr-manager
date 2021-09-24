@@ -134,11 +134,6 @@
               return true;
             }
             break;
-          case 'advanced':
-            if (requiredMode === 'professional') {
-              return true;
-            }
-            break;
         }
         return false;
       }
@@ -164,14 +159,7 @@
         if (adr.decisionDrivers.length > 0
           || adr.links > 0) {
           return 'professional'
-        } else if (
-          adr.technicalStory.trim().length > 0
-          || adr.consideredOptions.some((opt) => (opt.description.length > 0 || opt.pros.length > 0 || opt.cons.length > 0))
-          || adr.decisionOutcome.positiveConsequences.length > 0
-          || adr.decisionOutcome.negativeConsequences.length > 0
-        ) {
-          return 'advanced';
-        } else {
+        }  else {
           return 'basic';
         }
       },

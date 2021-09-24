@@ -29,7 +29,6 @@
       tab: 0,
       modes: [
         { name: 'basic', tooltip: 'Only show required fields.' },
-        { name: 'advanced', tooltip: 'Show advanced fields.' },
         { name: 'professional', tooltip: 'Show all fields.' }
       ]
     }),

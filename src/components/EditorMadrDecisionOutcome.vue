@@ -7,7 +7,7 @@
         <HelpIcon>
           Select the option that you chose to use.
           <div v-if="mode === 'basic'">
-            Note that you can add consequences in Advanced and Professional mode.
+            Note that you can add consequences in Professional mode.
           </div>
         </HelpIcon>
       </v-row>

@@ -268,6 +268,7 @@
         console.log('Logging out!');
         //localStorage.removeItem('authId');
         localStorage.clear();
+        store.setMode('basic');
         this.$router.push('/');
       },
       logNotImplemented() {
