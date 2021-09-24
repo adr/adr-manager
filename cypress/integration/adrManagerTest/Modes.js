@@ -38,7 +38,6 @@ context("Test modes", () => {
         cy.get('[data-cy=newADR]').click();
 
         // Clicks through modes
-        cy.contains(' advanced ').click();
         cy.contains(' professional ').click();
 
         // Select status
