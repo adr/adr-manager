@@ -1,0 +1,132 @@
+﻿ID,Improving of Functionality,Needed Functionality,Understandability of User Interface,Efficiency of User Interface,Most often used Mode,Switching between Modes,Functional Suitability is fitting for its purpose,Usability allows its convenient Usage,Likely to Use the Tool,Additional Comments,Think-Aloud Protocol
+1,Connection to GitHub was easy.,Hard: A plugin in the IDE would be better, as it wouldn't require a context switch and it would fit better to the participant's workflow.,"Negative: UI is confusing as there are too few labels. Possible improvements:
+   - Labels for all test fields
+   - Explanations, e.g., through explanations on hover
+   - maybe wizard for guidance",Negative: Pure markdown may be faster.,"depends on the decision to be documented
+   - Smaller decisions can be documented in Basic mode.
+   - Most architectural decisions are complex enough that Professional mode is required. Particularly, the rationale behind the decision, e.g. decision drivers, are important to capture.",maybe,4,3,2,Learnability (1), Aesthetics (4 or 5),Observation: No problems while connecting to GitHub, adding a repository and creating an ADR.
+,Needed functionality is there.,Easy, Using free text with syntax highlighting and feedback for completeness would be better.,Positive: Good: interactive and modern,Negative: IDE plugin would be better.,,,,,They would use the tool if it was a plugin for Visual Studio Code. They would maybe use the tool in meetings.,Participant: Title field is confusing, as the field does not have a label.
+,,Easy: (Template) feature suggestion: Weighting decision drivers and pros/cons with stars to see which ones are more important.,,Positive: The web application may be prettier in meetings.,,,,,,,Observation: Participant switches to Professional mode.
+,,,,,,,,,,,Participant: In general, there should be more labels and explanations for the fields.
+,,,,,,,,,,,Observation: Participant fills in Decision Drivers.
+,,,,,,,,,,,"Observation: While filling in the Considered Options, participant does not see how to add the second option. 
+-Note: The problem may be that the first option expanded automatically and thus there were many fields. After collapsing the option, the participant understood that the last field is for the next option."
+,,,,,,,,,,,Observation: Participant fills in the fields in Decision Outcome.
+,,,,,,,,,,,Observation: Participant notices that branch selection is bugged.
+,,,,,,,,,,," Interference: Organizers show where the Commit and Push button is, because the participant does not find it.
+- Participant: Commit and Push icon is confusing."
+,,,,,,,,,,,
+2,Good: Every part of Y-Statements exists in MADR.,"Easy: sometimes it's not XOR of options
+   - Support for changes over time: Sometimes one option is chosen as fast solution but another option is planned be implemented later.
+   - Combinations of options",Positive: very well understandable, not too much and not too less.,Positive: Good in the example of this study.,Basic and Professional,Yes.,4,5,5,Participant is likely to try out the tool, but unsure whether in long term.,Observation: No problems while connecting to GitHub and adding the repository.
+,It should also be possible to document changes over time.,Medium: Offline Mode (often documentation is done offline without internet),,Negative: Copy-paste (particularly in lists) may be annoying over time.,,,,,,,Participant: Since the New ADR button is so big, it could be labeled new architectural decision record.
+,,Easy: Import of existing ADRs.,,Negative: Visual Studio Code Plugin may be better.,,,,,,,Observation: Participant copy-pastes option titles and understands that they need to put each option in a different line.
+,,"Medium: Automatic generation of a concise report as pretty presentation, e.g., Y-Statements can be put on one slide.
+
+   - e.g. using PowerPoint or a white board like Miro",,,,,,,,,Participant: Participant is unsure if they should save the ADR or whether it is auto-saved.
+,,,,,,,,,,,Interference: Organizers inform about modes.
+,,,,,,,,,,,Participant: Basic, Advanced, Professional should have a small explanation, maybe label it with Usage Mode: .
+,,,,,,,,,,,Participant: Participant copy-pastes consequences (i.e. list in one field).
+,,,,,,,,,,,"Observation: After going to the Preview tab and back, they land in Convert-Tab. This tab was confusing. Participant did not immediately understand what to do there. Particularly, they did not know what is meant by ""MADR-Editor""."
+,,,,,,,,,,,Participant: Difference between Advanced and Professional mode seems too small.
+,,,,,,,,,,,"Participant: Participant didn't find that they could expand options in Professional mode on their own, but they liked UI-Concept of modes.
+-Expanding the option when clicking on pencil would be more intuitive."
+,,,,,,,,,,,Observation: No problems while pushing to GitHub.
+,,,,,,,,,,,Participant: The Commit and Push icon may be confusing.
+,,,,,,,,,,,
+3,Given functions of the tool work well.,Hard: Support for including graphics and images.,Negative: Modes were confusing. It was hard to understand that they were related to the editor.,Positive: Good, the UI is fast and clearly structured.,The participant would prefer to customize which fields are visible, e.g., they would use Links (from Professional mode) but not Technical Story (from Advanced mode). Ideally, all headings should be visible but collapsible.,Maybe,5,4,3,Functional completeness (5), Functional Correctness (5), Functional Appropriateness (4),Observation: No problems while connecting to GitHub, adding a repository and creating an ADR.
+,The text field for deciders was confusing. It should be like lists.,Medium: GitHub as host is great for the participant but their colleagues would require GitLab.,Negative: More explanations for each sections would be helpful, e.g., a question mark next to title which shows an explanation on hover.,,,,,,,Learnability (3), Operability (5), User Interface Aesthetics (4),Observation: No problems while filling in title, options and selecting the chosen option.
+,,If the participant wanted to capture ADRs in teams, they would use the tool, because it gives an external structure.,Negative: List items should have a dot at the start to show that it's a list.,,,,,,,Very dependent on the other members of a team.,Participant: The default text (see below) of the because field in Decision Outcome is confusing.
+,,,Negative: Multi-line text fields (like Context and Problem Statement) should be bigger.,,,,,,,,Interference: Organizers inform participant about modes.
+,,,Negative: In the Convert tab, it's confusing what to do when one does not want to accept. Maybe a button saying Cancel or Let me edit it could be added that redirects to Raw Markdown tab.,,,,,,,,"Participant: Participant is unsure what the fields Deciders, Technical Story and Decision Drivers are for. Particularly:
+-Should the Deciders field contain all deciders or just the recorder of the meeting?
+-What is the difference between Technical Story and Context and Problem Statement?"
+,,,"Negative: Would a short tutorial at the start be helpful?
+
+   - A tutorial may overdo it, but a short motivational text, which explains what ADRs are for, would be helpful.",,,,,,,,Observation: Participant finds possibility to expand option (by accident).
+,,,,,,,,,,,Participant: Preview of the formatted markdown is good.
+,,,,,,,,,,,Observation: No problems while pushing to GitHub.
+,,,,,,,,,,,
+4,"Modes were confusing: When to use each mode?
+   - It seems like you can always use Professional mode.
+   - Does not see the advantages of the different modes. 
+   - Having fields that are only visible in one mode was confusing.",Medium: Search for decisions as well as within decisions,Positive: User interface is easy to understand,Positive: If you know the workflow, the interface is good to use.,Professional mode,Currently, participant would use basic mode for quick drafts, because the options expand automatically in advanced and professional mode.,4,4,3,Strongly depends on client. As consultant, the participant may propose the tool to the client.,Observation: No problems while connecting to GitHub, adding a repository and creating an ADR.
+,Support for Copy-Paste in Lists.,"Hard: Linking decisions to other decisions
+   - e.g. one decision often dependents on others or is followed up by others",Negative: Having the Commit and Push button directly next to the Remove repository button may be dangerous.,,,"However, with a few changes, the participant would only use the professional mode:
+   - Default expansion of new option items slows down writing progress. If the considered options did not expand automatically in professional mode (description and pros and cons), there would be no need for basic mode.
+   - The advanced mode would not be needed, since the links and the decision drivers do not take up so much space.",,,,,Observation: Participant overlooks the field for the title and fills in other information first.
+,As a professional tool, it would need auto completion for decision makers.,"Hard: Including graphics
+   - Either by pushing image file to GitHub and linking it in Markdown or using rich text to ""write"" graphics.",Negative: Modes were confusing at first, but once you know the differences they are understandable.,,,,,,,,Observation: Participant first puts all options in one options field. Then gets confused when the Chosen option dropdown only shows it as one option.
+,,,Negative: The Title field was confusing at first. It should have a label like the other fields.,,,,,,,,Interference: Organizers inform about different fields in considered options list.
+,,,,,,,,,,,Observation: Participant gets confused by default text of the because field of Decision Outcome.
+,,,,,,,,,,,Interference: Organizers inform about different modes. Participant switches to advanced mode.
+,,,,,,,,,,,Observation: Participant gets confused by the name 0000-.md of the file in the Commit and Push Dialog, then notices the title field of the MADR and fills it in.
+,,,,,,,,,,,Interference: Organizers inform about expandability of considered options, calendar function, status and deciders in Advanced mode.
+,,,,,,,,,,,"Observation: Icon of deciders confuses participant.
+-They expected it to behave like the lists, i.e., that a new text field appears for additional deciders"
+,,,,,,,,,,,Observation: There were no problems while committing and pushing (upload sign for push is clear).
+,,,,,,,,,,,
+5,They liked that the interface was very simple and did not have too many functions.,Completeness: Support for referencing an ADR in a commit and showing the related commits when displaying the ADR.,Negative:  When there appears a new text field for lists, then it should do so for Deciders too.,Positive: Very well,Basic mode for quick drafting and Professional for more detailed ADRs.,Most likely yes,4,4,5,Missing deprecation of ADRs.,There were technical problems when using the browser Safari, so the participant uses Chrome instead.
+,,"Medium: Support for superseding/ deprecation of ADRs and navigating from one ADR to another.
+   - partially satisfied by Status field, but misses possibility to reference other ADRs.",Positive: The modes are nice, because they allow to start with quickly sketching an ADR and then writing more details. However, they miss the workflow to use them naturally.,Positive: It's nice that the user does not have to take care of the Markdown.,They most likely would not need Advanced mode.,,,,,Tab key for navigating between text fields would be nice.,Observation: No problems while connecting to GitHub, adding a repository and creating a new ADR.
+,,,Negative: Mini-How-to for modes would help.,,,,,,,Only if the tool supports GitLab.,Observation: Participant tries to fill in full descriptions, pros and cons of the options as Markdown in Basic mode (where the UI only expects option titles).
+,,,,,,,,,,,Observation: After switching to Raw Markdown-Tab and back the content is lost.
+,,,,,,,,,,,Interference: Organizers inform them about different modes.
+,,,,,,,,,,,Observation: Participant switches to Professional mode.
+,,,,,,,,,,,Observation: Participant understands UI concept of options (only) after they filled in a new option title in Professional mode and it automatically expanded.
+,,,,,,,,,,,"Participant: Participant does like ""automatic"" lists."
+,,,,,,,,,,,"Participant: Icon of deciders confused participant.
+-They expected it to behave like the lists, i.e., that a new text field appears for additional deciders."
+,,,,,,,,,,,
+6,It was not intuitive that you don't have to write Markdown in basic mode.,Hard: Graphics for architecture diagrams, e.g., pictures in the repository.,Negative: Basic and advanced mode were confusing at the start.,Positive: Efficient to use. The drag and drop in the considered options supports this.,The participant would directly take the mode that can do the most, since a meeting usually contains all the information that is being requested there.,No.,5,4,3,Missing graphics for completeness,Observation: No problems while connecting to GitHub, adding a repository and creating an ADR.
+,,"Easy: Status tracking
+   - Who made the first proposal?
+   - What changes were made, when was the individual status changed?
+   - Who accepted it?",Negative: Considered option fields were confusing.,It was intuitively usable.,,,,,,If it was integrated in Azure DevOps, then yes, else no.,Observation: Participant tries to fill in Markdown into option fields in basic mode only at the beginning.
+,,,Negative: Differences between advanced and professional were not clear. Professional would be enough.,,,,,,,,Observation: Participant tries to enter advantages and disadvantages into a considered options field in basic mode.
+,,,Negative: Deciders were not directly clear what was meant by this.,,,,,,,,Interference: Organizers inform them about modes.
+,,,,,,,,,,,Observation: All fields, except for the deciders (It was not exactly clear what must be entered), are filled in without further instructions.
+,,,,,,,,,,,Observation: Date and status are filled in at the end.
+,,,,,,,,,,,Observation: No problems while pushing to GitHub.
+,,,,,,,,,,,
+7,All functions worked well and do not need to be improved. Only UI points and additional functionalities were mentioned.,Easy: Field for vote.,"Negative: Did not see modes at all in the beginning.
+   - Possible solution: Wizard for selecting a mode, when opening the tool and creating the ADR.",Neutral: Good except for a few small starting problems that were clear after the first use (modes, expandable options, push button). Efficiency is okay.,"Basic mode to record the info shortly after the meeting. Professional to elaborate everything.
+Would you switch between modes?",Yes.,3,3,4,If it supports BitBucket.,"Technical problem while connecting to GitHub: very long loading time and repositories did not load (possibly the Internet connection?).
+-After disconnecting and connecting again, there was no problems while adding a repository anymore."
+,,Hard: Including graphics or a picture of a whiteboard.,Negative: Save button should be bottom right or green and bigger.,,,,,,,,Participant: Participant gets confused by default text of the because field of Decision Outcome.
+,,Easy: Resubmission date.,Positive:  Workflow was intuitive. ,,,,,,,,Interference: Organizers inform about different modes. Participant switches to professional mode.
+,,Easy: Include opinions of deciders and who was responsible.,,,,,,,,,Observation: Participant tries to enter several advantages and disadvantages in one field at the decision outcome.
+,,,,,,,,,,,Observation: Deciders are not directly clear.
+,,,,,,,,,,,Observation: The title, the date and the status are filled in at the end.
+,,,,,,,,,,,Observation: The participant does not find the possibility to expand considered options.
+,,,,,,,,,,,Observation: The Commit and Push button was not found directly. Participant: The Commit and Push button could be highlighted more.
+,,,,,,,,,,,Observation: Push dialog was understandable.
+,,,,,,,,,,,Bug when putting a / in the title field (Has already been fixed)
+,,,,,,,,,,,
+8,Needed functionality is there.,Hard: Include or link graphics in Markdown.,Positive: Sufficiently well,Negative: Not really efficient, the participant will prefer to write pure Markdown with Emacs.,Professional mode, because it is simple enough.,No, the Professional mode is enough.,4,4,1,Functional Completeness (4), Functional Correctness (4), Functional Appropriateness (4),There were technical problems while connecting to GitHub. This was due to a no script plugin, as Heroku requires JavaScript.
+,Additional free text field (if it doesn't break concept of ADRs).,Easy: Reset content of a single file and repository.,Negative: For new users, more explanations in the UI would be helpful, e.g., through explanations on hover, and modes should be explained.,,,,,,,Learnability (4), Operability (4), Aesthetics (3),Participant: Confusion when adding a repository. Where should the repository be taken from? Local?
+,"Convert should give clearer information that content is lost.
+   - Raw Markdown mode seems like you can write whatever you want but it is lost when switching to Editor. -> very frustrating",Easy: Option to determine who edited the ADR and when. List of people who have said what.,Negative: Deletion of options should give a warning.,,,,,,,Templates are dynamic and the used tools depend on the team but, in general, the tool could be used in this field.,Observation: Participant creates an ADR.
+,,Medium: Undo function,,,,,,,,,Participant: Spelling correction would be very helpful.
+,,Hard: Function to see what has been changed and the changes between different versions. Show Git History of the ADRs.,,,,,,,,,Observation: Participant fills in the fields in Considered Options.
+,,,,,,,,,,,Observation: Participant fills in the fields in Decision Outcome.
+,,,,,,,,,,,Interference: Organizers inform about modes, because the participant believes they are done with filling in the ADR.
+,,,,,,,,,,,Observation: Participant fills in the fields in Positive Consequences.
+,,,,,,,,,,,Observation: Participant fills in the fields in Negative Consequences.
+,,,,,,,,,,,Observation: Participant fills in the fields in Decision Drivers.
+,,,,,,,,,,,Observation: Participant switches to Raw Markdown.
+,,,,,,,,,,,Interference: With the help of the supervisor, the participant can find the additional fields in Considered Options.
+,,,,,,,,,,,Observation: Participant fills in the fields in Good, because... and Bad, because....
+,,,,,,,,,,,Observation: Participant commits and push's the ADR.
+,,,,,,,,,,,
+9,Needed functionality is there.,Easy: Voting Tool: In practice, the participant's team often votes on which option is chosen. Thus, the participant suggests to add a link to an online voting tool or integrate one.,Positive: Understandable, because participant knew the template. Otherwise, they may have needed more explanations of text fields.,Positive: The tool is pretty efficiently usable.,Professional mode.,No.,5,3,3,Difference between Advanced and Professional mode was not clear.,Observation: No problems while connecting to GitHub, adding a repository and creating a new ADR.
+,,,Negative: Commit and Push button was hard to find.,Negative: Raw markdown may be easier.,,,,,,In practice, the participant can't use the tool because they use Confluence. If they used GitHub and MADR, they would use the tool.,Observation: Participant copy-pastes options including pros and cons. They try to use markdown syntax in the Considered Options field.
+,,,Negative: It was not clear that, when pressing the Accept button in the Convert tab, information (that does not respect the format of MADR) is deleted.,Positive: Having a structure is nice.,,,,,,,Interference: Organizers inform about modes.
+,,,,,,,,,,,Observation: Participant fills in the Deciders.
+,,,,,,,,,,,Participant: Participant is unsure, what exactly the Technical Story is for. They guess that it refers to a issue-tracking system.
+,,,,,,,,,,,Observation: Participant fills in the Positive Consequences.
+,,,,,,,,,,,Observation: Participant fills in the Negative Consequences.
+,,,,,,,,,,,Observation: Participant fills in the Decision Outcome.
+,,,,,,,,,,,Observation: Participant is not sure, if the information is saved.
+,,,,,,,,,,,Observation: Participant tries to switch branch, but it is bugged. Interference: Organizers point out that it is bugged.
+,,,,,,,,,,,Observation: Commit and Push button is not easy to find.
