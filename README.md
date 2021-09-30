@@ -57,6 +57,21 @@ To run the project locally, follow these steps:
 
 Note that, even when you run it locally, you need to connect to GitHub to use any functionality.
 
+### Using End-2-End Tests Locally
+
+We use [Cypress](https://www.cypress.io/) for e2e testing.
+The CI pipeline provides the necessary Pizzly `authId` as an ENV variable.
+Locally, however, you'll need to provide one yourself.
+For this, create a `cypress.env.json` file and fill it with the following content:
+
+```json
+{
+  "PIZZLY_E2E_AUTH_ID": "*********"
+}
+```
+The value of `PIZZLY_E2E_AUTH_ID` needs to be a valid `authId` from an active Pizzly session, which you can obtain via the Pizzly dashboard (see below).
+The involved GitHub account also needs to have developer access to this repo (`adr/adr-manager`).
+
 ### Useful Commands
 
 The following commands are useful for development:
