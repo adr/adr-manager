@@ -29,6 +29,8 @@ jobs:
         run: npm run test
 
       - name: Run Cypress tests
+        env:
+          PIZZLY_E2E_AUTH_ID: ${{ secrets.PIZZLY_E2E_AUTH_ID }}
         run: |
           npm run serve &
           npm run tests:chrome
