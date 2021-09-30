@@ -1,7 +1,8 @@
 <template>
   <v-card class="text-left overflow-y-auto" height="100%">
-    <codemirror data-cy="markdownText" v-model="rawMd" @input="update" :options="cmOptions" ref="cm" v-observe-visibility="visibilityChanged">
+    <codemirror data-cy="markdownText" v-model="rawMd" @input="update" @cursorActivity="dragMethod" :options="cmOptions" ref="cm" v-observe-visibility="visibilityChanged">
     </codemirror>
+    
   </v-card>
 </template>
 
@@ -31,9 +32,10 @@
           connect: 'align',
           lineWrapping: true,
           mode: 'text/x-markdown',
-          lineNumbers: true
+          lineNumbers: true,
         },
-        rawMd: this.value
+        rawMd: this.value,
+        controlDragDrop: true
       }
     },
     computed: {
@@ -56,7 +58,26 @@
         if (isVisible) {
           this.codemirror.refresh()
         }
-      }
+      },
+      dragMethod(cm) {
+        cm.on("drop", (data, e) => {
+        var file;
+        var files;
+        var name;
+        // Check if files were dropped
+        files = e.dataTransfer.files;
+        if (files.length > 0 && this.controlDragDrop) {
+          e.preventDefault();
+          e.stopPropagation();
+          file = files[0];
+          name = file.name.replace(/\.[^/.]+$/, "");
+          this.rawMd += '![' + name +']('+ file.name + ')';
+          this.controlDragDrop = false;
+          return false;
+        }});
+        this.controlDragDrop = true;
+        
+    },
     }
   }
 </script>
