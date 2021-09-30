@@ -1,9 +1,17 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: General cypress report
+name: Unit tests and e2e tests
 
-on: [push] 
+on:
+  push:
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+      - "LICENSE"
+      - ".editorconfig"
+      - ".eslintignore"
+      - ".gitignore"
 
 jobs:
   cypress-tests:
@@ -14,16 +22,15 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install cypress and verify
-        run:  
-          npm ci
+        run: npm ci
           $(npm bin)/cypress verify
-        
+
       - name: Run Cypress tests
-        run: | 
-              npm run serve &
-              npm run tests:chrome 
+        run: |
+          npm run serve &
+          npm run tests:chrome
 
         continue-on-error: false
-      
+
       - name: Run unit tests
-        run:  npm run test
+        run: npm run test
