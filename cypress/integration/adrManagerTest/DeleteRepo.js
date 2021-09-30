@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
-context("Test delete repository function", () => {
-    it("Should delete a repo", () => {
+context("Delete repository", () => {
+    it("Remove a repo", () => {
         window.localStorage.clear();
         window.localStorage.setItem(
             "authId",
@@ -9,7 +9,7 @@ context("Test delete repository function", () => {
         );
         cy.visit("http://localhost:8080/#/manager");
 
-        // Add repo
+        // add ADR Manager repo
         cy.intercept("GET", "**/user/repos**").as("getRepos");
         cy.get("[data-cy=addRepo]").click();
         cy.wait("@getRepos")
@@ -17,12 +17,12 @@ context("Test delete repository function", () => {
             .should("eq", 200);
 
         cy.get("[data-cy=listRepo]")
-            .contains("ResearchProject")
+            .contains("ADR-Manager")
             .click();
         cy.get("[data-cy=addRepoDialog]").click();
         cy.get("[data-cy=repoNameList]").click();
 
-        // Delete repo
+        // delete repo
         cy.get("[data-cy=removeRepo]").click();
         cy.get("[data-cy=removeRepoBtn]").click();
         cy.get("[data-cy=listRepo]").should("have.length", 0);
