@@ -6,12 +6,12 @@ on:
       - main
       - publish
     paths-ignore:
-      - "docs/**"
-      - "README.md"
-      - "LICENSE"
-      - ".editorconfig"
-      - ".eslintignore"
-      - ".gitignore"
+      - "**/docs/**"
+      - "**/README.md"
+      - "**/LICENSE"
+      - "**/.editorconfig"
+      - "**/.eslintignore"
+      - "**/.gitignore"
 
 jobs:
   publish:
