@@ -6,12 +6,12 @@ name: Unit tests and e2e tests
 on:
   push:
     paths-ignore:
-      - "docs/**"
-      - "README.md"
-      - "LICENSE"
-      - ".editorconfig"
-      - ".eslintignore"
-      - ".gitignore"
+      - "**/docs/**"
+      - "**/README.md"
+      - "**/LICENSE"
+      - "**/.editorconfig"
+      - "**/.eslintignore"
+      - "**/.gitignore"
 
 jobs:
   cypress-tests:
@@ -25,12 +25,11 @@ jobs:
         run: npm ci
           $(npm bin)/cypress verify
 
+      - name: Run unit tests
+        run: npm run test
+
       - name: Run Cypress tests
         run: |
           npm run serve &
           npm run tests:chrome
-
         continue-on-error: false
-
-      - name: Run unit tests
-        run: npm run test
