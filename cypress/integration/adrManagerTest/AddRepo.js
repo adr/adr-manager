@@ -47,31 +47,4 @@ context("Listing and adding repositories", () => {
                 .should("have.length", listingCount);
         });
     });
-
-    it("Add three repositories", () => {
-        cy.get("[data-cy=listRepo]").should("have.length.greaterThan", 2);
-
-        cy.get("[data-cy=listRepo]")
-            .eq(0)
-            .click();
-        cy.get("[data-cy=listRepo]")
-            .eq(0)
-            .click();
-        cy.get("[data-cy=listRepo]")
-            .eq(0)
-            .click();
-
-        cy.get("[data-cy=addRepoDialog]").click();
-        cy.intercept("GET", "**/repos**").as("showRepos");
-        cy.wait("@showRepos", { timeout: 10000 });
-
-        cy.get("[data-cy=repoNameList]")
-            .children()
-            .should("have.length", 3);
-        cy.get("[data-cy=repoNameList]").click();
-
-        cy.get("[data-cy=adrList]")
-            .contains("ResearchProject")
-            .should("have.length", 0);
-    });
 });
