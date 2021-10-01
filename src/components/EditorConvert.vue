@@ -1,5 +1,5 @@
 ﻿<template>
-  <v-card fluid class="editor text-left d-flex flex-column px-0 pb-2" id="editor-madr" style="height: 100%">
+  <v-card fluid class="editor text-left d-flex flex-column px-0 pb-2" id="editor-madr" style="height: 100%" data-cy="convertEditor">
     <v-card-title> Sorry, we have parsing trouble. </v-card-title>
     <div>
       If you want to use the MADR-Editor, our parser will generate the markdown on the right-hand side.
