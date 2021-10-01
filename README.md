@@ -71,6 +71,7 @@ For this, create a `cypress.env.json` file and fill it with the following conten
 ```
 The value of `PIZZLY_E2E_AUTH_ID` needs to be a valid `authId` from an active Pizzly session, which you can obtain via the Pizzly dashboard (see below).
 The involved GitHub account also needs to have developer access to this repo (`adr/adr-manager`).
+Lastly, don't forget to start the app before running the e2e tests (`npm run serve`).
 
 ### Useful Commands
 

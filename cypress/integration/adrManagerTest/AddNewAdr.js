@@ -20,21 +20,7 @@ context("Adding a new ADR to a repo", () => {
             .click();
         cy.get("[data-cy=addRepoDialog]").click();
 
-        // if the repository is not expanded automatically, click on it.
-        cy.get("body").then($body => {
-            if ($body.find("[data-cy=newADR]").length > 0) {
-                // if button exists at all
-                cy.get("[data-cy=newADR]").then($header => {
-                    if (!$header.is(":visible")) {
-                        // if button is INVISIBLE
-                        cy.get("[data-cy=repoNameList]").click();
-                    }
-                });
-            } else {
-                // if the button DOESN'T EXIST
-                cy.get("[data-cy=repoNameList]").click();
-            }
-        });
+        cy.get("[data-cy=repoNameList]").click();
 
         cy.get("[data-cy=adrList]").then(adrList => {
             // get number of ADRs in repo
@@ -53,11 +39,11 @@ context("Adding a new ADR to a repo", () => {
             cy.get("[data-cy=titleAdr]").click();
             cy.get("[data-cy=titleAdr]").type("TestTitle");
 
-            // Add context to new ADR
+            // add context to new ADR
             cy.get("[data-cy=contextAdr]").click();
             cy.get("[data-cy=contextAdr]").type("ContextAdr");
 
-            // add cons. opt. text to new ADR and test the add btn
+            // add considered options text to new ADR and test the add btn
             cy.get("[data-cy=considerOptTextAdr]")
                 .children()
                 .eq(1)

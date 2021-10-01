@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 
-context("Delete repository", () => {
+context("Deleting repositories", () => {
     it("Remove a repo", () => {
         window.localStorage.clear();
         window.localStorage.setItem(
