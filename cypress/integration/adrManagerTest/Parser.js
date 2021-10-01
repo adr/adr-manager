@@ -1,46 +1,65 @@
 /* eslint-disable no-undef */
-import { authId } from "./constants.js"
 
-context("Test parser function", () => {
-    it('Should test the convert tab', () => {
+context("Using Markdown modes", () => {
+    it("Convert raw Markdown", () => {
         window.localStorage.clear();
-        window.localStorage.setItem("authId", authId);
+        window.localStorage.setItem(
+            "authId",
+            Cypress.env("PIZZLY_E2E_AUTH_ID")
+        );
         cy.visit("http://localhost:8080/#/manager");
 
-        // Add repo
-        cy.intercept('GET', '**/user/repos**').as('getRepos');
-        cy.get('[data-cy=addRepo]').click();
-        cy.wait('@getRepos').its('response.statusCode').should('eq', 200);
-        
-        cy.get('[data-cy=listRepo]').should('have.length', 5).eq(0).click();
-        cy.get('[data-cy=addRepoDialog]').click();
-        cy.intercept('GET', '**/repos**').as('showRepos');
-        cy.wait('@showRepos', {timeout: 10000});
-        
-        // If the repository is not expanded automatically, click on it.
-        cy.get("body").then($body => {
-            if ($body.find("[data-cy=newADR]").length > 0) {
-                //if button exists at all
-                cy.get("[data-cy=newADR]").then($header => {
-                    if (!$header.is(':visible')) {
-                        //if button is INVISIBLE
-                        cy.get('[data-cy=repoNameList]').click();
-                    }
-                });
-            } else {
-                //if the button DOESN'T EXIST
-                cy.get('[data-cy=repoNameList]').click();
-            }
-        });
+        // add repo
+        cy.intercept("GET", "**/user/repos**").as("getRepos");
+        cy.get("[data-cy=addRepo]").click();
+        cy.wait("@getRepos")
+            .its("response.statusCode")
+            .should("eq", 200);
+        cy.get("[data-cy=listRepo]")
+            .should("have.length.greaterThan", 0)
+            .eq(0)
+            .click();
+        cy.get("[data-cy=addRepoDialog]").click();
+        cy.intercept("GET", "**/repos**").as("showRepos");
+        cy.wait("@showRepos", { timeout: 10000 });
 
-        // One adr in list
-        cy.get('[data-cy=newADR]').click();
-        
-        cy.contains(' Markdown Preview ').click();
-        cy.contains(' Raw Markdown ').click();
-        cy.get('[data-cy=markdownText]').click().type("# ADR-Manager   ## Project setup   ```  npm install   ### Compiles and hot-reloads for development ```   npm run serve ``` ### Compiles and minifies for production ```  npm run build # ADR Manager Research Project > All artefacts related to a research project from the University of Stuttgart to propose a tool-supported approach for the efficient creation and management"
-        + " of [architectural decision records (ADRs)](https://adr.github.io) via a graphical user interface (GUI)"
+        // add a new ADR
+        cy.get("[data-cy=repoNameList]").click();
+        cy.get("[data-cy=newADR]").click();
+
+        // switch to raw Markdown mode
+        cy.contains(" Raw Markdown ").click();
+        // clear existing Markdown in new ADR
+        cy.get("[data-cy=markdownText]")
+            .click()
+            .type("{ctrl+a}{del}");
+        // input Markdown that doesn't correspond to the MADR template
+        cy.get("[data-cy=markdownText]")
+            .click()
+            .type(
+                "# ADR-Manager Test\n> All artefacts related to a research project to propose a tool-supported approach for the efficient creation and management of [architectural decision records (ADRs)](https://adr.github.io) via a graphical user interface (GUI)\n## Developer Instructions"
+            );
+        // navigate to conversion view
+        cy.contains(" Convert ").click();
+        // check for some required UI elements
+        cy.get("[data-cy=convertEditor]").should($editor => {
+            expect($editor).to.contain(
+                "https://github.com/adr/madr/blob/master/template/template.md"
+            );
+            expect($editor).to.contain("Your ADR");
+            expect($editor).to.contain("Result");
+        });
+        // accept the conversion
+        cy.get("[data-cy=acceptDiv]").click();
+
+        // check title
+        cy.get("[data-cy=titleAdr]").should("have.value", "ADR-Manager Test");
+        // switch to Markdown preview mode
+        cy.contains(" Markdown Preview ").click();
+        // check title
+        cy.get("[data-cy=markdownPreview]").should(
+            "contain",
+            "ADR-Manager Test"
         );
-        cy.contains(' Convert ').click();
     });
-})
+});
