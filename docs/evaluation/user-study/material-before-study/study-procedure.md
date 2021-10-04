@@ -15,7 +15,7 @@ Provided by participants:
 Provided by the organizers during the study:
 
 * Small explanation and task list
-* Access to GitHub through a test-account
+* Access to GitHub through a test account
 * A meeting summary with an architecture decision
 
 ## Study Procedure
@@ -24,6 +24,6 @@ Provided by the organizers during the study:
 * The organizers will record the shared screen and the audio.
 * The participant is given the login data for a test GitHub account.
 * The participant is given a meeting summary.
-* Next, the participant will do the tasks of the task list.
-* The participant thinks aloud while performing the tasks.
+* Next, the participant will work on the task list.
+* The participant talks about their thought process while performing the tasks.
 * After the think-aloud protocol, there will be an interview.
