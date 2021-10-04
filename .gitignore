@@ -31,6 +31,9 @@ coverage
 # Bower dependency directory (https://bower.io/)
 bower_components
 
+# cypress
+cypress.env.json
+
 # node-waf configuration
 .lock-wscript
 
