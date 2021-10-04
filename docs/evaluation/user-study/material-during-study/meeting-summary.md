@@ -5,11 +5,11 @@
 
 
 | **name**        | **present** |
-| --------------- | ------------ |
-| Anna Mustermann | yes           |
-| Bob Musterfrau  | yes           |
-| Marco Mayer     | yes          |
-| Matt Müller     | no         |
+| --------------- | ----------- |
+| Anna Mustermann | yes         |
+| Bob Musterfrau  | yes         |
+| Marco Mayer     | yes         |
+| Matt Müller     | no          |
 
 ## Meeting Topic
 
