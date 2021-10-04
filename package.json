@@ -13,7 +13,7 @@
     "dependencies": {
         "@mdi/font": "^3.6.95",
         "antlr4": "^4.9.0",
-        "axios": "^0.21.0",
+        "axios": "^0.21.4",
         "core-js": "^3.6.5",
         "marked": "^1.2.3",
         "pizzly-js": "^0.2.8",
