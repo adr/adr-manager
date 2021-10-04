@@ -1,10 +1,10 @@
 import { cloneDeep } from "lodash";
 
-import antlr4 from 'antlr4';
-import MADRLexer from './parser/MADRLexer.js';
-import MADRParser from './parser/MADRParser.js';
-import MADRListener from './parser/MADRListener.js';
-import { ArchitecturalDecisionRecord } from './classes.js';
+import antlr4 from "antlr4";
+import MADRLexer from "./parser/MADRLexer.js";
+import MADRParser from "./parser/MADRParser.js";
+import MADRListener from "./parser/MADRListener.js";
+import { ArchitecturalDecisionRecord } from "./classes.js";
 
 
 /**
@@ -61,9 +61,9 @@ class MADRGenerator extends MADRListener {
     enterChosenOptionAndExplanation(ctx) {
         let rawDecisionOutcome = ctx.getText()
 
-        if (rawDecisionOutcome.startsWith('Chosen option: ')) {
+        if (rawDecisionOutcome.startsWith("Chosen option: ")) {
             rawDecisionOutcome = rawDecisionOutcome.split(/, because */)
-            rawDecisionOutcome[0] = rawDecisionOutcome[0].substring('Chosen option: '.length).trim() // Remove 'Chosen option: '
+            rawDecisionOutcome[0] = rawDecisionOutcome[0].substring("Chosen option: ".length).trim() // Remove 'Chosen option: '
             let delim = rawDecisionOutcome[0].charAt(0)
             let chosenOption = ""
 
@@ -76,7 +76,7 @@ class MADRGenerator extends MADRListener {
             this.adr.decisionOutcome.chosenOption = chosenOption
             this.adr.decisionOutcome.explanation = explanation.trim()
         } else {
-            console.log('Couldn\'t find chosen option.')
+            console.log("Couldn't find chosen option.")
         }
     }
 
@@ -146,8 +146,8 @@ class MADRGenerator extends MADRListener {
      * @returns {boolean} True, iff the option titles are very similar.
      */
     matchOptionTitleAlmostExactly(optTitle1, optTitle2) {
-        let trimmed1 = optTitle1.replace(/ /g, '').toLowerCase() // Remove whitespaces and lower-case heading
-        let trimmed2 = optTitle2.replace(/ /g, '').toLowerCase()
+        let trimmed1 = optTitle1.replace(/ /g, "").toLowerCase() // Remove whitespaces and lower-case heading
+        let trimmed2 = optTitle2.replace(/ /g, "").toLowerCase()
         return trimmed1 === trimmed2
     }
 
@@ -162,8 +162,8 @@ class MADRGenerator extends MADRListener {
      * @returns {boolean} True, iff the option titles are similar
      */
     matchOptionTitleMoreRelaxed(optTitle1, optTitle2) {
-        let trimmed1 = optTitle1.replace(/ /g, '').toLowerCase() // Remove whitespaces and lower-case heading
-        let trimmed2 = optTitle2.replace(/ /g, '').toLowerCase()
+        let trimmed1 = optTitle1.replace(/ /g, "").toLowerCase() // Remove whitespaces and lower-case heading
+        let trimmed2 = optTitle2.replace(/ /g, "").toLowerCase()
         return trimmed1 === trimmed2 || trimmed1.startsWith(trimmed2) || trimmed2.startsWith(trimmed1)
     }
 
@@ -174,7 +174,7 @@ class MADRGenerator extends MADRListener {
      */
     addListItemsFromListToList(parseTreeList, targetList) {
         for (let i = 0; i < parseTreeList.children.length; i++) {
-            if (parseTreeList.children[i].ruleIndex === MADRParser.ruleNames.indexOf('textLine') // if it is a text line 
+            if (parseTreeList.children[i].ruleIndex === MADRParser.ruleNames.indexOf("textLine") // if it is a text line 
                 && parseTreeList.children[i].getText().trim() !== "") {
                 targetList.push(parseTreeList.children[i].getText());
             }
@@ -207,74 +207,74 @@ export function md2adr(md) {
 export function adr2md(adrToParse) {
     let adr = cloneDeep(adrToParse)
     adr.cleanUp();
-    var md = '# ' + adr.title + '\n'
+    var md = "# " + adr.title + "\n"
 
-    if ((adr.status !== '' && adr.status !== 'null') || adr.deciders.length > 0 || adr.date !== '') {
-        if (adr.status !== '' && adr.status !== 'null') {
-            md = md.concat('\n* Status: ' + adr.status.trim())
+    if ((adr.status !== "" && adr.status !== "null") || adr.deciders.length > 0 || adr.date !== "") {
+        if (adr.status !== "" && adr.status !== "null") {
+            md = md.concat("\n* Status: " + adr.status.trim())
         }
         if (adr.deciders.length > 0) {
-            md = md.concat('\n* Deciders: ' + adr.deciders)
+            md = md.concat("\n* Deciders: " + adr.deciders)
         }
-        if (adr.date !== '') {
-            md = md.concat('\n* Date: ' + adr.date)
+        if (adr.date !== "") {
+            md = md.concat("\n* Date: " + adr.date)
         }
-        md = md.concat('\n')
+        md = md.concat("\n")
     }
 
-    if (adr.technicalStory !== '') {
-        md = md.concat('\nTechnical Story: ' + adr.technicalStory + '\n')
+    if (adr.technicalStory !== "") {
+        md = md.concat("\nTechnical Story: " + adr.technicalStory + "\n")
     }
 
-    if (adr.contextAndProblemStatement !== '') {
-        md = md.concat('\n## Context and Problem Statement\n\n' + adr.contextAndProblemStatement + '\n')
+    if (adr.contextAndProblemStatement !== "") {
+        md = md.concat("\n## Context and Problem Statement\n\n" + adr.contextAndProblemStatement + "\n")
     }
 
     if (adr.decisionDrivers.length > 0) {
-        md = md.concat('\n## Decision Drivers\n\n')
+        md = md.concat("\n## Decision Drivers\n\n")
         for (let i in adr.decisionDrivers) {
-            md = md.concat('* ' + adr.decisionDrivers[i] + '\n')
+            md = md.concat("* " + adr.decisionDrivers[i] + "\n")
         }
     }
 
     if (adr.consideredOptions.length > 0) {
-        md = md.concat('\n## Considered Options\n\n')
-        md = adr.consideredOptions.reduce((total, opt) => (total + '* ' + opt.title + '\n'), md)
+        md = md.concat("\n## Considered Options\n\n")
+        md = adr.consideredOptions.reduce((total, opt) => (total + "* " + opt.title + "\n"), md)
     }
 
-    md = md.concat('\n## Decision Outcome\n\nChosen option: "' + adr.decisionOutcome.chosenOption)
+    md = md.concat("\n## Decision Outcome\n\nChosen option: \"" + adr.decisionOutcome.chosenOption)
 
-    if (adr.decisionOutcome.explanation.trim() !== '') {
+    if (adr.decisionOutcome.explanation.trim() !== "") {
         let isList = adr.decisionOutcome.explanation.trim().match(/^[*-+]/)
         if (isList) {
-            md = md.concat('", because\n\n' + adr.decisionOutcome.explanation + '\n')
+            md = md.concat("\", because\n\n" + adr.decisionOutcome.explanation + "\n")
         } else {
-            md = md.concat('", because ' + adr.decisionOutcome.explanation + '\n')
+            md = md.concat("\", because " + adr.decisionOutcome.explanation + "\n")
         }
     } else {
-        md = md.concat('"\n')
+        md = md.concat("\"\n")
     }
 
     if (adr.decisionOutcome.positiveConsequences.length > 0) {
-        md = md.concat('\n### Positive Consequences\n\n')
-        md = adr.decisionOutcome.positiveConsequences.reduce((total, con) => (total + '* ' + con + '\n'), md)
+        md = md.concat("\n### Positive Consequences\n\n")
+        md = adr.decisionOutcome.positiveConsequences.reduce((total, con) => (total + "* " + con + "\n"), md)
 
     }
     if (adr.decisionOutcome.negativeConsequences.length > 0) {
-        md = md.concat('\n### Negative Consequences\n\n')
-        md = adr.decisionOutcome.negativeConsequences.reduce((total, con) => (total + '* ' + con + '\n'), md)
+        md = md.concat("\n### Negative Consequences\n\n")
+        md = adr.decisionOutcome.negativeConsequences.reduce((total, con) => (total + "* " + con + "\n"), md)
     }
 
-    if (adr.consideredOptions.some((opt) => (opt.description !== '' || opt.pros.length > 0 || opt.cons.length > 0))) {
-        md = md.concat('\n## Pros and Cons of the Options\n')
+    if (adr.consideredOptions.some((opt) => (opt.description !== "" || opt.pros.length > 0 || opt.cons.length > 0))) {
+        md = md.concat("\n## Pros and Cons of the Options\n")
         md = adr.consideredOptions.reduce((total, opt) => {
-            if (opt.description !== '' || opt.pros.length > 0 || opt.cons.length > 0) {
-                let res = total.concat('\n### ' + opt.title + '\n\n')
-                if (opt.description !== '') {
-                    res = res.concat(opt.description + '\n\n')
+            if (opt.description !== "" || opt.pros.length > 0 || opt.cons.length > 0) {
+                let res = total.concat("\n### " + opt.title + "\n\n")
+                if (opt.description !== "") {
+                    res = res.concat(opt.description + "\n\n")
                 }
-                res = opt.pros.reduce((total, arg) => (total.concat('* Good, because ' + arg + '\n')), res)
-                res = opt.cons.reduce((total, arg) => (total.concat('* Bad, because ' + arg + '\n')), res)
+                res = opt.pros.reduce((total, arg) => (total.concat("* Good, because " + arg + "\n")), res)
+                res = opt.cons.reduce((total, arg) => (total.concat("* Bad, because " + arg + "\n")), res)
                 return res
             } else {
                 return total
@@ -282,8 +282,8 @@ export function adr2md(adrToParse) {
         }, md)
     }
     if (adr.links.length > 0) {
-        md = md.concat('\n## Links\n\n')
-        md = adr.links.reduce((total, link) => (total + '* ' + link + '\n'), md)
+        md = md.concat("\n## Links\n\n")
+        md = adr.links.reduce((total, link) => (total + "* " + link + "\n"), md)
     }
     return md
 }
@@ -301,8 +301,8 @@ export function snakeCase2naturalCase(snake) {
     return snake.replace(
         /([-_][a-z])/g,
         (group) => group.toUpperCase()
-            .replace('-', ' ')
-            .replace('_', ' ')
+            .replace("-", " ")
+            .replace("_", " ")
     )
 }
 
@@ -316,5 +316,5 @@ export function snakeCase2naturalCase(snake) {
 * @param {string} snake
 */
 export function naturalCase2snakeCase(natural) {
-    return natural.toLowerCase().split(' ').join('-');
+    return natural.toLowerCase().split(" ").join("-");
 }

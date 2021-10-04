@@ -19,7 +19,6 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
             .contains("ADR-Manager")
             .click();
         cy.get("[data-cy=addRepoDialog]").click();
-
         cy.get("[data-cy=repoNameList]").click();
 
         // add new ADR

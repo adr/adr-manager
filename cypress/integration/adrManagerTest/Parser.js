@@ -9,19 +9,17 @@ context("Using Markdown modes", () => {
         );
         cy.visit("http://localhost:8080/#/manager");
 
-        // add repo
+        // add ADR Manager repo
         cy.intercept("GET", "**/user/repos**").as("getRepos");
         cy.get("[data-cy=addRepo]").click();
         cy.wait("@getRepos")
             .its("response.statusCode")
             .should("eq", 200);
         cy.get("[data-cy=listRepo]")
-            .should("have.length.greaterThan", 0)
-            .eq(0)
+            .contains("ADR-Manager")
             .click();
         cy.get("[data-cy=addRepoDialog]").click();
-        cy.intercept("GET", "**/repos**").as("showRepos");
-        cy.wait("@showRepos", { timeout: 10000 });
+        cy.get("[data-cy=repoNameList]").click();
 
         // add a new ADR
         cy.get("[data-cy=repoNameList]").click();

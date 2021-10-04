@@ -1,7 +1,6 @@
 {
     "name": "adr-manager",
-    "version": "0.1.0",
-    "private": true,
+    "version": "1.0.0",
     "scripts": {
         "serve": "vue-cli-service serve --open",
         "build": "vue-cli-service build",
@@ -58,7 +57,15 @@
         "parserOptions": {
             "parser": "babel-eslint"
         },
-        "rules": {}
+        "rules": {
+            "quotes": [
+                "error",
+                "double",
+                {
+                    "allowTemplateLiterals": true
+                }
+            ]
+        }
     },
     "browserslist": [
         "> 1%",

@@ -57,12 +57,12 @@
 </template>
 
 <script>
-  import codemirror from './EditorMadrCodemirror.vue'
+  import codemirror from "./EditorMadrCodemirror.vue"
   // import _ from 'lodash'
-  import { Drag, Drop } from 'vue-easy-dnd'
+  import { Drag, Drop } from "vue-easy-dnd"
 
   export default {
-    name: 'EditorMadrList',
+    name: "EditorMadrList",
     components: {
       codemirror,
       Drag, Drop
@@ -70,14 +70,14 @@
     props: {
       list: {
         type: Array,
-        default: () => ([''])
+        default: () => ([""])
       },
       cmColor: {
         type: String,
       }
     },
     data: () => ({
-      lastItem: '',
+      lastItem: "",
       displayedList: [],
       hoveredItem: null, // Item, which the mouse hovers over (relevant to e.g. show Icons on hover)
       draggedItem: null, // Item, which is currently dragged
@@ -110,7 +110,7 @@
     },
     methods: {
       addItemIfNotEmpty() {
-        if (this.lastItem.trim() !== '') {
+        if (this.lastItem.trim() !== "") {
           this.addItem();
           this.$nextTick(() => {
             this.$refs["codemirror-" + this.displayedList[this.displayedList.length - 1].id][0].focus();
@@ -138,14 +138,14 @@
 
       removeItemAt(idx) {
         let item = this.displayedList.splice(idx, 1);
-        this.$emit('remove-item', item, idx);
+        this.$emit("remove-item", item, idx);
       },
 
       /**
        * Moves the item at inde oldIndex to the new index.
        */
       moveItem(id, newIndex) {
-        if (typeof newIndex === 'number' && this.displayedList.find((el) => (el.id === id))) {
+        if (typeof newIndex === "number" && this.displayedList.find((el) => (el.id === id))) {
           let oldIndex = this.displayedList.findIndex((el) => (el.id === id));
           let item = this.displayedList[oldIndex];
           this.displayedList.splice(oldIndex, 1);

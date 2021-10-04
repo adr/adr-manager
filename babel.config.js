@@ -5,8 +5,8 @@ module.exports = {
   env: {
     e2e: { // This is needed otherwise there's a conflict with Jest
       plugins: [
-        ['babel-plugin-istanbul', {
-          extension: ['.js', '.vue']
+        ["babel-plugin-istanbul", {
+          extension: [".js", ".vue"]
         }]
       ]
     }

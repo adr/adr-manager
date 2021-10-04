@@ -229,16 +229,16 @@
 </template>
 
 <script>
-  import { ArchitecturalDecisionRecord } from '@/plugins/classes'
-  import { store } from '@/plugins/store'
+  import { ArchitecturalDecisionRecord } from "@/plugins/classes"
+  import { store } from "@/plugins/store"
 
-  import codemirror from './EditorMadrCodemirror.vue'
-  import EditorMadrList from './EditorMadrList.vue'
-  import HelpIcon from './HelpIcon.vue'
-  import { Drag, Drop } from 'vue-easy-dnd'
+  import codemirror from "./EditorMadrCodemirror.vue"
+  import EditorMadrList from "./EditorMadrList.vue"
+  import HelpIcon from "./HelpIcon.vue"
+  import { Drag, Drop } from "vue-easy-dnd"
 
   export default {
-    name: 'EditorMadrConsideredOptions',
+    name: "EditorMadrConsideredOptions",
     components: {
       codemirror,
       EditorMadrList,
@@ -254,7 +254,7 @@
       }
     },
     data: () => ({
-      lastItem: '',
+      lastItem: "",
       editedOptions: [], // Expanded options
       expandedOptions: [], // Expanded options
       hoveredOption: null, // Option, which the mouse hovers over (relevant to e.g. show Icons on hover)
@@ -265,7 +265,7 @@
         return this.adr.consideredOptions.map((opt) => (opt.title));
       },
       isModeTooLow() {
-        return this.mode === 'basic' && this.adr.consideredOptions.find((opt) => (opt.description.length > 0 || opt.pros.length > 0 || opt.cons.length > 0))
+        return this.mode === "basic" && this.adr.consideredOptions.find((opt) => (opt.description.length > 0 || opt.pros.length > 0 || opt.cons.length > 0))
       }
     },
     watch: {},
@@ -291,7 +291,7 @@
       },
 
       addLastItemIfNotEmpty() {
-        if (this.lastItem.trim() !== '') {
+        if (this.lastItem.trim() !== "") {
           let newOption = this.addLastItemToOptions();
           if (this.mode !== "basic") {
             this.editedOptions.push(newOption);
@@ -309,7 +309,7 @@
       },
 
       addLastItemToOptions() {
-        if (this.lastItem.trim() !== '') {
+        if (this.lastItem.trim() !== "") {
           let option = this.adr.addOption({ title: this.lastItem });
           this.lastItem = "";
           return option;
@@ -356,15 +356,15 @@
        * @returns true iff the option is the chosen option
        */
       isChosenOption(option) {
-        return this.adr.decisionOutcome.chosenOption === option.title && this.adr.decisionOutcome.chosenOption !== '';
+        return this.adr.decisionOutcome.chosenOption === option.title && this.adr.decisionOutcome.chosenOption !== "";
       },
 
       switchToProfessionalMode() {
-        store.setMode('professional');
+        store.setMode("professional");
       },
 
       htmlOf(value) {
-        var marked = require('marked');
+        var marked = require("marked");
         return marked(value);
       }
     }

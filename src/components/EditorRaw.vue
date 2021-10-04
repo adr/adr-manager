@@ -6,14 +6,14 @@
 </template>
 
 <script>
-  import _ from 'lodash'
+  import _ from "lodash"
 
   // require component
-  import { codemirror } from 'vue-codemirror'
+  import { codemirror } from "vue-codemirror"
   // require styles
-  import 'codemirror/lib/codemirror.css'
+  import "codemirror/lib/codemirror.css"
   // language
-  import 'codemirror/mode/markdown/markdown.js'
+  import "codemirror/mode/markdown/markdown.js"
 
   export default {
     components: {
@@ -27,10 +27,10 @@
     data() {
       return {
         cmOptions: {
-          value: '<p>hello</p>',
-          connect: 'align',
+          value: "<p>hello</p>",
+          connect: "align",
           lineWrapping: true,
-          mode: 'text/x-markdown',
+          mode: "text/x-markdown",
           lineNumbers: true
         },
         rawMd: this.value
@@ -48,7 +48,7 @@
     },
     methods: {
       update: _.debounce(function (ev) {
-        this.$emit('input', ev)
+        this.$emit("input", ev)
       }, 300),
       /** Refresh code mirror, when it becomes visible, to avoid anomalies.
        */
