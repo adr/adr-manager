@@ -19,18 +19,17 @@
 </template>
 
 <script>
-  import { store } from '@/plugins/store.js'
+  import { store } from "@/plugins/store.js"
 
   export default {
-    name: 'MenuMode',
+    name: "MenuMode",
     components: {
     },
     data: () => ({
       tab: 0,
       modes: [
-        { name: 'basic', tooltip: 'Only show required fields.' },
-        { name: 'advanced', tooltip: 'Show advanced fields.' },
-        { name: 'professional', tooltip: 'Show all fields.' }
+        { name: "basic", tooltip: "Only show required fields." },
+        { name: "professional", tooltip: "Show all fields." }
       ]
     }),
     props: {
@@ -44,7 +43,7 @@
     },
     created() {
       this.tab = this.modes.findIndex(m => (m.name === store.mode));
-      store.$on('set-mode', this.updateModeLocal);
+      store.$on("set-mode", this.updateModeLocal);
     },
     methods: {
       updateModeLocal(mode) {

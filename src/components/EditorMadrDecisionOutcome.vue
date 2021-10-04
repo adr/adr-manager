@@ -7,7 +7,7 @@
         <HelpIcon>
           Select the option that you chose to use.
           <div v-if="mode === 'basic'">
-            Note that you can add consequences in Advanced and Professional mode.
+            Note that you can add consequences in Professional mode.
           </div>
         </HelpIcon>
       </v-row>
@@ -53,12 +53,12 @@
 </template>
 
 <script>
-  import codemirror from './EditorMadrCodemirror.vue'
-  import EditorMadrList from './EditorMadrList.vue'
-  import HelpIcon from './HelpIcon.vue'
+  import codemirror from "./EditorMadrCodemirror.vue"
+  import EditorMadrList from "./EditorMadrList.vue"
+  import HelpIcon from "./HelpIcon.vue"
 
   export default {
-    name: 'EditorMADR',
+    name: "EditorMADR",
     components: {
       codemirror, 
       EditorMadrList,
