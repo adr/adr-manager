@@ -18,7 +18,7 @@
 <script>
 
   export default {
-    props: ['value'],
+    props: ["value"],
 
     data: () => ({
       date: new Date().toISOString().substr(0, 10),
@@ -47,18 +47,18 @@
       formatDate(date) {
         if (!date) return null
 
-        const [year, month, day] = date.split('-')
+        const [year, month, day] = date.split("-")
         return `${month}/${day}/${year}`
       },
       parseDate(date) {
         if (!date) return null
 
-        const [month, day, year] = date.split('/')
-        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+        const [month, day, year] = date.split("/")
+        return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`
       },
       update(e) {
         this.menu = false; // Close menu
-        this.$emit('input', e)
+        this.$emit("input", e)
       }
     }
   }

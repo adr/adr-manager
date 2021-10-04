@@ -4,10 +4,10 @@
 
 <script>
   export default {
-    props: ['value'],
+    props: ["value"],
     computed: {
       compiledMarkdown: function () {
-        var marked = require('marked')
+        var marked = require("marked")
         return marked(this.value);
       }
     }

@@ -61,7 +61,7 @@
 </template>
 
 <script>
-  import _ from 'lodash';
+  import _ from "lodash";
   import { ArchitecturalDecisionRecord } from "@/plugins/classes.js";
 
   import DatePickerMenu from "./DatePickerMenu.vue";
@@ -77,8 +77,8 @@
     data: () => ({
       showStatusDropdown: false,
       showDateDropdown: false,
-      testText: '',
-      statusPresets: [{ name: 'proposed' }, { name: 'rejected', color: 'red' }, { name: 'accepted', color: 'success' }, { name: 'deprecated' }, { name: 'superseded' }]
+      testText: "",
+      statusPresets: [{ name: "proposed" }, { name: "rejected", color: "red" }, { name: "accepted", color: "success" }, { name: "deprecated" }, { name: "superseded" }]
     }),
     props: {
       adr: {
@@ -99,10 +99,10 @@
     },
     computed: {
       displayedStatus() {
-        if (this.adr.status && this.adr.status !== '') {
+        if (this.adr.status && this.adr.status !== "") {
           return this.adr.status.toUpperCase();
         } else {
-          return 'No status'
+          return "No status"
         }
       },
       statusColor() {
@@ -121,7 +121,7 @@
     },
     methods: {
       scrollTo(target) {
-        this.$vuetify.goTo(target, { container: '.scroll' });
+        this.$vuetify.goTo(target, { container: ".scroll" });
       },
       focusStatusTextField() {
           this.$refs["statustextfield"].$refs.input.focus();

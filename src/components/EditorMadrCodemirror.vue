@@ -7,40 +7,40 @@
 </template>
 
 <script>
-  import _ from 'lodash'
+  import _ from "lodash"
 
   // require component
-  import { codemirror } from 'vue-codemirror'
+  import { codemirror } from "vue-codemirror"
   // require styles
-  import 'codemirror/lib/codemirror.css'
+  import "codemirror/lib/codemirror.css"
   // language
-  import 'codemirror/mode/markdown/markdown.js'
+  import "codemirror/mode/markdown/markdown.js"
   // theme
-  import 'codemirror/theme/lesser-dark.css'
+  import "codemirror/theme/lesser-dark.css"
 
   export default {
-    name: 'EditorMadrCodemirror',
+    name: "EditorMadrCodemirror",
     components: {
       codemirror
     },
     props: {
       value: {
         type: String,
-        default: ' '
+        default: " "
       },
       color: {
         type: String,
-        default: 'grey lighten-3'
+        default: "grey lighten-3"
       }
     },
     data() {
       return {
-        dValue: '',
+        dValue: "",
         cmOptions: {
-          value: '<p>hello</p>',
-          connect: 'align',
+          value: "<p>hello</p>",
+          connect: "align",
           lineWrapping: true,
-          mode: 'text/x-markdown',
+          mode: "text/x-markdown",
           lineNumbers: false
         },
 
@@ -82,7 +82,7 @@
       /** Emit 'input' event.
        */
       update: _.debounce(function () {
-        this.$emit('input', this.dValue)
+        this.$emit("input", this.dValue)
       }, 0),
       visibilityChanged(isVisible) {
         this.isVisible = isVisible;

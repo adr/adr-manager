@@ -53,12 +53,12 @@
 </template>
 
 <script>
-  import codemirror from './EditorMadrCodemirror.vue'
-  import EditorMadrList from './EditorMadrList.vue'
-  import HelpIcon from './HelpIcon.vue'
+  import codemirror from "./EditorMadrCodemirror.vue"
+  import EditorMadrList from "./EditorMadrList.vue"
+  import HelpIcon from "./HelpIcon.vue"
 
   export default {
-    name: 'EditorMADR',
+    name: "EditorMADR",
     components: {
       codemirror, 
       EditorMadrList,

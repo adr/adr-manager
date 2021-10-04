@@ -139,7 +139,7 @@
           this.oldSelected = newRouteData.branch;
           if (this.repoFullName !== newRouteData.repoFullName || this.branch !== newRouteData.branch || this.adr !== newRouteData.adrName) {
             this.$router.push({
-              name: 'Editor',
+              name: "Editor",
               params: {
                 ...this.$route.params,
                 organization: newRouteData.repoFullName ? newRouteData.repoFullName.split("/")[0] : undefined,
@@ -265,11 +265,11 @@
       },
 
       logOut() {
-        console.log('Logging out!');
+        console.log("Logging out!");
         //localStorage.removeItem('authId');
         localStorage.clear();
-        store.setMode('basic');
-        this.$router.push('/');
+        store.setMode("basic");
+        this.$router.push("/");
       },
       logNotImplemented() {
         console.log("Not implemented.");

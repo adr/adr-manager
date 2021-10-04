@@ -94,19 +94,19 @@
 
 <script>
   //import _ from 'lodash'
-  import { ArchitecturalDecisionRecord } from '@/plugins/classes.js'
-  import { store } from '@/plugins/store.js';
+  import { ArchitecturalDecisionRecord } from "@/plugins/classes.js"
+  import { store } from "@/plugins/store.js";
 
-  import codemirror from './EditorMadrCodemirror.vue'
-  import StatusDateDecidersStory from './EditorMadrStatusDateDecidersStory.vue'
-  import DecisionOutcome from './EditorMadrDecisionOutcome.vue'
-  import ConsideredOptions from './EditorMadrConsideredOptions.vue'
-  import HelpIcon from './HelpIcon.vue'
+  import codemirror from "./EditorMadrCodemirror.vue"
+  import StatusDateDecidersStory from "./EditorMadrStatusDateDecidersStory.vue"
+  import DecisionOutcome from "./EditorMadrDecisionOutcome.vue"
+  import ConsideredOptions from "./EditorMadrConsideredOptions.vue"
+  import HelpIcon from "./HelpIcon.vue"
 
-  import GenericList from './EditorMadrList.vue'
+  import GenericList from "./EditorMadrList.vue"
 
   export default {
-    name: 'EditorMADR',
+    name: "EditorMADR",
     components: {
       codemirror,
       StatusDateDecidersStory,
@@ -129,8 +129,8 @@
         let mode = store.mode;
         let requiredMode = this.minimumRequiredModeForAdr(this.adr);
         switch (mode) {
-          case 'basic':
-            if (requiredMode !== 'basic') {
+          case "basic":
+            if (requiredMode !== "basic") {
               return true;
             }
             break;
@@ -144,7 +144,7 @@
       },
       adr: {
         handler() {
-          this.$emit('input', this.adr)
+          this.$emit("input", this.adr)
         },
         deep: true
       }
@@ -158,9 +158,9 @@
       minimumRequiredModeForAdr(adr) {
         if (adr.decisionDrivers.length > 0
           || adr.links > 0) {
-          return 'professional'
+          return "professional"
         }  else {
-          return 'basic';
+          return "basic";
         }
       },
       switchToMinimumRequiredMode() {
