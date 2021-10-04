@@ -96,10 +96,10 @@
 <script>
   import { loadRepositoryList, searchRepositoryList, loadAllRepositoryContent } from "@/plugins/api.js";
   import { store } from "@/plugins/store.js";
-  import _ from 'lodash'
+  import _ from "lodash"
 
   export default {
-    name: 'DialogAddRepositories',
+    name: "DialogAddRepositories",
     props: {
       // value is true, iff showDialog == true, iff the dialog is shown. (value-prop enables v-model)
       value: {
@@ -183,7 +183,7 @@
       /**Search for repositories which full name contains the search text.
        */
       searchRepositories: _.debounce(function () {
-        if (typeof this.searchText !== 'string' || this.searchText.trim() === "") {
+        if (typeof this.searchText !== "string" || this.searchText.trim() === "") {
           this.loadRepositoryList();
         } else {
           this.countLoadingPromises++;

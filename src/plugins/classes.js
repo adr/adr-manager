@@ -7,12 +7,12 @@ export class ArchitecturalDecisionRecord {
     decisionOutcome,
     links
   } = {}) {
-    this.title = title || '';
-    this.status = status || '';
-    this.deciders = deciders || '';
-    this.date = date || '';
-    this.technicalStory = technicalStory || '';
-    this.contextAndProblemStatement = contextAndProblemStatement || '';
+    this.title = title || "";
+    this.status = status || "";
+    this.deciders = deciders || "";
+    this.date = date || "";
+    this.technicalStory = technicalStory || "";
+    this.contextAndProblemStatement = contextAndProblemStatement || "";
     this.decisionDrivers = decisionDrivers || [];
     this.highestOptionId = 0;
     this.consideredOptions = [];
@@ -22,24 +22,24 @@ export class ArchitecturalDecisionRecord {
       }
     }
     this.decisionOutcome = decisionOutcome || {
-      chosenOption: '',
-      explanation: '',
+      chosenOption: "",
+      explanation: "",
       positiveConsequences: [],
       negativeConsequences: []
     };
     this.links = links || [];
 
     // Assure invariants for decisionOutcome attribute
-    if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, 'chosenOption')) {
-      this.decisionOutcome.decisionOutcome = '';
+    if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, "chosenOption")) {
+      this.decisionOutcome.decisionOutcome = "";
     }
-    if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, 'explanation')) {
-      this.decisionOutcome.explanation = '';
+    if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, "explanation")) {
+      this.decisionOutcome.explanation = "";
     }
-    if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, 'positiveConsequences')) {
+    if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, "positiveConsequences")) {
       this.decisionOutcome.positiveConsequences = [];
     }
-    if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, 'negativeConsequences')) {
+    if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, "negativeConsequences")) {
       this.decisionOutcome.negativeConsequences = [];
     }
 
@@ -56,8 +56,8 @@ export class ArchitecturalDecisionRecord {
     let id = this.highestOptionId;
     this.highestOptionId = this.highestOptionId + 1;
     let newOpt = {
-      title: title || '',
-      description: description || '',
+      title: title || "",
+      description: description || "",
       pros: pros || [],
       cons: cons || [],
       id: id // needed as key/id (for referencing an option or as key in v-for or drag'n'drop)
@@ -77,7 +77,7 @@ export class ArchitecturalDecisionRecord {
    *  - Trims all strings.
    */
   cleanUp() {
-    const stringFieldNames = ['title', 'status', 'date', 'deciders', 'technicalStory', 'contextAndProblemStatement'];
+    const stringFieldNames = ["title", "status", "date", "deciders", "technicalStory", "contextAndProblemStatement"];
     
     stringFieldNames.forEach((attr) => {
       this[attr] = cleanUpString(this[attr]);
@@ -86,7 +86,7 @@ export class ArchitecturalDecisionRecord {
     this.decisionDrivers.forEach((el, idx) => {
       this.decisionDrivers[idx] = cleanUpString(el);
     })
-    this.decisionDrivers = this.decisionDrivers.filter((el) => (el !== ''));
+    this.decisionDrivers = this.decisionDrivers.filter((el) => (el !== ""));
 
     this.consideredOptions.forEach((opt) => {
       opt.title = cleanUpString(opt.title);
@@ -94,11 +94,11 @@ export class ArchitecturalDecisionRecord {
       opt.pros.forEach((el, idx) => {
         opt.pros[idx] = cleanUpString(el);
       });
-      opt.pros = opt.pros.filter((el) => (el !== ''));
+      opt.pros = opt.pros.filter((el) => (el !== ""));
       opt.cons.forEach((el, idx) => {
         opt.cons[idx] = cleanUpString(el);
       });
-      opt.cons = opt.cons.filter((el) => (el !== ''));
+      opt.cons = opt.cons.filter((el) => (el !== ""));
     })
 
     this.decisionOutcome.chosenOption = cleanUpString(this.decisionOutcome.chosenOption);
@@ -113,7 +113,7 @@ export class ArchitecturalDecisionRecord {
     this.links.forEach((el, idx) => {
       this.links[idx] = cleanUpString(el);
     });
-    this.links.filter((el) => (el !== ''));
+    this.links.filter((el) => (el !== ""));
   }
 
   /**
@@ -121,10 +121,10 @@ export class ArchitecturalDecisionRecord {
    */
   static createNewAdr() {
     return new ArchitecturalDecisionRecord({
-      status: 'proposed',
+      status: "proposed",
       date: new Date().toISOString().substr(0, 10),
       decisionOutcome: {
-        explanation: 'comes out best.'
+        explanation: "comes out best."
       }
     });
   }
@@ -146,8 +146,8 @@ function cleanUpString(string) {
 
 export class Repository {
   constructor({ fullName, activeBranch, branches, adrs }) {
-    this.fullName = fullName || '';
-    this.activeBranch = activeBranch || '';
+    this.fullName = fullName || "";
+    this.activeBranch = activeBranch || "";
     this.branches = branches || [];
     this.adrs = adrs || [];
     this.addedAdrs = [];

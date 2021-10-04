@@ -34,10 +34,10 @@
 
 <script>
   // @ is an alias to /src
-  import ConnectToGitHubButton from '@/components/ConnectToGitHubButton.vue'
+  import ConnectToGitHubButton from "@/components/ConnectToGitHubButton.vue"
 
   export default {
-    name: 'Editor',
+    name: "Editor",
     components: {
       ConnectToGitHubButton
     },

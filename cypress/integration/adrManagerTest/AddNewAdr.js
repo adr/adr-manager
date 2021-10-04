@@ -19,7 +19,6 @@ context("Adding a new ADR to a repo", () => {
             .contains("ADR-Manager")
             .click();
         cy.get("[data-cy=addRepoDialog]").click();
-
         cy.get("[data-cy=repoNameList]").click();
 
         cy.get("[data-cy=adrList]").then(adrList => {

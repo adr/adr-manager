@@ -6,7 +6,7 @@
         <HelpIcon v-if="mode === 'basic'">
           List all considered options. <br>
 
-          Only write a concise description. You can add a more detailed description in Advanced or Professional mode. 
+          Only write a concise description. You can add a more detailed description in Professional mode. 
         </HelpIcon>
         <HelpIcon v-else>
           List all considered options. <br>
@@ -20,8 +20,8 @@
         <span class="flex-grow-1 align-self-center my-0 py-0">
           Some options have a more detailed description that is not displayed in Basic Mode.
         </span>
-        <v-btn class="justify-self-end align-self-end my-0 py-0" @click="switchToAdvancedMode()">
-          Switch to Advanced Mode
+        <v-btn class="justify-self-end align-self-end my-0 py-0" @click="switchToProfessionalMode()">
+          Switch to Professional Mode
         </v-btn>
       </div>
     </v-alert>
@@ -84,7 +84,7 @@
       </v-list-item>
     </v-list>
 
-    <!-- Advanced and professional mode -->
+    <!-- Professional mode -->
     <v-card data-cy="consOptPro" v-else flat>
 
       <div v-for="(item, i) in adr.consideredOptions" :key="item.id">
@@ -229,16 +229,16 @@
 </template>
 
 <script>
-  import { ArchitecturalDecisionRecord } from '@/plugins/classes'
-  import { store } from '@/plugins/store'
+  import { ArchitecturalDecisionRecord } from "@/plugins/classes"
+  import { store } from "@/plugins/store"
 
-  import codemirror from './EditorMadrCodemirror.vue'
-  import EditorMadrList from './EditorMadrList.vue'
-  import HelpIcon from './HelpIcon.vue'
-  import { Drag, Drop } from 'vue-easy-dnd'
+  import codemirror from "./EditorMadrCodemirror.vue"
+  import EditorMadrList from "./EditorMadrList.vue"
+  import HelpIcon from "./HelpIcon.vue"
+  import { Drag, Drop } from "vue-easy-dnd"
 
   export default {
-    name: 'EditorMadrConsideredOptions',
+    name: "EditorMadrConsideredOptions",
     components: {
       codemirror,
       EditorMadrList,
@@ -254,7 +254,7 @@
       }
     },
     data: () => ({
-      lastItem: '',
+      lastItem: "",
       editedOptions: [], // Expanded options
       expandedOptions: [], // Expanded options
       hoveredOption: null, // Option, which the mouse hovers over (relevant to e.g. show Icons on hover)
@@ -265,7 +265,7 @@
         return this.adr.consideredOptions.map((opt) => (opt.title));
       },
       isModeTooLow() {
-        return this.mode === 'basic' && this.adr.consideredOptions.find((opt) => (opt.description.length > 0 || opt.pros.length > 0 || opt.cons.length > 0))
+        return this.mode === "basic" && this.adr.consideredOptions.find((opt) => (opt.description.length > 0 || opt.pros.length > 0 || opt.cons.length > 0))
       }
     },
     watch: {},
@@ -291,7 +291,7 @@
       },
 
       addLastItemIfNotEmpty() {
-        if (this.lastItem.trim() !== '') {
+        if (this.lastItem.trim() !== "") {
           let newOption = this.addLastItemToOptions();
           if (this.mode !== "basic") {
             this.editedOptions.push(newOption);
@@ -309,7 +309,7 @@
       },
 
       addLastItemToOptions() {
-        if (this.lastItem.trim() !== '') {
+        if (this.lastItem.trim() !== "") {
           let option = this.adr.addOption({ title: this.lastItem });
           this.lastItem = "";
           return option;
@@ -356,15 +356,15 @@
        * @returns true iff the option is the chosen option
        */
       isChosenOption(option) {
-        return this.adr.decisionOutcome.chosenOption === option.title && this.adr.decisionOutcome.chosenOption !== '';
+        return this.adr.decisionOutcome.chosenOption === option.title && this.adr.decisionOutcome.chosenOption !== "";
       },
 
-      switchToAdvancedMode() {
-        store.setMode('advanced');
+      switchToProfessionalMode() {
+        store.setMode("professional");
       },
 
       htmlOf(value) {
-        var marked = require('marked');
+        var marked = require("marked");
         return marked(value);
       }
     }

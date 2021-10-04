@@ -6,7 +6,7 @@
  * 'open-adr'
  *   - {object} adr object
  * 'set-mode'
- *   - {string} mode (either 'basic', 'advanced' or 'profesional')
+ *   - {string} mode (either 'basic' or 'profesional')
  */
 
 import Vue from "vue";
@@ -296,10 +296,10 @@ export const store = new Vue({
 
     /**Sets the current mode and emits the 'set-mode' event.
      *
-     * @param {string} mode - the new mode (must be either 'basic', 'advanced' or 'professional')
+     * @param {string} mode - the new mode (must be either 'basic' or 'professional')
      */
     setMode(mode) {
-      if (["basic", "advanced", "professional"].includes(mode)) {
+      if (["basic", "professional"].includes(mode)) {
         // Double-check that passed mode is valid.
         console.log("Set mode to", mode);
         this.mode = mode;
