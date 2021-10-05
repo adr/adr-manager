@@ -27,7 +27,7 @@ Needed time: 13 min
   * Should the `Deciders` field contain all deciders or just the recorder of the meeting?
   * What is the difference between `Technical Story` and `Context and Problem Statement`?
 * O: Participant finds possibility to expand options (by accident).
-* P: Preview of the formatted markdown is good.
+* P: Preview of the formatted Markdown is good.
 * O: No problems while pushing to GitHub.
 
 ## Interview

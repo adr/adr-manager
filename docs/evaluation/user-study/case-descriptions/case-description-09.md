@@ -20,7 +20,7 @@ _Abbreviations_: In the following, each statement is started with a letter descr
 Needed time: 9 min
 
 * O: No problems while connecting to GitHub, adding a repository, and creating a new ADR.
-* O: Participant copy-pastes options including pros and cons. They try to use markdown syntax in the `Considered Options` field.
+* O: Participant copy-pastes options including pros and cons. They try to use Markdown syntax in the `Considered Options` field.
 * I: Organizers inform about modes.
 * O: Participant fills in the `Deciders`.
 * P: Participant is unsure what exactly the `Technical Story` is for. They guess that it refers to a issue-tracking system.
@@ -54,7 +54,7 @@ Needed time: 9 min
 **How efficiently usable was the user interface for you?**
 
 * The tool is pretty efficiently usable.
-* Raw markdown may be easier.
+* Raw Markdown may be easier.
 * Having a structure is nice.
 
 **Which mode would you use most often?**
