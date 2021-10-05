@@ -58,7 +58,7 @@ Needed time: 18 min
 
 **How efficiently usable was the user interface for you?**
 
-* Pure markdown may be faster.
+* Raw Markdown may be faster.
 * IDE plugin would be better.
 * The web application may be prettier in meetings.
 

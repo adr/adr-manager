@@ -64,7 +64,7 @@ Needed time: 20 min
 
 **How efficiently usable was the user interface for you?**
 
-* Not really efficient, the participant will prefer to write pure Markdown with Emacs.
+* Not really efficient, the participant will prefer to write raw Markdown with Emacs.
 
 **Which mode would you use most often?**
 
