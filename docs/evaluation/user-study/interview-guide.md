@@ -14,7 +14,7 @@ We will loosely follow these questions based on the participant's responses.
   * What was the average size of the teams you used ADRs with?
   * What formats do you use for ADRs?
     * How standardized are the formats? Are there templates?
-    * Do you have experience with MADRs?
+    * Do you have experience with [MADRs](https://github.com/adr/madr)?
 * Which tools do you use to manage ADRs? (e.g. adr-tools + GitHub, local text editor like VSC, IntelliJ, Confluence, PowerPoint, etc.)
 
 
@@ -40,6 +40,3 @@ Please indicate your (dis)agreement to the following statements with these 5 lab
 * The usability of the tool allows its convenient usage.
 * It is likely that I will use the tool in the future.
 
-<!-- ToDo -->
-<!-- Add more questions -->
-<!-- Order of questions should be changed -->
