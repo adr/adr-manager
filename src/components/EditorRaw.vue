@@ -1,6 +1,6 @@
 <template>
   <v-card class="text-left overflow-y-auto" height="100%">
-    <codemirror data-cy="markdownText" v-model="rawMd" @input="update" @cursorActivity="dragMethod" :options="cmOptions" ref="cm" v-observe-visibility="visibilityChanged">
+    <codemirror data-cy="markdownText" v-model="rawMd" @input="update" @cursorActivity="dragMethod"  :options="cmOptions" ref="cm" v-observe-visibility="visibilityChanged">
     </codemirror>
     
   </v-card>
@@ -33,6 +33,13 @@
           lineWrapping: true,
           mode: 'text/x-markdown',
           lineNumbers: true,
+          file: '',
+          files: [],
+          name: '',
+          dragDrop: true,
+          extraKeys: {
+        "Ctrl-V": this.pasteMethod
+      }
         },
         rawMd: this.value,
         controlDragDrop: true
@@ -60,24 +67,26 @@
         }
       },
       dragMethod(cm) {
-        cm.on("drop", (data, e) => {
-        var file;
-        var files;
-        var name;
         // Check if files were dropped
-        files = e.dataTransfer.files;
-        if (files.length > 0 && this.controlDragDrop) {
+        cm.on("drop", (data, e) => {
+        this.files = e.dataTransfer.files;
+        if (this.files.length > 0 && this.controlDragDrop) {
           e.preventDefault();
           e.stopPropagation();
-          file = files[0];
-          name = file.name.replace(/\.[^/.]+$/, "");
-          this.rawMd += '![' + name +']('+ file.name + ')';
+          this.file = this.files[0];
+          this.name = this.file.name.replace(/\.[^/.]+$/, "");
+          this.rawMd += '![' + this.name +']('+ URL.createObjectURL(this.file) + ')';
           this.controlDragDrop = false;
           return false;
         }});
         this.controlDragDrop = true;
         
     },
+    pasteMethod(cm){
+        //TODO Copy-paste with ctrl+v implementation
+        console.log(cm);
+        this.controlDragDrop = true;
+    }
     }
   }
 </script>
