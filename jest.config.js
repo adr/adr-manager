@@ -21,15 +21,17 @@ module.exports = {
     collectCoverage: false,
 
     // An array of glob patterns indicating a set of files for which coverage information should be collected
-    collectCoverageFrom: [
-        "./src/**/*.js",
-    ],
+    collectCoverageFrom: ["./src/**/*.js"],
 
     // The directory where Jest should output its coverage files
     coverageDirectory: "coverage",
 
     // An array of regexp pattern strings used to skip coverage collection
-    coveragePathIgnorePatterns: ["/node_modules/", "/plugins/parser/", "/tests/"],
+    coveragePathIgnorePatterns: [
+        "/node_modules/",
+        "/plugins/parser/",
+        "/tests/"
+    ],
 
     // A list of reporter names that Jest uses when writing coverage reports
     coverageReporters: ["json", "text", "lcov", "clover"],
@@ -54,14 +56,14 @@ module.exports = {
 
     // A set of global variables that need to be available in all test environments
     globals: {
-        "__COMMIT_HASH__": "TestDummy",
-        "__BUILD_VERSION__": "666",
-        "__BUILD_DATE__": "2020.09.11",
+        __COMMIT_HASH__: "TestDummy",
+        __BUILD_VERSION__: "666",
+        __BUILD_DATE__: "2020.09.11",
         "vue-jest": {
             tsConfig: {
-                importHelpers: true,
-            },
-        },
+                importHelpers: true
+            }
+        }
     },
     // The maximum amount of workers used to run your tests. Can be specified as % or a number. E.g. maxWorkers: 10% will use 10% of your CPU amount + 1 as the maximum worker number. maxWorkers: 2 will use a maximum of 2 workers.
     // maxWorkers: "50%",
@@ -74,7 +76,7 @@ module.exports = {
 
     // A map from regular expressions to module names that allow to stub out resources with a single module
     moduleNameMapper: {
-        "vue$": "vue/dist/vue.common.js",
+        vue$: "vue/dist/vue.common.js",
         "^@/(.*)$": "<rootDir>/src/$1",
         "pizzly-js": "<rootDir>/src/plugins/tests/pizzly-mock.js"
     },
@@ -164,7 +166,7 @@ module.exports = {
     //},
 
     // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-    transformIgnorePatterns: ["<rootDir>/node_modules/(?!three)"],
+    transformIgnorePatterns: ["<rootDir>/node_modules/(?!three)"]
 
     // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
     // unmockedModulePathPatterns: undefined,
