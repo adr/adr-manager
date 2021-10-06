@@ -1,9 +1,9 @@
 # Task List
 
-0. Read the meeting summary.
-1. Open <https://koppor.github.io/adr-manager> in your browser.
-2. Connect to the ADR Manager using the test account for the authentication.
-3. Add the test repository (the account only has access to one repository).
-4. Create a new ADR.
-5. Fill the information from the meeting protocol into the ADR.
-6. Push the ADR to GitHub.
+1. Read the meeting summary.
+2. Open <https://adr.github.io/adr-manager> in your browser.
+3. Connect to the ADR Manager using the test account for authentication.
+4. Add the test repository (the account only has access to one repository).
+5. Create a new ADR.
+6. Fill in the information from the meeting protocol.
+7. Push the ADR to GitHub.

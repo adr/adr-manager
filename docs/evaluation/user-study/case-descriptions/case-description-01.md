@@ -2,24 +2,24 @@
 
 ## Demographic and Professional Background
 
-* Role: Professor, Software Architecture Lecturer
-* Domain: Software Quality and Architecture, some experience in several fields (business information systems, autonomous systems)
+* Role: Professor, software architecture lecturer
+* Domain: software quality and architecture, some experience in other fields (business information systems, autonomous systems)
 * Years of work experience: 20 years
-* ADR experience: 10 years, but not with MADR
-* Team size: _(Question was not asked)_
+* ADR experience: 10 years, but not with [MADR](https://github.com/adr/madr)
+* Team size: _(question was not asked)_
 * Used template: none, free text in documentation
-* Tools: depends on project, e.g., Jira or other documentation like the ReadMe.md
+* Tools: depends on project, e.g. Jira or other documentation like a READMEs
 
 ## Think-Aloud Protocol
 
-_Abbreviations_: In the following, each statement is started with a letter describing the context of the statement:
-* O = Observation: An observation by the organizers, that the participant did not explicitly mention.
+_Abbreviations_: In the following, each statement is started with a letter describing the context of the statement.
+* O = Observation: An observation by the researchers that the participant did not explicitly mention.
 * P = Participant: A statement of the participant.
-* I = Interference: The organizers helped or pointed out something that the participant had trouble with.
+* I = Interference: The researchers helped or pointed out something that the participant had trouble with.
 
 Needed time: 18 min
 
-* O: No problems while connecting to GitHub, adding a repository and creating an ADR.
+* O: No problems while connecting to GitHub, adding a repository, and creating an ADR.
 * P: Title field is confusing, as the field does not have a label.
 * O: Participant switches to Professional mode.
 * P: In general, there should be more labels and explanations for the fields.
@@ -35,12 +35,12 @@ Needed time: 18 min
 
 ### Functional Suitability
 
-#### Which provided functionality needs to be improved?
+**Which provided functionality needs to be improved?**
 
 * Connection to GitHub was easy.
 * Needed functionality is there.
 
-#### Which additional functionality would you need to consider using the tool in your professional work?
+**Which additional functionality would you need to consider using the tool in your professional work?**
 
 * A plugin in the IDE would be better, as it wouldn't require a context switch and it would fit better to the participant's workflow.
 * Using free text with syntax highlighting and feedback for completeness would be better.
@@ -48,40 +48,39 @@ Needed time: 18 min
 
 ### Usability
 
-#### How understandable was the user interface for you?
+**How understandable was the user interface for you?**
 
 * UI is confusing as there are too few labels. Possible improvements: 
   * Labels for all test fields
-  * Explanations, e.g., through explanations on hover
-  * maybe wizard for guidance
+  * Explanations, e.g. through explanations on hover
+  * Maybe wizard for guidance
 * Good: interactive and modern
 
-#### How efficiently usable was the user interface for you?
+**How efficiently usable was the user interface for you?**
 
-* Pure markdown may be faster.
+* Raw Markdown may be faster.
 * IDE plugin would be better.
 * The web application may be prettier in meetings.
 
-#### Which mode would you use most often?
+**Which mode would you use most often?**
 
-* depends on the deciosion to be documented
+* Depends on the decision to be documented
   * Smaller decisions can be documented in Basic mode.
   * Most architectural decisions are complex enough that Professional mode is required. Particularly, the rationale behind the decision, e.g. decision drivers, are important to capture.
 
 #### Would you switch between modes?
 
-* maybe
+* Maybe
 
 ### Final Verdict
 
-|Statement|strongly disagree|disagree|neutral|agree|strongly agree|
-|---|:-:|:-:|:-:|:-:|:-:|
-|1. The functional suitability of the tool is fitting for its purpose.||||x||
-|2. The usability of the tool allows its convenient usage.            |||x|||
-|3. It is likely that I will use the tool in the future.              ||x||||
+| Statement                                                             | strongly disagree | disagree | neutral | agree | strongly agree |
+| --------------------------------------------------------------------- | :---------------: | :------: | :-----: | :---: | :------------: |
+| 1. The functional suitability of the tool is fitting for its purpose. |                   |          |         |   x   |                |
+| 2. The usability of the tool allows its convenient usage.             |                   |          |    x    |       |                |
+| 3. It is likely that I will use the tool in the future.               |                   |    x     |         |       |                |
 
 Additional comments:
 
-1. 
-2. Learnability (1), Aesthetics (4 or 5)
-3. They would use the tool iff it was a plugin for Visual Studio Code. They would maybe use the tool in meetings. 
+- Usability facets: learnability (1), aesthetics (4 or 5)
+- They would use the tool only if it was a plugin for Visual Studio Code. They would maybe use the tool in meetings.
