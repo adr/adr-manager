@@ -1,0 +1,10 @@
+ID,Role,Affiliation,Years of Experience,Years of ADR Experience,Has Used MADR,Other Used ADR Templates and Tools,Preferred Editor Modes,Would Switch Modes,Task Duration in min,Functional Suitability Likert,Usability Likert,Future Usage Likert,Think-Aloud Interference
+1,professor,academia,20,10,no,"Jira, Markdown files",Basic & Professional,maybe,18,4,3,2,"Find ""Commit and Push"" button"
+2,"professor, consultant",both,32,20,yes,"Y-statements, Markdown files, embedded ADRs",Basic & Professional,yes,18,4,5,5,Help with editor modes
+3,"PhD student, developer",both,3,2,no,"text files, pen and paper",custom preferences,maybe,13,5,4,3,Help with editor modes
+4,architect,industry,10,5,no,"custom project-specific templates, no special tools",Basic & Professional,maybe,14,4,4,3,"Help with editor modes and list behavior of ""considered options"""
+5,architect,industry,4,6,yes,mostly GitHub editor,Basic & Professional,yes,18,4,4,5,Help with editor modes
+6,architect,industry,10,5,no,"custom template, Azure DevOps wiki",Professional,no,11,5,4,3,Help with editor modes
+7,architect,industry,20,10,no,"custom project-specific templates, Confluence",Professional,yes,10,3,3,4,Help with editor modes
+8,architect,industry,20,10,no,"custom project-specific templates, wikis, Sharepoint, Markdown files",Professional,no,20,4,4,1,"Help with editor modes and list behavior of ""considered options"""
+9,head of cloud innovation,industry,7,4,yes,"custom project-specific templates, wikis, Confluence",Professional,no,9,5,3,3,Help with editor modes
