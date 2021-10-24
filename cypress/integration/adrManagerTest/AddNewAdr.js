@@ -40,7 +40,11 @@ context("Adding a new ADR to a repo", () => {
 
             // add context to new ADR
             cy.get("[data-cy=contextAdr]").click();
-            cy.get("[data-cy=contextAdr]").type("ContextAdr");
+            cy.get("[data-cy=contextAdr] textarea")
+                .eq(1)
+                .type("ContextAdr", {
+                    force: true
+                });
 
             // add considered options text to new ADR and test the add btn
             cy.get("[data-cy=considerOptTextAdr]")
