@@ -92,6 +92,7 @@
                                 $emit('input', adr);
                             }
                         "
+                        style="min-height: 100px;"
                     />
                 </v-card>
 
