@@ -54,7 +54,8 @@ export default {
                 connect: "align",
                 lineWrapping: true,
                 mode: "text/x-markdown",
-                lineNumbers: false
+                lineNumbers: false,
+                extraKeys: { Tab: false, "Shift-Tab": false }
             },
 
             isVisible: true,
