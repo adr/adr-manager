@@ -21,12 +21,11 @@
                         filled
                         dense
                         placeholder="Title"
-                        hint="Changing the title, changes the file name. Do not use special characters."
+                        :autofocus="true"
+                        hint="Changing the title changes the file name. Do not use special characters."
                         v-model="adr.title"
                         @input="$emit('input', adr)"
-                        style="font-family: Roboto, sans-serif;
-        font-size: 28px;
-        font-weight: 500"
+                        style="font-family: Roboto, sans-serif; font-size: 28px; font-weight: 500"
                     >
                         <template v-slot:append="">
                             <HelpIcon>
@@ -145,7 +144,6 @@
 </template>
 
 <script>
-//import _ from 'lodash'
 import { ArchitecturalDecisionRecord } from "@/plugins/classes.js";
 import { store } from "@/plugins/store.js";
 
