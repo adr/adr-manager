@@ -2,7 +2,6 @@
 
 > A web-based application for the efficient creation and management of [architectural decision records (ADRs)](https://adr.github.io) in Markdown (MADR)
 
-
 ## Description
 
 [MADR](https://adr.github.io/madr/) is a markdown template for quickly capturing architectural decisions.
@@ -20,25 +19,24 @@ Currently, our tool has been successfully tested in Chrome, Firefox and Opera.
 
 ### Usage
 
-1. After opening the tool, connect to GitHub. 
+1. After opening the tool, connect to GitHub.
     - The tool needs your permission to access your GitHub repositories and E-Mail-address.
 2. Add a GitHub repository.
-3. Now, you can edit any files in `docs/adr` of the GitHub repository. Edit existing ADRs or create new ones. 
+3. Now, you can edit any files in `docs/adr` of the GitHub repository. Edit existing ADRs or create new ones.
    One of the most important features is the MADR Editor that allows you to quickly draft a MADR while ensuring a consistent format.
-   ![](docs/screenshots/editor-advanced-mode.png "This is the MADR Editor in Advanced mode.")
+   ![This is the MADR Editor in Advanced mode.](docs/screenshots/editor-advanced-mode.png)
 4. Don't forget to push your changes to GitHub, once you're done with editing the files.
 
 Some technical notes:
-- The `authID` which enables the connection to GitHub and changes to ADRs are stored in the local storage. 
-  That way they are not lost when you reload the page or restart the browser. 
-  However, changes will be lost when you either
-    - Clear local storage.
-    - Press the `Disconnect` button.
-  
-  The general idea is that you directly push your changes to GitHub after editing.
-- During development, we may remove permissions for the OAuth App from time to time. 
-  Don't be surprised, if you have to give permissions repeatedly. 
 
+- The `authID` which enables the connection to GitHub and changes to ADRs are stored in the local storage.
+  That way they are not lost when you reload the page or restart the browser.
+  However, changes will be lost when you either
+  - Clear local storage.
+  - Press the `Disconnect` button.
+  Reason: The general idea is that you directly push your changes to GitHub after editing.
+- During development, we may remove permissions for the OAuth App from time to time.
+  Don't be surprised, if you have to give permissions repeatedly.
 
 ## Development
 
@@ -69,6 +67,7 @@ For this, create a `cypress.env.json` file and fill it with the following conten
   "PIZZLY_E2E_AUTH_ID": "*********"
 }
 ```
+
 The value of `PIZZLY_E2E_AUTH_ID` needs to be a valid `authId` from an active Pizzly session, which you can obtain via the Pizzly dashboard (see below).
 The involved GitHub account also needs to have developer access to this repo (`adr/adr-manager`).
 Lastly, don't forget to start the app before running the e2e tests (`npm run serve`).
@@ -106,21 +105,21 @@ npx cypres run --spec ./cypress/integration/adrManagerTest/<file-name>
 ### Backend Setup
 
 The project uses [Pizzly](https://github.com/bearer/pizzly) for the authentication to GitHub.
-Our Pizzly instance is hosted on Heroku. 
+Our Pizzly instance is hosted on Heroku.
 If you do not want to use this instance, you can easily set up your own by following these steps:
 
 1. Create an OAuth application on GitHub (see [here](https://docs.github.com/en/github-ae@latest/developers/apps/creating-an-oauth-app)).
    - Copy the Client ID and Client Secret of the app (you'll need them later).
    - Set the callback URL to `https://[your-app-name].herokuapp.com/auth/callback`, where `[your-app-name]` is the name of the Heroku app you'll create in the next step.
-1. Deploy your own Pizzly instance on Heroku as described at https://github.com/bearer/pizzly.
-2. Configure the deployed Pizzly instance.
-   - Open the Pizzly dashboard (https://[your-app-name].herokuapp.com).
+1. Deploy your own Pizzly instance on Heroku as described at <https://github.com/bearer/pizzly>.
+1. Configure the deployed Pizzly instance.
+   - Open the Pizzly dashboard (`https://{your-app-name}.herokuapp.com`).
    - Add a new API and choose `GitHub`, then create a new configuration for it.
    - Enter the `Client ID` and `Client Secret` of your GitHub OAuth app.
    - As `scopes`, enter `repo`.
    - Also, consider [securing your Pizzly instance](https://github.com/Bearer/Pizzly/blob/master/docs/securing-your-instance.md).
-3. Update `src/config.js` with the connection details of your Pizzly instance:
-   - Set `pizzlyHost` to the base URL of your Pizzly instance, e.g. `https://[your-app-name].herokuapp.com/`.
+1. Update `src/config.js` with the connection details of your Pizzly instance:
+   - Set `pizzlyHost` to the base URL of your Pizzly instance, e.g. `https://{your-app-name}.herokuapp.com/`.
    - If you secured Pizzly: set `pizzlyPublishableKey` to your publishableKey.
 
 ## Project Context
