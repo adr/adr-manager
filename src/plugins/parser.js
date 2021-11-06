@@ -392,7 +392,10 @@ export function matchOptionTitleMoreRelaxed(titleFromOptionList, titleFromChosen
         trimmedTitleFromOptionList === trimmedTitleFromChosenOption ||
         trimmedTitleFromOptionList.startsWith(trimmedTitleFromChosenOption) ||
         trimmedTitleFromChosenOption.startsWith(trimmedTitleFromOptionList) ||
-        titleFromChosenOption === createShortTitle(titleFromOptionList)
+        titleFromChosenOption === createShortTitle(titleFromOptionList) ||
+        // in case we have issues with the short title generation, we at least check for a match of the first letters
+        // Example: "Include in [adr-tools](https://github.com/npryce/adr-tools), 924 stars as of 2018-06-14", we currently don't strip ", ..."
+        createShortTitle(titleFromOptionList).startsWith(titleFromChosenOption)
     );
     return res;
 }
