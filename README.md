@@ -20,16 +20,16 @@ Currently, our tool has been successfully tested in Chrome, Firefox and Opera.
 ### Usage
 
 1. After opening the tool, connect to GitHub.
-    - The tool needs your permission to access your GitHub repositories and E-Mail-address.
+    - The tool needs your permission to access your GitHub repositories and email address.
 2. Add a GitHub repository.
 3. Now, you can edit any files in `docs/adr` of the GitHub repository. Edit existing ADRs or create new ones.
    One of the most important features is the MADR Editor that allows you to quickly draft a MADR while ensuring a consistent format.
-   ![This is the MADR Editor in Advanced mode.](docs/screenshots/editor-advanced-mode.png)
+   ![This is the MADR editor in advanced mode.](docs/screenshots/editor-advanced-mode.png)
 4. Don't forget to push your changes to GitHub, once you're done with editing the files.
 
 Some technical notes:
 
-- The `authID` which enables the connection to GitHub and changes to ADRs are stored in the local storage.
+- The `authID` (which enables the connection to GitHub) and changes to ADRs are stored in the local storage.
   That way they are not lost when you reload the page or restart the browser.
   However, changes will be lost when you either
   - Clear local storage.
@@ -60,7 +60,7 @@ Note that, even when you run it locally, you need to connect to GitHub to use an
 We use [Cypress](https://www.cypress.io/) for e2e testing.
 The CI pipeline provides the necessary Pizzly `authId` as an ENV variable.
 Locally, however, you'll need to provide one yourself.
-For this, create a `cypress.env.json` file and fill it with the following content:
+You can either set `CYPRESS_PIZZLY_E2E_AUTH_ID` containing the `authId` or create a `cypress.env.json` file and fill it with the following content:
 
 ```json
 {
@@ -68,7 +68,7 @@ For this, create a `cypress.env.json` file and fill it with the following conten
 }
 ```
 
-The value of `PIZZLY_E2E_AUTH_ID` needs to be a valid `authId` from an active Pizzly session, which you can obtain via the Pizzly dashboard (see below).
+The value of `PIZZLY_E2E_AUTH_ID` needs to be a valid `authId` from an active Pizzly session, which you can obtain a) via the Pizzly dashboard (see below) or b) in the local storage (Chrome developer console -> Application -> Storage -> Local Storage -> `http://localhost:8080` -> `authId`)
 The involved GitHub account also needs to have developer access to this repo (`adr/adr-manager`).
 Lastly, don't forget to start the app before running the e2e tests (`npm run serve`).
 
