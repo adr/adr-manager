@@ -259,7 +259,7 @@ export const store = new Vue({
                     editedMd: md,
                     id: id,
                     path:
-                        "docs/adr/" +
+                        repo.adrPath +
                         id.toString().padStart(4, "0") +
                         "-" +
                         adr.title +

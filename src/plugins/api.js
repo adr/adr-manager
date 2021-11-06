@@ -384,14 +384,27 @@ export async function loadARepositoryContent(repoFullName, branchName) {
     let repoObject = new Repository({
         fullName: repoFullName,
         activeBranch: branchName,
+        adrPath: "",
         adrs: []
     });
 
     repoPromises.push(
         loadFileTreeOfRepository(repoFullName, branchName).then(data => {
-            // Find all files in the folder 'docs/adr' or 'doc/adr'
+            // Find all files in the folders 'docs/adr', 'doc/adr', ...
             let adrList = data.tree.filter(file => {
-                return file.path.startsWith("docs/adr/");
+                if (file.path.startsWith("docs/adr/")) {
+                    repoObject.adrPath = "docs/adr/";
+                    return true;
+                }
+                if (file.path.startsWith("doc/adr/")) {
+                    repoObject.adrPath = "doc/adr/";
+                    return true;
+                }
+                if (file.path.startsWith("docs/decisions/")) {
+                    repoObject.adrPath = "docs/decisions/";
+                    return true;
+                }
+                return false;
             });
 
             // Load the content of each ADR.
