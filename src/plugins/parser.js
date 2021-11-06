@@ -307,20 +307,24 @@ export function adr2md(adrToParse) {
                 opt.pros.length > 0 ||
                 opt.cons.length > 0
             ) {
-                let res = total.concat("\n### " + opt.shortTitle + "\n\n");
+                let res = total.concat("\n### " + opt.shortTitle + "\n");
                 if (opt.description !== "") {
-                    res = res.concat(opt.description + "\n\n");
+                    res = res.concat("\n" + opt.description + "\n");
                 }
                 res = opt.pros.reduce(
                     (total, arg) =>
-                        total.concat("* Good, because " + arg + "\n"),
+                        total.concat("\n* Good, because " + arg),
                     res
                 );
                 res = opt.cons.reduce(
                     (total, arg) =>
-                        total.concat("* Bad, because " + arg + "\n"),
+                        total.concat("\n* Bad, because " + arg),
                     res
                 );
+                if ((opt.pros.length > 0) || (opt.cons.length > 0)) {
+                    // insert final new line
+                    res = res + "\n"
+                }
                 return res;
             } else {
                 return total;
