@@ -307,7 +307,7 @@ export function adr2md(adrToParse) {
                 opt.pros.length > 0 ||
                 opt.cons.length > 0
             ) {
-                let res = total.concat("\n### " + opt.title + "\n\n");
+                let res = total.concat("\n### " + opt.shortTitle + "\n\n");
                 if (opt.description !== "") {
                     res = res.concat(opt.description + "\n\n");
                 }
