@@ -279,6 +279,14 @@ export function createShortTitle(title) {
                 idx = title.indexOf(", e.g.");
                 if (idx > 0) {
                     result = title.substr(0, idx);
+                } else {
+                    // Handle case "Add `* Category: CATEGORY` directly under the heading (similar to https://gist.github.com/FaKeller/2f9c63b6e1d436abb7358b68bf396f57)"
+                    // --> content of braces should be removed for short title
+                    idx = title.indexOf(" (");
+                    let idxClosing = title.indexOf(")")
+                    if ((idx > 0) && (idxClosing == title.length-1) && (idx = title.lastIndexOf(" ("))) {
+                        result = title.substr(0, idx);
+                    }
                 }
             }
         }
