@@ -439,6 +439,7 @@ import codemirror from "./EditorMadrCodemirror.vue";
 import EditorMadrList from "./EditorMadrList.vue";
 import HelpIcon from "./HelpIcon.vue";
 import { Drag, Drop } from "vue-easy-dnd";
+import {matchOptionTitleMoreRelaxed} from "@/plugins/parser";
 
 export default {
     name: "EditorMadrConsideredOptions",
@@ -586,10 +587,8 @@ export default {
          * @returns true iff the option is the chosen option
          */
         isChosenOption(option) {
-            return (
-                this.adr.decisionOutcome.chosenOption === option.title &&
-                this.adr.decisionOutcome.chosenOption !== ""
-            );
+            let res = matchOptionTitleMoreRelaxed(option.title, this.adr.decisionOutcome.chosenOption);
+            return res;
         },
 
         switchToProfessionalMode() {

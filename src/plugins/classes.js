@@ -254,7 +254,7 @@ export class Repository {
     }
 }
 
-function createShortTitle(title) {
+export function createShortTitle(title) {
     if (!title) {
         return "";
     }

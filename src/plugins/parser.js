@@ -4,7 +4,7 @@ import antlr4 from "antlr4";
 import MADRLexer from "./parser/MADRLexer.js";
 import MADRParser from "./parser/MADRParser.js";
 import MADRListener from "./parser/MADRListener.js";
-import { ArchitecturalDecisionRecord } from "./classes.js";
+import { ArchitecturalDecisionRecord, createShortTitle } from "./classes.js";
 
 /**
  * Creates an ADR from a ParseTree by listening to a ParseTreeWalker.
@@ -143,7 +143,7 @@ class MADRGenerator extends MADRListener {
         }
         // Else check if there is another (less) similar title.
         opt = this.adr.consideredOptions.find(function(opt) {
-            return this.matchOptionTitleMoreRelaxed(opt.title, optTitle);
+            return matchOptionTitleMoreRelaxed(opt.title, optTitle);
         }, this);
         if (opt) {
             // If a fitting option was found, return it.
@@ -166,26 +166,6 @@ class MADRGenerator extends MADRListener {
         let trimmed1 = optTitle1.replace(/ /g, "").toLowerCase(); // Remove whitespaces and lower-case heading
         let trimmed2 = optTitle2.replace(/ /g, "").toLowerCase();
         return trimmed1 === trimmed2;
-    }
-
-    /**
-     * Option titles are similar, iff they are equal after
-     *  (1) removing all white spaces
-     *  (2) lower-casing them
-     * or one of these normalized titles is a prefix of the other title.
-     *
-     * @param {string} optTitle1
-     * @param {string} optTitle2
-     * @returns {boolean} True, iff the option titles are similar
-     */
-    matchOptionTitleMoreRelaxed(optTitle1, optTitle2) {
-        let trimmed1 = optTitle1.replace(/ /g, "").toLowerCase(); // Remove whitespaces and lower-case heading
-        let trimmed2 = optTitle2.replace(/ /g, "").toLowerCase();
-        return (
-            trimmed1 === trimmed2 ||
-            trimmed1.startsWith(trimmed2) ||
-            trimmed2.startsWith(trimmed1)
-        );
     }
 
     /**
@@ -384,4 +364,31 @@ export function naturalCase2snakeCase(natural) {
         .toLowerCase()
         .split(" ")
         .join("-");
+}
+
+
+/**
+ * Option titles are similar, iff
+ *  a) they are equal after
+ *    (1) removing all white spaces
+ *    (2) lower-casing them
+ * or
+ *   b) one of these normalized titles is a prefix of the other title.
+ * or
+ *   c) the chosen option is a sub title of the given option
+ *
+ * @param {string} titleFromOptionList
+ * @param {string} titleFromChosenOption
+ * @returns {boolean} True, iff the option titles are similar
+ */
+export function matchOptionTitleMoreRelaxed(titleFromOptionList, titleFromChosenOption) {
+    let trimmedTitleFromOptionList = titleFromOptionList.replace(/ /g, "").toLowerCase(); // Remove whitespaces and lower-case heading
+    let trimmedTitleFromChosenOption = titleFromChosenOption.replace(/ /g, "").toLowerCase();
+    let res = (
+        trimmedTitleFromOptionList === trimmedTitleFromChosenOption ||
+        trimmedTitleFromOptionList.startsWith(trimmedTitleFromChosenOption) ||
+        trimmedTitleFromChosenOption.startsWith(trimmedTitleFromOptionList) ||
+        titleFromChosenOption === createShortTitle(titleFromOptionList)
+    );
+    return res;
 }
