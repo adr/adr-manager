@@ -1,13 +1,16 @@
 <template>
     <div>
         <!-- Chips for Date, Status, Deciders -->
-        <v-card flat v-if="true" class="d-flex flex-wrap">
-            <v-card flat class="mb-4" min-width="400px">
+        <v-row class="pl-0 mx-0 my-1">
+            <v-col class="mx-0 my-0 px-0 py-0">
+                <label>Last Update:</label>
                 <DatePickerMenu v-model="adr.date"></DatePickerMenu>
                 <HelpIcon>
                     The date of the last update
                 </HelpIcon>
-
+            </v-col>
+            <v-col class="mx-0 my-0 px-0 py-0">
+                <label>Status:</label>
                 <v-menu
                     v-model="showStatusDropdown"
                     :close-on-content-click="false"
@@ -20,7 +23,6 @@
                             data-cy="statusPro"
                             outlined
                             :color="statusColor"
-                            class="ml-5"
                             v-on="on"
                             v-bind="attrs"
                         >
@@ -52,10 +54,11 @@
                     </v-list>
                 </v-menu>
                 <HelpIcon>
-                    The status of the ADR
+                    The current status of the ADR
                 </HelpIcon>
-            </v-card>
-            <v-card flat class="mb-4">
+            </v-col>
+            <v-col class="mx-0 my-0 px-0 py-0">
+                <label>Deciders:</label>
                 <v-chip outlined>
                     <div @click="focusDecidersTextField">
                         <v-icon class="mr-2">mdi-account-multiple</v-icon>
@@ -73,16 +76,16 @@
                     </div>
                 </v-chip>
                 <HelpIcon>
-                    List everyone involved in the decision, e.g., separated with
+                    Everyone involved in the decision, e.g., separated with
                     commas.
                 </HelpIcon>
-            </v-card>
-        </v-card>
+            </v-col>
+        </v-row>
 
         <!-- Technical Story Field-->
-        <v-row class="pl-0 mx-0 my-1">
+        <v-row class="pl-0 mx-0 my-4">
             <v-col
-                class="my-0 py-0 px-0 mx-0 px-0 align-self-center"
+                class="mx-0 my-0 px-0 py-0 align-self-center"
                 style="max-width: 150px"
             >
                 <h5>Technical Story:</h5>
@@ -183,4 +186,9 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+label {
+    font-weight: bold;
+    margin-right: 5px;
+}
+</style>
