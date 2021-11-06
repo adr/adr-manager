@@ -162,11 +162,11 @@ export async function pushToGitHub(newCommitSha) {
         .auth(localStorage.getItem("authId"))
         .post(
             "/repos/" +
-                repoOwner +
-                "/" +
-                repoName +
-                "/git/refs/heads/" +
-                branch,
+            repoOwner +
+            "/" +
+            repoName +
+            "/git/refs/heads/" +
+            branch,
             {
                 body: JSON.stringify({
                     ref: "refs/heads/" + branch,
@@ -196,6 +196,35 @@ export async function loadRepositoryList(page = 1, per_page = 5) {
         .auth(user)
         .get("/user/repos?sort=updated&page=" + page + "&per_page=" + per_page)
         .then(response => response.json())
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+
+/**
+ * Returns a Promise with the list of public repositories matching the query string.
+ * 
+ * The used endpoint '/search/repositories' is documented at 'https://docs.github.com/en/rest/reference/search#search-repositories'
+ * An example of the returned JSON structure can be found at 'https://api.github.com/search/repositories?q=tetris+language:assembly&sort=stars&order=desc'
+ * @param {string} query - the q parameter of the request. In the simplest case this is the repository name (or a part of it).
+ * @param {number} page
+ * @param {number} user - the number of repositories per page
+ * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
+ */
+export async function loadPublicRepositories(query, page = 1, per_page = 5) {
+    let user = localStorage.getItem("authId");
+    console.log("Search for " + query)
+    return pizzly
+        .integration("github")
+        .auth(user)
+        .get("/search/repositories?sort=stars"
+            + "&q=" + encodeURIComponent(query)
+            + "&page=" + page
+            + "&per_page=" + per_page)
+        .then(response => {
+            return response.json();
+        })
         .catch(err => {
             console.log(err);
         });
@@ -243,6 +272,36 @@ export async function searchRepositoryList(
             });
         await promise;
         page++;
+    }
+
+    // Search public repositories
+    if (!hasNextPage && searchResults.length < maxResults) {
+        promise = loadPublicRepositories("\"" + searchString + "\"" + " in:name", 1, 100)
+            .then(repositoryList => {
+                repositoryList = repositoryList.items
+                if (repositoryList instanceof Array) {
+                    repositoryList
+                        // Exclude repositories that are included as private already
+                        .filter(repo => !searchResults.find(privateRepo => repo.full_name === privateRepo.full_name))
+                        // Only include a repository if the full name matches exactly.
+                        // This is rather strict but including public repositories should be discouraged!
+                        .filter(repo => {
+                            return repo.full_name == searchString
+                        }
+                        )
+                        .forEach(repo => {
+                            console.log(repo.full_name)
+                            if (searchResults.length < maxResults) {
+                                repo.description = "This repository is public and Read-Only! You won't be able to edit it.";
+                                searchResults.push(repo);
+                            }
+                        });
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            });
+        await promise;
     }
     return searchResults;
 }
@@ -304,11 +363,11 @@ export async function loadRawFile(repoFullName, branch, filePath) {
     if (typeof branch !== "string" || typeof branch != "string") {
         console.log(
             "Invalid values for loadContentsForRepository. Given Repository full name: " +
-                repoFullName +
-                ", Branch:" +
-                branch +
-                ", file path: " +
-                filePath
+            repoFullName +
+            ", Branch:" +
+            branch +
+            ", file path: " +
+            filePath
         );
     } else {
         return pizzly
@@ -316,11 +375,11 @@ export async function loadRawFile(repoFullName, branch, filePath) {
             .auth(user)
             .get(
                 "/repos/" +
-                    repoFullName +
-                    "/contents/" +
-                    filePath +
-                    "?ref=" +
-                    branch
+                repoFullName +
+                "/contents/" +
+                filePath +
+                "?ref=" +
+                branch
             )
             .then(response => response.json())
             .then(response => decodeUnicode(response.content))
@@ -341,7 +400,7 @@ function decodeUnicode(str) {
     return decodeURIComponent(
         atob(str)
             .split("")
-            .map(function(c) {
+            .map(function (c) {
                 return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
             })
             .join("")
