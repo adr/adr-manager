@@ -296,13 +296,18 @@ export function createShortTitle(title) {
     // Example:
     //   In: [MADR](https://adr.github.io/madr/) 2.1.2
     //   Out: MADR 2.1.2
+    // Example 2:
+    //   In: Include in [adr-tools](https://github.com/npryce/adr-tools)
+    //   Out: Include in adr-tools
     // Quick solution; better: Use RegEx or ANTLR
     let idxOpeningBracket = result.indexOf("[");
     let idxClosingBracket = result.indexOf("]");
     let idxOpeningRoundedBracket = result.indexOf("(")
     let idxClosingRoundedBracket = result.indexOf(")")
-    if ((idxOpeningBracket == 0) && (idxOpeningBracket < idxClosingBracket) && (idxOpeningRoundedBracket == idxClosingBracket+1) && (idxClosingRoundedBracket > idxOpeningRoundedBracket)) {
-        result = result.substr(1, idxClosingBracket-1) +
+    if ((idxOpeningBracket >= 0) && (idxOpeningBracket < idxClosingBracket) && (idxOpeningRoundedBracket == idxClosingBracket+1) && (idxClosingRoundedBracket > idxOpeningRoundedBracket)) {
+        result =
+            (idxOpeningBracket > 0 ? result.substr(0, idxOpeningBracket) : "") +
+            result.substr(idxOpeningBracket+1, idxClosingBracket-idxOpeningBracket-1) +
             ((result.length > idxClosingRoundedBracket + 1) ? result.substr(idxClosingRoundedBracket + 1) : "");
     }
     return result;
