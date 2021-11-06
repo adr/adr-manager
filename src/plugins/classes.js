@@ -15,7 +15,6 @@ export class ArchitecturalDecisionRecord {
         links
     } = {}) {
         this.title = title || "";
-        this.shortTitle = createShortTitle(this.title);
         this.status = status || "";
         this.deciders = deciders || "";
         this.date = date || "";
