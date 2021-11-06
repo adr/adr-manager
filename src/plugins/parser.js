@@ -130,7 +130,7 @@ class MADRGenerator extends MADRListener {
     }
     /**
      *
-     * @param {string} optTitle
+     * @param {string} optTitle the title in the "Chosen option" part
      */
     getMostSimilarOptionTo(optTitle) {
         // Find the option with a very similar title.

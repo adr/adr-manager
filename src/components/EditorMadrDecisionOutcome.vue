@@ -6,7 +6,7 @@
                 <HelpIcon>
                     Select the option that you chose to use.
                     <div v-if="mode === 'basic'">
-                        Note that you can add consequences in Professional mode.
+                        Note that you can add consequences in professional mode.
                     </div>
                 </HelpIcon>
             </h3>
@@ -20,7 +20,7 @@
                 v-model="adr.decisionOutcome.chosenOption"
                 :items="
                     adr.consideredOptions.map(opt => {
-                        return opt.title;
+                        return opt.shortTitle;
                     })
                 "
                 label="Chosen option"
