@@ -32,6 +32,7 @@
                         </span>
                     </div>
                     <v-text-field
+                        data-cy="search-field-for-adding-repository"
                         v-model="searchText"
                         class="pl-8 pr-4 pt-0 mt-0"
                         hide-details

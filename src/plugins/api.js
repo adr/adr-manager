@@ -186,7 +186,7 @@ export async function pushToGitHub(newCommitSha) {
  *
  * An example of the returned JSON structure can be found at 'https://api.github.com/users/adr/repos'
  * @param {number} page
- * @param {number} user - the number of repoistories per page
+ * @param {number} per_page - the number of repositories per page
  * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
  */
 export async function loadRepositoryList(page = 1, per_page = 5) {
@@ -209,12 +209,11 @@ export async function loadRepositoryList(page = 1, per_page = 5) {
  * An example of the returned JSON structure can be found at 'https://api.github.com/search/repositories?q=tetris+language:assembly&sort=stars&order=desc'
  * @param {string} query - the q parameter of the request. In the simplest case this is the repository name (or a part of it).
  * @param {number} page
- * @param {number} user - the number of repositories per page
+ * @param {number} per_page - the number of repositories per page
  * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
  */
 export async function loadPublicRepositories(query, page = 1, per_page = 5) {
     let user = localStorage.getItem("authId");
-    console.log("Search for " + query)
     return pizzly
         .integration("github")
         .auth(user)
@@ -236,7 +235,7 @@ export async function loadPublicRepositories(query, page = 1, per_page = 5) {
  * An example of the returned JSON structure can be found at 'https://api.github.com/users/adr/repos'
  * @param {string} searchString - the string to search for
  * @param {number} maxResults - the maximum number of repositories
- * @param {number} searchResults - a list of results to append the
+ * @param {object[]} searchResults - a list of results to append the
  * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
  */
 export async function searchRepositoryList(
@@ -246,7 +245,6 @@ export async function searchRepositoryList(
 ) {
     let page = 1;
     let perPage = 100;
-
     let promise;
     let hasNextPage = true;
     while (searchResults.length < maxResults && hasNextPage) {
@@ -276,9 +274,9 @@ export async function searchRepositoryList(
 
     // Search public repositories
     if (!hasNextPage && searchResults.length < maxResults) {
-        promise = loadPublicRepositories("\"" + searchString + "\"" + " in:name", 1, 100)
+        promise = loadPublicRepositories("\"" + searchString + "\"" + " in:name fork:true", 1, 100)
             .then(repositoryList => {
-                repositoryList = repositoryList.items
+                repositoryList = repositoryList.items;
                 if (repositoryList instanceof Array) {
                     repositoryList
                         // Exclude repositories that are included as private already
@@ -290,7 +288,6 @@ export async function searchRepositoryList(
                         }
                         )
                         .forEach(repo => {
-                            console.log(repo.full_name)
                             if (searchResults.length < maxResults) {
                                 repo.description = "This repository is public and Read-Only! You won't be able to edit it.";
                                 searchResults.push(repo);
