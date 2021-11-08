@@ -876,7 +876,7 @@ D description
  * The actual result does not matter, just the immediate "convergence" of the result.
  */
 export const randomStrings = [
-    // Really just soem random non sense
+    // Really just some random nonsense
     "",
     "# ABC",
     `# This is a title

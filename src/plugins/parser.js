@@ -59,6 +59,9 @@ class MADRGenerator extends MADRListener {
         });
     }
 
+    /**
+     * Handles "Decision outcome"
+     */
     enterChosenOptionAndExplanation(ctx) {
         let rawDecisionOutcome = ctx.getText();
 
