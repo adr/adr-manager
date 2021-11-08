@@ -4,13 +4,17 @@ import antlr4 from "antlr4";
 import MADRLexer from "./parser/MADRLexer.js";
 import MADRParser from "./parser/MADRParser.js";
 import MADRListener from "./parser/MADRListener.js";
-import { ArchitecturalDecisionRecord } from "./classes.js";
+import { ArchitecturalDecisionRecord, createShortTitle } from "./classes.js";
 
 /**
  * Creates an ADR from a ParseTree by listening to a ParseTreeWalker.
  *
  * Use with '''antlr4.tree.ParseTreeWalker.DEFAULT.walk(generator, parseTree);'''
  * The parsed ADR is saved in the attribute 'adr'.
+ *
+ * Local variables:
+ *
+ * - currentOption: The current option, either the considered one or the current one handled at "Pros and Cons of the Options"
  */
 class MADRGenerator extends MADRListener {
     constructor() {
@@ -59,6 +63,9 @@ class MADRGenerator extends MADRListener {
         });
     }
 
+    /**
+     * Handles "Decision outcome"
+     */
     enterChosenOptionAndExplanation(ctx) {
         let rawDecisionOutcome = ctx.getText();
 
@@ -103,8 +110,17 @@ class MADRGenerator extends MADRListener {
         );
     }
 
+    /**
+     * Header after "Pros and Cons of the Options"
+     */
     enterOptionTitle(ctx) {
-        this.currentOption = this.getMostSimilarOptionTo(ctx.getText());
+        let title = ctx.getText();
+        this.currentOption = this.getMostSimilarOptionTo(title);
+        if (!this.currentOption) {
+            // No matching option found?
+            // Create a new one (otherwise the content of the pro/con list will get missing)
+            this.currentOption = this.adr.addOption({ title: title });
+        }
     }
 
     enterOptionDescription(ctx) {
@@ -130,7 +146,7 @@ class MADRGenerator extends MADRListener {
     }
     /**
      *
-     * @param {string} optTitle
+     * @param {string} optTitle the title in the "Chosen option" part
      */
     getMostSimilarOptionTo(optTitle) {
         // Find the option with a very similar title.
@@ -143,14 +159,14 @@ class MADRGenerator extends MADRListener {
         }
         // Else check if there is another (less) similar title.
         opt = this.adr.consideredOptions.find(function(opt) {
-            return this.matchOptionTitleMoreRelaxed(opt.title, optTitle);
+            return matchOptionTitleMoreRelaxed(opt.title, optTitle);
         }, this);
         if (opt) {
             // If a fitting option was found, return it.
             return opt;
         }
-        // If no fitting option is found, create a new option and return it.
-        return this.adr.addOption({ title: optTitle });
+        // just set the option to not found
+        return null;
     }
 
     /**
@@ -166,26 +182,6 @@ class MADRGenerator extends MADRListener {
         let trimmed1 = optTitle1.replace(/ /g, "").toLowerCase(); // Remove whitespaces and lower-case heading
         let trimmed2 = optTitle2.replace(/ /g, "").toLowerCase();
         return trimmed1 === trimmed2;
-    }
-
-    /**
-     * Option titles are similar, iff they are equal after
-     *  (1) removing all white spaces
-     *  (2) lower-casing them
-     * or one of these normalized titles is a prefix of the other title.
-     *
-     * @param {string} optTitle1
-     * @param {string} optTitle2
-     * @returns {boolean} True, iff the option titles are similar
-     */
-    matchOptionTitleMoreRelaxed(optTitle1, optTitle2) {
-        let trimmed1 = optTitle1.replace(/ /g, "").toLowerCase(); // Remove whitespaces and lower-case heading
-        let trimmed2 = optTitle2.replace(/ /g, "").toLowerCase();
-        return (
-            trimmed1 === trimmed2 ||
-            trimmed1.startsWith(trimmed2) ||
-            trimmed2.startsWith(trimmed1)
-        );
     }
 
     /**
@@ -327,20 +323,24 @@ export function adr2md(adrToParse) {
                 opt.pros.length > 0 ||
                 opt.cons.length > 0
             ) {
-                let res = total.concat("\n### " + opt.title + "\n\n");
+                let res = total.concat("\n### " + createShortTitle(opt.title) + "\n");
                 if (opt.description !== "") {
-                    res = res.concat(opt.description + "\n\n");
+                    res = res.concat("\n" + opt.description + "\n");
                 }
                 res = opt.pros.reduce(
                     (total, arg) =>
-                        total.concat("* Good, because " + arg + "\n"),
+                        total.concat("\n* Good, because " + arg),
                     res
                 );
                 res = opt.cons.reduce(
                     (total, arg) =>
-                        total.concat("* Bad, because " + arg + "\n"),
+                        total.concat("\n* Bad, because " + arg),
                     res
                 );
+                if ((opt.pros.length > 0) || (opt.cons.length > 0)) {
+                    // insert final new line
+                    res = res + "\n"
+                }
                 return res;
             } else {
                 return total;
@@ -384,4 +384,34 @@ export function naturalCase2snakeCase(natural) {
         .toLowerCase()
         .split(" ")
         .join("-");
+}
+
+
+/**
+ * Option titles are similar, iff
+ *  a) they are equal after
+ *    (1) removing all white spaces
+ *    (2) lower-casing them
+ * or
+ *   b) one of these normalized titles is a prefix of the other title.
+ * or
+ *   c) the chosen option is a sub title of the given option
+ *
+ * @param {string} titleFromOptionList
+ * @param {string} titleFromChosenOption
+ * @returns {boolean} True, iff the option titles are similar
+ */
+export function matchOptionTitleMoreRelaxed(titleFromOptionList, titleFromChosenOption) {
+    let trimmedTitleFromOptionList = titleFromOptionList.replace(/ /g, "").toLowerCase(); // Remove whitespaces and lower-case heading
+    let trimmedTitleFromChosenOption = titleFromChosenOption.replace(/ /g, "").toLowerCase();
+    let res = (
+        trimmedTitleFromOptionList === trimmedTitleFromChosenOption ||
+        trimmedTitleFromOptionList.startsWith(trimmedTitleFromChosenOption) ||
+        trimmedTitleFromChosenOption.startsWith(trimmedTitleFromOptionList) ||
+        titleFromChosenOption === createShortTitle(titleFromOptionList) ||
+        // in case we have issues with the short title generation, we at least check for a match of the first letters
+        // Example: "Include in [adr-tools](https://github.com/npryce/adr-tools), 924 stars as of 2018-06-14", we currently don't strip ", ..."
+        createShortTitle(titleFromOptionList).startsWith(titleFromChosenOption)
+    );
+    return res;
 }

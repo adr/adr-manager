@@ -1,4 +1,4 @@
-// Generated from MADR.g4 by ANTLR 4.9
+// Generated from MADR.g4 by ANTLR 4.9.2
 // jshint ignore: start
 import antlr4 from 'antlr4';
 import MADRListener from './MADRListener.js';
@@ -821,7 +821,7 @@ export default class MADRParser extends antlr4.Parser {
 	        this.enterOuterAlt(localctx, 1);
 	        this.state = 198; 
 	        this._errHandler.sync(this);
-	        let _alt = 1;
+	        var _alt = 1;
 	        do {
 	        	switch (_alt) {
 	        	case 1:
@@ -864,7 +864,7 @@ export default class MADRParser extends antlr4.Parser {
 	        this.enterOuterAlt(localctx, 1);
 	        this.state = 207; 
 	        this._errHandler.sync(this);
-	        let _alt = 1;
+	        var _alt = 1;
 	        do {
 	        	switch (_alt) {
 	        	case 1:
@@ -932,7 +932,7 @@ export default class MADRParser extends antlr4.Parser {
 	        this.enterOuterAlt(localctx, 1);
 	        this.state = 219; 
 	        this._errHandler.sync(this);
-	        let _alt = 1;
+	        var _alt = 1;
 	        do {
 	        	switch (_alt) {
 	        	case 1:
@@ -979,7 +979,7 @@ export default class MADRParser extends antlr4.Parser {
 	        this.enterOuterAlt(localctx, 1);
 	        this.state = 225; 
 	        this._errHandler.sync(this);
-	        let _alt = 1+1;
+	        var _alt = 1+1;
 	        do {
 	        	switch (_alt) {
 	        	case 1+1:
@@ -1032,7 +1032,7 @@ export default class MADRParser extends antlr4.Parser {
 	        this.enterOuterAlt(localctx, 1);
 	        this.state = 231; 
 	        this._errHandler.sync(this);
-	        let _alt = 1+1;
+	        var _alt = 1+1;
 	        do {
 	        	switch (_alt) {
 	        	case 1+1:
@@ -1148,7 +1148,7 @@ export default class MADRParser extends antlr4.Parser {
 	        this.enterOuterAlt(localctx, 1);
 	        this.state = 242;
 	        this._errHandler.sync(this);
-	        let _alt = this._interp.adaptivePredict(this._input,25,this._ctx)
+	        var _alt = this._interp.adaptivePredict(this._input,25,this._ctx)
 	        while(_alt!=2 && _alt!=antlr4.atn.ATN.INVALID_ALT_NUMBER) {
 	            if(_alt===1) {
 	                this.state = 239;
