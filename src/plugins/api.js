@@ -1,8 +1,10 @@
 /* This file contains any calls to the backend. */
 
-import Pizzly from "pizzly-js";
-import { Repository } from "./classes.js";
-import config from "../config";
+import Pizzly
+    from "pizzly-js";
+import {Repository} from "./classes.js";
+import config
+    from "../config";
 
 // API-Calls (functions return promises)
 // A pizzy-object to make request to github
@@ -84,7 +86,10 @@ export async function createBlobs(file) {
         .integration("github")
         .auth(localStorage.getItem("authId"))
         .post("/repos/" + repoOwner + "/" + repoName + "/git/blobs", {
-            body: JSON.stringify({ content: file, encoding: "utf-8" })
+            body: JSON.stringify({
+                content: file,
+                encoding: "utf-8"
+            })
         })
         .then(response => response.json())
         .then(body => body)
@@ -106,7 +111,10 @@ export async function createFileTree(lastCommitSha, folderTree) {
         .integration("github")
         .auth(localStorage.getItem("authId"))
         .post("/repos/" + repoOwner + "/" + repoName + "/git/trees", {
-            body: JSON.stringify({ base_tree: lastCommitSha, tree: folderTree })
+            body: JSON.stringify({
+                base_tree: lastCommitSha,
+                tree: folderTree
+            })
         })
         .then(response => response.json())
         .then(body => body)
@@ -185,6 +193,7 @@ export async function pushToGitHub(newCommitSha) {
  * Returns a Promise with the list of repositories accessible by the user.
  *
  * An example of the returned JSON structure can be found at 'https://api.github.com/users/adr/repos'
+ *
  * @param {number} page
  * @param {number} per_page - the number of repositories per page
  * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
@@ -201,10 +210,9 @@ export async function loadRepositoryList(page = 1, per_page = 5) {
         });
 }
 
-
 /**
  * Returns a Promise with the list of public repositories matching the query string.
- * 
+ *
  * The used endpoint '/search/repositories' is documented at 'https://docs.github.com/en/rest/reference/search#search-repositories'
  * An example of the returned JSON structure can be found at 'https://api.github.com/search/repositories?q=tetris+language:assembly&sort=stars&order=desc'
  * @param {string} query - the q parameter of the request. In the simplest case this is the repository name (or a part of it).
@@ -233,6 +241,7 @@ export async function loadPublicRepositories(query, page = 1, per_page = 5) {
  * Returns a Promise with the list of repositories that are accessible by the user and which full name contains the search string.
  *
  * An example of the returned JSON structure can be found at 'https://api.github.com/users/adr/repos'
+ *
  * @param {string} searchString - the string to search for
  * @param {number} maxResults - the maximum number of repositories
  * @param {object[]} searchResults - a list of results to append the
@@ -284,8 +293,8 @@ export async function searchRepositoryList(
                         // Only include a repository if the full name matches exactly.
                         // This is rather strict but including public repositories should be discouraged!
                         .filter(repo => {
-                            return repo.full_name == searchString
-                        }
+                                return repo.full_name == searchString
+                            }
                         )
                         .forEach(repo => {
                             if (searchResults.length < maxResults) {
@@ -440,14 +449,31 @@ export async function loadARepositoryContent(repoFullName, branchName) {
     let repoObject = new Repository({
         fullName: repoFullName,
         activeBranch: branchName,
+        adrPath: "",
         adrs: []
     });
 
     repoPromises.push(
         loadFileTreeOfRepository(repoFullName, branchName).then(data => {
-            // Find all files in the folder 'docs/adr' or 'doc/adr'
+            // Find all files in the folders 'docs/adr', 'doc/adr', ...
             let adrList = data.tree.filter(file => {
-                return file.path.startsWith("docs/adr/");
+                if (file.path.startsWith("docs/adr/")) {
+                    repoObject.adrPath = "docs/adr/";
+                    return true;
+                }
+                if (file.path.startsWith("doc/adr/")) {
+                    repoObject.adrPath = "doc/adr/";
+                    return true;
+                }
+                if (file.path.startsWith("docs/decisions/")) {
+                    repoObject.adrPath = "docs/decisions/";
+                    return true;
+                }
+                if (file.path.startsWith("adr/")) {
+                    repoObject.adrPath = "adr/";
+                    return true;
+                }
+                return false;
             });
 
             // Load the content of each ADR.

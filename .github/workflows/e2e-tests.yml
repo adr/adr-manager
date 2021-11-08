@@ -13,6 +13,10 @@ on:
       - "**/.eslintignore"
       - "**/.gitignore"
 
+concurrency:
+  group: e2etests
+  cancel-in-progress: true
+
 jobs:
   e2e-tests:
     name: Run on Cypress e2e tests on Chrome
