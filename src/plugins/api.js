@@ -404,6 +404,10 @@ export async function loadARepositoryContent(repoFullName, branchName) {
                     repoObject.adrPath = "docs/decisions/";
                     return true;
                 }
+                if (file.path.startsWith("adr/")) {
+                    repoObject.adrPath = "adr/";
+                    return true;
+                }
                 return false;
             });
 
