@@ -5,37 +5,36 @@
 
 ## Description
 
-[MADR](https://adr.github.io/madr/) is a markdown template for quickly capturing architectural decisions.
+[MADR](https://adr.github.io/madr/) is a Markdown template for quickly capturing architectural decisions.
 It offers a naming scheme and template to keep the layout of recorded decisions consistent. 
 Each decision is stored in a separate file.
 The ADR Manager currently only supports the management of MADRs stored in the folder `docs/adr` in GitHub repositories.
 
-## Quick start
+## Quick Start
 
 You can find the tool at https://adr.github.io/adr-manager.
 
-## Supported browsers
+## Supported Browsers
 
-Currently, our tool has been successfully tested in Chrome, Firefox and Opera.
+Currently, the tool has been successfully tested in Chrome, Firefox, and Opera.
 
 ### Usage
 
-1. After opening the tool, connect to GitHub. 
-    - The tool needs your permission to access your GitHub repositories and E-Mail-address.
-2. Add a GitHub repository.
-3. Now, you can edit any files in `docs/adr` of the GitHub repository. Edit existing ADRs or create new ones. 
+1. After opening the tool, connect to GitHub. The tool needs your permission to access your GitHub repositories and E-Mail-address.
+2. Add a GitHub repository. If your account does not have access to a repository with MADRs, you can simply fork one, e.g., https://github.com/JabRef/jabref or https://github.com/adr/adr-log.
+3. Now, you can edit any files in `docs/adr` of the GitHub repository.
+   Edit existing ADRs or create new ones.
    One of the most important features is the MADR Editor that allows you to quickly draft a MADR while ensuring a consistent format.
-   ![](docs/screenshots/editor-advanced-mode.png "This is the MADR Editor in Advanced mode.")
-4. Don't forget to push your changes to GitHub, once you're done with editing the files.
+   ![This is the MADR Editor in Advanced mode.](docs/screenshots/editor-advanced-mode.png)
+4. Do not forget to commit and push your changes to GitHub, once you are done with editing the files.
 
 Some technical notes:
 - The `authID` which enables the connection to GitHub and changes to ADRs are stored in the local storage. 
   That way they are not lost when you reload the page or restart the browser. 
   However, changes will be lost when you either
-    - Clear local storage.
-    - Press the `Disconnect` button.
-  
-  The general idea is that you directly push your changes to GitHub after editing.
+    - Clear local storage
+    - Press the `Disconnect` button
+- The general idea is that you directly push your changes to GitHub after editing.
 - During development, we may remove permissions for the OAuth App from time to time. 
   Don't be surprised, if you have to give permissions repeatedly. 
 
