@@ -13,10 +13,6 @@ on:
       - "**/.eslintignore"
       - "**/.gitignore"
 
-concurrency:
-  group: ${{ github.head_ref }}
-  cancel-in-progress: true
-
 jobs:
   unit-tests:
     name: Run unit tests with Jest
