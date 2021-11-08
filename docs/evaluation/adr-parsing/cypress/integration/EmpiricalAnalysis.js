@@ -5,7 +5,37 @@ var REPO_NAMES = [
     // These repositories are public, i.e., this test relies
     // on the functionality to load public repositories
     // into the ADR-Manager using the search field.
-    "adr/adr-log",
+    "adr-manager-anonymous/adr-j",
+    "adr-manager-anonymous/adr-log",
+    // "adr-manager-anonymous/adr-manager",
+    "adr-manager-anonymous/adr-tools",
+    "adr-manager-anonymous/architectural-decision-records",
+    "adr-manager-anonymous/blueprint",
+    "adr-manager-anonymous/cloud-on-k8s",
+    "adr-manager-anonymous/complaitkubernetes",
+    "adr-manager-anonymous/core",
+    "adr-manager-anonymous/digital-paper-edit-client",
+    "adr-manager-anonymous/digital-paper-edit-firebase",
+    "adr-manager-anonymous/docker-texlive",
+    "adr-manager-anonymous/docs",
+    "adr-manager-anonymous/e-adr",
+    "adr-manager-anonymous/ecar-charge-pricing",
+    "adr-manager-anonymous/experimenter",
+    "adr-manager-anonymous/fxa",
+    "adr-manager-anonymous/gadr",
+    "adr-manager-anonymous/island.is",
+    "adr-manager-anonymous/jabref",
+    "adr-manager-anonymous/log4brains",
+    "adr-manager-anonymous/madr",
+    "adr-manager-anonymous/monocle",
+    "adr-manager-anonymous/nodejs.dev",
+    "adr-manager-anonymous/odh-manifests",
+    "adr-manager-anonymous/python-tuf",
+    "adr-manager-anonymous/raiden",
+    "adr-manager-anonymous/raiden-services",
+    "adr-manager-anonymous/Sylius",
+    "adr-manager-anonymous/tuleap",
+    "adr-manager-anonymous/winery" /*
     "adr/madr",
     "npryce/adr-tools",
     "api-platform/core",
@@ -32,7 +62,7 @@ var REPO_NAMES = [
     "Sylius/Sylius", // <- Fixed typo
     "theupdateframework/python-tuf",
     "thomvaill/log4brains",
-    "UST-MICO/docs",
+    "UST-MICO/docs", */
 ]
 
 context("Empirically test if ADRs can be opened by the ADR-Manager and count how many are accepted by the parser without the 'Diff' screen.", () => {
