@@ -185,8 +185,9 @@ export async function pushToGitHub(newCommitSha) {
  * Returns a Promise with the list of repositories accessible by the user.
  *
  * An example of the returned JSON structure can be found at 'https://api.github.com/users/adr/repos'
+ *
  * @param {number} page
- * @param {number} user - the number of repoistories per page
+ * @param {number} user - the number of repositories per page
  * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
  */
 export async function loadRepositoryList(page = 1, per_page = 5) {
@@ -205,6 +206,7 @@ export async function loadRepositoryList(page = 1, per_page = 5) {
  * Returns a Promise with the list of repositories that are accessible by the user and which full name contains the search string.
  *
  * An example of the returned JSON structure can be found at 'https://api.github.com/users/adr/repos'
+ *
  * @param {string} searchString - the string to search for
  * @param {number} maxResults - the maximum number of repositories
  * @param {number} searchResults - a list of results to append the
