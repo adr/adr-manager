@@ -7,9 +7,14 @@ test("Markdown link followed by text", () => {
         .toBe("MADR 2.1.2")
 });
 
-test("Markdown link preceeded by text", () => {
-    expect(createShortTitle("Include in [adr-tools](https://github.com/npryce/adr-tools"))
+test("Markdown link preceded by text", () => {
+    expect(createShortTitle("Include in [adr-tools](https://github.com/npryce/adr-tools)"))
         .toBe("Include in adr-tools")
+});
+
+test("Wrong balancing of brackets", () => {
+    expect(createShortTitle("Include in [adr-tools](https://github.com/npryce/adr-tools"))
+        .toBe("Include in [adr-tools](https://github.com/npryce/adr-tools")
 });
 
 test("Single closing brace", () => {
