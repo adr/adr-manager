@@ -84,7 +84,6 @@ export class ArchitecturalDecisionRecord {
         this.highestOptionId = this.highestOptionId + 1;
         let newOpt = {
             title: title || "",
-            shortTitle: createShortTitle(title),
             description: description || "",
             pros: pros || [],
             cons: cons || [],

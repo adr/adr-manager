@@ -18,11 +18,7 @@
                 filled
                 class="pb-0 mb-0"
                 v-model="adr.decisionOutcome.chosenOption"
-                :items="
-                    adr.consideredOptions.map(opt => {
-                        return opt.shortTitle;
-                    })
-                "
+                :items="optionTitleList"
                 label="Chosen option"
             ></v-combobox>
         </v-card>
@@ -92,6 +88,7 @@
 import codemirror from "./EditorMadrCodemirror.vue";
 import EditorMadrList from "./EditorMadrList.vue";
 import HelpIcon from "./HelpIcon.vue";
+import {createShortTitle} from "@/plugins/classes";
 
 export default {
     name: "EditorMADR",
@@ -106,6 +103,11 @@ export default {
             type: String
         }
     },
-    data: () => ({})
+    data: () => ({}),
+    computed: {
+        optionTitleList() {
+            return this.adr.consideredOptions.map(opt => createShortTitle(opt.title));
+        }
+    }
 };
 </script>

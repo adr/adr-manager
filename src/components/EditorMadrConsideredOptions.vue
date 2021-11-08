@@ -432,7 +432,10 @@
 </template>
 
 <script>
-import { ArchitecturalDecisionRecord } from "@/plugins/classes";
+import {
+    ArchitecturalDecisionRecord,
+    createShortTitle
+} from "@/plugins/classes";
 import { store } from "@/plugins/store";
 
 import codemirror from "./EditorMadrCodemirror.vue";
@@ -467,7 +470,7 @@ export default {
     }),
     computed: {
         optionTitleList() {
-            return this.adr.consideredOptions.map(opt => opt.title);
+            return this.adr.consideredOptions.map(opt => createShortTitle(opt.title));
         },
         isModeTooLow() {
             return (
