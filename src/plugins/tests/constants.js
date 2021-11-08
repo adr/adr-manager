@@ -793,7 +793,8 @@ One level of subfolder, not nested
         })
     },
 
-    //
+// Option list misses one option of "Pros and Cons of the Options" (D)
+// Option names have only prefix matching (A <-> As, B <-> Bs)
     {
         md: `# Heading
 
@@ -876,7 +877,7 @@ D description
  * The actual result does not matter, just the immediate "convergence" of the result.
  */
 export const randomStrings = [
-    // Really just soem random non sense
+    // Really just some random nonsense
     "",
     "# ABC",
     `# This is a title
