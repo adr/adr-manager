@@ -1,4 +1,4 @@
-# ADR-Manager ![General cypress report](https://github.com/adr/adr-manager/workflows/General%20cypress%20report/badge.svg?branch=cypress-integration) [![GitHub license](https://img.shields.io/github/license/adr/adr-manager)](https://github.com/adr/adr-manager/blob/main/LICENSE) [![GitHub last commit](https://img.shields.io/github/last-commit/adr/adr-manager)](https://github.com/adr/adr-manager/commits/main) [![GitHub issues](https://img.shields.io/github/issues/adr/adr-manager)](https://github.com/adr/adr-manager/issues) [![GitHub stars](https://img.shields.io/github/stars/adr/adr-manager)](https://github.com/adr/adr-manager/stargazers)
+# ADR-Manager
 
 > A web-based application for the efficient creation and management of [architectural decision records (ADRs)](https://adr.github.io) in Markdown (MADR)
 
@@ -11,7 +11,7 @@ The ADR Manager currently only supports the management of MADRs stored in the fo
 
 ## Quick Start
 
-You can find the tool at https://adr.github.io/adr-manager.
+You can find the tool at https://adr-manager-anonymous.github.io/adr-manager.
 
 ## Supported Browsers
 
@@ -20,7 +20,7 @@ Currently, the tool has been successfully tested in Chrome, Firefox, and Opera.
 ### Usage
 
 1. After opening the tool, connect to GitHub. The tool needs your permission to access your GitHub repositories and email address.
-2. Add a GitHub repository. If your account does not have access to a repository with MADRs, you can simply fork one, e.g., <https://github.com/JabRef/jabref> or <https://github.com/adr/adr-log>.
+2. Add a GitHub repository. If your account does not have access to a repository with MADRs, you can simply fork one, e.g., <https://github.com/adr-manager-anonymous/adr-manager>.
 3. Now, you can edit any files in `docs/adr` of the GitHub repository.
    Edit existing ADRs or create new ones.
    One of the most important features is the MADR Editor that allows you to quickly draft a MADR while ensuring a consistent format.
@@ -69,7 +69,7 @@ You can either set `CYPRESS_PIZZLY_E2E_AUTH_ID` containing the `authId` or creat
 ```
 
 The value of `PIZZLY_E2E_AUTH_ID` needs to be a valid `authId` from an active Pizzly session, which you can obtain a) via the Pizzly dashboard (see below) or b) in the local storage (Chrome developer console -> Application -> Storage -> Local Storage -> `http://localhost:8080` -> `authId`)
-The involved GitHub account also needs to have developer access to this repo (`adr/adr-manager`).
+The involved GitHub account also needs to have developer access to this repo (`adr-manager-anonymous/adr-manager`).
 Lastly, don't forget to start the app before running the e2e tests (`npm run serve`).
 
 ### Useful Commands
@@ -121,9 +121,3 @@ If you do not want to use this instance, you can easily set up your own by follo
 1. Update `src/config.js` with the connection details of your Pizzly instance:
    - Set `pizzlyHost` to the base URL of your Pizzly instance, e.g. `https://{your-app-name}.herokuapp.com/`.
    - If you secured Pizzly: set `pizzlyPublishableKey` to your publishableKey.
-
-## Project Context
-
-This project was started as an undergraduate research project at the Institute of Software Engineering of the University of Stuttgart, Germany.
-It was also submitted to the [ICSE Score Contest 2021](https://conf.researchr.org/home/icse-2021/score-2021).
-Since then, it has been given over to the [ADR organization on GitHub](https://github.com/adr), where it is maintained and extended.
