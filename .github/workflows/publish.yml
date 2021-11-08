@@ -14,7 +14,7 @@ on:
       - "**/.gitignore"
 
 concurrency:
-  group: ${{ github.head_ref }}
+  group: publish
   cancel-in-progress: true
 
 jobs:
