@@ -25,7 +25,7 @@ Currently, the tool has been successfully tested in Chrome, Firefox, and Opera.
 3. Now, you can edit any files in `docs/adr` of the GitHub repository.
    Edit existing ADRs or create new ones.
    One of the most important features is the MADR Editor that allows you to quickly draft a MADR while ensuring a consistent format.
-   ![This is the MADR Editor in Advanced mode.](docs/screenshots/editor-advanced-mode.png)
+   ![This is a screenshot of the MADR editor.](docs/img/editor-screenshot.png)
 4. Do not forget to commit and push your changes to GitHub, once you are done with editing the files.
 
 Some technical notes:
