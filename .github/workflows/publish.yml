@@ -13,6 +13,10 @@ on:
       - "**/.eslintignore"
       - "**/.gitignore"
 
+concurrency:
+  group: publish
+  cancel-in-progress: true
+
 jobs:
   publish:
     name: Publish
