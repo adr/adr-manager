@@ -11,6 +11,10 @@ import { ArchitecturalDecisionRecord, createShortTitle } from "./classes.js";
  *
  * Use with '''antlr4.tree.ParseTreeWalker.DEFAULT.walk(generator, parseTree);'''
  * The parsed ADR is saved in the attribute 'adr'.
+ *
+ * Local variables:
+ *
+ * - currentOption: The current option, either the considered one or the current one handled at "Pros and Cons of the Options"
  */
 class MADRGenerator extends MADRListener {
     constructor() {
@@ -106,8 +110,17 @@ class MADRGenerator extends MADRListener {
         );
     }
 
+    /**
+     * Header after "Pros and Cons of the Options"
+     */
     enterOptionTitle(ctx) {
-        this.currentOption = this.getMostSimilarOptionTo(ctx.getText());
+        let title = ctx.getText();
+        this.currentOption = this.getMostSimilarOptionTo(title);
+        if (!this.currentOption) {
+            // No matching option found?
+            // Create a new one (otherwise the content of the pro/con list will get missing)
+            this.currentOption = this.adr.addOption({ title: title });
+        }
     }
 
     enterOptionDescription(ctx) {
@@ -152,8 +165,8 @@ class MADRGenerator extends MADRListener {
             // If a fitting option was found, return it.
             return opt;
         }
-        // If no fitting option is found, create a new option and return it.
-        return this.adr.addOption({ title: optTitle });
+        // just set the option to not found
+        return null;
     }
 
     /**
@@ -310,7 +323,7 @@ export function adr2md(adrToParse) {
                 opt.pros.length > 0 ||
                 opt.cons.length > 0
             ) {
-                let res = total.concat("\n### " + opt.shortTitle + "\n");
+                let res = total.concat("\n### " + createShortTitle(opt.title) + "\n");
                 if (opt.description !== "") {
                     res = res.concat("\n" + opt.description + "\n");
                 }

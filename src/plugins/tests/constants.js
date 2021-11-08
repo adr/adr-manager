@@ -793,7 +793,8 @@ One level of subfolder, not nested
         })
     },
 
-    //
+// Option list misses one option of "Pros and Cons of the Options" (D)
+// Option names have only prefix matching (A <-> As, B <-> Bs)
     {
         md: `# Heading
 
