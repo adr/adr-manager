@@ -33,12 +33,9 @@ jobs:
         with:
           message: 'Update files based on generated files'
           committer_email: actions@github.com
-          push: false
-          pull_strategy: 'NO-PULL'
-      - name: Push changes
-        run: |
-          git pull --rebase
-          git push
+          pull: '--rebase --autostash'
+          push: true
+          default_author: github_actions
       - uses: actions/upload-artifact@v2
         with:
           name: cypress-results
