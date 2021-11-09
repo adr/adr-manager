@@ -77,7 +77,7 @@ CHARACTER : (~[\n\t\r\f ] ) ;
 WS : [\f\t ] ; // White Space
 NEWLINE : [\r]?[\n] ; // Line Breaks
 
-LIST_MARKER : NEWLINE '* '; 
+LIST_MARKER : NEWLINE ('* ' | '- ');
 STATUS_MARKER : LIST_MARKER 'Status: ';
 DATE_MARKER : LIST_MARKER 'Date: ';
 DECIDERS_MARKER : LIST_MARKER 'Deciders: ';
