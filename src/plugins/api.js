@@ -204,8 +204,7 @@ export async function loadRepositoryList(searchText = "", page = 1, per_page = 5
             .auth(auth)
             .get(url)
             .then(response => {
-                console.log(response)
-                response.json()
+                return response.json()
             })
             .catch(err => {
                 console.log(err);
@@ -218,7 +217,7 @@ export async function loadRepositoryList(searchText = "", page = 1, per_page = 5
         return pizzly
             .integration("github")
             .auth(auth)
-            .get("/auth/repos?sort=updated&page=" + page + "&per_page=" + per_page)
+            .get("/user/repos?sort=updated&page=" + page + "&per_page=" + per_page)
             .then(response => response.json())
             .catch(err => {
                 console.log(err);
@@ -247,7 +246,7 @@ export async function searchRepositoryList(
     let promise;
     let hasNextPage = true;
     while (searchResults.length < maxResults && hasNextPage) {
-        promise = loadRepositoryList(page, perPage)
+        promise = loadRepositoryList("", page, perPage)
             .then(repositoryList => {
                 if (repositoryList instanceof Array) {
                     repositoryList
