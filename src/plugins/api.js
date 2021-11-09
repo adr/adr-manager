@@ -423,9 +423,9 @@ export async function loadARepositoryContent(repoFullName, branchName) {
     repoPromises.push(
         loadFileTreeOfRepository(repoFullName, branchName).then(data => {
             let adrList = data.tree.filter(file => {
-                let matchedPaths = Array.of("/docs/adr/", "/docs/adrs/", "/docs/ADR/", "/doc/adr/", "/docs/decisions/", "/docs/design/").filter(
+                let matchedPaths = Array.of("/docs/adr/", "/docs/adrs/", "/docs/ADR/", "/doc/adr/", "/docs/decisions/", "/docs/design/", "technical-overview/adr/").filter(
                     path => {
-                        let res = (("/" + file.path).includes(path)) || (file.path.startsWith("adr"));
+                        let res = (("/" + file.path).includes(path)) || (file.path.startsWith("adr/"));
                         return res
                     }
                 );
