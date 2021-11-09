@@ -68,4 +68,4 @@ Docs can be found at https://vuex.vuejs.org/.
 Implement a state manager from scratch as described at https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch.
 
 * Good, because GUI and functionality are split better. Debugging is easier.
-* Good, because  it's a compromise between using Vuex and using no global state.
+* Good, because it's a compromise between using Vuex and using no global state.
