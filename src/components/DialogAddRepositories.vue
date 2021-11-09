@@ -230,17 +230,17 @@ export default {
         this.loadRepositoryList();
     },
     methods: {
-        /** Loads all (added and unadded) repositories the user is authorized to access into repositoriesCurrentPage.
+        /**
+         * Loads all (added and unadded) repositories the user is authorized to access into repositoriesCurrentPage.
          */
         loadRepositoryList() {
             this.countLoadingPromises++;
-            loadRepositoryList(this.page, this.perPage)
+            loadRepositoryList(this.searchText, this.page, this.perPage)
                 .then(res => {
                     if (!Array.isArray(res)) {
-                        throw "Couldn't load repos.";
+                        throw "Could not load repository list.";
                     }
                     this.repositoriesCurrentPage = res;
-
                     this.countLoadingPromises--;
                 })
                 .catch(error => {
@@ -249,9 +249,15 @@ export default {
                 });
         },
 
-        /**Search for repositories which full name contains the search text.
+        /**
+         * Search for repositories which full name contains the search text.
          */
         searchRepositories: _.debounce(function() {
+            // quick solution to allow full repository URLs
+            if (typeof this.searchText === "string" && this.searchText.startsWith("https://")) {
+                console.log("Loading https:// repository")
+                this.loadRepositoryList();
+            }
             if (
                 typeof this.searchText !== "string" ||
                 this.searchText.trim() === ""
@@ -268,7 +274,7 @@ export default {
                     .then(repos => {
                         console.log("Loaded Repos", repos);
                         if (!Array.isArray(repos)) {
-                            throw "Couldn't load repos.";
+                            throw "Could not search repository list.";
                         }
                         // this.repositoriesCurrentPage = repos;
                         this.countLoadingPromises--;
@@ -280,7 +286,8 @@ export default {
             }
         }, 500),
 
-        /**Filters the list to only include only repos which are not staged yet.
+        /**
+         * Filters the list to only include only repos which are not staged yet.
          */
         filterUnstagedRepositories(repoList) {
             return this.filterUnaddedRepositories(repoList).filter(
@@ -291,7 +298,8 @@ export default {
             );
         },
 
-        /**Filters the list to only include only repos which are not added yet.
+        /**
+         * Filters the list to only include only repos which are not added yet.
          */
         filterUnaddedRepositories(repoList) {
             return repoList.filter(

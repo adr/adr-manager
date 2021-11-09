@@ -190,16 +190,39 @@ export async function pushToGitHub(newCommitSha) {
  * @param {number} user - the number of repositories per page
  * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
  */
-export async function loadRepositoryList(page = 1, per_page = 5) {
-    let user = localStorage.getItem("authId");
-    return pizzly
-        .integration("github")
-        .auth(user)
-        .get("/user/repos?sort=updated&page=" + page + "&per_page=" + per_page)
-        .then(response => response.json())
-        .catch(err => {
-            console.log(err);
-        });
+export async function loadRepositoryList(searchText = "", page = 1, per_page = 5) {
+    let auth = localStorage.getItem("authId");
+    console.log("auth: " + auth)
+    if (typeof searchText === "string" && searchText.startsWith("https://github.com/")) {
+        let repoRegExp = new RegExp("https:\\/\\/github\\.com\\/([^/]+)\\/([^/]+)")
+        let match = repoRegExp.exec(searchText)
+        let url = "/repos/" + match[1] + "/" + match[2];
+        console.log("url: " + url);
+        // auth entered URL
+        let repoInfo = pizzly
+            .integration("github")
+            .auth(auth)
+            .get(url)
+            .then(response => {
+                return response.json()
+            })
+            .catch(err => {
+                console.log(err);
+                return "[]";
+            });
+        return repoInfo.then(
+            repoInfo => Array.of(repoInfo)
+        )
+    } else {
+        return pizzly
+            .integration("github")
+            .auth(auth)
+            .get("/user/repos?sort=updated&page=" + page + "&per_page=" + per_page)
+            .then(response => response.json())
+            .catch(err => {
+                console.log(err);
+            });
+    }
 }
 
 /**
@@ -223,7 +246,7 @@ export async function searchRepositoryList(
     let promise;
     let hasNextPage = true;
     while (searchResults.length < maxResults && hasNextPage) {
-        promise = loadRepositoryList(page, perPage)
+        promise = loadRepositoryList("", page, perPage)
             .then(repositoryList => {
                 if (repositoryList instanceof Array) {
                     repositoryList
