@@ -9,7 +9,7 @@ concurrency:
 
 jobs:
   eval-tests:
-    name: Run on Cypress e2e tests on Chrome
+    name: emperical analysis
     runs-on: ubuntu-latest
     container: cypress/browsers:node12.18.3-chrome87-ff82
     steps:
@@ -24,6 +24,7 @@ jobs:
           CYPRESS_PIZZLY_E2E_AUTH_ID: ${{ secrets.PIZZLY_E2E_AUTH_ID }}
         run: |
           npm run serve &
+          cd docs/evaluation/adr-parsing
           npm run tests:chrome
         continue-on-error: false
       - name: Commit changes
@@ -37,3 +38,9 @@ jobs:
         run: |
           git pull --rebase
           git push
+      - uses: actions/upload-artifact@v2
+        with:
+          name: cypress-results
+          path: |
+            docs/evaluation/adr-parsing/cypress/screenshots/
+            docs/evaluation/adr-parsing/cypress/videos/
