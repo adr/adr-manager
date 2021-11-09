@@ -118,7 +118,7 @@ context("Empirically test if ADRs can be opened by the ADR-Manager and count how
             // add the repo
             cy.log(REPO_NAMES[i]);
             cy.get("[data-cy=search-field-for-adding-repository]")
-                .type(REPO_NAMES[i]);
+                .type("https://github.com/" + REPO_NAMES[i]);
             cy.contains(REPO_NAMES[i])
                 .click();
             cy.get("[data-cy=addRepoDialog]").click({ force: true });
