@@ -75,7 +75,7 @@ WORD : CHARACTER+;
 CHARACTER : (~[\n\t\r\f ] ) ;
 
 WS : [\f\t ] ; // White Space
-NEWLINE : [\r\n] ; // Line Breaks
+NEWLINE : [\r]?[\n] ; // Line Breaks
 
 LIST_MARKER : NEWLINE '* '; 
 STATUS_MARKER : LIST_MARKER 'Status: ';
