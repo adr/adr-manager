@@ -1,6 +1,7 @@
 name: Parsing Evaluation
 
 on:
+  push:
   workflow_dispatch:
 
 concurrency:
