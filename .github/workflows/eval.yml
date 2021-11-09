@@ -1,0 +1,44 @@
+name: Parsing Evaluation
+
+on:
+  push:
+  workflow_dispatch:
+
+concurrency:
+  group: evaltests
+  cancel-in-progress: true
+
+jobs:
+  eval-tests:
+    name: emperical analysis
+    runs-on: ubuntu-latest
+    container: cypress/browsers:node12.18.3-chrome87-ff82
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies and verify Cypress
+        run: |
+          npm ci
+          cd docs/evaluation/adr-parsing
+          $(npm bin)/cypress verify
+      - name: Run Cypress tests
+        env:
+          CYPRESS_PIZZLY_E2E_AUTH_ID: ${{ secrets.PIZZLY_E2E_AUTH_ID }}
+        run: |
+          npm run serve &
+          cd docs/evaluation/adr-parsing
+          npx cypress run --spec "./cypress/integration/EmpiricalAnalysis.js" || true
+        continue-on-error: false
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v7
+        with:
+          message: 'Update files based on generated files'
+          committer_email: actions@github.com
+          pull: '--rebase --autostash'
+          push: true
+          default_author: github_actions
+      - uses: actions/upload-artifact@v2
+        with:
+          name: cypress-results
+          path: |
+            docs/evaluation/adr-parsing/cypress/screenshots/
+            docs/evaluation/adr-parsing/cypress/videos/
