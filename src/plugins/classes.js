@@ -193,8 +193,9 @@ export class Repository {
     }
 
     /**
-     * Constructs a repositoryy object from a string.
-     * Useffull when loading repositories from LocalStorage
+     * Constructs a repository object from a string.
+     * Useful when loading repositories from LocalStorage
+     *
      * @param {string} json
      */
     static constructFromString(json) {
