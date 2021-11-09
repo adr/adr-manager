@@ -1,8 +1,10 @@
 /* This file contains any calls to the backend. */
 
-import Pizzly from "pizzly-js";
-import { Repository } from "./classes.js";
-import config from "../config";
+import Pizzly
+    from "pizzly-js";
+import {Repository} from "./classes.js";
+import config
+    from "../config";
 
 // API-Calls (functions return promises)
 // A pizzy-object to make request to github
@@ -84,7 +86,10 @@ export async function createBlobs(file) {
         .integration("github")
         .auth(localStorage.getItem("authId"))
         .post("/repos/" + repoOwner + "/" + repoName + "/git/blobs", {
-            body: JSON.stringify({ content: file, encoding: "utf-8" })
+            body: JSON.stringify({
+                content: file,
+                encoding: "utf-8"
+            })
         })
         .then(response => response.json())
         .then(body => body)
@@ -106,7 +111,10 @@ export async function createFileTree(lastCommitSha, folderTree) {
         .integration("github")
         .auth(localStorage.getItem("authId"))
         .post("/repos/" + repoOwner + "/" + repoName + "/git/trees", {
-            body: JSON.stringify({ base_tree: lastCommitSha, tree: folderTree })
+            body: JSON.stringify({
+                base_tree: lastCommitSha,
+                tree: folderTree
+            })
         })
         .then(response => response.json())
         .then(body => body)
@@ -162,11 +170,11 @@ export async function pushToGitHub(newCommitSha) {
         .auth(localStorage.getItem("authId"))
         .post(
             "/repos/" +
-                repoOwner +
-                "/" +
-                repoName +
-                "/git/refs/heads/" +
-                branch,
+            repoOwner +
+            "/" +
+            repoName +
+            "/git/refs/heads/" +
+            branch,
             {
                 body: JSON.stringify({
                     ref: "refs/heads/" + branch,
@@ -192,7 +200,6 @@ export async function pushToGitHub(newCommitSha) {
  */
 export async function loadRepositoryList(searchText = "", page = 1, per_page = 5) {
     let auth = localStorage.getItem("authId");
-    console.log("auth: " + auth)
     if (typeof searchText === "string" && searchText.startsWith("https://github.com/")) {
         let repoRegExp = new RegExp("https:\\/\\/github\\.com\\/([^/]+)\\/([^/]+)")
         let match = repoRegExp.exec(searchText)
@@ -329,11 +336,11 @@ export async function loadRawFile(repoFullName, branch, filePath) {
     if (typeof branch !== "string" || typeof branch != "string") {
         console.log(
             "Invalid values for loadContentsForRepository. Given Repository full name: " +
-                repoFullName +
-                ", Branch:" +
-                branch +
-                ", file path: " +
-                filePath
+            repoFullName +
+            ", Branch:" +
+            branch +
+            ", file path: " +
+            filePath
         );
     } else {
         return pizzly
@@ -341,11 +348,11 @@ export async function loadRawFile(repoFullName, branch, filePath) {
             .auth(user)
             .get(
                 "/repos/" +
-                    repoFullName +
-                    "/contents/" +
-                    filePath +
-                    "?ref=" +
-                    branch
+                repoFullName +
+                "/contents/" +
+                filePath +
+                "?ref=" +
+                branch
             )
             .then(response => response.json())
             .then(response => decodeUnicode(response.content))
@@ -366,7 +373,7 @@ function decodeUnicode(str) {
     return decodeURIComponent(
         atob(str)
             .split("")
-            .map(function(c) {
+            .map(function (c) {
                 return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
             })
             .join("")
@@ -415,25 +422,10 @@ export async function loadARepositoryContent(repoFullName, branchName) {
 
     repoPromises.push(
         loadFileTreeOfRepository(repoFullName, branchName).then(data => {
-            // Find all files in the folders 'docs/adr', 'doc/adr', ...
             let adrList = data.tree.filter(file => {
-                if (file.path.startsWith("docs/adr/")) {
-                    repoObject.adrPath = "docs/adr/";
-                    return true;
-                }
-                if (file.path.startsWith("doc/adr/")) {
-                    repoObject.adrPath = "doc/adr/";
-                    return true;
-                }
-                if (file.path.startsWith("docs/decisions/")) {
-                    repoObject.adrPath = "docs/decisions/";
-                    return true;
-                }
-                if (file.path.startsWith("adr/")) {
-                    repoObject.adrPath = "adr/";
-                    return true;
-                }
-                return false;
+                return Array.of("docs/adr/", "doc/adr/", "docs/decisions/", "docs/design/", "adr/").filter(
+                    path => file.path.startsWith(path)
+                ).length > 0;
             });
 
             // Load the content of each ADR.
@@ -466,8 +458,7 @@ export async function loadARepositoryContent(repoFullName, branchName) {
                 );
             });
             console.log("adrList", repoObject.adrs);
-        })
-    );
+        }));
     await Promise.all(repoPromises); // Wait until all file trees are loaded.
     await Promise.all(adrPromises); // Wait until all raw contents are loaded.
     return repoObject;
