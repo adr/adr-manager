@@ -195,7 +195,7 @@ export async function pushToGitHub(newCommitSha) {
  * An example of the returned JSON structure can be found at 'https://api.github.com/users/adr/repos'
  *
  * @param {number} page
- * @param {number} user - the number of repositories per page
+ * @param {number} per_page - the number of repositories per page
  * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
  */
 export async function loadRepositoryList(searchText = "", page = 1, per_page = 5) {
@@ -239,7 +239,7 @@ export async function loadRepositoryList(searchText = "", page = 1, per_page = 5
  *
  * @param {string} searchString - the string to search for
  * @param {number} maxResults - the maximum number of repositories
- * @param {number} searchResults - a list of results to append the
+ * @param {object[]} searchResults - a list of results to append the
  * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
  */
 export async function searchRepositoryList(

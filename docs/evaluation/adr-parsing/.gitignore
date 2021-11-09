@@ -1,0 +1,5 @@
+cypress/plugins/index.js
+cypress/screenshots/*
+cypress/support/commands.js
+cypress/support/index.js
+cypress/videos/*
