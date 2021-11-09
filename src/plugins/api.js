@@ -198,43 +198,38 @@ export async function pushToGitHub(newCommitSha) {
  * @param {number} per_page - the number of repositories per page
  * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
  */
-export async function loadRepositoryList(page = 1, per_page = 5) {
-    let user = localStorage.getItem("authId");
-    return pizzly
-        .integration("github")
-        .auth(user)
-        .get("/user/repos?sort=updated&page=" + page + "&per_page=" + per_page)
-        .then(response => response.json())
-        .catch(err => {
-            console.log(err);
-        });
-}
-
-/**
- * Returns a Promise with the list of public repositories matching the query string.
- *
- * The used endpoint '/search/repositories' is documented at 'https://docs.github.com/en/rest/reference/search#search-repositories'
- * An example of the returned JSON structure can be found at 'https://api.github.com/search/repositories?q=tetris+language:assembly&sort=stars&order=desc'
- * @param {string} query - the q parameter of the request. In the simplest case this is the repository name (or a part of it).
- * @param {number} page
- * @param {number} per_page - the number of repositories per page
- * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
- */
-export async function loadPublicRepositories(query, page = 1, per_page = 5) {
-    let user = localStorage.getItem("authId");
-    return pizzly
-        .integration("github")
-        .auth(user)
-        .get("/search/repositories?sort=stars"
-            + "&q=" + encodeURIComponent(query)
-            + "&page=" + page
-            + "&per_page=" + per_page)
-        .then(response => {
-            return response.json();
-        })
-        .catch(err => {
-            console.log(err);
-        });
+export async function loadRepositoryList(searchText = "", page = 1, per_page = 5) {
+    let auth = localStorage.getItem("authId");
+    if (typeof searchText === "string" && searchText.startsWith("https://github.com/")) {
+        let repoRegExp = new RegExp("https:\\/\\/github\\.com\\/([^/]+)\\/([^/]+)")
+        let match = repoRegExp.exec(searchText)
+        let url = "/repos/" + match[1] + "/" + match[2];
+        console.log("url: " + url);
+        // auth entered URL
+        let repoInfo = pizzly
+            .integration("github")
+            .auth(auth)
+            .get(url)
+            .then(response => {
+                return response.json()
+            })
+            .catch(err => {
+                console.log(err);
+                return "[]";
+            });
+        return repoInfo.then(
+            repoInfo => Array.of(repoInfo)
+        )
+    } else {
+        return pizzly
+            .integration("github")
+            .auth(auth)
+            .get("/user/repos?sort=updated&page=" + page + "&per_page=" + per_page)
+            .then(response => response.json())
+            .catch(err => {
+                console.log(err);
+            });
+    }
 }
 
 /**
@@ -254,10 +249,11 @@ export async function searchRepositoryList(
 ) {
     let page = 1;
     let perPage = 100;
+
     let promise;
     let hasNextPage = true;
     while (searchResults.length < maxResults && hasNextPage) {
-        promise = loadRepositoryList(page, perPage)
+        promise = loadRepositoryList("", page, perPage)
             .then(repositoryList => {
                 if (repositoryList instanceof Array) {
                     repositoryList
@@ -279,35 +275,6 @@ export async function searchRepositoryList(
             });
         await promise;
         page++;
-    }
-
-    // Search public repositories
-    if (!hasNextPage && searchResults.length < maxResults) {
-        promise = loadPublicRepositories("\"" + searchString + "\"" + " in:name fork:true", 1, 100)
-            .then(repositoryList => {
-                repositoryList = repositoryList.items;
-                if (repositoryList instanceof Array) {
-                    repositoryList
-                        // Exclude repositories that are included as private already
-                        .filter(repo => !searchResults.find(privateRepo => repo.full_name === privateRepo.full_name))
-                        // Only include a repository if the full name matches exactly.
-                        // This is rather strict but including public repositories should be discouraged!
-                        .filter(repo => {
-                                return repo.full_name == searchString
-                            }
-                        )
-                        .forEach(repo => {
-                            if (searchResults.length < maxResults) {
-                                repo.description = "This repository is public and Read-Only! You won't be able to edit it.";
-                                searchResults.push(repo);
-                            }
-                        });
-                }
-            })
-            .catch(err => {
-                console.log(err);
-            });
-        await promise;
     }
     return searchResults;
 }
@@ -455,25 +422,15 @@ export async function loadARepositoryContent(repoFullName, branchName) {
 
     repoPromises.push(
         loadFileTreeOfRepository(repoFullName, branchName).then(data => {
-            // Find all files in the folders 'docs/adr', 'doc/adr', ...
             let adrList = data.tree.filter(file => {
-                if (file.path.startsWith("docs/adr/")) {
-                    repoObject.adrPath = "docs/adr/";
-                    return true;
-                }
-                if (file.path.startsWith("doc/adr/")) {
-                    repoObject.adrPath = "doc/adr/";
-                    return true;
-                }
-                if (file.path.startsWith("docs/decisions/")) {
-                    repoObject.adrPath = "docs/decisions/";
-                    return true;
-                }
-                if (file.path.startsWith("adr/")) {
-                    repoObject.adrPath = "adr/";
-                    return true;
-                }
-                return false;
+                let matchedPaths = Array.of("/docs/adr/", "/docs/adrs/", "/docs/ADR/", "/doc/adr/", "/docs/decisions/", "/docs/design/").filter(
+                    path => {
+                        let res = (("/" + file.path).includes(path)) || (file.path.startsWith("adr"));
+                        return res
+                    }
+                );
+                let res = matchedPaths.length > 0;
+                return res;
             });
 
             // Load the content of each ADR.
@@ -506,8 +463,7 @@ export async function loadARepositoryContent(repoFullName, branchName) {
                 );
             });
             console.log("adrList", repoObject.adrs);
-        })
-    );
+        }));
     await Promise.all(repoPromises); // Wait until all file trees are loaded.
     await Promise.all(adrPromises); // Wait until all raw contents are loaded.
     return repoObject;
