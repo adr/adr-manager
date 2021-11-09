@@ -26,7 +26,7 @@ jobs:
         run: |
           npm run serve &
           cd docs/evaluation/adr-parsing
-          npm run tests:chrome
+          npx cypress run --spec "./cypress/integration/EmpiricalAnalysis.js"
         continue-on-error: false
       - name: Commit changes
         uses: EndBug/add-and-commit@v7
