@@ -172,7 +172,8 @@ export default {
         }
     },
     methods: {
-        /**Opens the ADR.
+        /**
+         * Opens the ADR.
          *
          * Checks for parsing issues.
          * Opens the edited markdown of the parameter adr file.
@@ -183,7 +184,9 @@ export default {
             let md = adrFile.editedMd;
             this.dValue = md;
             let tmpAdr = md2adr(md);
-            if (this.dValue === adr2md(tmpAdr)) {
+            let originalWithoutWhitespace = this.dValue.replace(/[ \r\n]/g, "").replace(/- /g, "* ");
+            let roundtrippedWithoutWhiteSpace = adr2md(tmpAdr).replace(/[ \r\n]/g, "").replace(/- /g, "* ");
+            if (originalWithoutWhitespace === roundtrippedWithoutWhiteSpace) {
                 // If the parser did a perfect job, update the ADR.
                 this.adr = tmpAdr;
                 if (this.tab === "Convert") {

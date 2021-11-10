@@ -3,17 +3,17 @@ grammar MADR;
 
 start : 
 	HEADING_PREFIX title NEWLINE wslbs 
-	( STATUS_MARKER status wslbs )?
-	( DECIDERS_MARKER deciders wslbs )?
-	( DATE_MARKER date NEWLINE wslbs )?
-	( TECHNICAL_STORY_MARKER technicalStory wslbs )?
+	( STATUS_MARKER status (WS OPTIONAL_MAKER)? wslbs )?
+	( DECIDERS_MARKER deciders (WS OPTIONAL_MAKER)? wslbs )?
+	( DATE_MARKER date (WS OPTIONAL_MAKER)? NEWLINE wslbs )?
+	( TECHNICAL_STORY_MARKER technicalStory (WS OPTIONAL_MAKER)? wslbs )?
 	( CONTEXT_AND_PROBLEM_STATEMENT wslbs )?
 	( NEWLINE contextAndProblemStatement wslbs )? // Text without a heading is interpreted as context and problem statement
-	( DECISION_DRIVERS_HEADING wslbs decisionDrivers wslbs )?
+	( DECISION_DRIVERS_HEADING (WS OPTIONAL_MAKER)? wslbs decisionDrivers wslbs )?
 	( CONSIDERED_OPTIONS_HEADING wslbs consideredOptions wslbs )?
 	( DECISION_OUTCOME_HEADING wslbs decisionOutcome wslbs )?
-	( PROS_AND_CONS_OF_THE_OPTIONS_HEADING wslbs prosAndConsOfOptions wslbs )?
-	( LINKS_HEADING wslbs links wslbs )?
+	( PROS_AND_CONS_OF_THE_OPTIONS_HEADING (WS OPTIONAL_MAKER)? wslbs prosAndConsOfOptions wslbs )?
+	( LINKS_HEADING (WS OPTIONAL_MAKER)? wslbs links wslbs )?
 	EOF
 	;
 
@@ -35,8 +35,8 @@ decisionDrivers : list ;
 consideredOptions : list ;
 
 decisionOutcome : wslbs chosenOptionAndExplanation 
-	(wslbs POSITIVE_CONSEQUENCES_HEADING positiveConsequences)?
-	(wslbs NEGATIVE_CONSEQUENCES_HEADING negativeConsequences)? ;
+	(wslbs POSITIVE_CONSEQUENCES_HEADING (WS OPTIONAL_MAKER)? positiveConsequences)?
+	(wslbs NEGATIVE_CONSEQUENCES_HEADING (WS OPTIONAL_MAKER)? negativeConsequences)? ;
 
 prosAndConsOfOptions : (optionSection wslbs)+ ;
 
@@ -75,12 +75,13 @@ WORD : CHARACTER+;
 CHARACTER : (~[\n\t\r\f ] ) ;
 
 WS : [\f\t ] ; // White Space
-NEWLINE : [\r\n] ; // Line Breaks
+NEWLINE : [\r]?[\n] ; // Line Breaks
 
-LIST_MARKER : NEWLINE '* '; 
+LIST_MARKER : NEWLINE ('* ' | '- ');
 STATUS_MARKER : LIST_MARKER 'Status: ';
 DATE_MARKER : LIST_MARKER 'Date: ';
 DECIDERS_MARKER : LIST_MARKER 'Deciders: ';
+OPTIONAL_MAKER: '<!-- optional -->';
 TECHNICAL_STORY_MARKER : NEWLINE 'Technical Story: ';
 
 HEADING_PREFIX : '# ' ; // Start of a Heading
