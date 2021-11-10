@@ -1,7 +1,13 @@
 
 # Parser test
 
-## How to run the test
+## Manual test
+
+The results of the manual check are included in [adr-parsing-manual-results.csv](./adr-parsing-manual-results.csv).
+
+## Automatic test
+
+An automatic test checking whether an ADR can be parsed was implemented.
 
 ### Prerequisites
 
@@ -58,6 +64,6 @@
 ### View results
 
 * `cypress/fixtures/CounterAdrsPerRepo.json`: Number of all ADRs per repository.
-* `cypress/fixtures/CounterDiffPerRepo.json`: Number of times the Convert-Tab was opened per repository.
+* `cypress/fixtures/CounterDiffPerRepo.json`: Number of times the Convert tab was opened per repository.
 * `cypress/fixtures/Counter{Diff|Adrs}AllRepos.json`: Total numbers, i.e., sum of the above per-repository-counters.
 * `cypress/videos/EmpiricalAnalysis.js.mp4`: If the test was run with `npx cypress run --spec` a video is generated in `cypress/videos` where you can watch cypress clicking through the repositories. (Or possibly check what went wrong in case of failures.)
