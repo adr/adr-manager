@@ -184,8 +184,8 @@ export default {
             let md = adrFile.editedMd;
             this.dValue = md;
             let tmpAdr = md2adr(md);
-            let originalWithoutWhitespace = this.dValue.replace(/[ \r\n]/g, "");
-            let roundtrippedWithoutWhiteSpace = adr2md(tmpAdr).replace(/[ \r\n]/g, "");
+            let originalWithoutWhitespace = this.dValue.replace(/[ \r\n]/g, "").replace(/- /g, "* ");
+            let roundtrippedWithoutWhiteSpace = adr2md(tmpAdr).replace(/[ \r\n]/g, "").replace(/- /g, "* ");
             if (originalWithoutWhitespace === roundtrippedWithoutWhiteSpace) {
                 // If the parser did a perfect job, update the ADR.
                 this.adr = tmpAdr;
