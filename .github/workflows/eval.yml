@@ -2,6 +2,13 @@ name: Parsing Evaluation
 
 on:
   push:
+    paths-ignore:
+      - "**/docs/**"
+      - "**/README.md"
+      - "**/LICENSE"
+      - "**/.editorconfig"
+      - "**/.eslintignore"
+      - "**/.gitignore"
   workflow_dispatch:
 
 concurrency:
