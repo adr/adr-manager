@@ -5,7 +5,7 @@
             <img src="../assets/logo.png" alt="ADR-Manager" height="90%" />
             <v-spacer></v-spacer>
             <a
-                href="https://github.com/koppor/adr-manager"
+                href="https://github.com/adr/adr-manager"
                 target="_blank"
                 style="color: white;"
             >
