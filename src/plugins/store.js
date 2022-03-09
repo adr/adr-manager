@@ -331,36 +331,37 @@ export const store = new Vue({
         /**
          * Gets the username from GitHub in the response.
          */
-        setName() {
-            getUserName()
-                .then(res => {
-                    // Does not use the name for the commit, despite uses default the username
-                    if (res.name === null) {
-                        this.name = res.login;
-                    } else {
-                        this.name = res.name;
-                    }
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+        async setName() {
+            try {
+                const res = await getUserName();
+                // Does not use the name for the commit, despite uses default the username
+                if (res.name === null) {
+                    this.name = res.login;
+                } else {
+                    this.name = res.name;
+                }
+            } catch (error) {
+                console.error(error);
+            }
         },
 
         /**
          * Gets the email from GitHub in the response.
          */
-        setEmail() {
-            getUserEmail()
-                .then(res => {
+        async setEmail() {
+            try {
+                const res = await getUserEmail();
+                if (res && res.length && res.length >= 1) {
                     for (let emailEntry of res) {
-                        if (emailEntry.primary) {
+                        if (!this.userMail || emailEntry.primary) {
                             this.userMail = emailEntry.email;
                         }
                     }
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+                }
+                console.log("[Store] Set user E-Mail to", this.userMail);
+            } catch (error) {
+                console.error(error);
+            }
         },
 
         getUserEmail() {
@@ -433,8 +434,9 @@ export const store = new Vue({
          * @param {string} fileType Only new, changed or deleted
          */
         dataStructureCommit(file, fileType) {
+            const splitPath = file.path.split("/");
             return {
-                title: file.path.split("/")[2],
+                title: splitPath[splitPath.length - 1],
                 value: file.editedMd,
                 path: file.path,
                 fileSelected: false,
@@ -443,11 +445,11 @@ export const store = new Vue({
         },
 
         /**
-         * The necassary infos from the author and the repo for the commit.
+         * The necessary infos from the author and the repo for the commit.
          */
-        setInfoForCommit() {
-            this.name = this.setName();
-            this.userMail = this.setEmail();
+        async setInfoForCommit() {
+            await this.setName();
+            await this.setEmail();
             setInfosForApi(
                 this.currentRepositoryForCommit.fullName.split("/")[0],
                 this.currentRepositoryForCommit.fullName.split("/")[1],

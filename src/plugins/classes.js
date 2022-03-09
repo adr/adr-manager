@@ -183,11 +183,15 @@ function cleanUpString(string) {
 }
 
 export class Repository {
-    constructor({ fullName, activeBranch, branches, adrs }) {
+    constructor({ fullName, activeBranch, branches, adrs, adrPath }) {
+        if (adrs && adrs.length > 0 && !adrPath) {
+            console.warn("There are ADRs but no adr path is given. ADRs:", adrs, " ADR path:", adrPath);
+        }
         this.fullName = fullName || "";
         this.activeBranch = activeBranch || "";
         this.branches = branches || [];
         this.adrs = adrs || [];
+        this.adrPath = adrPath || "docs/decisions/";
         this.addedAdrs = [];
         this.deletedAdrs = [];
     }
