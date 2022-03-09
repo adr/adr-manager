@@ -23,6 +23,7 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
 
         // add new ADR
         cy.get("[data-cy=NewAdrFile]").click({ force: true });
+        cy.get("[data-cy=titleAdr]").type("use x to accomplish y");
         // initiate commit dialog
         cy.get("[data-cy=pushIcon]").click();
         // check for dialog
@@ -31,6 +32,9 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
         cy.get("[data-cy=mdiAlertCommitMessage]").should("be.visible");
         // set commit message and commit
         cy.get("[data-cy=newFilesCommitMessage]").click();
+
+        cy.get("[data-cy=newFileCheckBoxOuter]").contains(/[0-9][0-9][0-9][0-9]-use-x-to-accomplish-y.md/g);
+
         cy.get("[data-cy=newFileCheckBox]").check({ force: true });
         cy.get("[data-cy=mdiCheckSelected]").should("be.visible");
         cy.get("[data-cy=textFieldCommitMessage]").type(
