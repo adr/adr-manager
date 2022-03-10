@@ -16,7 +16,7 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
             .its("response.statusCode")
             .should("eq", 200);
         cy.get("[data-cy=listRepo]")
-            .contains("ADR-Manager")
+            .contains("adr-manager-test-repository")
             .click();
         cy.get("[data-cy=addRepoDialog]").click();
         cy.get("[data-cy=repoNameList]").click();
