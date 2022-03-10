@@ -42,24 +42,55 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
         );
         cy.get("[data-cy=mdiCheckCommitMessage]").should("be.visible");
         // push to GitHub
+        cy.intercept("GET", "**/repos/**/branches/**").as("getCommitSha");
+        cy.intercept("POST", "**/repos/**/git/commits?**").as("commitRequest");
         cy.get("[data-cy=btnOfDialogCommitForPush]").click();
-        cy.intercept("POST", "**/github/repos**").as("getRepos");
-        cy.wait("@getRepos");
+        cy.wait("@getCommitSha");
+        cy.wait("@commitRequest").then((val) => {
+            cy.log(val.request);
+            for (let item in val.request) {
+                cy.log(item);
+            }
+            cy.log(val.request.body.author);
+        });
         cy.contains("OK").click();
-        // delete the ADR
-        cy.get("[data-cy=deleteAdrBtn]")
-            .last()
+
+        // Remove repository
+        cy.get("[data-cy=removeRepo]").click();
+        cy.get("[data-cy=removeRepoBtn]").click();
+        cy.get("[data-cy=listRepo]").should("have.length", 0);
+        // Re-add the repository
+        cy.get("[data-cy=addRepo]").click();
+        cy.wait("@getRepos")
+            .its("response.statusCode")
+            .should("eq", 200);
+        cy.get("[data-cy=listRepo]")
+            .contains("ADR-Manager")
             .click();
-        cy.get("[data-cy=dialogDeleteAdrBtn").click();
+        cy.get("[data-cy=addRepoDialog]").click();
+
+        // Check that element was added
+        cy.get("[data-cy=adrList]")
+            .filter(":contains(\"Use X To Accomplish Y\")")
+            .should("have.length.gte", 1);
+
+        // delete the ADR
+        cy.get("[data-cy=adrList]")
+            .filter(":contains(\"Use X To Accomplish Y\")")
+            .find("[data-cy=deleteAdrBtn]")
+            .each((el) => {
+                el.click();
+                cy.get("[data-cy=dialogDeleteAdrBtn] :visible").first().click();
+            });
 
         // commit and push
-        cy.wait(62000);
+        cy.wait(60000);
         cy.get("[data-cy=pushIcon]").click();
         cy.get("[data-cy=deletedFilesAdr]").click();
         cy.get("[data-cy=deletedFileCheckBox]").check({ force: true });
         cy.get("[data-cy=textFieldCommitMessage]").type("Delete File");
         cy.get("[data-cy=btnOfDialogCommitForPush]").click();
-        cy.intercept("POST", "**/github/repos**").as("getRepos");
         cy.contains("OK").click();
+        cy.wait("@getCommitSha");
     });
 });
