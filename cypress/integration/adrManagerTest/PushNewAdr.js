@@ -2,6 +2,38 @@
 
 context("Committing, pushing, and remote-deleting an ADR", () => {
     it("Commit and push new ADR, then delete from GitHub", () => {
+        const REPO_NAME = "adr-manager-alpha"
+        const BRANCH_NAME = "testing-branch"
+
+        function addRepositoryAndSwitchBranch() {
+
+            // add the ADR-Manager repo
+            cy.intercept("GET", "**/user/repos**").as("getRepos");
+            cy.get("[data-cy=addRepo]").click();
+            cy.wait("@getRepos")
+                .its("response.statusCode")
+                .should("eq", 200);
+            cy.get("[data-cy=listRepo]")
+                .contains(REPO_NAME)
+                .click();
+            cy.get("[data-cy=addRepoDialog]").click();
+            cy.get("[data-cy=repoNameList]").click();
+
+            // Select branch
+            // Trigger loading of the branch
+            cy.get("[data-cy=branchSelect]").trigger("click");
+            // Select branch to ocmmit to
+            cy.get("[data-cy=branchSelect]").select(BRANCH_NAME);
+            // Accept
+            cy.contains("OK").click();
+
+            // Make sure the branch was changed.
+            cy.get("[data-cy=branchSelect]").contains(BRANCH_NAME);
+
+            // Reloading the repository typically takes some time ...
+            cy.wait(2000);
+        }
+
         window.localStorage.clear();
         window.localStorage.setItem(
             "authId",
@@ -9,17 +41,7 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
         );
         cy.visit("http://localhost:8080/#/manager");
 
-        // add the ADR-Manager repo
-        cy.intercept("GET", "**/user/repos**").as("getRepos");
-        cy.get("[data-cy=addRepo]").click();
-        cy.wait("@getRepos")
-            .its("response.statusCode")
-            .should("eq", 200);
-        cy.get("[data-cy=listRepo]")
-            .contains("adr-manager-alpha")
-            .click();
-        cy.get("[data-cy=addRepoDialog]").click();
-        cy.get("[data-cy=repoNameList]").click();
+        addRepositoryAndSwitchBranch();
 
         // add new ADR
         cy.get("[data-cy=NewAdrFile]").click({ force: true });
@@ -38,7 +60,7 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
         cy.get("[data-cy=newFileCheckBox]").check({ force: true });
         cy.get("[data-cy=mdiCheckSelected]").should("be.visible");
         cy.get("[data-cy=textFieldCommitMessage]").type(
-            "Commit Message to add a new ADR."
+            "[E2ETest] Add a new ADR"
         );
         cy.get("[data-cy=mdiCheckCommitMessage]").should("be.visible");
         // push to GitHub
@@ -59,15 +81,9 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
         cy.get("[data-cy=removeRepo]").click();
         cy.get("[data-cy=removeRepoBtn]").click();
         cy.get("[data-cy=listRepo]").should("have.length", 0);
+
         // Re-add the repository
-        cy.get("[data-cy=addRepo]").click();
-        cy.wait("@getRepos")
-            .its("response.statusCode")
-            .should("eq", 200);
-        cy.get("[data-cy=listRepo]")
-            .contains("ADR-Manager")
-            .click();
-        cy.get("[data-cy=addRepoDialog]").click();
+        addRepositoryAndSwitchBranch();
 
         // Check that element was added
         cy.get("[data-cy=adrList]")
@@ -88,7 +104,7 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
         cy.get("[data-cy=pushIcon]").click();
         cy.get("[data-cy=deletedFilesAdr]").click();
         cy.get("[data-cy=deletedFileCheckBox]").check({ force: true });
-        cy.get("[data-cy=textFieldCommitMessage]").type("Delete File");
+        cy.get("[data-cy=textFieldCommitMessage]").type("[E2ETest] Delete the ADR");
         cy.get("[data-cy=btnOfDialogCommitForPush]").click();
         cy.contains("OK").click();
         cy.wait("@getCommitSha");
