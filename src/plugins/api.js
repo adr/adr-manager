@@ -442,7 +442,7 @@ export async function loadARepositoryContent(repoFullName, branchName) {
                 let res = matchedPaths.length > 0;
                 return res;
             });
-            repoObject.adrPath = adrPath;
+            repoObject.adrPath = adrPath || "docs/decisions/";
 
             // Load the content of each ADR.
             adrList.forEach(adr => {

@@ -2,8 +2,8 @@
 
 context("Committing, pushing, and remote-deleting an ADR", () => {
     it("Commit and push new ADR, then delete from GitHub", () => {
-        const REPO_NAME = "adr-manager-alpha"
-        const BRANCH_NAME = "testing-branch"
+        const REPO_NAME = "adr-test-repository-empty";
+        const BRANCH_NAME = "testing-branch";
 
         function addRepositoryAndSwitchBranch() {
 
