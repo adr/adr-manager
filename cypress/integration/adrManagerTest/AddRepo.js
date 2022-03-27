@@ -22,19 +22,19 @@ context("Listing and adding repositories", () => {
 
     it("Add all repositories", () => {
         cy.get("[data-cy=listRepo]").then(listing => {
-            const listingCount = Cypress.$(listing).length;
+            const numberOfAddedRepositories = 3;
+    
+            let counter = 0;
             // add each repo with a click
             cy.get("[data-cy=listRepo]").each(() => {
+                counter ++;
+                if (counter > numberOfAddedRepositories) {
+                    return;
+                }
                 cy.get("[data-cy=listRepo]")
                     .eq(0)
                     .click();
             });
-
-            // check if the text for no further repos is displayed
-            cy.get("[data-cy=noRepo]").should(
-                "have.text",
-                " Sorry, no repositories were found! "
-            );
 
             // confirm repo adding dialog
             cy.get("[data-cy=addRepoDialog]").click();
@@ -44,7 +44,7 @@ context("Listing and adding repositories", () => {
             // check if the correct number of repos was added
             cy.get("[data-cy=repoNameList]")
                 .children()
-                .should("have.length", listingCount);
+                .should("have.length", numberOfAddedRepositories);
         });
     });
 });
