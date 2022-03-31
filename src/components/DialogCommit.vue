@@ -72,7 +72,7 @@
                                 v-for="(newFile, indexNew) in newFiles"
                                 :key="indexNew"
                             >
-                                <v-flex>
+                                <v-flex data-cy="newFileCheckBoxOuter">
                                     <v-checkbox
                                         data-cy="newFileCheckBox"
                                         :input-value="newFile.fileSelected"

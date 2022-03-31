@@ -63,6 +63,7 @@
             <v-spacer></v-spacer>
             Current branch:
             <select
+                data-cy="branchSelect"
                 @change="onSelectedBranch"
                 v-model="selected"
                 name="current-branch"
@@ -71,6 +72,7 @@
                 @click="clickForBranches"
             >
                 <option
+                    data-cy="branchSelectOption"
                     v-for="(branchName, index) in branchesName"
                     :key="index"
                     v-text="branchName"

@@ -9,6 +9,7 @@ on:
       - "**/.editorconfig"
       - "**/.eslintignore"
       - "**/.gitignore"
+  workflow_dispatch:
 
 concurrency:
   group: tests

@@ -27,13 +27,13 @@ export function setInfosForApi(currRepoOwner, currRepoName, currBranch) {
  * Returns a Promise with the list of all email addresses from the user.
  *
  * An example of the returned JSON structure can be found at 'https://docs.github.com/en/rest/reference/users#emails'
- * @returns {Promise<object[]>} the array of eamils with attributes 'email', 'primary', 'verified', 'visibility'
+ * @returns {Promise<object[]>} the array of emails with attributes 'email', 'primary', 'verified', 'visibility'
  */
 export async function getUserEmail() {
     return pizzly
         .integration("github")
         .auth(localStorage.getItem("authId"))
-        .get("/user/emails")
+        .get("/user/public_emails")
         .then(response => response.json())
         .catch(err => {
             console.log(err);
@@ -422,16 +422,27 @@ export async function loadARepositoryContent(repoFullName, branchName) {
 
     repoPromises.push(
         loadFileTreeOfRepository(repoFullName, branchName).then(data => {
+            let adrPath = undefined;
             let adrList = data.tree.filter(file => {
-                let matchedPaths = Array.of("/docs/adr/", "/docs/adrs/", "/docs/ADR/", "/doc/adr/", "/docs/decisions/", "/docs/design/", "technical-overview/adr/").filter(
+                let matchedPaths = Array.of("/docs/adr/", "/docs/adrs/", "/docs/ADR/", "/doc/adr/", "/docs/decisions/", "/docs/design/", "/technical-overview/adr/").filter(
                     path => {
                         let res = (("/" + file.path).includes(path)) || (file.path.startsWith("adr/"));
                         return res
                     }
                 );
+
+                // Store matched path
+                if (!adrPath && matchedPaths.length == 1) {
+                    adrPath = matchedPaths[0].slice(1); // Remove beginning "/"
+                } else if (matchedPaths.length > 1 || (matchedPaths.length == 1 && matchedPaths[0].slice(1) != adrPath)) {
+                    const allpaths = matchedPaths + [adrPath];
+                    console.warn("Loading error, unclear ADR path: Found ", allpaths);
+                }
+
                 let res = matchedPaths.length > 0;
                 return res;
             });
+            repoObject.adrPath = adrPath || "docs/decisions/";
 
             // Load the content of each ADR.
             adrList.forEach(adr => {
