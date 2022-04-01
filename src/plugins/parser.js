@@ -70,27 +70,45 @@ class MADRGenerator extends MADRListener {
         let rawDecisionOutcome = ctx.getText();
 
         if (rawDecisionOutcome.startsWith("Chosen option: ")) {
-            rawDecisionOutcome = rawDecisionOutcome.split(/, because */);
-            rawDecisionOutcome[0] = rawDecisionOutcome[0]
+            let s = rawDecisionOutcome
+                // Remove 'Chosen option: '
                 .substring("Chosen option: ".length)
-                .trim(); // Remove 'Chosen option: '
-            let delim = rawDecisionOutcome[0].charAt(0);
-            let chosenOption = "";
+                .trim();
+            if (s.indexOf(", because") >= 0) {
+                rawDecisionOutcome = rawDecisionOutcome.split(/, because */);
+                rawDecisionOutcome[0] = rawDecisionOutcome[0]
+                    .substring("Chosen option: ".length)
+                    .trim(); // Remove 'Chosen option: '
+                let delim = rawDecisionOutcome[0].charAt(0);
+                let chosenOption = "";
 
-            if (
-                delim ===
-                rawDecisionOutcome[0].charAt(rawDecisionOutcome[0].length - 1)
-            ) {
-                chosenOption = rawDecisionOutcome[0].substring(
-                    1,
-                    rawDecisionOutcome[0].length - 1
-                );
+                if (
+                    delim ===
+                    rawDecisionOutcome[0].charAt(rawDecisionOutcome[0].length - 1)
+                ) {
+                    chosenOption = rawDecisionOutcome[0].substring(
+                        1,
+                        rawDecisionOutcome[0].length - 1
+                    );
+                } else {
+                    chosenOption = rawDecisionOutcome[0];
+                }
+                let explanation = rawDecisionOutcome.slice(1).join();
+                this.adr.decisionOutcome.chosenOption = chosenOption;
+                this.adr.decisionOutcome.explanation = explanation.trim();
             } else {
-                chosenOption = rawDecisionOutcome[0];
+                let firstChar = s.charAt(0);
+                if (firstChar == "\"") {
+                    s = s.substring(1);
+                    let nextQuote = s.indexOf("\"");
+                    this.adr.decisionOutcome.chosenOption = s.substring(0, nextQuote);
+                    this.adr.decisionOutcome.explanation = s.substring(nextQuote+1).trim();
+                } else {
+                    // unknown case
+                    // TODO: we could search the string for a known option from the current position
+                    this.adr.decisionOutcome.explanation = s;
+                }
             }
-            let explanation = rawDecisionOutcome.slice(1).join();
-            this.adr.decisionOutcome.chosenOption = chosenOption;
-            this.adr.decisionOutcome.explanation = explanation.trim();
         } else {
             console.log("Couldn't find chosen option.");
         }
