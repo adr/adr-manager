@@ -2,7 +2,7 @@
     <v-dialog
         v-bind:value="showDialog"
         v-on:input="
-            value => {
+            (value) => {
                 showDialog = value;
                 $emit('input', value);
             }

@@ -1,7 +1,5 @@
-/* eslint-disable no-undef */
-
 /**
- * Test of the fucntion md2adr.
+ * Test of the function md2adr.
  */
 
 global.localStorage = {
@@ -9,7 +7,7 @@ global.localStorage = {
         return "abc....";
     }
 };
-import { searchRepositoryList } from "../api.js";
+import { searchRepositoryList } from "../src/plugins/api.js";
 
 import { searchTermRepoPairs } from "./constants.js";
 
@@ -31,7 +29,7 @@ for (let i = 0; i < searchTermRepoPairs.length; i++) {
             searchTerm,
         async () => {
             let list = [];
-            await searchRepositoryList(searchTerm, 30).then(res => {
+            await searchRepositoryList(searchTerm, 30).then((res) => {
                 list = res;
             });
             expect(list).toStrictEqual(expectedResult.slice(0, 30));

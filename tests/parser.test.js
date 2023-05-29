@@ -1,12 +1,10 @@
-/* eslint-disable no-undef */
-
 // Tested functionality
 import {
     md2adr,
     adr2md,
     naturalCase2snakeCase,
     snakeCase2naturalCase
-} from "../parser.js";
+} from "../src/plugins/parser.js";
 
 // Needed for testing
 import {
@@ -50,7 +48,7 @@ for (let i = 0; i < validMarkdownADRs.length; i++) {
  * Test of the function md2adr.
  * Compares some parsed ADRs to manually parsed ADRs.
  */
-MD_ParsedMADR_Pairs.forEach(function(pair) {
+MD_ParsedMADR_Pairs.forEach(function (pair) {
     test("Test md2adr", () => {
         let result = md2adr(pair.md);
         expect(result).toStrictEqual(pair.adr);

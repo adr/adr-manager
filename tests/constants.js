@@ -1,4 +1,4 @@
-import { ArchitecturalDecisionRecord } from "../classes.js";
+import { ArchitecturalDecisionRecord } from "../src/plugins/classes.js";
 
 export const validMarkdownADRs = [
     // madr/master/docs/adr/0000-use-markdown-architectural-decision-records.md
@@ -348,36 +348,31 @@ Chosen option: "MADR 2.1.2", because
 Which format and structure should these records follow?`,
             consideredOptions: [
                 {
-                    title:
-                        "[MADR](https://adr.github.io/madr/) 2.1.2 – The Markdown Architectural Decision Records",
+                    title: "[MADR](https://adr.github.io/madr/) 2.1.2 – The Markdown Architectural Decision Records",
                     description: "",
                     pros: [],
                     cons: []
                 },
                 {
-                    title:
-                        "[Michael Nygard's template](http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions) – The first incarnation of the term \"ADR\"",
+                    title: '[Michael Nygard\'s template](http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions) – The first incarnation of the term "ADR"',
                     description: "",
                     pros: [],
                     cons: []
                 },
                 {
-                    title:
-                        "[Sustainable Architectural Decisions](https://www.infoq.com/articles/sustainable-architectural-design-decisions) – The Y-Statements",
+                    title: "[Sustainable Architectural Decisions](https://www.infoq.com/articles/sustainable-architectural-design-decisions) – The Y-Statements",
                     description: "",
                     pros: [],
                     cons: []
                 },
                 {
-                    title:
-                        "Other templates listed at <https://github.com/joelparkerhenderson/architecture_decision_record>",
+                    title: "Other templates listed at <https://github.com/joelparkerhenderson/architecture_decision_record>",
                     description: "",
                     pros: [],
                     cons: []
                 },
                 {
-                    title:
-                        "Formless – No conventions for file format and structure",
+                    title: "Formless – No conventions for file format and structure",
                     description: "",
                     pros: [],
                     cons: []
@@ -428,8 +423,7 @@ For more information see <https://help.github.com/articles/licensing-a-repositor
 We want to have MADR used without any hassle and that users can just go ahead and write MADRs.`,
             consideredOptions: [
                 {
-                    title:
-                        "[CC0](https://creativecommons.org/share-your-work/public-domain/cc0/)",
+                    title: "[CC0](https://creativecommons.org/share-your-work/public-domain/cc0/)",
                     description: "",
                     pros: [],
                     cons: []
@@ -490,8 +484,7 @@ ADRs have to take a unique identifier.`,
                     cons: []
                 },
                 {
-                    title:
-                        "Add the ADR number in front of the title (e.g., \"# 2. Do not use numbers in headings\")",
+                    title: 'Add the ADR number in front of the title (e.g., "# 2. Do not use numbers in headings")',
                     description: "",
                     pros: [],
                     cons: []
@@ -537,15 +530,13 @@ Chosen option: \`NNNN-title-with-dashes.md\`, because
             contextAndProblemStatement: `What is the pattern of the filename where an ADR is stored?`,
             consideredOptions: [
                 {
-                    title:
-                        "`NNNN-title-with-dashes.md` - format used by [adr-tools](https://github.com/npryce/adr-tools)",
+                    title: "`NNNN-title-with-dashes.md` - format used by [adr-tools](https://github.com/npryce/adr-tools)",
                     description: "",
                     pros: [],
                     cons: []
                 },
                 {
-                    title:
-                        "`YYYY-MM-DD Title` - see https://github.com/joelparkerhenderson/architecture_decision_record#adr-file-name-conventions",
+                    title: "`YYYY-MM-DD Title` - see https://github.com/joelparkerhenderson/architecture_decision_record#adr-file-name-conventions",
                     description: "",
                     pros: [],
                     cons: []
@@ -701,8 +692,7 @@ Use Angular ![category-frontend](https://img.shields.io/badge/category-frontend-
                     ]
                 },
                 {
-                    title:
-                        "Add `* Category: CATEGORY` directly under the heading (similar to https://gist.github.com/FaKeller/2f9c63b6e1d436abb7358b68bf396f57)",
+                    title: "Add `* Category: CATEGORY` directly under the heading (similar to https://gist.github.com/FaKeller/2f9c63b6e1d436abb7358b68bf396f57)",
                     description: "",
                     pros: [
                         "full markdown",
@@ -763,7 +753,7 @@ One level of subfolder, not nested
                     cons: [
                         "there is no unique number identifying an ADR",
                         "two indices have to be maintained (adr-log needs to be updated)",
-                        "e-adr needs to be adapted to `@ADR(\"category\", number)` (not that bad)",
+                        'e-adr needs to be adapted to `@ADR("category", number)` (not that bad)',
                         "when category is unknown it is hard to find the right folder",
                         "using categories might be hampering newcomers"
                     ]
@@ -793,8 +783,8 @@ One level of subfolder, not nested
         })
     },
 
-// Option list misses one option of "Pros and Cons of the Options" (D)
-// Option names have only prefix matching (A <-> As, B <-> Bs)
+    // Option list misses one option of "Pros and Cons of the Options" (D)
+    // Option names have only prefix matching (A <-> As, B <-> Bs)
     {
         md: `# Heading
 
@@ -10911,8 +10901,7 @@ export const repositories = [
         description:
             "When Active Record objects are saved from a form, empty fields are saved as empty strings instead of nil.  This kills most validations.",
         fork: false,
-        url:
-            "https://api.github.com/repos/collectiveidea/clear_empty_attributes",
+        url: "https://api.github.com/repos/collectiveidea/clear_empty_attributes",
         forks_url:
             "https://api.github.com/repos/collectiveidea/clear_empty_attributes/forks",
         keys_url:
@@ -21060,8 +21049,7 @@ export const repositories = [
         description:
             "When Active Record objects are saved from a form, empty fields are saved as empty strings instead of nil.  This kills most validations.",
         fork: false,
-        url:
-            "https://api.github.com/repos/collectiveidea/clear_empty_attributes",
+        url: "https://api.github.com/repos/collectiveidea/clear_empty_attributes",
         forks_url:
             "https://api.github.com/repos/collectiveidea/clear_empty_attributes/forks",
         keys_url:
@@ -21735,8 +21723,7 @@ export const searchTermRepoPairs = [
                     "https://github.com/collectiveidea/acts_as_geocodable",
                 description: "Simple geocoding for Active Record models",
                 fork: false,
-                url:
-                    "https://api.github.com/repos/collectiveidea/acts_as_geocodable",
+                url: "https://api.github.com/repos/collectiveidea/acts_as_geocodable",
                 forks_url:
                     "https://api.github.com/repos/collectiveidea/acts_as_geocodable/forks",
                 keys_url:
@@ -22293,8 +22280,7 @@ export const searchTermRepoPairs = [
                     "https://github.com/collectiveidea/acts_as_geocodable",
                 description: "Simple geocoding for Active Record models",
                 fork: false,
-                url:
-                    "https://api.github.com/repos/collectiveidea/acts_as_geocodable",
+                url: "https://api.github.com/repos/collectiveidea/acts_as_geocodable",
                 forks_url:
                     "https://api.github.com/repos/collectiveidea/acts_as_geocodable/forks",
                 keys_url:

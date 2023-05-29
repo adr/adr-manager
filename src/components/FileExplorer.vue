@@ -2,7 +2,12 @@
     <v-card flat class="text-left d-flex flex-column" style="height: 100%">
         <div style="-webkit-flex-grow: 1; flex-grow: 1; position: relative">
             <div
-                style="height: 100%; width: 100%; position: absolute; overflow-y: auto"
+                style="
+                    height: 100%;
+                    width: 100%;
+                    position: absolute;
+                    overflow-y: auto;
+                "
             >
                 <v-list multiple dense>
                     <v-list-item-group data-cy="repoNameList" mandatory>
@@ -30,7 +35,11 @@
                                                 interactive: true,
                                                 animation: 'scale'
                                             }"
-                                            style="width: 30px; min-width: 30px; height: 100%"
+                                            style="
+                                                width: 30px;
+                                                min-width: 30px;
+                                                height: 100%;
+                                            "
                                             class="mx-0 px-0"
                                             v-bind="attrs"
                                             v-on="on"
@@ -57,7 +66,11 @@
                                                 animation: 'scale'
                                             }"
                                             data-cy="removeRepo"
-                                            style="width: 30px; min-width: 30px; height: 100%"
+                                            style="
+                                                width: 30px;
+                                                min-width: 30px;
+                                                height: 100%;
+                                            "
                                             class="mx-0 px-0"
                                             v-bind="attrs"
                                             v-on="on"
@@ -111,13 +124,16 @@
                                                         animation: 'scale'
                                                     }"
                                                     data-cy="deleteAdrBtn"
-                                                    style="width: 30px; min-width: 30px; height: 100%"
+                                                    style="
+                                                        width: 30px;
+                                                        min-width: 30px;
+                                                        height: 100%;
+                                                    "
                                                     class="mx-0 px-0"
                                                     v-if="
                                                         file.fileType ===
                                                             'adr' ||
-                                                            file.fileType ===
-                                                                'md'
+                                                        file.fileType === 'md'
                                                     "
                                                     v-bind="attrs"
                                                     v-on="on"
@@ -173,14 +189,14 @@
 </template>
 
 <script>
-import { snakeCase2naturalCase } from "@/plugins/parser";
-import { store } from "@/plugins/store";
+import { snakeCase2naturalCase } from "/src/plugins/parser";
+import { store } from "/src/plugins/store";
 
-import DialogAddRepositories from "@/components/DialogAddRepositories.vue";
-import DialogCommit from "@/components/DialogCommit.vue";
+import DialogAddRepositories from "/src/components/DialogAddRepositories.vue";
+import DialogCommit from "/src/components/DialogCommit.vue";
 
-import DialogRemoveRepository from "@/components/DialogRemoveRepository.vue";
-import DialogDeleteAdr from "@/components/DialogDeleteAdr.vue";
+import DialogRemoveRepository from "/src/components/DialogRemoveRepository.vue";
+import DialogDeleteAdr from "/src/components/DialogDeleteAdr.vue";
 
 export default {
     components: {
@@ -190,7 +206,7 @@ export default {
         DialogDeleteAdr
     },
     props: {},
-    data: function() {
+    data: function () {
         return {
             dataAuth: "",
             fileTypeIconMapping: {
@@ -211,7 +227,7 @@ export default {
         /** Tree structure of the displayed repositories and their contents
          */
         folderTree() {
-            let folderTree = store.addedRepositories.map(repo => {
+            let folderTree = store.addedRepositories.map((repo) => {
                 let fsRepoEntry = {
                     name: repo.fullName,
                     fullName: repo.fullName,
@@ -221,7 +237,7 @@ export default {
                     repository: repo
                 };
                 // Put ADRs in the repo.
-                fsRepoEntry.children = repo.adrs.map(adr => {
+                fsRepoEntry.children = repo.adrs.map((adr) => {
                     let rawName = adr.path.split("/").pop();
                     let name = rawName;
                     if (rawName.match("\\d{4}-.*[.]md")) {
@@ -288,7 +304,7 @@ export default {
             get() {
                 if (store.currentRepository) {
                     let index = this.folderTree.findIndex(
-                        repo =>
+                        (repo) =>
                             repo.repository.fullName ===
                             store.currentRepository.fullName
                     );
@@ -318,7 +334,7 @@ export default {
                 .reduce((total, repo) => {
                     return total.concat(repo.children);
                 }, [])
-                .find(file => file.adr === store.currentlyEditedAdr);
+                .find((file) => file.adr === store.currentlyEditedAdr);
             if (activeFile) {
                 return activeFile.path;
             } else {
@@ -405,7 +421,7 @@ function getFileByPath({ folder, path }) {
 
     let searchedFile = folder ? folder : this.folderTree;
     if (!searchedFile.path) {
-        searchedFile = searchedFile.find(file => path.startsWith(file.path)); //= this.folderTree.find((repo) => (remainingPath.startsWith(repo.name)))
+        searchedFile = searchedFile.find((file) => path.startsWith(file.path)); //= this.folderTree.find((repo) => (remainingPath.startsWith(repo.name)))
     }
 
     let found = false;
@@ -419,7 +435,8 @@ function getFileByPath({ folder, path }) {
                 return searchedFile;
             }
             searchedFile = searchedFile.children.find(
-                file => path.startsWith(file.path) || file.path.startsWith(path)
+                (file) =>
+                    path.startsWith(file.path) || file.path.startsWith(path)
             );
         } else {
             return searchedFile;

@@ -51,7 +51,7 @@ To run the project locally, follow these steps:
 
 1. Clone this repository.
 2. Install dependencies with `npm install`.
-3. Compile and start the application with `npm run serve`.
+3. Compile and start the application with `npm start`.
 
 Note that, even when you run it locally, you need to connect to GitHub to use any functionality.
 
@@ -69,8 +69,8 @@ You can either set `CYPRESS_PIZZLY_E2E_AUTH_ID` containing the `authId` or creat
 ```
 
 The value of `PIZZLY_E2E_AUTH_ID` needs to be a valid `authId` from an active Pizzly session, which you can obtain a) via the Pizzly dashboard (see below) or b) in the local storage (Chrome developer console -> Application -> Storage -> Local Storage -> `http://localhost:8080` -> `authId`)
-The involved GitHub account also needs to have developer access to this repo (`adr/adr-manager`).
-Lastly, don't forget to start the app before running the e2e tests (`npm run serve`).
+The involved GitHub account also needs to have developer access to the repo `adr/adr-test-repository-empty`.
+Lastly, don't forget to start the app before running the e2e tests (`npm start`).
 
 ### Useful Commands
 
@@ -81,16 +81,13 @@ The following commands are useful for development:
 npm install
 
 # build and start with hot-reload for development
-npm run serve
+npm start
 
 # build and minify for production
 npm run build
 
-# lint with auto-fix
-npm run lint
-
 # run unit tests
-npm run test
+npm test
 
 # run e2e tests
 npm run e2e:test

@@ -56,7 +56,7 @@ class MADRGenerator extends MADRListener {
     enterConsideredOptions(ctx) {
         let tmpOptionList = [];
         this.addListItemsFromListToList(ctx.children[0], tmpOptionList);
-        tmpOptionList.forEach(opt => {
+        tmpOptionList.forEach((opt) => {
             if (opt.trim() !== "") {
                 this.adr.addOption({ title: opt });
             }
@@ -150,7 +150,7 @@ class MADRGenerator extends MADRListener {
      */
     getMostSimilarOptionTo(optTitle) {
         // Find the option with a very similar title.
-        let opt = this.adr.consideredOptions.find(function(opt) {
+        let opt = this.adr.consideredOptions.find(function (opt) {
             return this.matchOptionTitleAlmostExactly(opt.title, optTitle);
         }, this);
         if (opt) {
@@ -158,7 +158,7 @@ class MADRGenerator extends MADRListener {
             return opt;
         }
         // Else check if there is another (less) similar title.
-        opt = this.adr.consideredOptions.find(function(opt) {
+        opt = this.adr.consideredOptions.find(function (opt) {
             return matchOptionTitleMoreRelaxed(opt.title, optTitle);
         }, this);
         if (opt) {
@@ -274,7 +274,7 @@ export function adr2md(adrToParse) {
     }
 
     md = md.concat(
-        "\n## Decision Outcome\n\nChosen option: \"" +
+        '\n## Decision Outcome\n\nChosen option: "' +
             adr.decisionOutcome.chosenOption
     );
 
@@ -282,15 +282,15 @@ export function adr2md(adrToParse) {
         let isList = adr.decisionOutcome.explanation.trim().match(/^[*-+]/);
         if (isList) {
             md = md.concat(
-                "\", because\n\n" + adr.decisionOutcome.explanation + "\n"
+                '", because\n\n' + adr.decisionOutcome.explanation + "\n"
             );
         } else {
             md = md.concat(
-                "\", because " + adr.decisionOutcome.explanation + "\n"
+                '", because ' + adr.decisionOutcome.explanation + "\n"
             );
         }
     } else {
-        md = md.concat("\"\n");
+        md = md.concat('"\n');
     }
 
     if (adr.decisionOutcome.positiveConsequences.length > 0) {
@@ -310,7 +310,7 @@ export function adr2md(adrToParse) {
 
     if (
         adr.consideredOptions.some(
-            opt =>
+            (opt) =>
                 opt.description !== "" ||
                 opt.pros.length > 0 ||
                 opt.cons.length > 0
@@ -323,23 +323,23 @@ export function adr2md(adrToParse) {
                 opt.pros.length > 0 ||
                 opt.cons.length > 0
             ) {
-                let res = total.concat("\n### " + createShortTitle(opt.title) + "\n");
+                let res = total.concat(
+                    "\n### " + createShortTitle(opt.title) + "\n"
+                );
                 if (opt.description !== "") {
                     res = res.concat("\n" + opt.description + "\n");
                 }
                 res = opt.pros.reduce(
-                    (total, arg) =>
-                        total.concat("\n* Good, because " + arg),
+                    (total, arg) => total.concat("\n* Good, because " + arg),
                     res
                 );
                 res = opt.cons.reduce(
-                    (total, arg) =>
-                        total.concat("\n* Bad, because " + arg),
+                    (total, arg) => total.concat("\n* Bad, because " + arg),
                     res
                 );
-                if ((opt.pros.length > 0) || (opt.cons.length > 0)) {
+                if (opt.pros.length > 0 || opt.cons.length > 0) {
                     // insert final new line
-                    res = res + "\n"
+                    res = res + "\n";
                 }
                 return res;
             } else {
@@ -362,11 +362,8 @@ export function adr2md(adrToParse) {
  * @param {string} snake
  */
 export function snakeCase2naturalCase(snake) {
-    return snake.replace(/([-_][a-z])/g, group =>
-        group
-            .toUpperCase()
-            .replace("-", " ")
-            .replace("_", " ")
+    return snake.replace(/([-_][a-z])/g, (group) =>
+        group.toUpperCase().replace("-", " ").replace("_", " ")
     );
 }
 
@@ -380,12 +377,8 @@ export function snakeCase2naturalCase(snake) {
  * @param {string} snake
  */
 export function naturalCase2snakeCase(natural) {
-    return natural
-        .toLowerCase()
-        .split(" ")
-        .join("-");
+    return natural.toLowerCase().split(" ").join("-");
 }
-
 
 /**
  * Option titles are similar, iff
@@ -401,17 +394,23 @@ export function naturalCase2snakeCase(natural) {
  * @param {string} titleFromChosenOption
  * @returns {boolean} True, iff the option titles are similar
  */
-export function matchOptionTitleMoreRelaxed(titleFromOptionList, titleFromChosenOption) {
-    let trimmedTitleFromOptionList = titleFromOptionList.replace(/ /g, "").toLowerCase(); // Remove whitespaces and lower-case heading
-    let trimmedTitleFromChosenOption = titleFromChosenOption.replace(/ /g, "").toLowerCase();
-    let res = (
+export function matchOptionTitleMoreRelaxed(
+    titleFromOptionList,
+    titleFromChosenOption
+) {
+    let trimmedTitleFromOptionList = titleFromOptionList
+        .replace(/ /g, "")
+        .toLowerCase(); // Remove whitespaces and lower-case heading
+    let trimmedTitleFromChosenOption = titleFromChosenOption
+        .replace(/ /g, "")
+        .toLowerCase();
+    let res =
         trimmedTitleFromOptionList === trimmedTitleFromChosenOption ||
         trimmedTitleFromOptionList.startsWith(trimmedTitleFromChosenOption) ||
         trimmedTitleFromChosenOption.startsWith(trimmedTitleFromOptionList) ||
         titleFromChosenOption === createShortTitle(titleFromOptionList) ||
         // in case we have issues with the short title generation, we at least check for a match of the first letters
         // Example: "Include in [adr-tools](https://github.com/npryce/adr-tools), 924 stars as of 2018-06-14", we currently don't strip ", ..."
-        createShortTitle(titleFromOptionList).startsWith(titleFromChosenOption)
-    );
+        createShortTitle(titleFromOptionList).startsWith(titleFromChosenOption);
     return res;
 }

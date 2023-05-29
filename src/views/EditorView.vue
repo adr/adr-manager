@@ -13,12 +13,12 @@
 
         <v-card-text
             class="mx-0 my-0 px-0 py-0"
-            style="-webkit-flex-grow: 1; flex-grow: 1; position: relative;"
+            style="-webkit-flex-grow: 1; flex-grow: 1; position: relative"
         >
             <div
                 v-if="!showFileExplorer"
                 class="d-flex align-center justify-center"
-                style="height: 75%; width: 100%;"
+                style="height: 75%; width: 100%"
             >
                 <DialogAddRepositories>
                     <template v-slot:activator="{ on, attrs }">
@@ -37,12 +37,16 @@
             <splitpanes
                 v-else
                 class="default-theme"
-                style="height: 100%; width: 100%; "
+                style="height: 100%; width: 100%"
             >
                 <pane
                     size="30%"
                     class="d-flex flex-column"
-                    style="-webkit-flex-grow: 1; flex-grow: 1; position: relative;"
+                    style="
+                        -webkit-flex-grow: 1;
+                        flex-grow: 1;
+                        position: relative;
+                    "
                 >
                     <FileExplorer
                         v-on:repo-name="updateBranches"
@@ -51,13 +55,13 @@
                 </pane>
 
                 <pane v-if="showEditor">
-                    <Editor style="height: 100%;" />
+                    <Editor style="height: 100%" />
                 </pane>
             </splitpanes>
         </v-card-text>
 
         <v-system-bar>
-            <div style="position: absolute;">
+            <div style="position: absolute">
                 {{ "Current ADR: " + adrPath }}
             </div>
             <v-spacer></v-spacer>
@@ -75,7 +79,6 @@
                     data-cy="branchSelectOption"
                     v-for="(branchName, index) in branchesName"
                     :key="index"
-                    v-text="branchName"
                 >
                     {{ branchName }}
                 </option>
@@ -85,17 +88,16 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import { loadBranchesName, loadARepositoryContent } from "@/plugins/api.js";
-import { store } from "@/plugins/store.js";
+import { loadBranchesName, loadARepositoryContent } from "/src/plugins/api.js";
+import { store } from "/src/plugins/store.js";
 
 import { Splitpanes, Pane } from "splitpanes";
 import "splitpanes/dist/splitpanes.css";
 
-import DialogAddRepositories from "@/components/DialogAddRepositories.vue";
-import ToolbarMenuMode from "@/components/ToolbarMenuMode.vue";
-import FileExplorer from "@/components/FileExplorer.vue";
-import Editor from "@/components/Editor.vue";
+import DialogAddRepositories from "/src/components/DialogAddRepositories.vue";
+import ToolbarMenuMode from "/src/components/ToolbarMenuMode.vue";
+import FileExplorer from "/src/components/FileExplorer.vue";
+import Editor from "/src/components/Editor.vue";
 
 export default {
     components: {
@@ -186,14 +188,14 @@ export default {
                 this.branchesName = [];
                 this.boolClick = true;
                 this.branchesName.push(newRouteData.branch);
-                this.branchesName = this.branchesName.filter(function(
+                this.branchesName = this.branchesName.filter(function (
                     elem,
                     index,
                     self
                 ) {
                     return index === self.indexOf(elem);
                 });
-                this.branchesName = this.branchesName.filter(function(elem) {
+                this.branchesName = this.branchesName.filter(function (elem) {
                     return elem != null;
                 });
                 this.selected = newRouteData.branch;
@@ -271,7 +273,7 @@ export default {
                         loadARepositoryContent(
                             this.currentRepo,
                             this.selected
-                        ).then(repoObject => {
+                        ).then((repoObject) => {
                             this.oldSelected = this.selected;
                             if (typeof repoObject !== "undefined") {
                                 store.updateRepository(repoObject);
@@ -291,8 +293,8 @@ export default {
             loadBranchesName(
                 this.currentRepo.split("/")[1],
                 this.currentRepo.split("/")[0]
-            ).then(branchesObjectList => {
-                let x = branchesObjectList.map(branches => ({
+            ).then((branchesObjectList) => {
+                let x = branchesObjectList.map((branches) => ({
                     brancheName: branches.name
                 }));
                 this.branchesName = [];
@@ -300,7 +302,7 @@ export default {
                 for (i = 0; i < x.length; i++) {
                     this.branchesName.push(x[i].brancheName);
                 }
-                this.branchesName = this.branchesName.filter(function(
+                this.branchesName = this.branchesName.filter(function (
                     elem,
                     index,
                     self

@@ -6,7 +6,9 @@
         style="height: 100%"
         data-cy="convertEditor"
     >
-        <v-card-title> Sorry, there were issues while parsing the ADR.</v-card-title>
+        <v-card-title>
+            Sorry, there were issues while parsing the ADR.
+        </v-card-title>
         <div>
             If you want to use the MADR-Editor, our parser will generate the
             markdown on the right-hand side. You can edit your raw Markdown to
@@ -36,15 +38,15 @@
             ></codemirror>
         </div>
 
-        <v-btn data-cy="acceptDiv" color="success" @click="accept"
-            >Accept</v-btn
-        >
+        <v-btn data-cy="acceptDiv" color="success" @click="accept">
+            Accept
+        </v-btn>
     </v-card>
 </template>
 
 <script>
 // require component
-import { adr2md, md2adr } from "@/plugins/parser.js";
+import { adr2md, md2adr } from "/src/plugins/parser.js";
 import _ from "lodash";
 
 // require component
@@ -106,7 +108,7 @@ export default {
         mergeMd() {
             this.updateOrig();
         },
-        raw: function(newRaw) {
+        raw: function (newRaw) {
             this.mergeMd = (" " + newRaw).slice(1);
         }
     },
@@ -120,7 +122,7 @@ export default {
             console.log("Accept");
             this.$emit("accept", adr2md(md2adr(this.mergeMd)));
         },
-        updateOrig: _.debounce(function() {
+        updateOrig: _.debounce(function () {
             this.codemirror.right.orig.setValue(adr2md(md2adr(this.mergeMd)));
         }, 300),
         /** Refresh code mirror, when it becomes visible, to avoid anomalies.

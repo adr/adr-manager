@@ -36,7 +36,7 @@ export default {
                     params: { id: this.user }
                 });
         },
-        connect: function() {
+        connect: function () {
             // Here, we create a new method
             // that "connect" a user to GitHub
             this.$pizzly
@@ -45,13 +45,13 @@ export default {
                 .then(this.connectSuccess)
                 .catch(this.connectError);
         },
-        connectSuccess: function(data) {
+        connectSuccess: function (data) {
             // On success, we update the user object
             this.user = data.authId;
             localStorage.setItem("authId", data.authId);
             this.$router.push({ name: "Editor", params: { id: this.user } });
         },
-        connectError: function(err) {
+        connectError: function (err) {
             console.log("error");
             console.error(err);
         }

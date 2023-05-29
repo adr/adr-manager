@@ -3,7 +3,7 @@
         v-bind:value="showDialog"
         v-model="dialogVisible"
         v-on:input="
-            value => {
+            (value) => {
                 showDialog = value;
                 $emit('input', value);
             }
@@ -101,8 +101,9 @@
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <div
-                                v-for="(changedFile,
-                                indexChange) in changedFiles"
+                                v-for="(
+                                    changedFile, indexChange
+                                ) in changedFiles"
                                 :key="indexChange"
                             >
                                 <v-flex>
@@ -234,7 +235,7 @@ import {
     createFileTree,
     createCommit,
     pushToGitHub
-} from "@/plugins/api.js";
+} from "/src/plugins/api.js";
 import { store } from "../plugins/store";
 
 /**
@@ -426,11 +427,11 @@ export default {
 
             if (!this.errorRequest) {
                 getCommitSha()
-                    .then(res => {
+                    .then((res) => {
                         this.lastCommitSha = res.commit.sha;
                         this.createBlobsRequest();
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         this.errorRequest = true;
                         this.errorDialog(error);
                         console.error(error);
@@ -455,7 +456,7 @@ export default {
                         });
                         if (!this.errorRequest) {
                             createBlobs(value.value)
-                                .then(res => {
+                                .then((res) => {
                                     countForEach++;
                                     this.blobSha[value.title] = {
                                         blobSha: res.sha,
@@ -465,7 +466,7 @@ export default {
                                         this.createFolderTreeRequest();
                                     }
                                 })
-                                .catch(error => {
+                                .catch((error) => {
                                     this.errorRequest = true;
                                     this.errorDialog(error);
                                     console.error(error);
@@ -484,7 +485,7 @@ export default {
          */
         createFolderTreeRequest() {
             let fileTree = [];
-            Object.entries(this.blobSha).forEach(value => {
+            Object.entries(this.blobSha).forEach((value) => {
                 fileTree.push({
                     path: value[1].path,
                     mode: "100644",
@@ -493,7 +494,7 @@ export default {
                 });
             });
             if (this.deletedFileBool) {
-                Object.entries(this.deletedFiles).forEach(value => {
+                Object.entries(this.deletedFiles).forEach((value) => {
                     if (value[1].fileSelected) {
                         this.filesPushed.push({
                             path: value[1].path,
@@ -510,10 +511,10 @@ export default {
             }
             if (!this.errorRequest) {
                 createFileTree(this.lastCommitSha, fileTree)
-                    .then(res => {
+                    .then((res) => {
                         this.createCommitRequest(res.sha);
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         this.errorRequest = true;
                         this.errorDialog(error);
                         console.error(error);
@@ -534,8 +535,8 @@ export default {
                     this.lastCommitSha,
                     treeSha
                 )
-                    .then(res => this.pushToGitHubRequest(res.sha))
-                    .catch(error => {
+                    .then((res) => this.pushToGitHubRequest(res.sha))
+                    .catch((error) => {
                         this.errorRequest = true;
                         this.errorDialog(error);
                         console.error(error);
@@ -569,7 +570,7 @@ export default {
                             );
                         }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         this.errorRequest = true;
                         this.errorDialog(error);
                         console.error(error);

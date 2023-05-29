@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+import { TEST_BASE_URL } from "../../support/e2e";
 
 context("Using editor modes", () => {
     it("Switch to professional mode and create a new ADR", () => {
@@ -7,17 +7,13 @@ context("Using editor modes", () => {
             "authId",
             Cypress.env("PIZZLY_E2E_AUTH_ID")
         );
-        cy.visit("http://localhost:8080/#/manager");
+        cy.visit(TEST_BASE_URL);
 
         // add ADR Manager repo
         cy.intercept("GET", "**/user/repos**").as("getRepos");
         cy.get("[data-cy=addRepo]").click();
-        cy.wait("@getRepos")
-            .its("response.statusCode")
-            .should("eq", 200);
-        cy.get("[data-cy=listRepo]")
-            .contains("ADR-Manager")
-            .click();
+        cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
+        cy.get("[data-cy=listRepo]").contains("ADR-Manager").click();
         cy.get("[data-cy=addRepoDialog]").click();
         cy.get("[data-cy=repoNameList]").click();
 
@@ -30,30 +26,20 @@ context("Using editor modes", () => {
 
         // select status
         cy.get("[data-cy=statusPro]").click();
-        cy.get(".v-list-item__title")
-            .contains("rejected")
-            .click();
+        cy.get(".v-list-item__title").contains("rejected").click();
         cy.get("[data-cy=statusPro]").should("have.class", "red red--text");
         cy.get("[data-cy=statusPro]").click();
-        cy.get(".v-list-item__title")
-            .contains("proposed")
-            .click();
+        cy.get(".v-list-item__title").contains("proposed").click();
         cy.get("[data-cy=statusPro]").click();
-        cy.get(".v-list-item__title")
-            .contains("accepted")
-            .click();
+        cy.get(".v-list-item__title").contains("accepted").click();
         cy.get("[data-cy=statusPro]").should(
             "have.class",
             "success success--text"
         );
         cy.get("[data-cy=statusPro]").click();
-        cy.get(".v-list-item__title")
-            .contains("deprecated")
-            .click();
+        cy.get(".v-list-item__title").contains("deprecated").click();
         cy.get("[data-cy=statusPro]").click();
-        cy.get(".v-list-item__title")
-            .contains("superseded")
-            .click();
+        cy.get(".v-list-item__title").contains("superseded").click();
 
         // set author
         cy.get("[data-cy=authorPro]").click();
@@ -76,9 +62,7 @@ context("Using editor modes", () => {
 
         // choose decision outcome
         cy.get("[data-cy=decOutChooseAdr]").click();
-        cy.get(".v-list-item__title")
-            .contains("Cons. opt.")
-            .click();
+        cy.get(".v-list-item__title").contains("Cons. opt.").click();
 
         // write consequences
         cy.get("[data-cy=posConseqPro]")

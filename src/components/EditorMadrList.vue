@@ -9,7 +9,7 @@
         >
             <v-hover v-slot="{ hover }">
                 <drop
-                    @dragenter="event => moveItem(event.data.id, idx)"
+                    @dragenter="(event) => moveItem(event.data.id, idx)"
                     class="my-0 py-0 flex-grow-1"
                 >
                     <v-card
@@ -151,7 +151,7 @@ export default {
                         content: newList[i],
                         id:
                             Math.max(
-                                ...this.displayedList.map(item => item.id),
+                                ...this.displayedList.map((item) => item.id),
                                 0
                             ) + 1
                     });
@@ -181,13 +181,15 @@ export default {
         addItem() {
             let item = {
                 content: this.lastItem,
-                id: Math.max(...this.displayedList.map(item => item.id), 0) + 1
+                id:
+                    Math.max(...this.displayedList.map((item) => item.id), 0) +
+                    1
             };
             this.displayedList.push(item);
             this.lastItem = "";
             this.$emit(
                 "input",
-                this.displayedList.map(el => el.content)
+                this.displayedList.map((el) => el.content)
             );
             return item;
         },
@@ -213,9 +215,11 @@ export default {
         moveItem(id, newIndex) {
             if (
                 typeof newIndex === "number" &&
-                this.displayedList.find(el => el.id === id)
+                this.displayedList.find((el) => el.id === id)
             ) {
-                let oldIndex = this.displayedList.findIndex(el => el.id === id);
+                let oldIndex = this.displayedList.findIndex(
+                    (el) => el.id === id
+                );
                 let item = this.displayedList[oldIndex];
                 this.displayedList.splice(oldIndex, 1);
                 this.displayedList.splice(newIndex, 0, item);

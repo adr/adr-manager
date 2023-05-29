@@ -1,7 +1,7 @@
 <template>
     <div data-cy="considerOptTextAdr">
         <v-row class="mx-0 my-1">
-            <h3 style="display: inline-flex;">
+            <h3 style="display: inline-flex">
                 Considered Options
                 <HelpIcon v-if="mode === 'basic'">
                     List all considered options. <br />
@@ -46,7 +46,7 @@
                 :key="item.id"
             >
                 <drop
-                    @dragenter="event => moveOption(event.data, idx)"
+                    @dragenter="(event) => moveOption(event.data, idx)"
                     class="my-0 py-0 flex-grow-1"
                 >
                     <v-card
@@ -79,7 +79,7 @@
                             <drag
                                 v-show="
                                     hoveredOption === item ||
-                                        draggedOption === item
+                                    draggedOption === item
                                 "
                                 :data="item"
                                 @dragstart="draggedOption = item"
@@ -96,8 +96,8 @@
                             <v-icon
                                 v-show="
                                     hoveredOption !== item &&
-                                        draggedOption !== item &&
-                                        isChosenOption(item)
+                                    draggedOption !== item &&
+                                    isChosenOption(item)
                                 "
                                 color="success"
                                 class="pl-1"
@@ -108,8 +108,8 @@
                             <v-icon
                                 v-show="
                                     hoveredOption !== item &&
-                                        draggedOption !== item &&
-                                        !isChosenOption(item)
+                                    draggedOption !== item &&
+                                    !isChosenOption(item)
                                 "
                             ></v-icon>
                         </div>
@@ -159,7 +159,7 @@
         <v-card data-cy="consOptPro" v-else flat>
             <div v-for="(item, i) in adr.consideredOptions" :key="item.id">
                 <drop
-                    @dragenter="event => moveOption(event.data, i)"
+                    @dragenter="(event) => moveOption(event.data, i)"
                     class="my-0 py-0"
                 >
                     <v-card
@@ -204,7 +204,7 @@
                                     <drag
                                         v-show="
                                             hoveredOption === item ||
-                                                draggedOption === item
+                                            draggedOption === item
                                         "
                                         :key="item.id"
                                         :data="item"
@@ -222,8 +222,8 @@
                                         data-cy="checkConsOptAdr"
                                         v-show="
                                             hoveredOption !== item &&
-                                                draggedOption !== item &&
-                                                isChosenOption(item)
+                                            draggedOption !== item &&
+                                            isChosenOption(item)
                                         "
                                         color="success"
                                         class="pl-1"
@@ -234,8 +234,8 @@
                                     <v-icon
                                         v-show="
                                             hoveredOption !== item &&
-                                                draggedOption !== item &&
-                                                !isChosenOption(item)
+                                            draggedOption !== item &&
+                                            !isChosenOption(item)
                                         "
                                     ></v-icon>
                                 </div>
@@ -272,10 +272,10 @@
                             <div
                                 v-show="
                                     hoveredOption === item ||
-                                        editedOptions.includes(item)
+                                    editedOptions.includes(item)
                                 "
                                 class="align-center flex-shrink-0 flex-grow-0 my-0 py-0"
-                                style="position: absolute right;"
+                                style="position: absolute right"
                             >
                                 <v-btn
                                     icon
@@ -317,9 +317,10 @@
                                     class="mx-0 px-0 flex-grow-1 flex-shrink-1"
                                     style="min-width: 0"
                                     @click="
-                                        expandedOptions = expandedOptions.filter(
-                                            val => val !== item
-                                        )
+                                        expandedOptions =
+                                            expandedOptions.filter(
+                                                (val) => val !== item
+                                            )
                                     "
                                 >
                                     <v-icon>mdi-chevron-up</v-icon>
@@ -414,7 +415,7 @@
                         :class="['my-0', 'py-0', 'mr-0']"
                         :value="lastItem"
                         @input="
-                            val => {
+                            (val) => {
                                 if (mode !== 'basic') {
                                     lastItem = val;
                                     addLastItemIfNotEmpty();
@@ -435,14 +436,15 @@
 import {
     ArchitecturalDecisionRecord,
     createShortTitle
-} from "@/plugins/classes";
-import { store } from "@/plugins/store";
+} from "/src/plugins/classes";
+import { store } from "/src/plugins/store";
 
 import codemirror from "./EditorMadrCodemirror.vue";
 import EditorMadrList from "./EditorMadrList.vue";
 import HelpIcon from "./HelpIcon.vue";
 import { Drag, Drop } from "vue-easy-dnd";
-import {matchOptionTitleMoreRelaxed} from "@/plugins/parser";
+import { matchOptionTitleMoreRelaxed } from "/src/plugins/parser";
+import { marked } from "marked";
 
 export default {
     name: "EditorMadrConsideredOptions",
@@ -470,13 +472,15 @@ export default {
     }),
     computed: {
         optionTitleList() {
-            return this.adr.consideredOptions.map(opt => createShortTitle(opt.title));
+            return this.adr.consideredOptions.map((opt) =>
+                createShortTitle(opt.title)
+            );
         },
         isModeTooLow() {
             return (
                 this.mode === "basic" &&
                 this.adr.consideredOptions.find(
-                    opt =>
+                    (opt) =>
                         opt.description.length > 0 ||
                         opt.pros.length > 0 ||
                         opt.cons.length > 0
@@ -557,7 +561,7 @@ export default {
         toggleExpansionOfOption(option) {
             if (this.expandedOptions.includes(option)) {
                 this.expandedOptions = this.expandedOptions.filter(
-                    val => val !== option
+                    (val) => val !== option
                 );
             } else {
                 this.expandedOptions.push(option);
@@ -566,7 +570,7 @@ export default {
         toggleEditingOfOption(option) {
             if (this.editedOptions.includes(option)) {
                 this.editedOptions = this.editedOptions.filter(
-                    val => val !== option
+                    (val) => val !== option
                 );
             } else {
                 this.editedOptions.push(option);
@@ -590,7 +594,10 @@ export default {
          * @returns true iff the option is the chosen option
          */
         isChosenOption(option) {
-            let res = matchOptionTitleMoreRelaxed(option.title, this.adr.decisionOutcome.chosenOption);
+            let res = matchOptionTitleMoreRelaxed(
+                option.title,
+                this.adr.decisionOutcome.chosenOption
+            );
             return res;
         },
 
@@ -599,7 +606,6 @@ export default {
         },
 
         htmlOf(value) {
-            var marked = require("marked");
             return marked(value);
         }
     }

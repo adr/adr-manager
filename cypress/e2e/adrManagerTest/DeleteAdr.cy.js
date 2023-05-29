@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+import { TEST_BASE_URL } from "../../support/e2e";
 
 context("Deleting an ADR from a repo", () => {
     it("Remove one ADR", () => {
@@ -7,29 +7,23 @@ context("Deleting an ADR from a repo", () => {
             "authId",
             Cypress.env("PIZZLY_E2E_AUTH_ID")
         );
-        cy.visit("http://localhost:8080/#/manager");
+        cy.visit(TEST_BASE_URL);
 
         // add the ADR-Manager repo
         cy.intercept("GET", "**/user/repos**").as("getRepos");
         cy.get("[data-cy=addRepo]").click();
-        cy.wait("@getRepos")
-            .its("response.statusCode")
-            .should("eq", 200);
-        cy.get("[data-cy=listRepo]")
-            .contains("ADR-Manager")
-            .click();
+        cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
+        cy.get("[data-cy=listRepo]").contains("ADR-Manager").click();
         cy.get("[data-cy=addRepoDialog]").click();
         cy.intercept("GET", "**/repos**").as("showRepos");
         cy.wait("@showRepos", { timeout: 10000 });
 
-        cy.get("[data-cy=adrList]").then(adrList => {
+        cy.get("[data-cy=adrList]").then((adrList) => {
             // get number of ADRs in repo
             const adrCount = Cypress.$(adrList).length;
 
             // delete the last one
-            cy.get("[data-cy=deleteAdrBtn]")
-                .eq(0)
-                .click();
+            cy.get("[data-cy=deleteAdrBtn]").eq(0).click();
             cy.get("[data-cy=dialogDeleteAdrBtn]").click();
             // check if it's gone
             cy.get("[data-cy=adrList]").should("have.length", adrCount - 1);

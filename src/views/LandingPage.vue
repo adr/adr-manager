@@ -7,7 +7,7 @@
             <a
                 href="https://github.com/adr/adr-manager"
                 target="_blank"
-                style="color: white;"
+                style="color: white"
             >
                 View on GitHub <v-icon>mdi-open-in-new</v-icon></a
             >
@@ -41,8 +41,7 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import ConnectToGitHubButton from "@/components/ConnectToGitHubButton.vue";
+import ConnectToGitHubButton from "/src/components/ConnectToGitHubButton.vue";
 
 export default {
     name: "Editor",

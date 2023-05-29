@@ -6,12 +6,12 @@
     >
         <v-sheet
             class="mx-auto mx-0 my-0 px-0 py-0"
-            style="height: 100%; width:100%;"
+            style="height: 100%; width: 100%"
         >
             <v-container
                 fluid
                 class="mx-auto overflow-y-auto scroll px-8"
-                style="height: 100%;"
+                style="height: 100%"
             >
                 <!-- Title Style -->
                 <v-row class="my-0">
@@ -25,7 +25,11 @@
                         hint="Changing the title changes the file name. Do not use special characters."
                         v-model="adr.title"
                         @input="$emit('input', adr)"
-                        style="font-family: Roboto, sans-serif; font-size: 28px; font-weight: 500"
+                        style="
+                            font-family: Roboto, sans-serif;
+                            font-size: 28px;
+                            font-weight: 500;
+                        "
                     >
                         <template v-slot:append="">
                             <HelpIcon>
@@ -71,7 +75,7 @@
                 <v-divider class="my-0" />
 
                 <v-row class="mt-8 mb-1 mx-0">
-                    <h3 style="display: inline-flex;">
+                    <h3 style="display: inline-flex">
                         Context and Problem Statement
                         <HelpIcon>
                             Describe the context and problem statement, e.g., in
@@ -86,19 +90,19 @@
                         data-cy="contextAdr"
                         v-model="adr.contextAndProblemStatement"
                         @input="
-                            val => {
+                            (val) => {
                                 adr.contextAndProblemStatement = val;
                                 $emit('input', adr);
                             }
                         "
-                        style="min-height: 100px;"
+                        style="min-height: 100px"
                     />
                 </v-card>
 
                 <div v-if="mode === 'professional'">
                     <v-divider class="my-8" />
                     <v-row class="mx-0 my-1">
-                        <h3 style="display: inline-flex;">
+                        <h3 style="display: inline-flex">
                             Decision Drivers
                             <HelpIcon>
                                 Decision Drivers are competing forces or facing
@@ -127,7 +131,7 @@
                 <div v-if="mode === 'professional'">
                     <v-divider class="my-8" />
                     <v-row class="mx-0 mb-1">
-                        <h3 style="display: inline-flex;">
+                        <h3 style="display: inline-flex">
                             Links
                             <HelpIcon>
                                 Add referenes, e.g., to related ADRs
@@ -144,8 +148,8 @@
 </template>
 
 <script>
-import { ArchitecturalDecisionRecord } from "@/plugins/classes.js";
-import { store } from "@/plugins/store.js";
+import { ArchitecturalDecisionRecord } from "/src/plugins/classes.js";
+import { store } from "/src/plugins/store.js";
 
 import codemirror from "./EditorMadrCodemirror.vue";
 import StatusDateDecidersStory from "./EditorMadrStatusDateDecidersStory.vue";

@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+import { TEST_BASE_URL } from "../../support/e2e";
 
 context("Listing and adding repositories", () => {
     beforeEach(() => {
@@ -7,13 +7,11 @@ context("Listing and adding repositories", () => {
             "authId",
             Cypress.env("PIZZLY_E2E_AUTH_ID")
         );
-        cy.visit("http://localhost:8080/#/manager");
+        cy.visit(TEST_BASE_URL);
 
         cy.intercept("GET", "**/user/repos**").as("getRepos");
         cy.get("[data-cy=addRepo]").click();
-        cy.wait("@getRepos")
-            .its("response.statusCode")
-            .should("eq", 200);
+        cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
     });
 
     it("Check if at least 1 repository is displayed", () => {
@@ -21,19 +19,17 @@ context("Listing and adding repositories", () => {
     });
 
     it("Add all repositories", () => {
-        cy.get("[data-cy=listRepo]").then(listing => {
+        cy.get("[data-cy=listRepo]").then((listing) => {
             const numberOfAddedRepositories = 3;
-    
+
             let counter = 0;
             // add each repo with a click
             cy.get("[data-cy=listRepo]").each(() => {
-                counter ++;
+                counter++;
                 if (counter > numberOfAddedRepositories) {
                     return;
                 }
-                cy.get("[data-cy=listRepo]")
-                    .eq(0)
-                    .click();
+                cy.get("[data-cy=listRepo]").eq(0).click();
             });
 
             // confirm repo adding dialog

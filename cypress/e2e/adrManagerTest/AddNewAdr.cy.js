@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+import { TEST_BASE_URL } from "../../support/e2e";
 
 context("Adding a new ADR to a repo", () => {
     it("Create a new ADR", () => {
@@ -7,21 +7,17 @@ context("Adding a new ADR to a repo", () => {
             "authId",
             Cypress.env("PIZZLY_E2E_AUTH_ID")
         );
-        cy.visit("http://localhost:8080/#/manager");
+        cy.visit(TEST_BASE_URL);
 
         // add the ADR-Manager repo
         cy.intercept("GET", "**/user/repos**").as("getRepos");
         cy.get("[data-cy=addRepo]").click();
-        cy.wait("@getRepos")
-            .its("response.statusCode")
-            .should("eq", 200);
-        cy.get("[data-cy=listRepo]")
-            .contains("ADR-Manager")
-            .click();
+        cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
+        cy.get("[data-cy=listRepo]").contains("ADR-Manager").click();
         cy.get("[data-cy=addRepoDialog]").click();
         cy.get("[data-cy=repoNameList]").click();
 
-        cy.get("[data-cy=adrList]").then(adrList => {
+        cy.get("[data-cy=adrList]").then((adrList) => {
             // get number of ADRs in repo
             const adrCount = Cypress.$(adrList).length;
             // add new ADR
@@ -40,11 +36,9 @@ context("Adding a new ADR to a repo", () => {
 
             // add context to new ADR
             cy.get("[data-cy=contextAdr]").click();
-            cy.get("[data-cy=contextAdr] textarea")
-                .eq(1)
-                .type("ContextAdr", {
-                    force: true
-                });
+            cy.get("[data-cy=contextAdr] textarea").eq(1).type("ContextAdr", {
+                force: true,
+            });
 
             // add considered options text to new ADR and test the add btn
             cy.get("[data-cy=considerOptTextAdr]")
@@ -58,9 +52,7 @@ context("Adding a new ADR to a repo", () => {
 
             // choose decision outcome
             cy.get("[data-cy=decOutChooseAdr]").click();
-            cy.get(".v-list-item__title")
-                .contains("Con. Opt 1)")
-                .click();
+            cy.get(".v-list-item__title").contains("Con. Opt 1)").click();
             cy.get("[data-cy=checkConsOptAdr]").should("be.visible");
 
             // add because to decision outcome

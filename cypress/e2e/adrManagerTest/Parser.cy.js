@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+import { TEST_BASE_URL } from "../../support/e2e";
 
 context("Using Markdown modes", () => {
     it("Convert raw Markdown", () => {
@@ -7,17 +7,13 @@ context("Using Markdown modes", () => {
             "authId",
             Cypress.env("PIZZLY_E2E_AUTH_ID")
         );
-        cy.visit("http://localhost:8080/#/manager");
+        cy.visit(TEST_BASE_URL);
 
         // add ADR Manager repo
         cy.intercept("GET", "**/user/repos**").as("getRepos");
         cy.get("[data-cy=addRepo]").click();
-        cy.wait("@getRepos")
-            .its("response.statusCode")
-            .should("eq", 200);
-        cy.get("[data-cy=listRepo]")
-            .contains("ADR-Manager")
-            .click();
+        cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
+        cy.get("[data-cy=listRepo]").contains("ADR-Manager").click();
         cy.get("[data-cy=addRepoDialog]").click();
         cy.get("[data-cy=repoNameList]").click();
 
@@ -28,9 +24,7 @@ context("Using Markdown modes", () => {
         // switch to raw Markdown mode
         cy.contains(" Raw Markdown ").click();
         // clear existing Markdown in new ADR
-        cy.get("[data-cy=markdownText]")
-            .click()
-            .type("{ctrl+a}{del}");
+        cy.get("[data-cy=markdownText]").click().type("{ctrl+a}{del}");
         // input Markdown that doesn't correspond to the MADR template
         cy.get("[data-cy=markdownText]")
             .click()
@@ -40,7 +34,7 @@ context("Using Markdown modes", () => {
         // navigate to conversion view
         cy.contains(" Convert ").click();
         // check for some required UI elements
-        cy.get("[data-cy=convertEditor]").should($editor => {
+        cy.get("[data-cy=convertEditor]").should(($editor) => {
             expect($editor).to.contain(
                 "https://github.com/adr/madr/blob/master/template/template.md"
             );

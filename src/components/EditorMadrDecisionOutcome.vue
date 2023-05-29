@@ -1,7 +1,7 @@
 <template>
     <div fluid class="text-left">
         <v-row class="mx-0 my-1">
-            <h3 style="display: inline-flex;">
+            <h3 style="display: inline-flex">
                 Decision Outcome
                 <HelpIcon>
                     Select the option that you chose to use.
@@ -45,7 +45,7 @@
                 max-width="100%"
             >
                 <v-row class="mx-0 my-2">
-                    <h5 style="display: inline-flex;">
+                    <h5 style="display: inline-flex">
                         Positive Consequences
                         <HelpIcon>
                             Give positive consequences, e.g., improvement of a
@@ -67,7 +67,7 @@
                 max-width="100%"
             >
                 <v-row class="mx-0 my-2">
-                    <h5 style="display: inline-flex;">
+                    <h5 style="display: inline-flex">
                         Negative Consequences
                         <HelpIcon>
                             Give negative consequences, e.g., afflicted quality
@@ -88,7 +88,7 @@
 import codemirror from "./EditorMadrCodemirror.vue";
 import EditorMadrList from "./EditorMadrList.vue";
 import HelpIcon from "./HelpIcon.vue";
-import {createShortTitle} from "@/plugins/classes";
+import { createShortTitle } from "/src/plugins/classes";
 
 export default {
     name: "EditorMADR",
@@ -106,7 +106,9 @@ export default {
     data: () => ({}),
     computed: {
         optionTitleList() {
-            return this.adr.consideredOptions.map(opt => createShortTitle(opt.title));
+            return this.adr.consideredOptions.map((opt) =>
+                createShortTitle(opt.title)
+            );
         }
     }
 };

@@ -2,7 +2,7 @@
     <v-dialog
         v-bind:value="showDialog"
         v-on:input="
-            value => {
+            (value) => {
                 showDialog = value;
                 $emit('input', value);
             }
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { store } from "@/plugins/store";
+import { store } from "/src/plugins/store";
 
 export default {
     name: "EditorDeleteAdr",

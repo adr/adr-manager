@@ -2,7 +2,7 @@
     <v-dialog
         v-bind:value="showDialog"
         v-on:input="
-            value => {
+            (value) => {
                 showDialog = value;
                 $emit('input', value);
             }
@@ -27,9 +27,7 @@
                         <v-avatar color="primary" size="35" class="mx-1">
                             <v-icon dark>mdi-folder-plus</v-icon>
                         </v-avatar>
-                        <span class="dialogTitle">
-                            Add Repositories
-                        </span>
+                        <span class="dialogTitle"> Add Repositories </span>
                     </div>
                     <v-text-field
                         data-cy="search-field-for-adding-repository"
@@ -71,7 +69,7 @@
                     data-cy="noRepo"
                     v-if="
                         unstagedRepositories.length === 0 &&
-                            countLoadingPromises === 0
+                        countLoadingPromises === 0
                     "
                     class="text-center"
                 >
@@ -165,8 +163,8 @@ import {
     loadRepositoryList,
     searchRepositoryList,
     loadAllRepositoryContent
-} from "@/plugins/api.js";
-import { store } from "@/plugins/store.js";
+} from "/src/plugins/api.js";
+import { store } from "/src/plugins/store.js";
 import _ from "lodash";
 
 export default {
@@ -198,7 +196,7 @@ export default {
         },
         unstagedRepositories() {
             return this.filterUnstagedRepositories(this.repositoriesCurrentPage)
-                .map(repo => {
+                .map((repo) => {
                     let date = new Date(repo.updated_at);
                     let displayedDate = date.toDateString().substr(4, 11);
                     return {
@@ -237,14 +235,14 @@ export default {
         loadRepositoryList() {
             this.countLoadingPromises++;
             loadRepositoryList(this.searchText, this.page, this.perPage)
-                .then(res => {
+                .then((res) => {
                     if (!Array.isArray(res)) {
                         throw "Could not load repository list.";
                     }
                     this.repositoriesCurrentPage = res;
                     this.countLoadingPromises--;
                 })
-                .catch(error => {
+                .catch((error) => {
                     // eslint-disable-next-line
                     console.error(error);
                 });
@@ -253,10 +251,13 @@ export default {
         /**
          * Search for repositories which full name contains the search text.
          */
-        searchRepositories: _.debounce(function() {
+        searchRepositories: _.debounce(function () {
             // quick solution to allow full repository URLs
-            if (typeof this.searchText === "string" && this.searchText.startsWith("https://")) {
-                console.log("Loading https:// repository")
+            if (
+                typeof this.searchText === "string" &&
+                this.searchText.startsWith("https://")
+            ) {
+                console.log("Loading https:// repository");
                 this.loadRepositoryList();
             }
             if (
@@ -272,7 +273,7 @@ export default {
                     this.perPage,
                     this.repositoriesCurrentPage
                 )
-                    .then(repos => {
+                    .then((repos) => {
                         console.log("Loaded Repos", repos);
                         if (!Array.isArray(repos)) {
                             throw "Could not search repository list.";
@@ -280,7 +281,7 @@ export default {
                         // this.repositoriesCurrentPage = repos;
                         this.countLoadingPromises--;
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         // eslint-disable-next-line
                         console.error(error);
                     });
@@ -292,9 +293,9 @@ export default {
          */
         filterUnstagedRepositories(repoList) {
             return this.filterUnaddedRepositories(repoList).filter(
-                repo =>
+                (repo) =>
                     !this.repositoriesSelected
-                        .map(repo => repo.name)
+                        .map((repo) => repo.name)
                         .includes(repo.full_name)
             );
         },
@@ -305,9 +306,9 @@ export default {
         filterUnaddedRepositories(repoList) {
             return repoList.filter(
                 // Filter for unadded repositories
-                repo =>
+                (repo) =>
                     !store.addedRepositories
-                        .map(repo => repo.fullName)
+                        .map((repo) => repo.fullName)
                         .includes(repo.full_name)
             );
         },
@@ -338,7 +339,7 @@ export default {
          */
         unstageRepostiory(repo) {
             this.repositoriesSelected = this.repositoriesSelected.filter(
-                item => item !== repo
+                (item) => item !== repo
             );
         },
 
@@ -347,15 +348,15 @@ export default {
          *
          * @param repoList - A list of repository data (like it is fetched from GitHub)
          */
-        addRepositories: async function() {
+        addRepositories: async function () {
             this.showLoadingOverlay = true;
             loadAllRepositoryContent(
-                this.repositoriesSelected.map(repo => ({
+                this.repositoriesSelected.map((repo) => ({
                     fullName: repo.repoData.full_name,
                     branch: repo.repoData.default_branch
                 }))
             )
-                .then(repoObjectList => {
+                .then((repoObjectList) => {
                     if (typeof repoObjectList !== "undefined") {
                         this.showLoadingOverlay = false;
                         this.$emit("repo-added-name", repoObjectList);
@@ -366,7 +367,7 @@ export default {
                         this.searchText = "";
                     }
                 })
-                .catch(e => {
+                .catch((e) => {
                     this.errorDialog();
                     console.log(e);
                     this.showLoadingOverlay = false;
