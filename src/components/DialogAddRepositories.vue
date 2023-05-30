@@ -185,7 +185,7 @@ export default {
         countLoadingPromises: 0, // counts loading repositories, needed for showing loading bar.
         searchText: "",
         page: 1,
-        perPage: 30
+        perPage: 40
     }),
     computed: {
         showPagination() {

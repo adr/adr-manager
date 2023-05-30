@@ -92,11 +92,11 @@ npm test
 # run e2e tests
 npm run e2e:test
 
-# open cypress UI for e2e tests
+# open cypress GUI for e2e tests
 npx cypress open
 
 # run a single e2e test
-npx cypres run --spec ./cypress/integration/adrManagerTest/<file-name>
+npx cypress run --spec ./cypress/e2e/adrManagerTest/<file-name>
 ```
 
 ### Backend Setup

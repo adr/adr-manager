@@ -2,7 +2,7 @@ import { TEST_BASE_URL } from "../../support/e2e";
 
 context("Committing, pushing, and remote-deleting an ADR", () => {
     it("Commit and push new ADR, then delete from GitHub", () => {
-        const REPO_NAME = "adr-test-repository-empty";
+        const REPO_NAME = "adr/adr-test-repository-empty";
         const BRANCH_NAME = "testing-branch";
 
         function addRepositoryAndSwitchBranch() {
@@ -21,7 +21,7 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
             // Select branch
             // Trigger loading of the branch
             cy.get("[data-cy=branchSelect]").trigger("click");
-            // Select branch to ocmmit to
+            // Select branch to commit to
             cy.get("[data-cy=branchSelect]").select(BRANCH_NAME);
             // Accept
             cy.contains("OK").click();
