@@ -101,7 +101,7 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
             });
 
         // commit and push
-        cy.wait(60000);
+        cy.wait(5000);
         cy.get("[data-cy=pushIcon]").click();
         cy.get("[data-cy=deletedFilesAdr]").click();
         cy.get("[data-cy=deletedFileCheckBox]").check({ force: true });

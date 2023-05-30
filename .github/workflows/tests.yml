@@ -40,5 +40,5 @@ jobs:
           CYPRESS_PIZZLY_E2E_AUTH_ID: ${{ secrets.PIZZLY_E2E_AUTH_ID }}
         run: |
           npm start &
-          npm run tests:chrome
+          npm run e2e:test-ci
         continue-on-error: false

@@ -7,9 +7,9 @@
         "dev": "vite",
         "build": "vite build",
         "serve": "vite preview",
-        "tests:chrome": "cypress run --browser chrome --headless",
+        "test": "jest",
         "e2e:test": "cypress run",
-        "test": "jest"
+        "e2e:test-ci": "cypress run --browser chrome --headless --config video=false,screenshotOnRunFailure=false"
     },
     "dependencies": {
         "@mdi/font": "^7.2.96",
