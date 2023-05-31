@@ -9,9 +9,7 @@
         min-width="290px"
     >
         <template v-slot:activator="{ on }">
-            <v-chip v-on="on" outlined>
-                <v-icon class="mr-2">mdi-calendar</v-icon> {{ value }}
-            </v-chip>
+            <v-chip v-on="on" outlined> <v-icon class="mr-2">mdi-calendar</v-icon> {{ value }} </v-chip>
         </template>
         <v-date-picker v-model="date" no-title @input="update"></v-date-picker>
     </v-menu>

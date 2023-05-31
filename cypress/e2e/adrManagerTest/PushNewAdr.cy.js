@@ -10,9 +10,7 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
             cy.intercept("GET", "**/user/repos**").as("getRepos");
             cy.get("[data-cy=addRepo]").click();
             cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
-            cy.get("[data-cy=search-field-for-adding-repository]").type(
-                REPO_NAME
-            );
+            cy.get("[data-cy=search-field-for-adding-repository]").type(REPO_NAME);
             cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
             cy.get("[data-cy=listRepo]").contains(REPO_NAME).click();
             cy.get("[data-cy=addRepoDialog]").click();
@@ -34,10 +32,7 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
         }
 
         window.localStorage.clear();
-        window.localStorage.setItem(
-            "authId",
-            Cypress.env("PIZZLY_E2E_AUTH_ID")
-        );
+        window.localStorage.setItem("authId", Cypress.env("PIZZLY_E2E_AUTH_ID"));
         cy.visit(TEST_BASE_URL);
 
         addRepositoryAndSwitchBranch();
@@ -54,15 +49,11 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
         // set commit message and commit
         cy.get("[data-cy=newFilesCommitMessage]").click();
 
-        cy.get("[data-cy=newFileCheckBoxOuter]").contains(
-            /[0-9][0-9][0-9][0-9]-use-x-to-accomplish-y.md/g
-        );
+        cy.get("[data-cy=newFileCheckBoxOuter]").contains(/[0-9][0-9][0-9][0-9]-use-x-to-accomplish-y.md/g);
 
         cy.get("[data-cy=newFileCheckBox]").check({ force: true });
         cy.get("[data-cy=mdiCheckSelected]").should("be.visible");
-        cy.get("[data-cy=textFieldCommitMessage]").type(
-            "[E2ETest] Add a new ADR"
-        );
+        cy.get("[data-cy=textFieldCommitMessage]").type("[E2ETest] Add a new ADR");
         cy.get("[data-cy=mdiCheckCommitMessage]").should("be.visible");
         // push to GitHub
         cy.intercept("GET", "**/repos/**/branches/**").as("getCommitSha");
@@ -87,9 +78,7 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
         addRepositoryAndSwitchBranch();
 
         // Check that element was added
-        cy.get("[data-cy=adrList]")
-            .filter(':contains("Use X To Accomplish Y")')
-            .should("have.length.gte", 1);
+        cy.get("[data-cy=adrList]").filter(':contains("Use X To Accomplish Y")').should("have.length.gte", 1);
 
         // delete the ADR
         cy.get("[data-cy=adrList]")
@@ -105,9 +94,7 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
         cy.get("[data-cy=pushIcon]").click();
         cy.get("[data-cy=deletedFilesAdr]").click();
         cy.get("[data-cy=deletedFileCheckBox]").check({ force: true });
-        cy.get("[data-cy=textFieldCommitMessage]").type(
-            "[E2ETest] Delete the ADR"
-        );
+        cy.get("[data-cy=textFieldCommitMessage]").type("[E2ETest] Delete the ADR");
         cy.get("[data-cy=btnOfDialogCommitForPush]").click();
         cy.contains("OK").click();
         cy.wait("@getCommitSha");

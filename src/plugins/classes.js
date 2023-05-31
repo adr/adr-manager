@@ -37,36 +37,16 @@ export class ArchitecturalDecisionRecord {
         this.links = links || [];
 
         // Assure invariants for decisionOutcome attribute
-        if (
-            !Object.prototype.hasOwnProperty.call(
-                this.decisionOutcome,
-                "chosenOption"
-            )
-        ) {
+        if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, "chosenOption")) {
             this.decisionOutcome.decisionOutcome = "";
         }
-        if (
-            !Object.prototype.hasOwnProperty.call(
-                this.decisionOutcome,
-                "explanation"
-            )
-        ) {
+        if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, "explanation")) {
             this.decisionOutcome.explanation = "";
         }
-        if (
-            !Object.prototype.hasOwnProperty.call(
-                this.decisionOutcome,
-                "positiveConsequences"
-            )
-        ) {
+        if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, "positiveConsequences")) {
             this.decisionOutcome.positiveConsequences = [];
         }
-        if (
-            !Object.prototype.hasOwnProperty.call(
-                this.decisionOutcome,
-                "negativeConsequences"
-            )
-        ) {
+        if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, "negativeConsequences")) {
             this.decisionOutcome.negativeConsequences = [];
         }
 
@@ -135,12 +115,8 @@ export class ArchitecturalDecisionRecord {
             opt.cons = opt.cons.filter((el) => el !== "");
         });
 
-        this.decisionOutcome.chosenOption = cleanUpString(
-            this.decisionOutcome.chosenOption
-        );
-        this.decisionOutcome.explanation = cleanUpString(
-            this.decisionOutcome.explanation
-        );
+        this.decisionOutcome.chosenOption = cleanUpString(this.decisionOutcome.chosenOption);
+        this.decisionOutcome.explanation = cleanUpString(this.decisionOutcome.explanation);
         this.decisionOutcome.positiveConsequences.forEach((el, idx) => {
             this.decisionOutcome.positiveConsequences[idx] = cleanUpString(el);
         });
@@ -185,12 +161,7 @@ function cleanUpString(string) {
 export class Repository {
     constructor({ fullName, activeBranch, branches, adrs, adrPath }) {
         if (adrs && adrs.length > 0 && !adrPath) {
-            console.warn(
-                "There are ADRs but no adr path is given. ADRs:",
-                adrs,
-                " ADR path:",
-                adrPath
-            );
+            console.warn("There are ADRs but no adr path is given. ADRs:", adrs, " ADR path:", adrPath);
         }
         this.fullName = fullName || "";
         this.activeBranch = activeBranch || "";
@@ -212,10 +183,7 @@ export class Repository {
         let repo = new Repository(repoData);
         repoData.addedAdrs.forEach((adr) => {
             let equalAdr = repoData.adrs.find(
-                (el) =>
-                    el.path === adr.path &&
-                    el.editedMd === adr.editedMd &&
-                    el.originalMd === adr.originalMd
+                (el) => el.path === adr.path && el.editedMd === adr.editedMd && el.originalMd === adr.originalMd
             );
             if (equalAdr) {
                 repo.addedAdrs.push(equalAdr);
@@ -233,11 +201,7 @@ export class Repository {
     getChanges() {
         return {
             added: this.addedAdrs,
-            changed: this.adrs.filter(
-                (adr) =>
-                    adr.originalMd !== adr.editedMd &&
-                    !this.addedAdrs.includes(adr)
-            ),
+            changed: this.adrs.filter((adr) => adr.originalMd !== adr.editedMd && !this.addedAdrs.includes(adr)),
             deleted: this.deletedAdrs
         };
     }
@@ -249,11 +213,7 @@ export class Repository {
      */
     hasChanges() {
         let changes = this.getChanges();
-        return (
-            changes.changed.length !== 0 ||
-            changes.added.length !== 0 ||
-            changes.deleted.length !== 0
-        );
+        return changes.changed.length !== 0 || changes.added.length !== 0 || changes.deleted.length !== 0;
     }
 
     addAdr(newAdr) {
@@ -292,11 +252,7 @@ export function createShortTitle(title) {
                     // --> content of braces should be removed for short title
                     idx = title.indexOf(" (");
                     let idxClosing = title.indexOf(")");
-                    if (
-                        idx > 0 &&
-                        idxClosing == title.length - 1 &&
-                        (idx = title.lastIndexOf(" ("))
-                    ) {
+                    if (idx > 0 && idxClosing == title.length - 1 && (idx = title.lastIndexOf(" ("))) {
                         result = title.substr(0, idx);
                     }
                 }
@@ -324,13 +280,8 @@ export function createShortTitle(title) {
     ) {
         result =
             (idxOpeningBracket > 0 ? result.substr(0, idxOpeningBracket) : "") +
-            result.substr(
-                idxOpeningBracket + 1,
-                idxClosingBracket - idxOpeningBracket - 1
-            ) +
-            (result.length > idxClosingRoundedBracket + 1
-                ? result.substr(idxClosingRoundedBracket + 1)
-                : "");
+            result.substr(idxOpeningBracket + 1, idxClosingBracket - idxOpeningBracket - 1) +
+            (result.length > idxClosingRoundedBracket + 1 ? result.substr(idxClosingRoundedBracket + 1) : "");
     }
     return result;
 }

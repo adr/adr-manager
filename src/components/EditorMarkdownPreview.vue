@@ -1,10 +1,5 @@
 <template>
-    <v-sheet
-        flat
-        class="compiled-markdown"
-        v-html="compiledMarkdown"
-        data-cy="markdownPreview"
-    ></v-sheet>
+    <v-sheet flat class="compiled-markdown" v-html="compiledMarkdown" data-cy="markdownPreview"></v-sheet>
 </template>
 
 <script>

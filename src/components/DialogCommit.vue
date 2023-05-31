@@ -13,19 +13,13 @@
         <template v-slot:activator="{ on, attrs }">
             <slot name="activator" v-bind:on="on" v-bind:attrs="attrs"> </slot>
             <v-overlay :value="loading">
-                <v-progress-circular
-                    :size="50"
-                    color="primary"
-                    indeterminate
-                ></v-progress-circular>
+                <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
             </v-overlay>
         </template>
         <v-card>
             <v-card-title>
                 <div>
-                    <v-avatar color="primary" size="35">
-                        <v-icon dark>mdi-publish</v-icon></v-avatar
-                    >
+                    <v-avatar color="primary" size="35"> <v-icon dark>mdi-publish</v-icon></v-avatar>
                     <span class="dialogTitle"> Commit & Push</span>
                 </div>
             </v-card-title>
@@ -33,8 +27,7 @@
             <v-divider></v-divider>
             <v-card-text>
                 <div class="cardTextPos">
-                    <v-icon>mdi-file</v-icon
-                    ><span class="spanAfterIcon spanTitle"> Select files</span>
+                    <v-icon>mdi-file</v-icon><span class="spanAfterIcon spanTitle"> Select files</span>
                     <template>
                         <v-icon
                             data-cy="mdiCheckSelected"
@@ -59,30 +52,18 @@
                         <v-expansion-panel-header>
                             <div>
                                 <v-icon>mdi-plus</v-icon
-                                ><span
-                                    data-cy="newFilesCommitMessage"
-                                    class="spanAfterIcon spanSubTitle"
-                                >
+                                ><span data-cy="newFilesCommitMessage" class="spanAfterIcon spanSubTitle">
                                     New files</span
                                 >
                             </div>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
-                            <div
-                                v-for="(newFile, indexNew) in newFiles"
-                                :key="indexNew"
-                            >
+                            <div v-for="(newFile, indexNew) in newFiles" :key="indexNew">
                                 <v-flex data-cy="newFileCheckBoxOuter">
                                     <v-checkbox
                                         data-cy="newFileCheckBox"
                                         :input-value="newFile.fileSelected"
-                                        @change="
-                                            checkboxAction(
-                                                $event,
-                                                newFile.path,
-                                                newFiles
-                                            )
-                                        "
+                                        @change="checkboxAction($event, newFile.path, newFiles)"
                                         :label="newFile.title"
                                         class="stuff"
                                     ></v-checkbox>
@@ -94,28 +75,15 @@
                         <v-expansion-panel-header>
                             <div>
                                 <v-icon>mdi-file-document-edit</v-icon
-                                ><span class="spanAfterIcon spanSubTitle">
-                                    Changed files</span
-                                >
+                                ><span class="spanAfterIcon spanSubTitle"> Changed files</span>
                             </div>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
-                            <div
-                                v-for="(
-                                    changedFile, indexChange
-                                ) in changedFiles"
-                                :key="indexChange"
-                            >
+                            <div v-for="(changedFile, indexChange) in changedFiles" :key="indexChange">
                                 <v-flex>
                                     <v-checkbox
                                         :input-value="changedFile.fileSelected"
-                                        @change="
-                                            checkboxAction(
-                                                $event,
-                                                changedFile.path,
-                                                changedFiles
-                                            )
-                                        "
+                                        @change="checkboxAction($event, changedFile.path, changedFiles)"
                                         class="stuff"
                                         :label="changedFile.title"
                                     ></v-checkbox>
@@ -127,30 +95,18 @@
                         <v-expansion-panel-header>
                             <div>
                                 <v-icon>mdi-delete</v-icon
-                                ><span
-                                    data-cy="deletedFilesAdr"
-                                    class="spanAfterIcon spanSubTitle"
-                                >
+                                ><span data-cy="deletedFilesAdr" class="spanAfterIcon spanSubTitle">
                                     Deleted files</span
                                 >
                             </div>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
-                            <div
-                                v-for="(deletedFile, index) in deletedFiles"
-                                :key="index"
-                            >
+                            <div v-for="(deletedFile, index) in deletedFiles" :key="index">
                                 <v-flex>
                                     <v-checkbox
                                         data-cy="deletedFileCheckBox"
                                         :input-value="deletedFile.fileSelected"
-                                        @change="
-                                            checkboxAction(
-                                                $event,
-                                                deletedFile.path,
-                                                deletedFiles
-                                            )
-                                        "
+                                        @change="checkboxAction($event, deletedFile.path, deletedFiles)"
                                         class="stuff"
                                         :label="deletedFile.title"
                                     ></v-checkbox>
@@ -160,10 +116,7 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
                 <div class="distanceToExpPanels">
-                    <v-icon>mdi-message-text</v-icon
-                    ><span class="spanAfterIcon spanTitle">
-                        Enter commit message</span
-                    >
+                    <v-icon>mdi-message-text</v-icon><span class="spanAfterIcon spanTitle"> Enter commit message</span>
                     <template>
                         <v-icon
                             data-cy="mdiCheckCommitMessage"
@@ -196,8 +149,7 @@
                 <div class="distanceToTextField">
                     <v-icon color="primary">mdi-information-outline</v-icon>
                     <span class="spanAfterIcon">
-                        Your selected files will be pushed to {{ repo }} on
-                        {{ branch }} branch.</span
+                        Your selected files will be pushed to {{ repo }} on {{ branch }} branch.</span
                     >
                 </div>
             </v-card-text>
@@ -220,22 +172,14 @@
                 >
                     Commit & Push
                 </v-btn>
-                <v-btn text color="error" @click="dialogVisible = false">
-                    Cancel
-                </v-btn>
+                <v-btn text color="error" @click="dialogVisible = false"> Cancel </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
 </template>
 
 <script>
-import {
-    getCommitSha,
-    createBlobs,
-    createFileTree,
-    createCommit,
-    pushToGitHub
-} from "/src/plugins/api.js";
+import { getCommitSha, createBlobs, createFileTree, createCommit, pushToGitHub } from "/src/plugins/api.js";
 import { store } from "../plugins/store";
 
 /**
@@ -294,11 +238,7 @@ export default {
                 this.branch = store.getBranchCommit();
 
                 this.setFilesForCommit();
-                if (
-                    !this.newFileBool &&
-                    !this.deletedFileBool &&
-                    !this.changedFileBool
-                ) {
+                if (!this.newFileBool && !this.deletedFileBool && !this.changedFileBool) {
                     this.nothingToCommitAlert();
                 }
             }
@@ -412,11 +352,7 @@ export default {
                         break;
                 }
             }
-            if (
-                this.newSelected ||
-                this.changedSelected ||
-                this.deletedSelected
-            ) {
+            if (this.newSelected || this.changedSelected || this.deletedSelected) {
                 this.fileSelected = true;
             } else this.fileSelected = false;
         },
@@ -559,15 +495,8 @@ export default {
                         }, 60000);
                         this.loading = false;
                         if (!this.errorRequest) {
-                            store.updateLocalStorageAfterCommit(
-                                this.filesPushed,
-                                this.repo
-                            );
-                            this.$alert(
-                                "Successfully pushed",
-                                "Success",
-                                "success"
-                            );
+                            store.updateLocalStorageAfterCommit(this.filesPushed, this.repo);
+                            this.$alert("Successfully pushed", "Success", "success");
                         }
                     })
                     .catch((error) => {
@@ -595,14 +524,9 @@ export default {
 
         // No file has been changed/created/deleted
         nothingToCommitAlert() {
-            this.$alert(
-                "No changes have been made since the last push",
-                "Everything up to date",
-                "success",
-                {
-                    confirmButtonText: "Close"
-                }
-            ).then(() => {
+            this.$alert("No changes have been made since the last push", "Everything up to date", "success", {
+                confirmButtonText: "Close"
+            }).then(() => {
                 this.closeDialog();
             });
         },
@@ -614,14 +538,9 @@ export default {
          * changes of the last push. Therefore, we allow pushing only once per minute.
          */
         gitHubTimeoutAlert() {
-            this.$alert(
-                "Latency problem with GitHub Api. Please wait ~60 seconds!",
-                "Warning",
-                "warning",
-                {
-                    confirmButtonText: "Close"
-                }
-            ).then(() => {
+            this.$alert("Latency problem with GitHub Api. Please wait ~60 seconds!", "Warning", "warning", {
+                confirmButtonText: "Close"
+            }).then(() => {
                 this.closeDialog();
             });
         }

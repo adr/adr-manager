@@ -1,17 +1,8 @@
 // Tested functionality
-import {
-    md2adr,
-    adr2md,
-    naturalCase2snakeCase,
-    snakeCase2naturalCase
-} from "../src/plugins/parser.js";
+import { md2adr, adr2md, naturalCase2snakeCase, snakeCase2naturalCase } from "../src/plugins/parser.js";
 
 // Needed for testing
-import {
-    randomStrings,
-    MD_ParsedMADR_Pairs,
-    validMarkdownADRs
-} from "./constants.js";
+import { randomStrings, MD_ParsedMADR_Pairs, validMarkdownADRs } from "./constants.js";
 
 /**
  * Convergence of the parser:

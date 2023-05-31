@@ -3,10 +3,7 @@ import { TEST_BASE_URL } from "../../support/e2e";
 context("Deleting an ADR from a repo", () => {
     it("Remove one ADR", () => {
         window.localStorage.clear();
-        window.localStorage.setItem(
-            "authId",
-            Cypress.env("PIZZLY_E2E_AUTH_ID")
-        );
+        window.localStorage.setItem("authId", Cypress.env("PIZZLY_E2E_AUTH_ID"));
         cy.visit(TEST_BASE_URL);
 
         // add the ADR-Manager repo
@@ -30,9 +27,7 @@ context("Deleting an ADR from a repo", () => {
 
             cy.get("[data-cy=adrList]").should(() => {
                 // check if localeStorage has been set accordingly
-                const addedRepos = JSON.parse(
-                    localStorage.getItem("addedRepositories")
-                );
+                const addedRepos = JSON.parse(localStorage.getItem("addedRepositories"));
                 expect(addedRepos[0].adrs.length).to.eq(adrCount - 1);
                 expect(addedRepos[0].deletedAdrs.length).to.eq(1);
             });

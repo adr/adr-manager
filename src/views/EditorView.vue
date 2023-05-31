@@ -3,23 +3,13 @@
         <v-toolbar dense color="primary" dark class="flex-grow-0">
             <img src="../assets/logo.png" alt="ADR-Manager" height="80%" />
             <v-spacer></v-spacer>
-            <ToolbarMenuMode
-                v-if="showEditor"
-                class="mx-0 px-0 pt-0 mt-0 flex-grow-0"
-            />
+            <ToolbarMenuMode v-if="showEditor" class="mx-0 px-0 pt-0 mt-0 flex-grow-0" />
             <v-spacer></v-spacer>
             <v-btn class="align-self-center" @click="logOut">Disconnect</v-btn>
         </v-toolbar>
 
-        <v-card-text
-            class="mx-0 my-0 px-0 py-0"
-            style="-webkit-flex-grow: 1; flex-grow: 1; position: relative"
-        >
-            <div
-                v-if="!showFileExplorer"
-                class="d-flex align-center justify-center"
-                style="height: 75%; width: 100%"
-            >
+        <v-card-text class="mx-0 my-0 px-0 py-0" style="-webkit-flex-grow: 1; flex-grow: 1; position: relative">
+            <div v-if="!showFileExplorer" class="d-flex align-center justify-center" style="height: 75%; width: 100%">
                 <DialogAddRepositories>
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
@@ -34,24 +24,13 @@
                     </template>
                 </DialogAddRepositories>
             </div>
-            <splitpanes
-                v-else
-                class="default-theme"
-                style="height: 100%; width: 100%"
-            >
+            <splitpanes v-else class="default-theme" style="height: 100%; width: 100%">
                 <pane
                     size="30%"
                     class="d-flex flex-column"
-                    style="
-                        -webkit-flex-grow: 1;
-                        flex-grow: 1;
-                        position: relative;
-                    "
+                    style="-webkit-flex-grow: 1; flex-grow: 1; position: relative"
                 >
-                    <FileExplorer
-                        v-on:repo-name="updateBranches"
-                        v-on:active-branch="setActiveBranch"
-                    />
+                    <FileExplorer v-on:repo-name="updateBranches" v-on:active-branch="setActiveBranch" />
                 </pane>
 
                 <pane v-if="showEditor">
@@ -75,11 +54,7 @@
                 style="width: 20%"
                 @click="clickForBranches"
             >
-                <option
-                    data-cy="branchSelectOption"
-                    v-for="(branchName, index) in branchesName"
-                    :key="index"
-                >
+                <option data-cy="branchSelectOption" v-for="(branchName, index) in branchesName" :key="index">
                     {{ branchName }}
                 </option>
             </select>
@@ -142,16 +117,8 @@ export default {
             return store.currentlyEditedAdr;
         },
         adrPath() {
-            if (
-                store.currentRepository &&
-                this.currentAdr !== undefined &&
-                this.currentAdr.path !== undefined
-            ) {
-                return (
-                    store.currentRepository.fullName +
-                    "/" +
-                    this.currentAdr.path
-                );
+            if (store.currentRepository && this.currentAdr !== undefined && this.currentAdr.path !== undefined) {
+                return store.currentRepository.fullName + "/" + this.currentAdr.path;
             } else {
                 return "";
             }
@@ -159,18 +126,15 @@ export default {
         routeDataFromStore() {
             return {
                 repoFullName:
-                    store.currentRepository &&
-                    typeof store.currentRepository.fullName === "string"
+                    store.currentRepository && typeof store.currentRepository.fullName === "string"
                         ? store.currentRepository.fullName
                         : undefined,
                 branch:
-                    store.currentRepository &&
-                    typeof store.currentRepository.activeBranch === "string"
+                    store.currentRepository && typeof store.currentRepository.activeBranch === "string"
                         ? store.currentRepository.activeBranch
                         : undefined,
                 adrName:
-                    store.currentlyEditedAdr &&
-                    typeof store.currentlyEditedAdr.path === "string"
+                    store.currentlyEditedAdr && typeof store.currentlyEditedAdr.path === "string"
                         ? store.currentlyEditedAdr.path.split("/").pop()
                         : undefined
             };
@@ -188,11 +152,7 @@ export default {
                 this.branchesName = [];
                 this.boolClick = true;
                 this.branchesName.push(newRouteData.branch);
-                this.branchesName = this.branchesName.filter(function (
-                    elem,
-                    index,
-                    self
-                ) {
+                this.branchesName = this.branchesName.filter(function (elem, index, self) {
                     return index === self.indexOf(elem);
                 });
                 this.branchesName = this.branchesName.filter(function (elem) {
@@ -212,9 +172,7 @@ export default {
                             organization: newRouteData.repoFullName
                                 ? newRouteData.repoFullName.split("/")[0]
                                 : undefined,
-                            repo: newRouteData.repoFullName
-                                ? newRouteData.repoFullName.split("/")[1]
-                                : undefined,
+                            repo: newRouteData.repoFullName ? newRouteData.repoFullName.split("/")[1] : undefined,
                             branch: newRouteData.branch,
                             adr: newRouteData.adrName
                         }
@@ -235,10 +193,7 @@ export default {
             }
         },
         branch(newVal) {
-            if (
-                this.routeDataFromStore.branch !== newVal &&
-                store.currentRepository.branches.include(newVal)
-            ) {
+            if (this.routeDataFromStore.branch !== newVal && store.currentRepository.branches.include(newVal)) {
                 store.setActiveBranch(newVal);
             }
         },
@@ -270,10 +225,7 @@ export default {
             if (this.selected != null) {
                 this.$confirm("Do you really want to change branch?")
                     .then(() => {
-                        loadARepositoryContent(
-                            this.currentRepo,
-                            this.selected
-                        ).then((repoObject) => {
+                        loadARepositoryContent(this.currentRepo, this.selected).then((repoObject) => {
                             this.oldSelected = this.selected;
                             if (typeof repoObject !== "undefined") {
                                 store.updateRepository(repoObject);
@@ -290,26 +242,21 @@ export default {
          * Method from api.js to retrieve branches of currentRepository from GitHub.
          */
         loadBranchesName() {
-            loadBranchesName(
-                this.currentRepo.split("/")[1],
-                this.currentRepo.split("/")[0]
-            ).then((branchesObjectList) => {
-                let x = branchesObjectList.map((branches) => ({
-                    brancheName: branches.name
-                }));
-                this.branchesName = [];
-                let i = "";
-                for (i = 0; i < x.length; i++) {
-                    this.branchesName.push(x[i].brancheName);
+            loadBranchesName(this.currentRepo.split("/")[1], this.currentRepo.split("/")[0]).then(
+                (branchesObjectList) => {
+                    let x = branchesObjectList.map((branches) => ({
+                        brancheName: branches.name
+                    }));
+                    this.branchesName = [];
+                    let i = "";
+                    for (i = 0; i < x.length; i++) {
+                        this.branchesName.push(x[i].brancheName);
+                    }
+                    this.branchesName = this.branchesName.filter(function (elem, index, self) {
+                        return index === self.indexOf(elem);
+                    });
                 }
-                this.branchesName = this.branchesName.filter(function (
-                    elem,
-                    index,
-                    self
-                ) {
-                    return index === self.indexOf(elem);
-                });
-            });
+            );
         },
         /**
          * We need to update the branches according to the event that is triggered. When the user removes a repository,

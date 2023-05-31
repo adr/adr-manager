@@ -39,11 +39,7 @@ export default {
         connect: function () {
             // Here, we create a new method
             // that "connect" a user to GitHub
-            this.$pizzly
-                .integration("github")
-                .connect()
-                .then(this.connectSuccess)
-                .catch(this.connectError);
+            this.$pizzly.integration("github").connect().then(this.connectSuccess).catch(this.connectError);
         },
         connectSuccess: function (data) {
             // On success, we update the user object

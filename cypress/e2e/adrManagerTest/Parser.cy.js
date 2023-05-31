@@ -3,10 +3,7 @@ import { TEST_BASE_URL } from "../../support/e2e";
 context("Using Markdown modes", () => {
     it("Convert raw Markdown", () => {
         window.localStorage.clear();
-        window.localStorage.setItem(
-            "authId",
-            Cypress.env("PIZZLY_E2E_AUTH_ID")
-        );
+        window.localStorage.setItem("authId", Cypress.env("PIZZLY_E2E_AUTH_ID"));
         cy.visit(TEST_BASE_URL);
 
         // add ADR Manager repo
@@ -35,9 +32,7 @@ context("Using Markdown modes", () => {
         cy.contains(" Convert ").click();
         // check for some required UI elements
         cy.get("[data-cy=convertEditor]").should(($editor) => {
-            expect($editor).to.contain(
-                "https://github.com/adr/madr/blob/master/template/template.md"
-            );
+            expect($editor).to.contain("https://github.com/adr/madr/blob/master/template/template.md");
             expect($editor).to.contain("Your ADR");
             expect($editor).to.contain("Result");
         });
@@ -49,9 +44,6 @@ context("Using Markdown modes", () => {
         // switch to Markdown preview mode
         cy.contains(" Markdown Preview ").click();
         // check title
-        cy.get("[data-cy=markdownPreview]").should(
-            "contain",
-            "ADR-Manager Test"
-        );
+        cy.get("[data-cy=markdownPreview]").should("contain", "ADR-Manager Test");
     });
 });

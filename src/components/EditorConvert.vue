@@ -6,18 +6,12 @@
         style="height: 100%"
         data-cy="convertEditor"
     >
-        <v-card-title>
-            Sorry, there were issues while parsing the ADR.
-        </v-card-title>
+        <v-card-title> Sorry, there were issues while parsing the ADR. </v-card-title>
         <div>
-            If you want to use the MADR-Editor, our parser will generate the
-            markdown on the right-hand side. You can edit your raw Markdown to
-            make sure that no important content is lost while parsing. <br />
+            If you want to use the MADR-Editor, our parser will generate the markdown on the right-hand side. You can
+            edit your raw Markdown to make sure that no important content is lost while parsing. <br />
             Note, that we only support MADRs matching the template at
-            <a
-                href="https://github.com/adr/madr/blob/master/template/template.md"
-                target="_blank"
-            >
+            <a href="https://github.com/adr/madr/blob/master/template/template.md" target="_blank">
                 https://github.com/adr/madr/blob/master/template/template.md
             </a>
         </div>
@@ -38,9 +32,7 @@
             ></codemirror>
         </div>
 
-        <v-btn data-cy="acceptDiv" color="success" @click="accept">
-            Accept
-        </v-btn>
+        <v-btn data-cy="acceptDiv" color="success" @click="accept"> Accept </v-btn>
     </v-card>
 </template>
 

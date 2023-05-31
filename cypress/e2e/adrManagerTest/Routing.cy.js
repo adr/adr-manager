@@ -3,10 +3,7 @@ import { TEST_BASE_URL } from "../../support/e2e";
 context("Routing and correct URLs", () => {
     beforeEach(() => {
         window.localStorage.clear();
-        window.localStorage.setItem(
-            "authId",
-            Cypress.env("PIZZLY_E2E_AUTH_ID")
-        );
+        window.localStorage.setItem("authId", Cypress.env("PIZZLY_E2E_AUTH_ID"));
         cy.visit(TEST_BASE_URL);
     });
 
@@ -33,12 +30,7 @@ context("Routing and correct URLs", () => {
             // add new ADR, it should be opened automatically
             cy.get("[data-cy=newADR]").click({ force: true });
             // with an opened ADR, the URL should contain full name, branch, and new ADR name
-            cy.url().should(
-                "equal",
-                `${TEST_BASE_URL}/adr/adr-manager/main/${String(
-                    adrCount
-                ).padStart(4, "0")}-.md`
-            );
+            cy.url().should("equal", `${TEST_BASE_URL}/adr/adr-manager/main/${String(adrCount).padStart(4, "0")}-.md`);
 
             // remove all ADRs
             cy.get("[data-cy=deleteAdrBtn]").each(($el) => {

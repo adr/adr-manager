@@ -9,7 +9,8 @@
         "serve": "vite preview",
         "test": "jest",
         "e2e:test": "cypress run",
-        "e2e:test-ci": "cypress run --browser chrome --headless --config video=false,screenshotOnRunFailure=false"
+        "e2e:test-ci": "cypress run --browser chrome --headless --config video=false,screenshotOnRunFailure=false",
+        "format": "prettier --write . --ignore-unknown"
     },
     "dependencies": {
         "@mdi/font": "^7.2.96",

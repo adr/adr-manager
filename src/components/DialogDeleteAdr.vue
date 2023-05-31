@@ -15,32 +15,19 @@
         <v-card>
             <v-card-title>
                 <div>
-                    <v-avatar color="primary" size="35">
-                        <v-icon dark>mdi-delete</v-icon></v-avatar
-                    >
+                    <v-avatar color="primary" size="35"> <v-icon dark>mdi-delete</v-icon></v-avatar>
                     <span class="dialogTitle"> Delete ADR</span>
                 </div>
             </v-card-title>
             <v-divider></v-divider>
 
-            <v-card-text>
-                Are you sure you want to delete '{{ adr.path }}'?
-            </v-card-text>
+            <v-card-text> Are you sure you want to delete '{{ adr.path }}'? </v-card-text>
             <v-divider></v-divider>
 
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn
-                    data-cy="dialogDeleteAdrBtn"
-                    text
-                    color="success"
-                    @click="deleteAdr"
-                >
-                    Delete
-                </v-btn>
-                <v-btn text color="error" @click="showDialog = false">
-                    Cancel
-                </v-btn>
+                <v-btn data-cy="dialogDeleteAdrBtn" text color="success" @click="deleteAdr"> Delete </v-btn>
+                <v-btn text color="error" @click="showDialog = false"> Cancel </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

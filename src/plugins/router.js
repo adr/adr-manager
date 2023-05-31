@@ -25,18 +25,9 @@ const routes = [
         component: EditorView,
         meta: { requiresAuth: true },
         redirect: (to) => {
-            if (
-                to.params.organization &&
-                to.params.repo &&
-                to.params.branch &&
-                to.params.adr
-            ) {
+            if (to.params.organization && to.params.repo && to.params.branch && to.params.adr) {
                 return { name: "EditorWithSpecifiedAdr" };
-            } else if (
-                to.params.organization &&
-                to.params.repo &&
-                to.params.branch
-            ) {
+            } else if (to.params.organization && to.params.repo && to.params.branch) {
                 console.log("Route to spec repo");
                 return { name: "EditorWithSpecifiedRepo" };
             } else {

@@ -1,14 +1,7 @@
 <template>
     <v-card flat class="text-left d-flex flex-column" style="height: 100%">
         <div style="-webkit-flex-grow: 1; flex-grow: 1; position: relative">
-            <div
-                style="
-                    height: 100%;
-                    width: 100%;
-                    position: absolute;
-                    overflow-y: auto;
-                "
-            >
+            <div style="height: 100%; width: 100%; position: absolute; overflow-y: auto">
                 <v-list multiple dense>
                     <v-list-item-group data-cy="repoNameList" mandatory>
                         <v-list-group
@@ -20,14 +13,9 @@
                         >
                             <template v-slot:activator>
                                 <v-list-item-content>
-                                    <v-list-item-title
-                                        v-text="repo.name"
-                                    ></v-list-item-title>
+                                    <v-list-item-title v-text="repo.name"></v-list-item-title>
                                 </v-list-item-content>
-                                <DialogCommit
-                                    v-bind:repo="repo.name"
-                                    v-if="repo.fileType === 'repo'"
-                                >
+                                <DialogCommit v-bind:repo="repo.name" v-if="repo.fileType === 'repo'">
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-btn
                                             content="Commit and push"
@@ -35,18 +23,12 @@
                                                 interactive: true,
                                                 animation: 'scale'
                                             }"
-                                            style="
-                                                width: 30px;
-                                                min-width: 30px;
-                                                height: 100%;
-                                            "
+                                            style="width: 30px; min-width: 30px; height: 100%"
                                             class="mx-0 px-0"
                                             v-bind="attrs"
                                             v-on="on"
                                         >
-                                            <v-icon data-cy="pushIcon"
-                                                >mdi-publish</v-icon
-                                            >
+                                            <v-icon data-cy="pushIcon">mdi-publish</v-icon>
                                         </v-btn>
                                     </template>
                                 </DialogCommit>
@@ -54,9 +36,7 @@
                                 <DialogRemoveRepository
                                     v-bind:repo="{ name: repo.name }"
                                     v-if="repo.fileType === 'repo'"
-                                    @remove-repo="
-                                        removeRepository(repo.repository)
-                                    "
+                                    @remove-repo="removeRepository(repo.repository)"
                                 >
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-btn
@@ -66,11 +46,7 @@
                                                 animation: 'scale'
                                             }"
                                             data-cy="removeRepo"
-                                            style="
-                                                width: 30px;
-                                                min-width: 30px;
-                                                height: 100%;
-                                            "
+                                            style="width: 30px; min-width: 30px; height: 100%"
                                             class="mx-0 px-0"
                                             v-bind="attrs"
                                             v-on="on"
@@ -91,32 +67,18 @@
                                     :value="file.path"
                                 >
                                     <v-tooltip bottom open-delay="500">
-                                        <template
-                                            v-slot:activator="{ on, attrs }"
-                                        >
-                                            <v-list-item-icon>
-                                            </v-list-item-icon>
-                                            <v-list-item-content
-                                                v-bind="attrs"
-                                                v-on="on"
-                                            >
-                                                <v-list-item-title
-                                                    v-text="displayInfo(file)"
-                                                >
-                                                </v-list-item-title>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-list-item-icon> </v-list-item-icon>
+                                            <v-list-item-content v-bind="attrs" v-on="on">
+                                                <v-list-item-title v-text="displayInfo(file)"> </v-list-item-title>
                                             </v-list-item-content>
                                         </template>
                                         <span v-text="file.tooltip"></span>
                                     </v-tooltip>
                                     <!-- Button-Icons for copy and delete -->
                                     <v-list-item-icon>
-                                        <DialogDeleteAdr
-                                            :adr="file.adr"
-                                            :repo="repo.repository"
-                                        >
-                                            <template
-                                                v-slot:activator="{ on, attrs }"
-                                            >
+                                        <DialogDeleteAdr :adr="file.adr" :repo="repo.repository">
+                                            <template v-slot:activator="{ on, attrs }">
                                                 <v-btn
                                                     content="Delete adr"
                                                     v-tippy="{
@@ -124,17 +86,9 @@
                                                         animation: 'scale'
                                                     }"
                                                     data-cy="deleteAdrBtn"
-                                                    style="
-                                                        width: 30px;
-                                                        min-width: 30px;
-                                                        height: 100%;
-                                                    "
+                                                    style="width: 30px; min-width: 30px; height: 100%"
                                                     class="mx-0 px-0"
-                                                    v-if="
-                                                        file.fileType ===
-                                                            'adr' ||
-                                                        file.fileType === 'md'
-                                                    "
+                                                    v-if="file.fileType === 'adr' || file.fileType === 'md'"
                                                     v-bind="attrs"
                                                     v-on="on"
                                                 >
@@ -144,21 +98,15 @@
                                         </DialogDeleteAdr>
                                     </v-list-item-icon>
                                 </v-list-item>
-                                <div
-                                    class="d-flex justify-content-space-around justify-center"
-                                >
+                                <div class="d-flex justify-content-space-around justify-center">
                                     <v-btn
                                         data-cy="newADR"
                                         dark
                                         class="align-center"
                                         width="75%"
-                                        @click.native.prevent.stop="
-                                            createNewAdr({ repository: repo })
-                                        "
+                                        @click.native.prevent.stop="createNewAdr({ repository: repo })"
                                     >
-                                        <v-icon data-cy="NewAdrFile"
-                                            >mdi-plus</v-icon
-                                        >
+                                        <v-icon data-cy="NewAdrFile">mdi-plus</v-icon>
                                         New ADR
                                     </v-btn>
                                 </div>
@@ -174,12 +122,7 @@
         <div class="flex-grow-0 d-flex flex-wrap">
             <DialogAddRepositories>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                        data-cy="addRepo"
-                        v-bind="attrs"
-                        v-on="on"
-                        class="flex-grow-1 secondary"
-                    >
+                    <v-btn data-cy="addRepo" v-bind="attrs" v-on="on" class="flex-grow-1 secondary">
                         Add Repository
                     </v-btn>
                 </template>
@@ -241,10 +184,7 @@ export default {
                     let rawName = adr.path.split("/").pop();
                     let name = rawName;
                     if (rawName.match("\\d{4}-.*[.]md")) {
-                        name = snakeCase2naturalCase(rawName).replace(
-                            ".md",
-                            ""
-                        );
+                        name = snakeCase2naturalCase(rawName).replace(".md", "");
                         name.split();
                     }
                     return {
@@ -286,11 +226,7 @@ export default {
         openAdrPath: {
             get() {
                 if (store.currentRepository && store.currentlyEditedAdr) {
-                    return (
-                        store.currentRepository.fullName +
-                        "/" +
-                        store.currentlyEditedAdr.path
-                    );
+                    return store.currentRepository.fullName + "/" + store.currentlyEditedAdr.path;
                 } else if (store.currentRepository) {
                     return store.currentRepository.fullName;
                 } else {
@@ -304,9 +240,7 @@ export default {
             get() {
                 if (store.currentRepository) {
                     let index = this.folderTree.findIndex(
-                        (repo) =>
-                            repo.repository.fullName ===
-                            store.currentRepository.fullName
+                        (repo) => repo.repository.fullName === store.currentRepository.fullName
                     );
                     return index;
                 } else {
@@ -387,10 +321,7 @@ export default {
          * @param file - the file object (from the folder structure)
          */
         openFile({ file }) {
-            if (
-                typeof file.adr !== "undefined" &&
-                store.currentlyEditedAdr !== file.adr
-            ) {
+            if (typeof file.adr !== "undefined" && store.currentlyEditedAdr !== file.adr) {
                 store.openAdrBy(
                     file.path.split("/")[0] + "/" + file.path.split("/")[1],
                     file.adr.path.split("/").pop()
@@ -435,8 +366,7 @@ function getFileByPath({ folder, path }) {
                 return searchedFile;
             }
             searchedFile = searchedFile.children.find(
-                (file) =>
-                    path.startsWith(file.path) || file.path.startsWith(path)
+                (file) => path.startsWith(file.path) || file.path.startsWith(path)
             );
         } else {
             return searchedFile;

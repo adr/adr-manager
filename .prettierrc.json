@@ -1,6 +1,6 @@
 {
-    "editorconfig": true,
     "trailingComma": "none",
     "semi": true,
-    "singleQuote": false
+    "singleQuote": false,
+    "printWidth": 120
 }

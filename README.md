@@ -5,7 +5,7 @@
 ## Description
 
 [MADR](https://adr.github.io/madr/) is a Markdown template for quickly capturing architectural decisions.
-It offers a naming scheme and template to keep the layout of recorded decisions consistent. 
+It offers a naming scheme and template to keep the layout of recorded decisions consistent.
 Each decision is stored in a separate file.
 The ADR Manager currently only supports the management of MADRs stored in the folder `docs/adr` in GitHub repositories.
 
@@ -32,8 +32,8 @@ Some technical notes:
 - The `authID` (which enables the connection to GitHub) and changes to ADRs are stored in the local storage.
   That way they are not lost when you reload the page or restart the browser.
   However, changes will be lost when you either
-    - Clear local storage or
-    - Press the `Disconnect` button.
+  - Clear local storage or
+  - Press the `Disconnect` button.
 - The general idea is that you directly push your changes to GitHub after editing.
 - During development, we may remove permissions for the OAuth App from time to time.
   Do not be surprised, if you have to give permissions repeatedly.
@@ -97,6 +97,9 @@ npx cypress open
 
 # run a single e2e test
 npx cypress run --spec ./cypress/e2e/adrManagerTest/<file-name>
+
+# format code with prettier (do this before you commit and push)
+npm run format
 ```
 
 ### Backend Setup

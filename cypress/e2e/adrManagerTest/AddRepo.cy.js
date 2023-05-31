@@ -3,10 +3,7 @@ import { TEST_BASE_URL } from "../../support/e2e";
 context("Listing and adding repositories", () => {
     beforeEach(() => {
         window.localStorage.clear();
-        window.localStorage.setItem(
-            "authId",
-            Cypress.env("PIZZLY_E2E_AUTH_ID")
-        );
+        window.localStorage.setItem("authId", Cypress.env("PIZZLY_E2E_AUTH_ID"));
         cy.visit(TEST_BASE_URL);
 
         cy.intercept("GET", "**/user/repos**").as("getRepos");
@@ -38,9 +35,7 @@ context("Listing and adding repositories", () => {
             cy.wait("@showRepos", { timeout: 15000 });
 
             // check if the correct number of repos was added
-            cy.get("[data-cy=repoNameList]")
-                .children()
-                .should("have.length", numberOfAddedRepositories);
+            cy.get("[data-cy=repoNameList]").children().should("have.length", numberOfAddedRepositories);
         });
     });
 });

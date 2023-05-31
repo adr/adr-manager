@@ -10,11 +10,7 @@ export default {
     // The directory where Jest should output its coverage files
     coverageDirectory: "coverage",
     // An array of regexp pattern strings used to skip coverage collection
-    coveragePathIgnorePatterns: [
-        "/node_modules/",
-        "/plugins/parser/",
-        "/tests/"
-    ],
+    coveragePathIgnorePatterns: ["/node_modules/", "/plugins/parser/", "/tests/"],
     // A list of reporter names that Jest uses when writing coverage reports
     coverageReporters: ["json", "text", "lcov", "clover"],
     // An array of directory names to be searched recursively up from the requiring module's location

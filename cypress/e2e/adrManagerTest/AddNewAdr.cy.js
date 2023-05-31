@@ -3,10 +3,7 @@ import { TEST_BASE_URL } from "../../support/e2e";
 context("Adding a new ADR to a repo", () => {
     it("Create a new ADR", () => {
         window.localStorage.clear();
-        window.localStorage.setItem(
-            "authId",
-            Cypress.env("PIZZLY_E2E_AUTH_ID")
-        );
+        window.localStorage.setItem("authId", Cypress.env("PIZZLY_E2E_AUTH_ID"));
         cy.visit(TEST_BASE_URL);
 
         // add the ADR-Manager repo
@@ -25,9 +22,7 @@ context("Adding a new ADR to a repo", () => {
             // length should be adrCount + 1
             cy.get("[data-cy=adrList]").should("have.length", adrCount + 1);
             cy.get("[data-cy=adrList]").should(() => {
-                expect(localStorage.getItem("addedRepositories")).to.not.eq(
-                    "[]"
-                );
+                expect(localStorage.getItem("addedRepositories")).to.not.eq("[]");
             });
 
             // add title to new ADR
@@ -37,18 +32,12 @@ context("Adding a new ADR to a repo", () => {
             // add context to new ADR
             cy.get("[data-cy=contextAdr]").click();
             cy.get("[data-cy=contextAdr] textarea").eq(1).type("ContextAdr", {
-                force: true,
+                force: true
             });
 
             // add considered options text to new ADR and test the add btn
-            cy.get("[data-cy=considerOptTextAdr]")
-                .children()
-                .eq(1)
-                .type("Con. Opt 1)")
-                .should("have.length", 1);
-            cy.get("[data-cy=considerOptTextAdr]")
-                .children()
-                .should("have.length", 2);
+            cy.get("[data-cy=considerOptTextAdr]").children().eq(1).type("Con. Opt 1)").should("have.length", 1);
+            cy.get("[data-cy=considerOptTextAdr]").children().should("have.length", 2);
 
             // choose decision outcome
             cy.get("[data-cy=decOutChooseAdr]").click();
