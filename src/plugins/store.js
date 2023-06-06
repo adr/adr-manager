@@ -46,9 +46,7 @@ export const store = new Vue({
                 // Validate storage
                 if (isValidRepoList(addedRepos)) {
                     this.addRepositories(
-                        addedRepos.map(repo =>
-                            Repository.constructFromString(JSON.stringify(repo))
-                        )
+                        addedRepos.map((repo) => Repository.constructFromString(JSON.stringify(repo)))
                     );
                 } else {
                     console.log("Invalid repos: ", addedRepos);
@@ -62,11 +60,8 @@ export const store = new Vue({
          * Write the current value of the added repositories list array into the local storage.
          * Should be done regularly.
          */
-        updateLocalStorageRepositories: function() {
-            localStorage.setItem(
-                "addedRepositories",
-                JSON.stringify(this.addedRepositories)
-            );
+        updateLocalStorageRepositories: function () {
+            localStorage.setItem("addedRepositories", JSON.stringify(this.addedRepositories));
         },
 
         /** Adds the repositories to the added repositories.
@@ -75,14 +70,14 @@ export const store = new Vue({
          */
         addRepositories(repoList) {
             console.log("Add Repositories to store", repoList);
-            let alreadyAddedRepos = repoList.filter(repoToAdd =>
-                this.addedRepositories
-                    .map(repo => repo.fullName)
-                    .includes(repoToAdd.fullName)
+            let alreadyAddedRepos = repoList.filter((repoToAdd) =>
+                this.addedRepositories.map((repo) => repo.fullName).includes(repoToAdd.fullName)
             );
             if (alreadyAddedRepos.length > 0) {
-                throw "I won't add an already added repository to the store! " +
-                    alreadyAddedRepos.map(repo => repo.fullName).join(", ");
+                throw (
+                    "I won't add an already added repository to the store! " +
+                    alreadyAddedRepos.map((repo) => repo.fullName).join(", ")
+                );
             }
             this.addedRepositories = this.addedRepositories.concat(repoList);
             this.updateLocalStorageRepositories();
@@ -94,26 +89,18 @@ export const store = new Vue({
          * @param {object} repoToRemove
          */
         removeRepository(repoToRemove) {
-            this.addedRepositories = this.addedRepositories.filter(
-                repo => repo.fullName !== repoToRemove.fullName
-            );
+            this.addedRepositories = this.addedRepositories.filter((repo) => repo.fullName !== repoToRemove.fullName);
             this.ensureSomeAdrIsOpened();
             this.updateLocalStorageRepositories();
         },
 
         /** Updates the repository with the same full name as the passed repository. */
         updateRepository(updatedRepository) {
-            let index = this.addedRepositories.findIndex(
-                repo => repo.fullName === updatedRepository.fullName
-            );
+            let index = this.addedRepositories.findIndex((repo) => repo.fullName === updatedRepository.fullName);
             let oldRepo = this.addedRepositories[index];
             this.addedRepositories.splice(index, 1, updatedRepository);
             if (oldRepo.adrs.includes(this.currentlyEditedAdr)) {
-                this.openAdr(
-                    updatedRepository.adrs.find(
-                        adr => adr.path === this.currentlyEditedAdr.path
-                    )
-                );
+                this.openAdr(updatedRepository.adrs.find((adr) => adr.path === this.currentlyEditedAdr.path));
             }
             this.updateLocalStorageRepositories();
         },
@@ -134,9 +121,7 @@ export const store = new Vue({
             if (
                 this.currentlyEditedAdr === undefined ||
                 !isValidAdr(this.currentlyEditedAdr) ||
-                !this.addedRepositories.some(repo =>
-                    repo.adrs.includes(this.currentlyEditedAdr)
-                )
+                !this.addedRepositories.some((repo) => repo.adrs.includes(this.currentlyEditedAdr))
             ) {
                 this.currentlyEditedAdr = undefined;
                 this.currentRepository = undefined;
@@ -148,9 +133,7 @@ export const store = new Vue({
          * Opens any ADR.
          */
         openAnyAdr() {
-            let reposWithAdrs = this.addedRepositories.filter(
-                repo => repo.adrs && repo.adrs[0]
-            );
+            let reposWithAdrs = this.addedRepositories.filter((repo) => repo.adrs && repo.adrs[0]);
             if (reposWithAdrs.includes(this.currentRepository)) {
                 let someAdr = this.currentRepository.adrs[0];
                 this.openAdr(someAdr);
@@ -169,12 +152,10 @@ export const store = new Vue({
          * @returns the ADR iff it was found, else undefined
          */
         openAdrBy(repoFullName, adrName) {
-            let repo = this.addedRepositories.find(
-                repo => repo.fullName === repoFullName
-            );
+            let repo = this.addedRepositories.find((repo) => repo.fullName === repoFullName);
             let adr;
             if (repo) {
-                adr = repo.adrs.find(adr => {
+                adr = repo.adrs.find((adr) => {
                     return adr.path.split("/").pop() === adrName;
                 });
             }
@@ -190,11 +171,9 @@ export const store = new Vue({
          *
          * @param {object} adr
          */
-        openAdr: function(adr) {
+        openAdr: function (adr) {
             if (adr !== this.currentlyEditedAdr) {
-                let repo = this.addedRepositories.find(repo =>
-                    repo.adrs.includes(adr)
-                );
+                let repo = this.addedRepositories.find((repo) => repo.adrs.includes(adr));
                 if (isValidAdr(adr) && repo !== undefined) {
                     this.currentRepository = repo;
                     this.currentlyEditedAdr = adr;
@@ -221,20 +200,12 @@ export const store = new Vue({
             if (
                 this.currentRepository &&
                 this.currentRepository.addedAdrs &&
-                this.currentRepository.addedAdrs.includes(
-                    this.currentlyEditedAdr
-                )
+                this.currentRepository.addedAdrs.includes(this.currentlyEditedAdr)
             ) {
                 let path = this.currentlyEditedAdr.path.split("/");
-                let title = md
-                    .split("\n")[0]
-                    .replace(/^#+/, "")
-                    .trim();
+                let title = md.split("\n")[0].replace(/^#+/, "").trim();
                 path[path.length - 1] = sanitize(
-                    this.currentlyEditedAdr.id.toString().padStart(4, "0") +
-                        "-" +
-                        naturalCase2snakeCase(title) +
-                        ".md"
+                    this.currentlyEditedAdr.id.toString().padStart(4, "0") + "-" + naturalCase2snakeCase(title) + ".md"
                 );
                 this.currentlyEditedAdr.path = path.join("/");
             }
@@ -249,21 +220,16 @@ export const store = new Vue({
          * @param {object} repo - must be one of the added repositories
          * @returns the created adr if repo is added, undefined otherwise
          */
-        createNewAdr: function(repo) {
+        createNewAdr: function (repo) {
             if (this.addedRepositories.includes(repo)) {
                 let adr = ArchitecturalDecisionRecord.createNewAdr();
                 let md = adr2md(adr);
-                let id = Math.max(...repo.adrs.map(adr => adr.id), 0) + 1;
+                let id = Math.max(...repo.adrs.map((adr) => adr.id), 0) + 1;
                 let newAdr = {
                     originalMd: "",
                     editedMd: md,
                     id: id,
-                    path:
-                        repo.adrPath +
-                        id.toString().padStart(4, "0") +
-                        "-" +
-                        adr.title +
-                        ".md",
+                    path: repo.adrPath + id.toString().padStart(4, "0") + "-" + adr.title + ".md",
                     newAdr: true
                 };
                 repo.addAdr(newAdr);
@@ -282,10 +248,8 @@ export const store = new Vue({
          */
         deleteAdr(adr, repo) {
             console.log("Deleting requested!", adr, repo);
-            let adrIndexAdr = repo.adrs.findIndex(adrEl => adrEl == adr);
-            let adrIndexNewAdr = repo.addedAdrs.findIndex(
-                adrEl => adrEl == adr
-            );
+            let adrIndexAdr = repo.adrs.findIndex((adrEl) => adrEl == adr);
+            let adrIndexNewAdr = repo.addedAdrs.findIndex((adrEl) => adrEl == adr);
             if (!repo.deletedAdrs) {
                 repo.deletedAdrs = [];
             }
@@ -386,9 +350,7 @@ export const store = new Vue({
             for (let changedFile of this.currentRepositoryForCommit.adrs) {
                 if (!("newAdr" in changedFile)) {
                     if (changedFile.editedMd != changedFile.originalMd) {
-                        changedFiles.push(
-                            this.dataStructureCommit(changedFile, "changed")
-                        );
+                        changedFiles.push(this.dataStructureCommit(changedFile, "changed"));
                     }
                 }
             }
@@ -402,8 +364,7 @@ export const store = new Vue({
          */
         deletedFilesInRepo() {
             let deletedFiles = [];
-            for (let deletedFile of this.currentRepositoryForCommit
-                .deletedAdrs) {
+            for (let deletedFile of this.currentRepositoryForCommit.deletedAdrs) {
                 deletedFiles.push({
                     path: deletedFile.path,
                     title: deletedFile.path.split("/")[2],
@@ -487,9 +448,7 @@ export const store = new Vue({
         handleUpdateLocalStorageNew(file) {
             for (let repoEntry of this.currentRepositoryForCommit.addedAdrs) {
                 if (file.path === repoEntry.path) {
-                    let index = this.currentRepositoryForCommit.addedAdrs.indexOf(
-                        repoEntry
-                    );
+                    let index = this.currentRepositoryForCommit.addedAdrs.indexOf(repoEntry);
                     this.currentRepositoryForCommit.addedAdrs.splice(index, 1);
                 }
             }
@@ -522,13 +481,8 @@ export const store = new Vue({
         handleUpdateLocalStorageDeleted(file) {
             for (let repoEntry of this.currentRepositoryForCommit.deletedAdrs) {
                 if (file.path === repoEntry.path) {
-                    let index = this.currentRepositoryForCommit.deletedAdrs.indexOf(
-                        repoEntry
-                    );
-                    this.currentRepositoryForCommit.deletedAdrs.splice(
-                        index,
-                        1
-                    );
+                    let index = this.currentRepositoryForCommit.deletedAdrs.indexOf(repoEntry);
+                    this.currentRepositoryForCommit.deletedAdrs.splice(index, 1);
                 }
             }
         }
@@ -544,7 +498,7 @@ export const store = new Vue({
  * @param {object[]} repos
  */
 function isValidRepoList(repos) {
-    return repos.every(repo => {
+    return repos.every((repo) => {
         let valid =
             _.has(repo, "fullName") &&
             _.has(repo, "activeBranch") &&
@@ -561,7 +515,5 @@ function isValidRepoList(repos) {
 }
 
 function isValidAdr(adr) {
-    return (
-        _.has(adr, "originalMd") && _.has(adr, "editedMd") && _.has(adr, "path")
-    );
+    return _.has(adr, "originalMd") && _.has(adr, "editedMd") && _.has(adr, "path");
 }

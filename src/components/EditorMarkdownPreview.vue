@@ -1,18 +1,14 @@
 <template>
-    <v-sheet
-        flat
-        class="compiled-markdown"
-        v-html="compiledMarkdown"
-        data-cy="markdownPreview"
-    ></v-sheet>
+    <v-sheet flat class="compiled-markdown" v-html="compiledMarkdown" data-cy="markdownPreview"></v-sheet>
 </template>
 
 <script>
+import { marked } from "marked";
+
 export default {
     props: ["value"],
     computed: {
-        compiledMarkdown: function() {
-            var marked = require("marked");
+        compiledMarkdown: function () {
             return marked(this.value);
         }
     }

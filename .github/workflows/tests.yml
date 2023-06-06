@@ -23,13 +23,13 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: "12"
+          node-version: "18"
       - run: npm ci
       - run: npm run test
   e2e-tests:
     name: Run on Cypress e2e tests on Chrome
     runs-on: ubuntu-latest
-    container: cypress/browsers:node12.18.3-chrome87-ff82
+    container: cypress/browsers:node-18.16.0-chrome-113.0.5672.92-1-ff-113.0-edge-113.0.1774.35-1
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies and verify Cypress
@@ -39,6 +39,6 @@ jobs:
         env:
           CYPRESS_PIZZLY_E2E_AUTH_ID: ${{ secrets.PIZZLY_E2E_AUTH_ID }}
         run: |
-          npm run serve &
-          npm run tests:chrome
+          npm start &
+          npm run e2e:test-ci
         continue-on-error: false

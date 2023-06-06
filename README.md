@@ -5,7 +5,7 @@
 ## Description
 
 [MADR](https://adr.github.io/madr/) is a Markdown template for quickly capturing architectural decisions.
-It offers a naming scheme and template to keep the layout of recorded decisions consistent. 
+It offers a naming scheme and template to keep the layout of recorded decisions consistent.
 Each decision is stored in a separate file.
 The ADR Manager currently only supports the management of MADRs stored in the folder `docs/adr` in GitHub repositories.
 
@@ -32,8 +32,8 @@ Some technical notes:
 - The `authID` (which enables the connection to GitHub) and changes to ADRs are stored in the local storage.
   That way they are not lost when you reload the page or restart the browser.
   However, changes will be lost when you either
-    - Clear local storage or
-    - Press the `Disconnect` button.
+  - Clear local storage or
+  - Press the `Disconnect` button.
 - The general idea is that you directly push your changes to GitHub after editing.
 - During development, we may remove permissions for the OAuth App from time to time.
   Do not be surprised, if you have to give permissions repeatedly.
@@ -51,7 +51,7 @@ To run the project locally, follow these steps:
 
 1. Clone this repository.
 2. Install dependencies with `npm install`.
-3. Compile and start the application with `npm run serve`.
+3. Compile and start the application with `npm start`.
 
 Note that, even when you run it locally, you need to connect to GitHub to use any functionality.
 
@@ -69,8 +69,8 @@ You can either set `CYPRESS_PIZZLY_E2E_AUTH_ID` containing the `authId` or creat
 ```
 
 The value of `PIZZLY_E2E_AUTH_ID` needs to be a valid `authId` from an active Pizzly session, which you can obtain a) via the Pizzly dashboard (see below) or b) in the local storage (Chrome developer console -> Application -> Storage -> Local Storage -> `http://localhost:8080` -> `authId`)
-The involved GitHub account also needs to have developer access to this repo (`adr/adr-manager`).
-Lastly, don't forget to start the app before running the e2e tests (`npm run serve`).
+The involved GitHub account also needs to have developer access to the repo `adr/adr-test-repository-empty`.
+Lastly, don't forget to start the app before running the e2e tests (`npm start`).
 
 ### Useful Commands
 
@@ -81,25 +81,25 @@ The following commands are useful for development:
 npm install
 
 # build and start with hot-reload for development
-npm run serve
+npm start
 
 # build and minify for production
 npm run build
 
-# lint with auto-fix
-npm run lint
-
 # run unit tests
-npm run test
+npm test
 
 # run e2e tests
 npm run e2e:test
 
-# open cypress UI for e2e tests
+# open cypress GUI for e2e tests
 npx cypress open
 
 # run a single e2e test
-npx cypres run --spec ./cypress/integration/adrManagerTest/<file-name>
+npx cypress run --spec ./cypress/e2e/adrManagerTest/<file-name>
+
+# format code with prettier (do this before you commit and push)
+npm run format
 ```
 
 ### Backend Setup

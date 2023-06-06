@@ -1,11 +1,14 @@
 import Vue from "vue";
 import App from "./App.vue";
-import vuetify from "./plugins/vuetify";
+import Vuetify from "vuetify";
+import "vuetify/dist/vuetify.min.css";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@mdi/font/css/materialdesignicons.css";
 import VueSimpleAlert from "vue-simple-alert";
 
 import router from "./plugins/router";
+
+Vue.use(Vuetify);
 
 /* Needed to refresh the code mirror, when it becomes visible or is resized. */
 import { ObserveVisibility } from "vue-observe-visibility";
@@ -40,6 +43,6 @@ Vue.config.productionTip = false;
 
 new Vue({
     router,
-    vuetify,
-    render: h => h(App)
+    vuetify: new Vuetify(),
+    render: (h) => h(App)
 }).$mount("#app");

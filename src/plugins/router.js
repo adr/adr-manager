@@ -24,19 +24,10 @@ const routes = [
         name: "Editor",
         component: EditorView,
         meta: { requiresAuth: true },
-        redirect: to => {
-            if (
-                to.params.organization &&
-                to.params.repo &&
-                to.params.branch &&
-                to.params.adr
-            ) {
+        redirect: (to) => {
+            if (to.params.organization && to.params.repo && to.params.branch && to.params.adr) {
                 return { name: "EditorWithSpecifiedAdr" };
-            } else if (
-                to.params.organization &&
-                to.params.repo &&
-                to.params.branch
-            ) {
+            } else if (to.params.organization && to.params.repo && to.params.branch) {
                 console.log("Route to spec repo");
                 return { name: "EditorWithSpecifiedRepo" };
             } else {
@@ -50,7 +41,7 @@ const routes = [
         name: "EditorUnspecified",
         component: EditorView,
         meta: { requiresAuth: true },
-        props: route => ({ ...route.query, ...route.params })
+        props: (route) => ({ ...route.query, ...route.params })
     },
     // Sub-route 2: If the route does not specify ADR but specifies a repo
     {
@@ -58,7 +49,7 @@ const routes = [
         name: "EditorWithSpecifiedRepo",
         component: EditorView,
         meta: { requiresAuth: true },
-        props: route => ({
+        props: (route) => ({
             ...route.query,
             ...route.params,
             repoFullName: route.params.organization + "/" + route.params.repo,
@@ -72,11 +63,11 @@ const routes = [
         component: EditorView,
         meta: {
             requiresAuth: true,
-            title: route => {
+            title: (route) => {
                 return route.params.adr;
             }
         },
-        props: route => ({
+        props: (route) => ({
             ...route.query,
             ...route.params,
             repoFullName: route.params.organization + "/" + route.params.repo,
@@ -96,7 +87,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
         // this route requires auth, check if logged in
         // if not, redirect to login page.
         if (!localStorage.getItem("authId")) {
@@ -113,7 +104,7 @@ router.beforeEach((to, from, next) => {
 });
 
 const DEFAULT_TITLE = "ADR Manager";
-router.afterEach(to => {
+router.afterEach((to) => {
     Vue.nextTick(() => {
         document.title = to.meta.title ? to.meta.title(to) : DEFAULT_TITLE;
     });

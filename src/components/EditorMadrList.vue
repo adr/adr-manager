@@ -8,10 +8,7 @@
             :key="item.id"
         >
             <v-hover v-slot="{ hover }">
-                <drop
-                    @dragenter="event => moveItem(event.data.id, idx)"
-                    class="my-0 py-0 flex-grow-1"
-                >
+                <drop @dragenter="(event) => moveItem(event.data.id, idx)" class="my-0 py-0 flex-grow-1">
                     <v-card
                         flat
                         class="d-flex"
@@ -35,26 +32,18 @@
                         >
                             <!-- Show the drag-icon (dots) when the item is hovered or dragged -->
                             <drag
-                                v-show="
-                                    hoveredItem === item || draggedItem === item
-                                "
+                                v-show="hoveredItem === item || draggedItem === item"
                                 :data="item"
                                 @dragstart="draggedItem = item"
                                 @dragend="draggedItem = null"
                                 class="flex-grow-1"
                             >
-                                <template v-slot:drag-image>{{
-                                    item.content
-                                }}</template>
+                                <template v-slot:drag-image>{{ item.content }}</template>
                                 <!-- Show the title while dragging. -->
                                 <v-icon> mdi-drag-vertical </v-icon>
                             </drag>
                             <!-- Else, show nothing, but reserve space -->
-                            <v-icon
-                                v-show="
-                                    hoveredItem !== item && draggedItem !== item
-                                "
-                            ></v-icon>
+                            <v-icon v-show="hoveredItem !== item && draggedItem !== item"></v-icon>
                         </div>
 
                         <!-- Text field -->
@@ -70,10 +59,7 @@
                         </v-card>
 
                         <!-- Delete Icon on the right. -->
-                        <v-list-item-icon
-                            v-show="hover"
-                            class="align-center flex-shrink-0 flex-grow-0"
-                        >
+                        <v-list-item-icon v-show="hover" class="align-center flex-shrink-0 flex-grow-0">
                             <v-btn icon v-on:click="removeItemAt(idx)">
                                 <v-icon>mdi-delete</v-icon>
                             </v-btn>
@@ -84,23 +70,11 @@
         </v-list-item>
 
         <!-- last item with '+'-Button -->
-        <v-list-item
-            dense
-            class="align-self-center mx-0 px-0 d-flex"
-            :key="-list.length - 2"
-        >
+        <v-list-item dense class="align-self-center mx-0 px-0 d-flex" :key="-list.length - 2">
             <!-- Reserve space to fit the drag icon indent -->
-            <div
-                class="align-center flex-shrink-0 flex-grow-0 my-0 py-0"
-                style="width: 32px; min-width: 32px"
-            ></div>
+            <div class="align-center flex-shrink-0 flex-grow-0 my-0 py-0" style="width: 32px; min-width: 32px"></div>
 
-            <codemirror
-                :ref="'last-cm'"
-                v-model="lastItem"
-                :color="cmColor"
-                @input="addItemIfNotEmpty"
-            ></codemirror>
+            <codemirror :ref="'last-cm'" v-model="lastItem" :color="cmColor" @input="addItemIfNotEmpty"></codemirror>
         </v-list-item>
     </v-list>
 </template>
@@ -149,11 +123,7 @@ export default {
                 } else {
                     this.displayedList.push({
                         content: newList[i],
-                        id:
-                            Math.max(
-                                ...this.displayedList.map(item => item.id),
-                                0
-                            ) + 1
+                        id: Math.max(...this.displayedList.map((item) => item.id), 0) + 1
                     });
                 }
             }
@@ -170,10 +140,7 @@ export default {
             if (this.lastItem.trim() !== "") {
                 this.addItem();
                 this.$nextTick(() => {
-                    this.$refs[
-                        "codemirror-" +
-                            this.displayedList[this.displayedList.length - 1].id
-                    ][0].focus();
+                    this.$refs["codemirror-" + this.displayedList[this.displayedList.length - 1].id][0].focus();
                 });
             }
         },
@@ -181,13 +148,13 @@ export default {
         addItem() {
             let item = {
                 content: this.lastItem,
-                id: Math.max(...this.displayedList.map(item => item.id), 0) + 1
+                id: Math.max(...this.displayedList.map((item) => item.id), 0) + 1
             };
             this.displayedList.push(item);
             this.lastItem = "";
             this.$emit(
                 "input",
-                this.displayedList.map(el => el.content)
+                this.displayedList.map((el) => el.content)
             );
             return item;
         },
@@ -211,11 +178,8 @@ export default {
          * Moves the item at inde oldIndex to the new index.
          */
         moveItem(id, newIndex) {
-            if (
-                typeof newIndex === "number" &&
-                this.displayedList.find(el => el.id === id)
-            ) {
-                let oldIndex = this.displayedList.findIndex(el => el.id === id);
+            if (typeof newIndex === "number" && this.displayedList.find((el) => el.id === id)) {
+                let oldIndex = this.displayedList.findIndex((el) => el.id === id);
                 let item = this.displayedList[oldIndex];
                 this.displayedList.splice(oldIndex, 1);
                 this.displayedList.splice(newIndex, 0, item);

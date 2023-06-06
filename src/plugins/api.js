@@ -1,10 +1,8 @@
 /* This file contains any calls to the backend. */
 
-import Pizzly
-    from "pizzly-js";
-import {Repository} from "./classes.js";
-import config
-    from "../config";
+import Pizzly from "pizzly-js";
+import { Repository } from "./classes.js";
+import config from "../config";
 
 // API-Calls (functions return promises)
 // A pizzy-object to make request to github
@@ -34,8 +32,8 @@ export async function getUserEmail() {
         .integration("github")
         .auth(localStorage.getItem("authId"))
         .get("/user/public_emails")
-        .then(response => response.json())
-        .catch(err => {
+        .then((response) => response.json())
+        .catch((err) => {
             console.log(err);
         });
 }
@@ -51,8 +49,8 @@ export async function getUserName() {
         .integration("github")
         .auth(localStorage.getItem("authId"))
         .get("/user")
-        .then(response => response.json())
-        .catch(err => {
+        .then((response) => response.json())
+        .catch((err) => {
             console.log(err);
         });
 }
@@ -68,8 +66,8 @@ export async function getCommitSha() {
         .integration("github")
         .auth(localStorage.getItem("authId"))
         .get("/repos/" + repoOwner + "/" + repoName + "/branches/" + branch)
-        .then(response => response.json())
-        .catch(err => {
+        .then((response) => response.json())
+        .catch((err) => {
             console.log(err);
         });
 }
@@ -91,9 +89,9 @@ export async function createBlobs(file) {
                 encoding: "utf-8"
             })
         })
-        .then(response => response.json())
-        .then(body => body)
-        .catch(err => {
+        .then((response) => response.json())
+        .then((body) => body)
+        .catch((err) => {
             console.log(err);
         });
 }
@@ -116,9 +114,9 @@ export async function createFileTree(lastCommitSha, folderTree) {
                 tree: folderTree
             })
         })
-        .then(response => response.json())
-        .then(body => body)
-        .catch(err => {
+        .then((response) => response.json())
+        .then((body) => body)
+        .catch((err) => {
             console.log(err);
         });
 }
@@ -133,12 +131,7 @@ export async function createFileTree(lastCommitSha, folderTree) {
  * @param {string} treeSha - sha from the newly created tree
  * @returns {Promise<object[]>} informations about the created commit with attributes 'sha', etc.
  */
-export async function createCommit(
-    commitMessage,
-    authorInfos,
-    lastCommitSha,
-    treeSha
-) {
+export async function createCommit(commitMessage, authorInfos, lastCommitSha, treeSha) {
     return pizzly
         .integration("github")
         .auth(localStorage.getItem("authId"))
@@ -150,9 +143,9 @@ export async function createCommit(
                 tree: treeSha
             })
         })
-        .then(response => response.json())
-        .then(body => body)
-        .catch(err => {
+        .then((response) => response.json())
+        .then((body) => body)
+        .catch((err) => {
             console.log(err);
         });
 }
@@ -168,23 +161,15 @@ export async function pushToGitHub(newCommitSha) {
     return pizzly
         .integration("github")
         .auth(localStorage.getItem("authId"))
-        .post(
-            "/repos/" +
-            repoOwner +
-            "/" +
-            repoName +
-            "/git/refs/heads/" +
-            branch,
-            {
-                body: JSON.stringify({
-                    ref: "refs/heads/" + branch,
-                    sha: newCommitSha
-                })
-            }
-        )
-        .then(response => response.json())
-        .then(body => body)
-        .catch(err => {
+        .post("/repos/" + repoOwner + "/" + repoName + "/git/refs/heads/" + branch, {
+            body: JSON.stringify({
+                ref: "refs/heads/" + branch,
+                sha: newCommitSha
+            })
+        })
+        .then((response) => response.json())
+        .then((body) => body)
+        .catch((err) => {
             console.log(err);
         });
 }
@@ -201,8 +186,8 @@ export async function pushToGitHub(newCommitSha) {
 export async function loadRepositoryList(searchText = "", page = 1, per_page = 5) {
     let auth = localStorage.getItem("authId");
     if (typeof searchText === "string" && searchText.startsWith("https://github.com/")) {
-        let repoRegExp = new RegExp("https:\\/\\/github\\.com\\/([^/]+)\\/([^/]+)")
-        let match = repoRegExp.exec(searchText)
+        let repoRegExp = new RegExp("https:\\/\\/github\\.com\\/([^/]+)\\/([^/]+)");
+        let match = repoRegExp.exec(searchText);
         let url = "/repos/" + match[1] + "/" + match[2];
         console.log("url: " + url);
         // auth entered URL
@@ -210,23 +195,21 @@ export async function loadRepositoryList(searchText = "", page = 1, per_page = 5
             .integration("github")
             .auth(auth)
             .get(url)
-            .then(response => {
-                return response.json()
+            .then((response) => {
+                return response.json();
             })
-            .catch(err => {
+            .catch((err) => {
                 console.log(err);
                 return "[]";
             });
-        return repoInfo.then(
-            repoInfo => Array.of(repoInfo)
-        )
+        return repoInfo.then((repoInfo) => Array.of(repoInfo));
     } else {
         return pizzly
             .integration("github")
             .auth(auth)
             .get("/user/repos?sort=updated&page=" + page + "&per_page=" + per_page)
-            .then(response => response.json())
-            .catch(err => {
+            .then((response) => response.json())
+            .catch((err) => {
                 console.log(err);
             });
     }
@@ -242,11 +225,7 @@ export async function loadRepositoryList(searchText = "", page = 1, per_page = 5
  * @param {object[]} searchResults - a list of results to append the
  * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
  */
-export async function searchRepositoryList(
-    searchString,
-    maxResults = 2,
-    searchResults = []
-) {
+export async function searchRepositoryList(searchString, maxResults = 2, searchResults = []) {
     let page = 1;
     let perPage = 100;
 
@@ -254,11 +233,11 @@ export async function searchRepositoryList(
     let hasNextPage = true;
     while (searchResults.length < maxResults && hasNextPage) {
         promise = loadRepositoryList("", page, perPage)
-            .then(repositoryList => {
+            .then((repositoryList) => {
                 if (repositoryList instanceof Array) {
                     repositoryList
-                        .filter(repo => repo.full_name.includes(searchString))
-                        .forEach(repo => {
+                        .filter((repo) => repo.full_name.includes(searchString))
+                        .forEach((repo) => {
                             if (searchResults.length < maxResults) {
                                 searchResults.push(repo);
                             }
@@ -270,7 +249,7 @@ export async function searchRepositoryList(
                     hasNextPage = false;
                 }
             })
-            .catch(err => {
+            .catch((err) => {
                 console.log(err);
             });
         await promise;
@@ -294,8 +273,8 @@ export async function loadFileTreeOfRepository(repoFullName, branch) {
         .integration("github")
         .auth(user)
         .get("/repos/" + repoFullName + "/git/trees/" + branch + "?recursive=1")
-        .then(response => response.json())
-        .catch(err => {
+        .then((response) => response.json())
+        .catch((err) => {
             console.log(err);
         });
 }
@@ -315,8 +294,8 @@ export async function loadBranchesName(repoName, username) {
         .integration("github")
         .auth(dataAuth)
         .get("/repos/" + username + "/" + repoName + "/branches?per_page=999")
-        .then(response => response.json())
-        .catch(err => {
+        .then((response) => response.json())
+        .catch((err) => {
             console.log(err);
         });
 }
@@ -336,27 +315,20 @@ export async function loadRawFile(repoFullName, branch, filePath) {
     if (typeof branch !== "string" || typeof branch != "string") {
         console.log(
             "Invalid values for loadContentsForRepository. Given Repository full name: " +
-            repoFullName +
-            ", Branch:" +
-            branch +
-            ", file path: " +
-            filePath
+                repoFullName +
+                ", Branch:" +
+                branch +
+                ", file path: " +
+                filePath
         );
     } else {
         return pizzly
             .integration("github")
             .auth(user)
-            .get(
-                "/repos/" +
-                repoFullName +
-                "/contents/" +
-                filePath +
-                "?ref=" +
-                branch
-            )
-            .then(response => response.json())
-            .then(response => decodeUnicode(response.content))
-            .catch(err => {
+            .get("/repos/" + repoFullName + "/contents/" + filePath + "?ref=" + branch)
+            .then((response) => response.json())
+            .then((response) => decodeUnicode(response.content))
+            .catch((err) => {
                 console.log(err);
             });
     }
@@ -390,12 +362,10 @@ export async function loadAllRepositoryContent(repoList) {
 
     let repoPromises = [];
     let repoObjectList = [];
-    repoList.forEach(repo => {
-        let promise = loadARepositoryContent(
-            repo.fullName,
-            repo.branch,
-            user
-        ).then(repo => repoObjectList.push(repo));
+    repoList.forEach((repo) => {
+        let promise = loadARepositoryContent(repo.fullName, repo.branch, user).then((repo) =>
+            repoObjectList.push(repo)
+        );
         repoPromises.push(promise);
     });
     await Promise.all(repoPromises); // Wait until all file trees are loaded.
@@ -421,20 +391,29 @@ export async function loadARepositoryContent(repoFullName, branchName) {
     });
 
     repoPromises.push(
-        loadFileTreeOfRepository(repoFullName, branchName).then(data => {
+        loadFileTreeOfRepository(repoFullName, branchName).then((data) => {
             let adrPath = undefined;
-            let adrList = data.tree.filter(file => {
-                let matchedPaths = Array.of("/docs/adr/", "/docs/adrs/", "/docs/ADR/", "/doc/adr/", "/docs/decisions/", "/docs/design/", "/technical-overview/adr/").filter(
-                    path => {
-                        let res = (("/" + file.path).includes(path)) || (file.path.startsWith("adr/"));
-                        return res
-                    }
-                );
+            let adrList = data.tree.filter((file) => {
+                let matchedPaths = Array.of(
+                    "/docs/adr/",
+                    "/docs/adrs/",
+                    "/docs/ADR/",
+                    "/doc/adr/",
+                    "/docs/decisions/",
+                    "/docs/design/",
+                    "/technical-overview/adr/"
+                ).filter((path) => {
+                    let res = ("/" + file.path).includes(path) || file.path.startsWith("adr/");
+                    return res;
+                });
 
                 // Store matched path
                 if (!adrPath && matchedPaths.length == 1) {
                     adrPath = matchedPaths[0].slice(1); // Remove beginning "/"
-                } else if (matchedPaths.length > 1 || (matchedPaths.length == 1 && matchedPaths[0].slice(1) != adrPath)) {
+                } else if (
+                    matchedPaths.length > 1 ||
+                    (matchedPaths.length == 1 && matchedPaths[0].slice(1) != adrPath)
+                ) {
                     const allpaths = matchedPaths + [adrPath];
                     console.warn("Loading error, unclear ADR path: Found ", allpaths);
                 }
@@ -445,13 +424,8 @@ export async function loadARepositoryContent(repoFullName, branchName) {
             repoObject.adrPath = adrPath || "docs/decisions/";
 
             // Load the content of each ADR.
-            adrList.forEach(adr => {
-                let id = Number(
-                    adr.path
-                        .split("/")
-                        .pop()
-                        .split("-")[0]
-                );
+            adrList.forEach((adr) => {
+                let id = Number(adr.path.split("/").pop().split("-")[0]);
                 if (isNaN(id)) {
                     id = -1;
                 }
@@ -461,20 +435,15 @@ export async function loadARepositoryContent(repoFullName, branchName) {
                 };
                 repoObject.adrs.push(adrObject);
                 adrPromises.push(
-                    loadRawFile(
-                        repoFullName,
-                        branchName,
-                        adr.path,
-                        user,
-                        pizzly
-                    ).then(rawMd => {
+                    loadRawFile(repoFullName, branchName, adr.path, user, pizzly).then((rawMd) => {
                         adrObject.originalMd = rawMd;
                         adrObject.editedMd = rawMd;
                     })
                 );
             });
             console.log("adrList", repoObject.adrs);
-        }));
+        })
+    );
     await Promise.all(repoPromises); // Wait until all file trees are loaded.
     await Promise.all(adrPromises); // Wait until all raw contents are loaded.
     return repoObject;

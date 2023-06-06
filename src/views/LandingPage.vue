@@ -4,11 +4,7 @@
             <v-spacer></v-spacer>
             <img src="../assets/logo.png" alt="ADR-Manager" height="90%" />
             <v-spacer></v-spacer>
-            <a
-                href="https://github.com/adr/adr-manager"
-                target="_blank"
-                style="color: white;"
-            >
+            <a href="https://github.com/adr/adr-manager" target="_blank" style="color: white">
                 View on GitHub <v-icon>mdi-open-in-new</v-icon></a
             >
         </v-toolbar>
@@ -22,10 +18,8 @@
                 <v-sheet class="text-right" rounded="lg">
                     <!--  -->
                     <div>
-                        Architectural Decision Records are a way to quickly
-                        write down Architectural Decisions. <br />
-                        This tool is meant to make the editing and management of
-                        ADRs on GitHub easier.
+                        Architectural Decision Records are a way to quickly write down Architectural Decisions. <br />
+                        This tool is meant to make the editing and management of ADRs on GitHub easier.
                     </div>
                 </v-sheet>
             </v-col>
@@ -41,8 +35,7 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import ConnectToGitHubButton from "@/components/ConnectToGitHubButton.vue";
+import ConnectToGitHubButton from "/src/components/ConnectToGitHubButton.vue";
 
 export default {
     name: "Editor",

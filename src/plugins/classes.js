@@ -37,36 +37,16 @@ export class ArchitecturalDecisionRecord {
         this.links = links || [];
 
         // Assure invariants for decisionOutcome attribute
-        if (
-            !Object.prototype.hasOwnProperty.call(
-                this.decisionOutcome,
-                "chosenOption"
-            )
-        ) {
+        if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, "chosenOption")) {
             this.decisionOutcome.decisionOutcome = "";
         }
-        if (
-            !Object.prototype.hasOwnProperty.call(
-                this.decisionOutcome,
-                "explanation"
-            )
-        ) {
+        if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, "explanation")) {
             this.decisionOutcome.explanation = "";
         }
-        if (
-            !Object.prototype.hasOwnProperty.call(
-                this.decisionOutcome,
-                "positiveConsequences"
-            )
-        ) {
+        if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, "positiveConsequences")) {
             this.decisionOutcome.positiveConsequences = [];
         }
-        if (
-            !Object.prototype.hasOwnProperty.call(
-                this.decisionOutcome,
-                "negativeConsequences"
-            )
-        ) {
+        if (!Object.prototype.hasOwnProperty.call(this.decisionOutcome, "negativeConsequences")) {
             this.decisionOutcome.negativeConsequences = [];
         }
 
@@ -93,7 +73,7 @@ export class ArchitecturalDecisionRecord {
         return newOpt;
     }
     getOptionByTitle(title) {
-        return this.consideredOptions.find(el => {
+        return this.consideredOptions.find((el) => {
             return el.title.startsWith(title);
         });
     }
@@ -113,34 +93,30 @@ export class ArchitecturalDecisionRecord {
             "contextAndProblemStatement"
         ];
 
-        stringFieldNames.forEach(attr => {
+        stringFieldNames.forEach((attr) => {
             this[attr] = cleanUpString(this[attr]);
         });
 
         this.decisionDrivers.forEach((el, idx) => {
             this.decisionDrivers[idx] = cleanUpString(el);
         });
-        this.decisionDrivers = this.decisionDrivers.filter(el => el !== "");
+        this.decisionDrivers = this.decisionDrivers.filter((el) => el !== "");
 
-        this.consideredOptions.forEach(opt => {
+        this.consideredOptions.forEach((opt) => {
             opt.title = cleanUpString(opt.title);
             opt.description = cleanUpString(opt.description);
             opt.pros.forEach((el, idx) => {
                 opt.pros[idx] = cleanUpString(el);
             });
-            opt.pros = opt.pros.filter(el => el !== "");
+            opt.pros = opt.pros.filter((el) => el !== "");
             opt.cons.forEach((el, idx) => {
                 opt.cons[idx] = cleanUpString(el);
             });
-            opt.cons = opt.cons.filter(el => el !== "");
+            opt.cons = opt.cons.filter((el) => el !== "");
         });
 
-        this.decisionOutcome.chosenOption = cleanUpString(
-            this.decisionOutcome.chosenOption
-        );
-        this.decisionOutcome.explanation = cleanUpString(
-            this.decisionOutcome.explanation
-        );
+        this.decisionOutcome.chosenOption = cleanUpString(this.decisionOutcome.chosenOption);
+        this.decisionOutcome.explanation = cleanUpString(this.decisionOutcome.explanation);
         this.decisionOutcome.positiveConsequences.forEach((el, idx) => {
             this.decisionOutcome.positiveConsequences[idx] = cleanUpString(el);
         });
@@ -151,7 +127,7 @@ export class ArchitecturalDecisionRecord {
         this.links.forEach((el, idx) => {
             this.links[idx] = cleanUpString(el);
         });
-        this.links.filter(el => el !== "");
+        this.links.filter((el) => el !== "");
     }
 
     /**
@@ -205,12 +181,9 @@ export class Repository {
     static constructFromString(json) {
         let repoData = JSON.parse(json);
         let repo = new Repository(repoData);
-        repoData.addedAdrs.forEach(adr => {
+        repoData.addedAdrs.forEach((adr) => {
             let equalAdr = repoData.adrs.find(
-                el =>
-                    el.path === adr.path &&
-                    el.editedMd === adr.editedMd &&
-                    el.originalMd === adr.originalMd
+                (el) => el.path === adr.path && el.editedMd === adr.editedMd && el.originalMd === adr.originalMd
             );
             if (equalAdr) {
                 repo.addedAdrs.push(equalAdr);
@@ -228,11 +201,7 @@ export class Repository {
     getChanges() {
         return {
             added: this.addedAdrs,
-            changed: this.adrs.filter(
-                adr =>
-                    adr.originalMd !== adr.editedMd &&
-                    !this.addedAdrs.includes(adr)
-            ),
+            changed: this.adrs.filter((adr) => adr.originalMd !== adr.editedMd && !this.addedAdrs.includes(adr)),
             deleted: this.deletedAdrs
         };
     }
@@ -244,11 +213,7 @@ export class Repository {
      */
     hasChanges() {
         let changes = this.getChanges();
-        return (
-            changes.changed.length !== 0 ||
-            changes.added.length !== 0 ||
-            changes.deleted.length !== 0
-        );
+        return changes.changed.length !== 0 || changes.added.length !== 0 || changes.deleted.length !== 0;
     }
 
     addAdr(newAdr) {
@@ -286,8 +251,8 @@ export function createShortTitle(title) {
                     // Handle case "Add `* Category: CATEGORY` directly under the heading (similar to https://gist.github.com/FaKeller/2f9c63b6e1d436abb7358b68bf396f57)"
                     // --> content of braces should be removed for short title
                     idx = title.indexOf(" (");
-                    let idxClosing = title.indexOf(")")
-                    if ((idx > 0) && (idxClosing == title.length-1) && (idx = title.lastIndexOf(" ("))) {
+                    let idxClosing = title.indexOf(")");
+                    if (idx > 0 && idxClosing == title.length - 1 && (idx = title.lastIndexOf(" ("))) {
                         result = title.substr(0, idx);
                     }
                 }
@@ -305,14 +270,18 @@ export function createShortTitle(title) {
     // Quick solution; better: Use RegEx or ANTLR
     let idxOpeningBracket = result.indexOf("[");
     let idxClosingBracket = result.indexOf("]");
-    let idxOpeningRoundedBracket = result.indexOf("(")
-    let idxClosingRoundedBracket = result.indexOf(")")
-    if ((idxOpeningBracket >= 0) && (idxOpeningBracket < idxClosingBracket) && (idxOpeningRoundedBracket == idxClosingBracket+1) && (idxClosingRoundedBracket > idxOpeningRoundedBracket)) {
+    let idxOpeningRoundedBracket = result.indexOf("(");
+    let idxClosingRoundedBracket = result.indexOf(")");
+    if (
+        idxOpeningBracket >= 0 &&
+        idxOpeningBracket < idxClosingBracket &&
+        idxOpeningRoundedBracket == idxClosingBracket + 1 &&
+        idxClosingRoundedBracket > idxOpeningRoundedBracket
+    ) {
         result =
             (idxOpeningBracket > 0 ? result.substr(0, idxOpeningBracket) : "") +
-            result.substr(idxOpeningBracket+1, idxClosingBracket-idxOpeningBracket-1) +
-            ((result.length > idxClosingRoundedBracket + 1) ? result.substr(idxClosingRoundedBracket + 1) : "");
+            result.substr(idxOpeningBracket + 1, idxClosingBracket - idxOpeningBracket - 1) +
+            (result.length > idxClosingRoundedBracket + 1 ? result.substr(idxClosingRoundedBracket + 1) : "");
     }
     return result;
 }
-

@@ -1,28 +1,25 @@
-/* eslint-disable no-undef */
+import { TEST_BASE_URL } from "../../support/e2e";
 
 context("Committing, pushing, and remote-deleting an ADR", () => {
     it("Commit and push new ADR, then delete from GitHub", () => {
-        const REPO_NAME = "adr-test-repository-empty";
+        const REPO_NAME = "adr/adr-test-repository-empty";
         const BRANCH_NAME = "testing-branch";
 
         function addRepositoryAndSwitchBranch() {
-
             // add the ADR-Manager repo
             cy.intercept("GET", "**/user/repos**").as("getRepos");
             cy.get("[data-cy=addRepo]").click();
-            cy.wait("@getRepos")
-                .its("response.statusCode")
-                .should("eq", 200);
-            cy.get("[data-cy=listRepo]")
-                .contains(REPO_NAME)
-                .click();
+            cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
+            cy.get("[data-cy=search-field-for-adding-repository]").type(REPO_NAME);
+            cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
+            cy.get("[data-cy=listRepo]").contains(REPO_NAME).click();
             cy.get("[data-cy=addRepoDialog]").click();
             cy.get("[data-cy=repoNameList]").click();
 
             // Select branch
             // Trigger loading of the branch
             cy.get("[data-cy=branchSelect]").trigger("click");
-            // Select branch to ocmmit to
+            // Select branch to commit to
             cy.get("[data-cy=branchSelect]").select(BRANCH_NAME);
             // Accept
             cy.contains("OK").click();
@@ -35,11 +32,8 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
         }
 
         window.localStorage.clear();
-        window.localStorage.setItem(
-            "authId",
-            Cypress.env("PIZZLY_E2E_AUTH_ID")
-        );
-        cy.visit("http://localhost:8080/#/manager");
+        window.localStorage.setItem("authId", Cypress.env("PIZZLY_E2E_AUTH_ID"));
+        cy.visit(TEST_BASE_URL);
 
         addRepositoryAndSwitchBranch();
 
@@ -59,9 +53,7 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
 
         cy.get("[data-cy=newFileCheckBox]").check({ force: true });
         cy.get("[data-cy=mdiCheckSelected]").should("be.visible");
-        cy.get("[data-cy=textFieldCommitMessage]").type(
-            "[E2ETest] Add a new ADR"
-        );
+        cy.get("[data-cy=textFieldCommitMessage]").type("[E2ETest] Add a new ADR");
         cy.get("[data-cy=mdiCheckCommitMessage]").should("be.visible");
         // push to GitHub
         cy.intercept("GET", "**/repos/**/branches/**").as("getCommitSha");
@@ -86,13 +78,11 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
         addRepositoryAndSwitchBranch();
 
         // Check that element was added
-        cy.get("[data-cy=adrList]")
-            .filter(":contains(\"Use X To Accomplish Y\")")
-            .should("have.length.gte", 1);
+        cy.get("[data-cy=adrList]").filter(':contains("Use X To Accomplish Y")').should("have.length.gte", 1);
 
         // delete the ADR
         cy.get("[data-cy=adrList]")
-            .filter(":contains(\"Use X To Accomplish Y\")")
+            .filter(':contains("Use X To Accomplish Y")')
             .find("[data-cy=deleteAdrBtn]")
             .each((el) => {
                 el.click();
@@ -100,7 +90,7 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
             });
 
         // commit and push
-        cy.wait(60000);
+        cy.wait(5000);
         cy.get("[data-cy=pushIcon]").click();
         cy.get("[data-cy=deletedFilesAdr]").click();
         cy.get("[data-cy=deletedFileCheckBox]").check({ force: true });

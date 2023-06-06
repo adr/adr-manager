@@ -14,8 +14,8 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
+import "./commands";
 // cypress/support/index.js
-import '@cypress/code-coverage/support'
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
+import "@cypress/code-coverage/support";
+
+export const TEST_BASE_URL = "http://localhost:8000/#/manager";

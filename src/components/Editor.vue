@@ -1,66 +1,41 @@
 <template>
     <v-card class="d-flex flex-column">
-        <v-card-text
-            class="px-0 py-0 my-0"
-            style="position: relative; height: 100%"
-        >
-            <v-tabs-items
-                v-model="tab"
-                style="position: absolute; height: 100%; width: 100%; "
-            >
-                <v-tab-item :value="'MADR Editor'" style="height: 100%; ">
+        <v-card-text class="px-0 py-0 my-0" style="position: relative; height: 100%">
+            <v-tabs-items v-model="tab" style="position: absolute; height: 100%; width: 100%">
+                <v-tab-item :value="'MADR Editor'" style="height: 100%">
                     <splitpanes class="mx-auto default-theme">
-                        <pane style="height: 100%;">
-                            <v-card-text
-                                class="mx-auto mx-0 my-0 px-0 py-0"
-                                style="height: 100%;"
-                            >
+                        <pane style="height: 100%">
+                            <v-card-text class="mx-auto mx-0 my-0 px-0 py-0" style="height: 100%">
                                 <EditorMadr
-                                    style="height: 100%;"
+                                    style="height: 100%"
                                     class="mx-auto mx-0 my-0 px-0 py-0"
                                     v-model="adr"
                                     v-on:input="updateAdrToMd"
                                 />
                             </v-card-text>
                         </pane>
-                        <pane
-                            class="mx-auto overflow-y-auto"
-                            v-if="alwaysShowMarkdownPreview"
-                        >
+                        <pane class="mx-auto overflow-y-auto" v-if="alwaysShowMarkdownPreview">
                             <v-card class="mx-auto">
-                                <MarkdownPreview
-                                    v-model="dValue"
-                                ></MarkdownPreview>
+                                <MarkdownPreview v-model="dValue"></MarkdownPreview>
                             </v-card>
                         </pane>
                     </splitpanes>
                 </v-tab-item>
                 <!--end 'MADR Editor'-->
-                <v-tab-item
-                    data-cy="convert"
-                    :value="'Convert'"
-                    style="height: 100%;"
-                >
-                    <EditorConvert
-                        :raw="dValue"
-                        v-on:accept="acceptAfterDiff"
-                    />
+                <v-tab-item data-cy="convert" :value="'Convert'" style="height: 100%">
+                    <EditorConvert :raw="dValue" v-on:accept="acceptAfterDiff" />
                 </v-tab-item>
                 <!--end 'Compare MD'-->
                 <v-tab-item
                     data-cy="markdownPreview"
                     :value="'Markdown Preview'"
-                    style="height: 100%;"
+                    style="height: 100%"
                     class="mx-auto overflow-y-auto"
                 >
                     <MarkdownPreview v-model="dValue"></MarkdownPreview>
                 </v-tab-item>
                 <!--end 'Markdown Preview'-->
-                <v-tab-item
-                    data-cy="editorRaw"
-                    :value="'Raw Markdown'"
-                    style="height: 100%;"
-                >
+                <v-tab-item data-cy="editorRaw" :value="'Raw Markdown'" style="height: 100%">
                     <splitpanes class="default-theme">
                         <pane class="mx-auto overflow-y-hidden height: 100%">
                             <EditorRaw
@@ -69,14 +44,9 @@
                                 style="max-width: 100%; min-width: 100%; height: 100%"
                             ></EditorRaw>
                         </pane>
-                        <pane
-                            v-if="alwaysShowMarkdownPreview"
-                            class="mx-auto overflow-y-auto"
-                        >
+                        <pane v-if="alwaysShowMarkdownPreview" class="mx-auto overflow-y-auto">
                             <v-card>
-                                <MarkdownPreview
-                                    v-model="dValue"
-                                ></MarkdownPreview>
+                                <MarkdownPreview v-model="dValue"></MarkdownPreview>
                             </v-card>
                         </pane>
                     </splitpanes>
@@ -86,19 +56,9 @@
         </v-card-text>
 
         <v-toolbar dense class="my-0 py-0">
-            <v-tabs
-                v-model="tab"
-                background-color="primary"
-                dark
-                dense
-                class="pt-0 mt-0 align-self-end"
-            >
+            <v-tabs v-model="tab" background-color="primary" dark dense class="pt-0 mt-0 align-self-end">
                 <v-spacer></v-spacer>
-                <v-tab
-                    v-for="(item, i) in displayedTabs"
-                    :key="i"
-                    :href="'#' + item"
-                >
+                <v-tab v-for="(item, i) in displayedTabs" :key="i" :href="'#' + item">
                     {{ item }}
                 </v-tab>
             </v-tabs>
@@ -107,9 +67,9 @@
 </template>
 
 <script>
-import { ArchitecturalDecisionRecord } from "@/plugins/classes";
-import { md2adr, adr2md } from "@/plugins/parser";
-import { store } from "@/plugins/store";
+import { ArchitecturalDecisionRecord } from "/src/plugins/classes";
+import { md2adr, adr2md } from "/src/plugins/parser";
+import { store } from "/src/plugins/store";
 
 import { Splitpanes, Pane } from "splitpanes";
 import "splitpanes/dist/splitpanes.css";
@@ -140,13 +100,12 @@ export default {
         editingAllowed() {
             return Boolean(
                 this.tab === "MADR Editor" ||
-                    (typeof this.dValue === "string" &&
-                        adr2md(md2adr(this.dValue)) === this.dValue)
+                    (typeof this.dValue === "string" && adr2md(md2adr(this.dValue)) === this.dValue)
             );
         },
         displayedTabs() {
             let dTabs = !this.editingAllowed
-                ? this.tabs.map(val => {
+                ? this.tabs.map((val) => {
                       if (val === "MADR Editor") return "Convert";
                       else return val;
                   })
@@ -185,7 +144,9 @@ export default {
             this.dValue = md;
             let tmpAdr = md2adr(md);
             let originalWithoutWhitespace = this.dValue.replace(/[ \r\n]/g, "").replace(/- /g, "* ");
-            let roundtrippedWithoutWhiteSpace = adr2md(tmpAdr).replace(/[ \r\n]/g, "").replace(/- /g, "* ");
+            let roundtrippedWithoutWhiteSpace = adr2md(tmpAdr)
+                .replace(/[ \r\n]/g, "")
+                .replace(/- /g, "* ");
             if (originalWithoutWhitespace === roundtrippedWithoutWhiteSpace) {
                 // If the parser did a perfect job, update the ADR.
                 this.adr = tmpAdr;

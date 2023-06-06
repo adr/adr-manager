@@ -47,16 +47,13 @@ class MADRGenerator extends MADRListener {
     }
 
     enterDecisionDrivers(ctx) {
-        this.addListItemsFromListToList(
-            ctx.children[0],
-            this.adr.decisionDrivers
-        );
+        this.addListItemsFromListToList(ctx.children[0], this.adr.decisionDrivers);
     }
 
     enterConsideredOptions(ctx) {
         let tmpOptionList = [];
         this.addListItemsFromListToList(ctx.children[0], tmpOptionList);
-        tmpOptionList.forEach(opt => {
+        tmpOptionList.forEach((opt) => {
             if (opt.trim() !== "") {
                 this.adr.addOption({ title: opt });
             }
@@ -71,20 +68,12 @@ class MADRGenerator extends MADRListener {
 
         if (rawDecisionOutcome.startsWith("Chosen option: ")) {
             rawDecisionOutcome = rawDecisionOutcome.split(/, because */);
-            rawDecisionOutcome[0] = rawDecisionOutcome[0]
-                .substring("Chosen option: ".length)
-                .trim(); // Remove 'Chosen option: '
+            rawDecisionOutcome[0] = rawDecisionOutcome[0].substring("Chosen option: ".length).trim(); // Remove 'Chosen option: '
             let delim = rawDecisionOutcome[0].charAt(0);
             let chosenOption = "";
 
-            if (
-                delim ===
-                rawDecisionOutcome[0].charAt(rawDecisionOutcome[0].length - 1)
-            ) {
-                chosenOption = rawDecisionOutcome[0].substring(
-                    1,
-                    rawDecisionOutcome[0].length - 1
-                );
+            if (delim === rawDecisionOutcome[0].charAt(rawDecisionOutcome[0].length - 1)) {
+                chosenOption = rawDecisionOutcome[0].substring(1, rawDecisionOutcome[0].length - 1);
             } else {
                 chosenOption = rawDecisionOutcome[0];
             }
@@ -97,17 +86,11 @@ class MADRGenerator extends MADRListener {
     }
 
     enterPositiveConsequences(ctx) {
-        this.addListItemsFromListToList(
-            ctx.children[0],
-            this.adr.decisionOutcome.positiveConsequences
-        );
+        this.addListItemsFromListToList(ctx.children[0], this.adr.decisionOutcome.positiveConsequences);
     }
 
     enterNegativeConsequences(ctx) {
-        this.addListItemsFromListToList(
-            ctx.children[0],
-            this.adr.decisionOutcome.negativeConsequences
-        );
+        this.addListItemsFromListToList(ctx.children[0], this.adr.decisionOutcome.negativeConsequences);
     }
 
     /**
@@ -150,7 +133,7 @@ class MADRGenerator extends MADRListener {
      */
     getMostSimilarOptionTo(optTitle) {
         // Find the option with a very similar title.
-        let opt = this.adr.consideredOptions.find(function(opt) {
+        let opt = this.adr.consideredOptions.find(function (opt) {
             return this.matchOptionTitleAlmostExactly(opt.title, optTitle);
         }, this);
         if (opt) {
@@ -158,7 +141,7 @@ class MADRGenerator extends MADRListener {
             return opt;
         }
         // Else check if there is another (less) similar title.
-        opt = this.adr.consideredOptions.find(function(opt) {
+        opt = this.adr.consideredOptions.find(function (opt) {
             return matchOptionTitleMoreRelaxed(opt.title, optTitle);
         }, this);
         if (opt) {
@@ -192,8 +175,7 @@ class MADRGenerator extends MADRListener {
     addListItemsFromListToList(parseTreeList, targetList) {
         for (let i = 0; i < parseTreeList.children.length; i++) {
             if (
-                parseTreeList.children[i].ruleIndex ===
-                    MADRParser.ruleNames.indexOf("textLine") && // if it is a text line
+                parseTreeList.children[i].ruleIndex === MADRParser.ruleNames.indexOf("textLine") && // if it is a text line
                 parseTreeList.children[i].getText().trim() !== ""
             ) {
                 targetList.push(parseTreeList.children[i].getText());
@@ -229,11 +211,7 @@ export function adr2md(adrToParse) {
     adr.cleanUp();
     var md = "# " + adr.title + "\n";
 
-    if (
-        (adr.status !== "" && adr.status !== "null") ||
-        adr.deciders.length > 0 ||
-        adr.date !== ""
-    ) {
+    if ((adr.status !== "" && adr.status !== "null") || adr.deciders.length > 0 || adr.date !== "") {
         if (adr.status !== "" && adr.status !== "null") {
             md = md.concat("\n* Status: " + adr.status.trim());
         }
@@ -251,11 +229,7 @@ export function adr2md(adrToParse) {
     }
 
     if (adr.contextAndProblemStatement !== "") {
-        md = md.concat(
-            "\n## Context and Problem Statement\n\n" +
-                adr.contextAndProblemStatement +
-                "\n"
-        );
+        md = md.concat("\n## Context and Problem Statement\n\n" + adr.contextAndProblemStatement + "\n");
     }
 
     if (adr.decisionDrivers.length > 0) {
@@ -267,79 +241,44 @@ export function adr2md(adrToParse) {
 
     if (adr.consideredOptions.length > 0) {
         md = md.concat("\n## Considered Options\n\n");
-        md = adr.consideredOptions.reduce(
-            (total, opt) => total + "* " + opt.title + "\n",
-            md
-        );
+        md = adr.consideredOptions.reduce((total, opt) => total + "* " + opt.title + "\n", md);
     }
 
-    md = md.concat(
-        "\n## Decision Outcome\n\nChosen option: \"" +
-            adr.decisionOutcome.chosenOption
-    );
+    md = md.concat('\n## Decision Outcome\n\nChosen option: "' + adr.decisionOutcome.chosenOption);
 
     if (adr.decisionOutcome.explanation.trim() !== "") {
         let isList = adr.decisionOutcome.explanation.trim().match(/^[*-+]/);
         if (isList) {
-            md = md.concat(
-                "\", because\n\n" + adr.decisionOutcome.explanation + "\n"
-            );
+            md = md.concat('", because\n\n' + adr.decisionOutcome.explanation + "\n");
         } else {
-            md = md.concat(
-                "\", because " + adr.decisionOutcome.explanation + "\n"
-            );
+            md = md.concat('", because ' + adr.decisionOutcome.explanation + "\n");
         }
     } else {
-        md = md.concat("\"\n");
+        md = md.concat('"\n');
     }
 
     if (adr.decisionOutcome.positiveConsequences.length > 0) {
         md = md.concat("\n### Positive Consequences\n\n");
-        md = adr.decisionOutcome.positiveConsequences.reduce(
-            (total, con) => total + "* " + con + "\n",
-            md
-        );
+        md = adr.decisionOutcome.positiveConsequences.reduce((total, con) => total + "* " + con + "\n", md);
     }
     if (adr.decisionOutcome.negativeConsequences.length > 0) {
         md = md.concat("\n### Negative Consequences\n\n");
-        md = adr.decisionOutcome.negativeConsequences.reduce(
-            (total, con) => total + "* " + con + "\n",
-            md
-        );
+        md = adr.decisionOutcome.negativeConsequences.reduce((total, con) => total + "* " + con + "\n", md);
     }
 
-    if (
-        adr.consideredOptions.some(
-            opt =>
-                opt.description !== "" ||
-                opt.pros.length > 0 ||
-                opt.cons.length > 0
-        )
-    ) {
+    if (adr.consideredOptions.some((opt) => opt.description !== "" || opt.pros.length > 0 || opt.cons.length > 0)) {
         md = md.concat("\n## Pros and Cons of the Options\n");
         md = adr.consideredOptions.reduce((total, opt) => {
-            if (
-                opt.description !== "" ||
-                opt.pros.length > 0 ||
-                opt.cons.length > 0
-            ) {
+            if (opt.description !== "" || opt.pros.length > 0 || opt.cons.length > 0) {
                 let res = total.concat("\n### " + createShortTitle(opt.title) + "\n");
                 if (opt.description !== "") {
                     res = res.concat("\n" + opt.description + "\n");
                 }
-                res = opt.pros.reduce(
-                    (total, arg) =>
-                        total.concat("\n* Good, because " + arg),
-                    res
-                );
-                res = opt.cons.reduce(
-                    (total, arg) =>
-                        total.concat("\n* Bad, because " + arg),
-                    res
-                );
-                if ((opt.pros.length > 0) || (opt.cons.length > 0)) {
+                res = opt.pros.reduce((total, arg) => total.concat("\n* Good, because " + arg), res);
+                res = opt.cons.reduce((total, arg) => total.concat("\n* Bad, because " + arg), res);
+                if (opt.pros.length > 0 || opt.cons.length > 0) {
                     // insert final new line
-                    res = res + "\n"
+                    res = res + "\n";
                 }
                 return res;
             } else {
@@ -362,12 +301,7 @@ export function adr2md(adrToParse) {
  * @param {string} snake
  */
 export function snakeCase2naturalCase(snake) {
-    return snake.replace(/([-_][a-z])/g, group =>
-        group
-            .toUpperCase()
-            .replace("-", " ")
-            .replace("_", " ")
-    );
+    return snake.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace("-", " ").replace("_", " "));
 }
 
 /**
@@ -380,12 +314,8 @@ export function snakeCase2naturalCase(snake) {
  * @param {string} snake
  */
 export function naturalCase2snakeCase(natural) {
-    return natural
-        .toLowerCase()
-        .split(" ")
-        .join("-");
+    return natural.toLowerCase().split(" ").join("-");
 }
-
 
 /**
  * Option titles are similar, iff
@@ -404,14 +334,13 @@ export function naturalCase2snakeCase(natural) {
 export function matchOptionTitleMoreRelaxed(titleFromOptionList, titleFromChosenOption) {
     let trimmedTitleFromOptionList = titleFromOptionList.replace(/ /g, "").toLowerCase(); // Remove whitespaces and lower-case heading
     let trimmedTitleFromChosenOption = titleFromChosenOption.replace(/ /g, "").toLowerCase();
-    let res = (
+    let res =
         trimmedTitleFromOptionList === trimmedTitleFromChosenOption ||
         trimmedTitleFromOptionList.startsWith(trimmedTitleFromChosenOption) ||
         trimmedTitleFromChosenOption.startsWith(trimmedTitleFromOptionList) ||
         titleFromChosenOption === createShortTitle(titleFromOptionList) ||
         // in case we have issues with the short title generation, we at least check for a match of the first letters
         // Example: "Include in [adr-tools](https://github.com/npryce/adr-tools), 924 stars as of 2018-06-14", we currently don't strip ", ..."
-        createShortTitle(titleFromOptionList).startsWith(titleFromChosenOption)
-    );
+        createShortTitle(titleFromOptionList).startsWith(titleFromChosenOption);
     return res;
 }

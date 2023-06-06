@@ -10,7 +10,7 @@
         <codemirror
             v-model="dValue"
             :options="cmOptions"
-            v-on:input="ev => update(ev)"
+            v-on:input="(ev) => update(ev)"
             ref="cm"
             class="customizedcm"
             @blur="$emit('blur')"
@@ -62,7 +62,7 @@ export default {
             /**Refreshes the code mirror to avoid update anomalies.
              * This method is a data property, because it must be unique for every cm instance.
              */
-            refresh: _.debounce(function() {
+            refresh: _.debounce(function () {
                 if (this.isVisible) {
                     this.codemirror.refresh();
                 }
@@ -95,7 +95,7 @@ export default {
     methods: {
         /** Emit 'input' event.
          */
-        update: _.debounce(function() {
+        update: _.debounce(function () {
             this.$emit("input", this.dValue);
         }, 0),
         visibilityChanged(isVisible) {

@@ -135,5 +135,6 @@ ehthumbs.db
 *.zip
 
 # Antlr files
+.antlr
 *.interp
 *.tokens

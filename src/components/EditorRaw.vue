@@ -54,7 +54,7 @@ export default {
         }
     },
     methods: {
-        update: _.debounce(function(ev) {
+        update: _.debounce(function (ev) {
             this.$emit("input", ev);
         }, 300),
         /** Refresh code mirror, when it becomes visible, to avoid anomalies.
