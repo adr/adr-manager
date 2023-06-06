@@ -7,6 +7,8 @@ export default {
         host: "127.0.0.1",
         port: 8000
     },
+    // URL base for production
+    base: "/adr-manager/",
     // required for Vuetify (see https://github.com/vuetifyjs/vuetify/discussions/4068#discussioncomment-1357093)
     resolve: {
         alias: {
