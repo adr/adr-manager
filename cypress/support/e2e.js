@@ -18,4 +18,4 @@ import "./commands";
 // cypress/support/index.js
 import "@cypress/code-coverage/support";
 
-export const TEST_BASE_URL = "http://localhost:8000/#/manager";
+export const TEST_BASE_URL = "http://localhost:8000/adr-manager/#/manager";
