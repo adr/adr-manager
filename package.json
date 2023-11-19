@@ -13,10 +13,13 @@
         "format": "prettier --write . --ignore-unknown"
     },
     "dependencies": {
+        "@auth0/auth0-spa-js": "^2.1.2",
         "@mdi/font": "^7.2.96",
+        "@octokit/rest": "^20.0.2",
         "antlr4": "^4.13.0",
         "axios": "^1.4.0",
         "core-js": "^3.31.1",
+        "firebase": "^10.6.0",
         "marked": "^5.1.1",
         "pizzly-js": "^0.2.8",
         "roboto-fontface": "*",

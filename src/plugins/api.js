@@ -3,6 +3,7 @@
 import Pizzly from "pizzly-js";
 import { Repository } from "./classes.js";
 import config from "../config";
+import axios from "axios"
 
 // API-Calls (functions return promises)
 // A pizzy-object to make request to github
@@ -61,16 +62,47 @@ export async function getUserName() {
  * An example of the returned JSON structure can be found at 'https://docs.github.com/en/rest/reference/repos#get-a-branch'
  * @returns {Promise<object[]>} informations about the branch with attributes 'commit: { sha }', etc.
  */
+
 export async function getCommitSha() {
-    return pizzly
-        .integration("github")
-        .auth(localStorage.getItem("authId"))
-        .get("/repos/" + repoOwner + "/" + repoName + "/branches/" + branch)
-        .then((response) => response.json())
-        .catch((err) => {
-            console.log(err);
-        });
+    const token = localStorage.getItem('authId');
+    const headers = {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'applicaion/json'
+    }
+    const body = {
+        query: `query GetBranch{
+            repository (name: "${repoName}", owner: "${repoOwner}") {
+                ref (qualifiedName: "${branch}") {
+                    target {
+                        ... on Commit {
+                            history(first: 1) {
+                                nodes {
+                                    oid
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }`
+    }
+    try {
+        const response = await axios.post('https://api.github.com/graphql', body, { headers })
+        if (!response.data) {
+            return []
+        }
+        return {
+            commit: {
+                sha: response?.data?.data?.repository?.ref?.target?.history?.nodes?.[0]?.oid
+            }
+        }
+    }
+    catch (error) {
+        return error.message
+    }
+
 }
+
 
 /**
  * Returns a Promise with all informations about the newly created file.
@@ -157,21 +189,80 @@ export async function createCommit(commitMessage, authorInfos, lastCommitSha, tr
  * @param {string} newCommitSha - the commit sha of the newly created commit
  * @returns {Promise<object[]>} informations about the reference.
  */
-export async function pushToGitHub(newCommitSha) {
-    return pizzly
-        .integration("github")
-        .auth(localStorage.getItem("authId"))
-        .post("/repos/" + repoOwner + "/" + repoName + "/git/refs/heads/" + branch, {
-            body: JSON.stringify({
-                ref: "refs/heads/" + branch,
-                sha: newCommitSha
+export async function pushToGitHub(newCommitSha, commitFiles, commitMessgae) {
+    let countKeysList = commitFiles.length;
+    let countForEach = 0;
+
+    if (commitFiles.length > 0) {
+        try {
+            let additions = commitFiles.map((file) => {
+                return {
+                    path: file.path,
+                    contents: btoa(file.value)
+                }
             })
-        })
-        .then((response) => response.json())
-        .then((body) => body)
-        .catch((err) => {
-            console.log(err);
-        });
+            let deletions = commitFiles.map((file) => {
+                return {
+                    path: file.path,
+                }
+            })
+            let fileChanges = {
+                additions,
+                // deletions
+            }
+            const headers = {
+                Authorization: `Bearer ${localStorage.getItem('authId')}`
+            }
+            const mutationQuery = `
+                     mutation createCommit(
+                        $fileChanges: FileChanges,
+                        $oid: GitObjectID!,
+                        $branch: String,
+                        $commitMessage: String!)
+                       {
+                       createCommitOnBranch(input: {
+                         branch: {
+                           repositoryNameWithOwner: "${repoOwner}/${repoName}"
+                           branchName: $branch
+                         }
+                         message: {
+                           headline: $commitMessage
+                         }
+                         fileChanges: $fileChanges
+                         expectedHeadOid: $oid
+                       }) {
+                         commit {
+                           commitUrl
+                         }
+                       }
+                     }`;
+
+            const variables = {
+                fileChanges: fileChanges,
+                oid: newCommitSha,
+                branch: branch,
+                commitMessage: commitMessgae,
+            };
+
+            const response = await axios.post(
+                'https://api.github.com/graphql',
+                { query: mutationQuery, variables: variables },
+                { headers: headers }
+            );
+
+            if (!resp.data) {
+                return []
+            }
+            debugger
+            return resp.data.data;
+
+
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+
 }
 
 /**
@@ -183,35 +274,47 @@ export async function pushToGitHub(newCommitSha) {
  * @param {number} per_page - the number of repositories per page
  * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
  */
-export async function loadRepositoryList(searchText = "", page = 1, per_page = 5) {
-    let auth = localStorage.getItem("authId");
-    if (typeof searchText === "string" && searchText.startsWith("https://github.com/")) {
-        let repoRegExp = new RegExp("https:\\/\\/github\\.com\\/([^/]+)\\/([^/]+)");
-        let match = repoRegExp.exec(searchText);
-        let url = "/repos/" + match[1] + "/" + match[2];
-        console.log("url: " + url);
-        // auth entered URL
-        let repoInfo = pizzly
-            .integration("github")
-            .auth(auth)
-            .get(url)
-            .then((response) => {
-                return response.json();
-            })
-            .catch((err) => {
-                console.log(err);
-                return "[]";
-            });
-        return repoInfo.then((repoInfo) => Array.of(repoInfo));
-    } else {
-        return pizzly
-            .integration("github")
-            .auth(auth)
-            .get("/user/repos?sort=updated&page=" + page + "&per_page=" + per_page)
-            .then((response) => response.json())
-            .catch((err) => {
-                console.log(err);
-            });
+
+export async function loadRepositoryList() {
+    const token = localStorage.getItem("authId")
+    try {
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        }
+        const userId = localStorage.getItem('user')
+
+        const body = {
+            query: `query {
+                user(login: "${userId}") {
+                  repositories(last: 10) {
+                    nodes {
+                      id
+                      resourcePath
+                      updatedAt
+                      description
+                      defaultBranchRef {
+                        name
+                      }
+                    }
+                  }
+                }
+              }`
+        }
+        const response = await axios.post('https://api.github.com/graphql', body, { headers })
+        if (!response.data) {
+            return []
+        }
+
+        return response.data.data.user.repositories.nodes.map(repo => ({
+            ...repo,
+            full_name: repo.resourcePath.substring(1),
+            updated_at: repo.updatedAt,
+            default_branch: repo.defaultBranchRef?.name || ""
+        }))
+    }
+    catch (error) {
+        return error.message
     }
 }
 
@@ -267,16 +370,44 @@ export async function searchRepositoryList(searchString, maxResults = 2, searchR
  * @param {string} user - the authID of user'
  * @returns {Promise<object>} where the object has a tree attribute containing an array of all files in the repository
  */
+
 export async function loadFileTreeOfRepository(repoFullName, branch) {
-    let user = localStorage.getItem("authId");
-    return pizzly
-        .integration("github")
-        .auth(user)
-        .get("/repos/" + repoFullName + "/git/trees/" + branch + "?recursive=1")
-        .then((response) => response.json())
-        .catch((err) => {
-            console.log(err);
-        });
+    const token = localStorage.getItem("authId")
+    try {
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        }
+        const userId = localStorage.getItem('user')
+
+        const body = {
+            query: `query {
+                repository(owner:"${userId}", name:"${repoFullName.split("/")[1]}") {
+                  object(expression: "HEAD:") {
+                    ... on Tree {
+                      entries {
+                        name
+                        type
+                        mode
+                        path
+                      }
+                    }
+                  }
+                }
+              }`
+        }
+        const response = await axios.post('https://api.github.com/graphql', body, { headers })
+        if (!response.data) {
+            return []
+        }
+
+        return { tree: response.data.data.repository.object.entries }
+    }
+    catch (error) {
+        return error.message
+    }
+
+
 }
 
 /**Returns a list of the names of all branches of the repository.
@@ -315,11 +446,11 @@ export async function loadRawFile(repoFullName, branch, filePath) {
     if (typeof branch !== "string" || typeof branch != "string") {
         console.log(
             "Invalid values for loadContentsForRepository. Given Repository full name: " +
-                repoFullName +
-                ", Branch:" +
-                branch +
-                ", file path: " +
-                filePath
+            repoFullName +
+            ", Branch:" +
+            branch +
+            ", file path: " +
+            filePath
         );
     } else {
         return pizzly

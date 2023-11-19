@@ -68,6 +68,8 @@ export const store = new Vue({
          * If no ADR is currently edited, open one.
          * @param {Array} repoList - a list of repositories
          */
+
+
         addRepositories(repoList) {
             console.log("Add Repositories to store", repoList);
             let alreadyAddedRepos = repoList.filter((repoToAdd) =>
@@ -417,6 +419,7 @@ export const store = new Vue({
                 this.currentRepositoryForCommit.activeBranch
             );
         },
+
 
         /**
          * After a push the local storage must be updated.

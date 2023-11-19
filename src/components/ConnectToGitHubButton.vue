@@ -5,8 +5,9 @@
 </template>
 
 <script>
-import Pizzly from "pizzly-js";
-import config from "../config";
+import { signInWithPopup, GithubAuthProvider } from "firebase/auth";
+import { auth, GithubProvider } from "../plugins/firebase/client";
+
 
 export default {
     name: "connectGitHub",
@@ -16,41 +17,52 @@ export default {
         repositories: []
     }),
     mounted() {
-        // Here we initialize Pizzly.
         console.log("mounted");
-        this.$pizzly = new Pizzly({
-            host: config.pizzlyHost,
-            publishableKey: config.pizzlyPublishableKey
-        });
+
     },
     destroyed() {
         console.log("Bye from the git login github component!");
     },
     methods: {
         hasAuthId() {
+
             if (localStorage.getItem("authId") === null) {
-                this.connect();
-            } else
+                this.signInWithGithub()
+            } else {
                 this.$router.push({
                     name: "Editor",
                     params: { id: this.user }
                 });
+            }
         },
-        connect: function () {
-            // Here, we create a new method
-            // that "connect" a user to GitHub
-            this.$pizzly.integration("github").connect().then(this.connectSuccess).catch(this.connectError);
-        },
-        connectSuccess: function (data) {
-            // On success, we update the user object
-            this.user = data.authId;
-            localStorage.setItem("authId", data.authId);
-            this.$router.push({ name: "Editor", params: { id: this.user } });
-        },
-        connectError: function (err) {
-            console.log("error");
-            console.error(err);
+        //LOGIN WITH GITHUB
+        signInWithGithub: async function () {
+            GithubProvider.addScope('repo read:user gist workflow read:org')
+
+            return signInWithPopup(auth, GithubProvider)
+                .then((result) => {
+
+                    const credential = GithubAuthProvider.credentialFromResult(result);
+                    const token = credential.accessToken; //Token OAuth (JWT)
+                    const user = result.user
+                    localStorage.setItem("authId", token)
+
+                    localStorage.setItem('user', user?.reloadUserInfo?.screenName)
+                    // getGithubProfile(token).then(userProfile => console.log('Github Profile', userProfile))
+
+                    // console.log('Authenticated User', user)
+                    this.$router.push({
+                        name: "Editor",
+                        params: { id: this.user }
+                    });
+
+
+
+                }).catch((error) => {
+                    console.error('SignIn Error', error)
+                });
         }
+
     }
 };
 </script>

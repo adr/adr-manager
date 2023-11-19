@@ -36,9 +36,12 @@ Vue.use(VueTippy, {
     }
 });
 
+
+
 Vue.component("tippy", TippyComponent);
 
 Vue.use(VueSimpleAlert);
+
 Vue.config.productionTip = false;
 
 new Vue({
