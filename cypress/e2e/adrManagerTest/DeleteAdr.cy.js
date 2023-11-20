@@ -3,7 +3,7 @@ import { TEST_BASE_URL } from "../../support/e2e";
 context("Deleting an ADR from a repo", () => {
     it("Remove one ADR", () => {
         window.localStorage.clear();
-        window.localStorage.setItem("authId", Cypress.env("PIZZLY_E2E_AUTH_ID"));
+        window.localStorage.setItem("authId", Cypress.env("OAUTH_E2E_AUTH_ID"));
         cy.visit(TEST_BASE_URL);
 
         // add the ADR-Manager repo

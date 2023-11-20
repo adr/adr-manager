@@ -275,19 +275,21 @@ export async function pushToGitHub(newCommitSha, commitFiles, commitMessgae) {
  * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
  */
 
-export async function loadRepositoryList() {
-    const token = localStorage.getItem("authId")
+export async function loadRepositoryList(searchText = "", page = 1, perPage = 5) {
+    const token = localStorage.getItem("authId");
+
     try {
         const headers = {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
-        }
-        const userId = localStorage.getItem('user')
+        };
+
+        const userId = localStorage.getItem('user');
 
         const body = {
             query: `query {
                 user(login: "${userId}") {
-                  repositories(last: 10) {
+                  repositories(first: ${perPage}, after: null, orderBy: { field: UPDATED_AT, direction: DESC }) {
                     nodes {
                       id
                       resourcePath
@@ -300,21 +302,21 @@ export async function loadRepositoryList() {
                   }
                 }
               }`
-        }
-        const response = await axios.post('https://api.github.com/graphql', body, { headers })
-        if (!response.data) {
-            return []
-        }
+        };
 
+        const response = await axios.post('https://api.github.com/graphql', body, { headers });
+
+        if (!response?.data) {
+            return [];
+        }
         return response.data.data.user.repositories.nodes.map(repo => ({
             ...repo,
             full_name: repo.resourcePath.substring(1),
             updated_at: repo.updatedAt,
             default_branch: repo.defaultBranchRef?.name || ""
-        }))
-    }
-    catch (error) {
-        return error.message
+        }));
+    } catch (error) {
+        return error.message;
     }
 }
 
@@ -332,32 +334,34 @@ export async function searchRepositoryList(searchString, maxResults = 2, searchR
     let page = 1;
     let perPage = 100;
 
-    let promise;
     let hasNextPage = true;
+
     while (searchResults.length < maxResults && hasNextPage) {
-        promise = loadRepositoryList("", page, perPage)
-            .then((repositoryList) => {
-                if (repositoryList instanceof Array) {
-                    repositoryList
-                        .filter((repo) => repo.full_name.includes(searchString))
-                        .forEach((repo) => {
-                            if (searchResults.length < maxResults) {
-                                searchResults.push(repo);
-                            }
-                        });
-                } else {
-                    hasNextPage = false;
-                }
-                if (repositoryList.length < perPage) {
-                    hasNextPage = false;
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-        await promise;
+        try {
+            const repositoryList = await loadRepositoryList("", page, perPage);
+            if (repositoryList instanceof Array) {
+                const filteredArr = repositoryList.filter((repo) => repo.full_name.includes(searchString))
+                filteredArr.map((repo) => {
+                    if (searchResults.length < maxResults) {
+                        searchResults.push(repo);
+                    }
+                });
+                console.log("#### search results ####", searchResults)
+
+            } else {
+                hasNextPage = false;
+            }
+
+            if (repositoryList.length < perPage) {
+                hasNextPage = false;
+            }
+        } catch (err) {
+            hasNextPage = false; // Stop the loop on error
+        }
+
         page++;
     }
+
     return searchResults;
 }
 
