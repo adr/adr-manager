@@ -4,6 +4,7 @@ context("Routing and correct URLs", () => {
     beforeEach(() => {
         window.localStorage.clear();
         window.localStorage.setItem("authId", Cypress.env("OAUTH_E2E_AUTH_ID"));
+        window.localStorage.setItem("user", Cypress.env("user"))
         cy.visit(TEST_BASE_URL);
     });
 
@@ -11,7 +12,8 @@ context("Routing and correct URLs", () => {
         cy.url().should("equal", TEST_BASE_URL);
 
         // add the ADR-Manager repo
-        cy.intercept("GET", "**/user/repos**").as("getRepos");
+        cy.intercept('POST', 'https://api.github.com/graphql').as("getRepos");
+
         cy.get("[data-cy=addRepo]").click();
         cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
         cy.get("[data-cy=listRepo]").contains("ADR-Manager").click();

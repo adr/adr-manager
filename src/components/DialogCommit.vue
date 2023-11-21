@@ -130,7 +130,7 @@
 </template>
 
 <script>
-import { getCommitSha, createFileTree, createCommit, pushToGitHub } from "/src/plugins/api.js";
+import { getCommitSha, createBlobs, createFileTree, createCommit, pushToGitHub } from "/src/plugins/api.js";
 import { store } from "../plugins/store";
 
 /**
@@ -183,7 +183,6 @@ export default {
                     return;
                 }
                 this.resetDialog();
-                console.log(this.repo)
                 store.setCurrentRepositoryForCommit(this.repo);
                 store.setInfoForCommit();
 
@@ -308,13 +307,16 @@ export default {
                 this.fileSelected = true;
             } else this.fileSelected = false;
         },
+
+        // Requests last commit sha hash from GitHub (Returned in response)
         requestLastCommitSha() {
             this.loading = true;
+
             if (!this.errorRequest) {
                 getCommitSha()
                     .then((res) => {
                         this.lastCommitSha = res.commit.sha;
-                        this.pushToGitHubRequest(this.lastCommitSha);
+                        this.createBlobsRequest();
                     })
                     .catch((error) => {
                         this.errorRequest = true;
@@ -330,33 +332,38 @@ export default {
          * When every file is created, the tree of the file will be created.
          */
         createBlobsRequest() {
+            let countKeysList = this.commitFiles.length;
+            let countForEach = 0;
+            if (this.commitFiles.length > 0) {
+                for (let value of this.commitFiles) {
+                    if (value.fileSelected) {
+                        this.filesPushed.push({
+                            path: value.path,
+                            type: value.fileStatus
+                        });
+                        if (!this.errorRequest) {
+                            debugger;
+                            createBlobs(value.value)
+                                .then((res) => {
 
-            for (let value of this.commitFiles) {
-                if (value.fileSelected) {
-                    this.filesPushed.push({
-                        path: value.path,
-                        type: value.fileStatus
-                    });
-                    if (!this.errorRequest) {
-                        createBlobs(value.value)
-                            .then((res) => {
-                                countForEach++;
-                                this.blobSha[value.title] = {
-                                    blobSha: res.sha,
-                                    path: value.path
-                                };
-                                if (countForEach === countKeysList) {
-                                    this.createFolderTreeRequest();
-                                }
-                            })
-                            .catch((error) => {
-                                this.errorRequest = true;
-                                this.errorDialog(error);
-                                console.error(error);
-                            });
+                                    countForEach++;
+                                    this.blobSha[value.title] = {
+                                        blobSha: res.sha,
+                                        path: value.path
+                                    };
+                                    if (countForEach === countKeysList) {
+                                        this.createFolderTreeRequest();
+                                    }
+                                })
+                                .catch((error) => {
+                                    this.errorRequest = true;
+                                    this.errorDialog(error);
+                                    console.error(error);
+                                });
+                        }
                     } else countForEach++;
-                } else this.createFolderTreeRequest();
-            }
+                }
+            } else this.createFolderTreeRequest();
         },
 
         /**
@@ -433,7 +440,7 @@ export default {
          */
         pushToGitHubRequest(newCommitSha) {
             if (!this.errorRequest) {
-                pushToGitHub(newCommitSha, this.commitFiles, this.comMessage)
+                pushToGitHub(newCommitSha)
                     .then(() => {
                         this.gitHubTimeout = true;
                         setTimeout(() => {

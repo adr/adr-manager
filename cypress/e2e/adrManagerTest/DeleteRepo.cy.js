@@ -4,10 +4,14 @@ context("Deleting repositories", () => {
     it("Remove a repo", () => {
         window.localStorage.clear();
         window.localStorage.setItem("authId", Cypress.env("OAUTH_E2E_AUTH_ID"));
+        window.localStorage.setItem("user", Cypress.env("user"))
+
         cy.visit(TEST_BASE_URL);
 
         // add ADR Manager repo
-        cy.intercept("GET", "**/user/repos**").as("getRepos");
+        // cy.intercept("GET", "**/user/repos**").as("getRepos");
+        cy.intercept('POST', 'https://api.github.com/graphql').as("getRepos");
+
         cy.get("[data-cy=addRepo]").click();
         cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
 

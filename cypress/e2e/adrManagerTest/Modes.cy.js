@@ -4,10 +4,13 @@ context("Using editor modes", () => {
     it("Switch to professional mode and create a new ADR", () => {
         window.localStorage.clear();
         window.localStorage.setItem("authId", Cypress.env("OAUTH_E2E_AUTH_ID"));
+        window.localStorage.setItem("user", Cypress.env("user"))
+
         cy.visit(TEST_BASE_URL);
 
         // add ADR Manager repo
-        cy.intercept("GET", "**/user/repos**").as("getRepos");
+        cy.intercept('POST', 'https://api.github.com/graphql').as("getRepos");
+
         cy.get("[data-cy=addRepo]").click();
         cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
         cy.get("[data-cy=listRepo]").contains("ADR-Manager").click();
