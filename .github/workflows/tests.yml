@@ -38,7 +38,7 @@ jobs:
       - name: Run Cypress tests
         env:
           CYPRESS_OAUTH_E2E_AUTH_ID: ${{ secrets.OAUTH_E2E_AUTH_ID }}
-          user: ${{ secrets.USER }}
+          USER: ${{ secrets.USER }}
         run: |
           npm start &
           npm run e2e:test-ci
