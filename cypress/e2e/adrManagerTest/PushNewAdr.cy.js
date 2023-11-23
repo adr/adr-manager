@@ -34,7 +34,7 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
 
         window.localStorage.clear();
         window.localStorage.setItem("authId", Cypress.env("OAUTH_E2E_AUTH_ID"));
-        window.localStorage.setItem("user", Cypress.env("user"))
+        window.localStorage.setItem("user", Cypress.env("USER"))
         cy.visit(TEST_BASE_URL);
 
         addRepositoryAndSwitchBranch();

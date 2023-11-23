@@ -4,7 +4,7 @@ context("Adding a new ADR to a repo", () => {
     it("Create a new ADR", () => {
         window.localStorage.clear();
         window.localStorage.setItem("authId", Cypress.env("OAUTH_E2E_AUTH_ID"));
-        window.localStorage.setItem("user", Cypress.env("user"))
+        window.localStorage.setItem("user", Cypress.env("USER"))
         cy.visit(TEST_BASE_URL);
 
         // add the ADR-Manager repo
