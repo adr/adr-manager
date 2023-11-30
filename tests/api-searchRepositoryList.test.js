@@ -7,6 +7,7 @@ global.localStorage = {
         return "abc....";
     }
 };
+console.log("###### print local storage #######", localStorage.getItem("authId"))
 import { searchRepositoryList } from "../src/plugins/api.js";
 
 import { searchTermRepoPairs } from "./constants.js";
@@ -21,6 +22,7 @@ for (let i = 0; i < searchTermRepoPairs.length; i++) {
     let expectedResult = searchTermRepoPairs[i].results;
 
     test("Test Searching Repos with list in parameter. Searching for " + searchTerm, async () => {
+        console.log(localStorage.getItem("authId"))
         let list = [];
         axios.post.mockResolvedValue({
 
