@@ -268,6 +268,8 @@ export default {
          */
         addRepositories: async function () {
             this.showLoadingOverlay = true;
+            debugger;
+            console.log(this.repositoriesSelected)
             loadAllRepositoryContent(
                 this.repositoriesSelected.map((repo) => ({
                     fullName: repo.repoData.full_name,

@@ -1,4 +1,4 @@
-import { TEST_BASE_URL } from "../../support/e2e";
+import { GRAPHQL_URL, REST_REPO_URL, TEST_BASE_URL } from "../../support/e2e";
 
 context("Deleting an ADR from a repo", () => {
     it("Remove one ADR", () => {
@@ -9,14 +9,13 @@ context("Deleting an ADR from a repo", () => {
         cy.visit(TEST_BASE_URL);
 
         // add the ADR-Manager repo
-        // cy.intercept("GET", "**/user/repos**").as("getRepos");
-        cy.intercept('POST', 'https://api.github.com/graphql').as("getRepos");
+        cy.intercept('POST', GRAPHQL_URL).as("getRepos");
         cy.get("[data-cy=addRepo]").click();
         cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
         cy.get("[data-cy=listRepo]").contains("ADR-Manager").click();
         cy.get("[data-cy=addRepoDialog]").click();
         // cy.intercept('POST', 'https://api.github.com/graphql').as("showRepos");
-        cy.intercept("GET", "**/repos/**").as("showRepos");
+        cy.intercept("GET", REST_REPO_URL).as("showRepos");
 
         cy.wait("@showRepos", { timeout: 10000 });
 

@@ -1,5 +1,4 @@
-import { TEST_BASE_URL } from "../../support/e2e";
-
+import { GRAPHQL_URL, TEST_BASE_URL } from "../../support/e2e";
 context("Routing and correct URLs", () => {
     beforeEach(() => {
         window.localStorage.clear();
@@ -12,7 +11,7 @@ context("Routing and correct URLs", () => {
         cy.url().should("equal", TEST_BASE_URL);
 
         // add the ADR-Manager repo
-        cy.intercept('POST', 'https://api.github.com/graphql').as("getRepos");
+        cy.intercept('POST', GRAPHQL_URL).as("getRepos");
 
         cy.get("[data-cy=addRepo]").click();
         cy.wait("@getRepos").its("response.statusCode").should("eq", 200);

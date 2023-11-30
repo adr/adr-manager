@@ -1,4 +1,4 @@
-import { TEST_BASE_URL } from "../../support/e2e";
+import { TEST_BASE_URL, GRAPHQL_URL } from "../../support/e2e";
 
 context("Deleting repositories", () => {
     it("Remove a repo", () => {
@@ -10,7 +10,7 @@ context("Deleting repositories", () => {
 
         // add ADR Manager repo
         // cy.intercept("GET", "**/user/repos**").as("getRepos");
-        cy.intercept('POST', 'https://api.github.com/graphql').as("getRepos");
+        cy.intercept('POST', GRAPHQL_URL).as("getRepos");
 
         cy.get("[data-cy=addRepo]").click();
         cy.wait("@getRepos").its("response.statusCode").should("eq", 200);

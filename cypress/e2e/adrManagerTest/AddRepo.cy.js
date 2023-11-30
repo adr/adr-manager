@@ -1,4 +1,4 @@
-import { TEST_BASE_URL } from "../../support/e2e";
+import { GRAPHQL_URL, REST_REPO_URL, TEST_BASE_URL } from "../../support/e2e";
 
 context("Listing and adding repositories", () => {
     beforeEach(() => {
@@ -6,7 +6,7 @@ context("Listing and adding repositories", () => {
         window.localStorage.setItem("authId", Cypress.env("OAUTH_E2E_AUTH_ID"));
         window.localStorage.setItem("user", Cypress.env("USER"))
         cy.visit(TEST_BASE_URL);
-        cy.intercept('POST', 'https://api.github.com/graphql').as("getRepos");
+        cy.intercept('POST', GRAPHQL_URL).as("getRepos");
 
         // cy.intercept("GET", "**/user/repos**").as("getRepos");
         cy.get("[data-cy=addRepo]").click();
@@ -32,7 +32,7 @@ context("Listing and adding repositories", () => {
 
             // confirm repo adding dialog
             cy.get("[data-cy=addRepoDialog]").click();
-            cy.intercept("GET", "**/repos/**").as("showRepos");
+            cy.intercept("GET", REST_REPO_URL).as("showRepos");
             cy.wait("@showRepos", { timeout: 15000 });
 
             // check if the correct number of repos was added

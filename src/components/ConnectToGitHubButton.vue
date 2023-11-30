@@ -18,14 +18,12 @@ export default {
     }),
     mounted() {
         console.log("mounted");
-
     },
     destroyed() {
         console.log("Bye from the git login github component!");
     },
     methods: {
         hasAuthId() {
-
             if (localStorage.getItem("authId") === null) {
                 this.signInWithGithub()
             } else {
@@ -35,34 +33,22 @@ export default {
                 });
             }
         },
-        //LOGIN WITH GITHUB
         signInWithGithub: async function () {
             GithubProvider.addScope('repo read:user gist workflow read:org')
-
-            return signInWithPopup(auth, GithubProvider)
-                .then((result) => {
-
-                    const credential = GithubAuthProvider.credentialFromResult(result);
-                    const token = credential.accessToken; //Token OAuth (JWT)
-                    const user = result.user
-                    localStorage.setItem("authId", token)
-
-                    localStorage.setItem('user', user?.reloadUserInfo?.screenName)
-                    // getGithubProfile(token).then(userProfile => console.log('Github Profile', userProfile))
-
-                    // console.log('Authenticated User', user)
-                    this.$router.push({
-                        name: "Editor",
-                        params: { id: this.user }
-                    });
-
-
-
-                }).catch((error) => {
-                    console.error('SignIn Error', error)
+            return signInWithPopup(auth, GithubProvider).then((result) => {
+                const credential = GithubAuthProvider.credentialFromResult(result);
+                const token = credential.accessToken;
+                const user = result.user
+                localStorage.setItem("authId", token)
+                localStorage.setItem('user', user?.reloadUserInfo?.screenName)
+                this.$router.push({
+                    name: "Editor",
+                    params: { id: this.user }
                 });
+            }).catch((error) => {
+                console.error('SignIn Error', error)
+            });
         }
-
     }
 };
 </script>

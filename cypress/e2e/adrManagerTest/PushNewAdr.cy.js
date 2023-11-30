@@ -1,14 +1,12 @@
-import { TEST_BASE_URL } from "../../support/e2e";
+import { GRAPHQL_URL, REST_BRANCH_URL, REST_COMMIT_URL, TEST_BASE_URL } from "../../support/e2e";
 
 context("Committing, pushing, and remote-deleting an ADR", () => {
     it("Commit and push new ADR, then delete from GitHub", () => {
-        const REPO_NAME = "adr/adr";
-        const BRANCH_NAME = "gh-pages";
+        const REPO_NAME = "adr/adr-test-repository-empty";
+        const BRANCH_NAME = "testing-branch";
 
         function addRepositoryAndSwitchBranch() {
-            // add the ADR-Manager repo
-            cy.intercept('POST', 'https://api.github.com/graphql').as("getRepos");
-
+            cy.intercept("POST", GRAPHQL_URL).as("getRepos");
             cy.get("[data-cy=addRepo]").click();
             cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
             cy.get("[data-cy=search-field-for-adding-repository]").type(REPO_NAME);
@@ -31,6 +29,7 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
             // Reloading the repository typically takes some time ...
             cy.wait(2000);
         }
+
 
         window.localStorage.clear();
         window.localStorage.setItem("authId", Cypress.env("OAUTH_E2E_AUTH_ID"));
@@ -60,8 +59,8 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
         // push to GitHub
         cy.get("[data-cy=btnOfDialogCommitForPush]").click();
 
-        cy.intercept("GET", "**/repos/**/branches/**").as("getCommitSha");
-        cy.intercept("POST", "**/repos/**/git/commits?**").as("commitRequest");
+        cy.intercept("GET", REST_BRANCH_URL).as("getCommitSha");
+        cy.intercept("POST", REST_COMMIT_URL).as("commitRequest");
 
         // cy.wait("@getCommitSha");
         // cy.wait("@commitRequest")

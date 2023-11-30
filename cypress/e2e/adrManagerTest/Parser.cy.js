@@ -1,4 +1,4 @@
-import { TEST_BASE_URL } from "../../support/e2e";
+import { GRAPHQL_URL, TEST_BASE_URL } from "../../support/e2e";
 
 context("Using Markdown modes", () => {
     it("Convert raw Markdown", () => {
@@ -9,7 +9,7 @@ context("Using Markdown modes", () => {
         cy.visit(TEST_BASE_URL);
 
         // add ADR Manager repo
-        cy.intercept('POST', 'https://api.github.com/graphql').as("getRepos");
+        cy.intercept('POST', GRAPHQL_URL).as("getRepos");
         cy.get("[data-cy=addRepo]").click();
         cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
         cy.get("[data-cy=listRepo]").contains("ADR-Manager").click();

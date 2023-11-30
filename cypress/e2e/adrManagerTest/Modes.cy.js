@@ -1,4 +1,4 @@
-import { TEST_BASE_URL } from "../../support/e2e";
+import { GRAPHQL_URL, TEST_BASE_URL } from "../../support/e2e";
 
 context("Using editor modes", () => {
     it("Switch to professional mode and create a new ADR", () => {
@@ -9,7 +9,7 @@ context("Using editor modes", () => {
         cy.visit(TEST_BASE_URL);
 
         // add ADR Manager repo
-        cy.intercept('POST', 'https://api.github.com/graphql').as("getRepos");
+        cy.intercept('POST', GRAPHQL_URL).as("getRepos");
 
         cy.get("[data-cy=addRepo]").click();
         cy.wait("@getRepos").its("response.statusCode").should("eq", 200);

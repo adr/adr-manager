@@ -1,16 +1,8 @@
 /* This file contains any calls to the backend. */
 
-import Pizzly from "pizzly-js";
 import { Repository } from "./classes.js";
-import config from "../config";
 import axios from "axios"
-
-// API-Calls (functions return promises)
-// A pizzy-object to make request to github
-let pizzly = new Pizzly({
-    host: config.pizzlyHost,
-    publishableKey: config.pizzlyPublishableKey
-});
+import { BASE_URL_REPO, BASE_URL_USER, HEADERS } from "./apiConfig/config.js"
 
 let repoOwner = "";
 let repoName = "";
@@ -29,12 +21,9 @@ export function setInfosForApi(currRepoOwner, currRepoName, currBranch) {
  * @returns {Promise<object[]>} the array of emails with attributes 'email', 'primary', 'verified', 'visibility'
  */
 export async function getUserEmail() {
+    const headers = HEADERS;
     return axios
-        .get("https://api.github.com/user/public_emails", {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("authId")}`
-            }
-        })
+        .get(`${BASE_URL_USER}/public_emails`, { headers })
         .then((response) => response.data)
         .catch((err) => {
             console.log(err);
@@ -48,11 +37,8 @@ export async function getUserEmail() {
  * @returns {Promise<object[]>} the array of informations with attributes 'login', 'name', etc.
  */
 export async function getUserName() {
-    return axios.get("https://api.github.com/user", {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('authId')}`
-        }
-    })
+    const headers = HEADERS
+    return axios.get(BASE_URL_USER, { headers })
         .then((response) => response.data)
         .catch((err) => {
             console.log(err);
@@ -66,11 +52,8 @@ export async function getUserName() {
  * @returns {Promise<object[]>} informations about the branch with attributes 'commit: { sha }', etc.
  */
 export async function getCommitSha() {
-    return axios.get("https://api.github.com/repos/" + repoOwner + "/" + repoName + "/branches/" + branch, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('authId')}`
-        }
-    })
+    const headers = HEADERS
+    return axios.get(`${BASE_URL_REPO}/${repoOwner}/${repoName}/branches/${branch}`, { headers })
         .then((response) => response.data)
         .catch((err) => {
             console.log(err);
@@ -85,16 +68,14 @@ export async function getCommitSha() {
  * @returns {Promise<object[]>} informations about the newly created file with attributes 'sha', etc.
  */
 export async function createBlobs(file) {
-    return axios.post("https://api.github.com/repos/" + repoOwner + "/" + repoName + "/git/blobs",
+    const headers = HEADERS;
+    const copyHeader = { ...headers }; // Spread syntax to create a shallow copy
+    copyHeader["Accept"] = "application/vnd.github+json";
+    return axios.post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/blobs`,
         ({
             content: file,
             encoding: "utf-8"
-        }), {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('authId')}`,
-            Accept: "application / vnd.github + json"
-        }
-    })
+        }), { headers: copyHeader })
         .then((response) => response.data)
         .then((body) => body)
         .catch((err) => {
@@ -111,15 +92,12 @@ export async function createBlobs(file) {
  * @returns {Promise<object[]>} informations about the newly created tree with attributes 'sha', etc.
  */
 export async function createFileTree(lastCommitSha, folderTree) {
-    return axios.post("https://api.github.com/repos/" + repoOwner + "/" + repoName + "/git/trees", {
+    const headers = HEADERS
+    return axios.post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/trees`, {
         base_tree: lastCommitSha,
         tree: folderTree
 
-    }, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('authId')}`
-        }
-    })
+    }, { headers })
         .then((response) => response.data)
         .then((body) => body)
         .catch((err) => {
@@ -138,17 +116,14 @@ export async function createFileTree(lastCommitSha, folderTree) {
  * @returns {Promise<object[]>} informations about the created commit with attributes 'sha', etc.
  */
 export async function createCommit(commitMessage, authorInfos, lastCommitSha, treeSha) {
-    return axios.post("https://api.github.com/repos/" + repoOwner + "/" + repoName + "/git/commits", {
+    const headers = HEADERS
+    return axios.post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/commits`, {
         message: commitMessage,
         author: authorInfos,
         parents: [lastCommitSha],
         tree: treeSha
 
-    }, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('authId')}`
-        }
-    })
+    }, { headers })
         .then((response) => response.data)
         .then((body) => body)
         .catch((err) => {
@@ -164,14 +139,11 @@ export async function createCommit(commitMessage, authorInfos, lastCommitSha, tr
  * @returns {Promise<object[]>} informations about the reference.
  */
 export async function pushToGitHub(newCommitSha) {
-    return axios.post("https://api.github.com/repos/" + repoOwner + "/" + repoName + "/git/refs/heads/" + branch, {
+    const headers = HEADERS
+    return axios.post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/refs/heads/${branch}`, {
         ref: "refs/heads/" + branch,
         sha: newCommitSha
-    }, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('authId')}`
-        }
-    })
+    }, { headers })
         .then((response) => response.data)
         .then((body) => body)
         .catch((err) => {
@@ -195,29 +167,25 @@ export async function loadRepositoryList(searchText = "", page = 1, perPage = 5)
     const token = localStorage.getItem("authId");
 
     try {
-        const headers = {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        };
-
+        const headers = HEADERS
         const userId = localStorage.getItem('user');
 
         const body = {
             query: `query {
-                user(login: "${userId}") {
-                  repositories(first: ${perPage}, after: null,orderBy: { field: UPDATED_AT, direction: DESC }) {
+            user(login: "${userId}") {
+                repositories(first: ${perPage}, after: null, orderBy: { field: UPDATED_AT, direction: DESC }) {
                     nodes {
-                      id
-                      resourcePath
-                      updatedAt
-                      description
+                        id
+                        resourcePath
+                        updatedAt
+                        description
                       defaultBranchRef {
-                        name
-                      }
+                            name
+                        }
                     }
-                  }
                 }
-              }`
+            }
+        }`
         };
 
         const response = await axios.post('https://api.github.com/graphql', body, { headers });
@@ -292,12 +260,9 @@ export async function searchRepositoryList(searchString, maxResults = 2, searchR
  */
 
 export async function loadFileTreeOfRepository(repoFullName, branch) {
-    let user = localStorage.getItem("authId");
-    return axios.get("https://api.github.com/repos/" + repoFullName + "/git/trees/" + branch + "?recursive=1", {
-        headers: {
-            Authorization: `Bearer ${user}`
-        }
-    })
+    const headers = HEADERS
+
+    return axios.get(`${BASE_URL_REPO}/${repoFullName}/git/trees/${branch}?recursive=1`, { headers })
         .then((response) => response.data)
         .catch((err) => {
             console.log(err);
@@ -314,13 +279,9 @@ export async function loadFileTreeOfRepository(repoFullName, branch) {
  * @returns {Promise<{ name : string }[]>} the fetched array of branches
  */
 export async function loadBranchesName(repoName, username) {
-    let dataAuth = localStorage.getItem("authId");
+    const headers = HEADERS
     return axios
-        .get("https://api.github.com/repos/" + username + "/" + repoName + "/branches?per_page=999", {
-            headers: {
-                Authorization: `Bearer ${dataAuth}`
-            }
-        })
+        .get(`${BASE_URL_REPO}/${username}/${repoName}/branches?per_page=999`, { headers })
         .then((response) => response.data)
         .catch((err) => {
             console.log(err);
@@ -338,7 +299,8 @@ export async function loadBranchesName(repoName, username) {
  * @returns {Promise<string>} a promise with the raw content of the specified file
  */
 export async function loadRawFile(repoFullName, branch, filePath) {
-    let user = localStorage.getItem("authId");
+    const headers = HEADERS
+
     if (typeof branch !== "string" || typeof branch != "string") {
         console.log(
             "Invalid values for loadContentsForRepository. Given Repository full name: " +
@@ -350,10 +312,8 @@ export async function loadRawFile(repoFullName, branch, filePath) {
         );
     } else {
         return axios
-            .get("https://api.github.com/repos/" + repoFullName + "/contents/" + filePath + "?ref=" + branch, {
-                headers: {
-                    Authorization: `Bearer ${user}`
-                }
+            .get(`${BASE_URL_REPO}/${repoFullName}/contents/${filePath}?ref=${branch}`, {
+                headers
             })
             .then((response) => response.data)
             .then((response) => decodeUnicode(response.content))
@@ -464,7 +424,7 @@ export async function loadARepositoryContent(repoFullName, branchName) {
                 };
                 repoObject.adrs.push(adrObject);
                 adrPromises.push(
-                    loadRawFile(repoFullName, branchName, adr.path, user, pizzly).then((rawMd) => {
+                    loadRawFile(repoFullName, branchName, adr.path, user).then((rawMd) => {
                         adrObject.originalMd = rawMd;
                         adrObject.editedMd = rawMd;
                     })

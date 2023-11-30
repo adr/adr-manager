@@ -21,7 +21,6 @@ export default {
     moduleNameMapper: {
         vue$: "vue/dist/vue.common.js",
         "^@/(.*)$": "<rootDir>/src/$1",
-        "pizzly-js": "<rootDir>/tests/pizzly-mock.js"
     },
     // The test environment that will be used for testing
     testEnvironment: "node",
