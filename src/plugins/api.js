@@ -2,13 +2,11 @@
 
 import { Repository } from "./classes.js";
 import axios from "axios"
-import { BASE_URL_REPO, BASE_URL_USER, getHeaders } from "./apiConfig/config.js"
+import { BASE_URL_REPO, BASE_URL_USER } from "./apiConfig/config.js"
 
 let repoOwner = "";
 let repoName = "";
 let branch = "";
-
-axios.defaults.headers.common['Authorization'] = getHeaders().Authorization;
 
 export function setInfosForApi(currRepoOwner, currRepoName, currBranch) {
     repoName = currRepoName;
