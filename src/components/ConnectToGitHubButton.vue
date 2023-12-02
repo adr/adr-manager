@@ -7,8 +7,6 @@
 <script>
 import { signInWithPopup, GithubAuthProvider } from "firebase/auth";
 import { auth, GithubProvider } from "../plugins/firebase/client";
-import axios from "axios";
-import { getHeaders } from "../plugins/apiConfig/config";
 export default {
     name: "connectGitHub",
     components: {},
@@ -27,7 +25,6 @@ export default {
             if (localStorage.getItem("authId") === null) {
                 this.signInWithGithub()
             } else {
-                axios.defaults.headers.common['Authorization'] = getHeaders().Authorization;
                 this.$router.push({
                     name: "Editor",
                     params: { id: this.user }
