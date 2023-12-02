@@ -50,7 +50,6 @@ export async function getUserName() {
  * @returns {Promise<object[]>} informations about the branch with attributes 'commit: { sha }', etc.
  */
 export async function getCommitSha() {
-    const headers = getHeaders()
     return axios.get(`${BASE_URL_REPO}/${repoOwner}/${repoName}/branches/${branch}`)
         .then((response) => response.data)
         .catch((err) => {
@@ -66,9 +65,6 @@ export async function getCommitSha() {
  * @returns {Promise<object[]>} informations about the newly created file with attributes 'sha', etc.
  */
 export async function createBlobs(file) {
-    const headers = getHeaders();
-    const copyHeader = { ...headers }; // Spread syntax to create a shallow copy
-    copyHeader["Accept"] = "application/vnd.github+json";
     return axios.post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/blobs`,
         ({
             content: file,
