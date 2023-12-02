@@ -8,6 +8,8 @@ let repoOwner = "";
 let repoName = "";
 let branch = "";
 
+axios.defaults.headers.common['Authorization'] = getHeaders().Authorization;
+
 export function setInfosForApi(currRepoOwner, currRepoName, currBranch) {
     repoName = currRepoName;
     repoOwner = currRepoOwner;
@@ -21,9 +23,8 @@ export function setInfosForApi(currRepoOwner, currRepoName, currBranch) {
  * @returns {Promise<object[]>} the array of emails with attributes 'email', 'primary', 'verified', 'visibility'
  */
 export async function getUserEmail() {
-    const headers = getHeaders();
     return axios
-        .get(`${BASE_URL_USER}/public_emails`, { headers })
+        .get(`${BASE_URL_USER}/public_emails`)
         .then((response) => response.data)
         .catch((err) => {
             console.log(err);
@@ -37,8 +38,7 @@ export async function getUserEmail() {
  * @returns {Promise<object[]>} the array of informations with attributes 'login', 'name', etc.
  */
 export async function getUserName() {
-    const headers = getHeaders()
-    return axios.get(BASE_URL_USER, { headers })
+    return axios.get(BASE_URL_USER)
         .then((response) => response.data)
         .catch((err) => {
             console.log(err);
@@ -53,7 +53,7 @@ export async function getUserName() {
  */
 export async function getCommitSha() {
     const headers = getHeaders()
-    return axios.get(`${BASE_URL_REPO}/${repoOwner}/${repoName}/branches/${branch}`, { headers })
+    return axios.get(`${BASE_URL_REPO}/${repoOwner}/${repoName}/branches/${branch}`)
         .then((response) => response.data)
         .catch((err) => {
             console.log(err);
@@ -75,7 +75,7 @@ export async function createBlobs(file) {
         ({
             content: file,
             encoding: "utf-8"
-        }), { headers: copyHeader })
+        }))
         .then((response) => response.data)
         .then((body) => body)
         .catch((err) => {
@@ -92,12 +92,11 @@ export async function createBlobs(file) {
  * @returns {Promise<object[]>} informations about the newly created tree with attributes 'sha', etc.
  */
 export async function createFileTree(lastCommitSha, folderTree) {
-    const headers = getHeaders()
     return axios.post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/trees`, {
         base_tree: lastCommitSha,
         tree: folderTree
 
-    }, { headers })
+    })
         .then((response) => response.data)
         .then((body) => body)
         .catch((err) => {
@@ -116,14 +115,13 @@ export async function createFileTree(lastCommitSha, folderTree) {
  * @returns {Promise<object[]>} informations about the created commit with attributes 'sha', etc.
  */
 export async function createCommit(commitMessage, authorInfos, lastCommitSha, treeSha) {
-    const headers = getHeaders()
     return axios.post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/commits`, {
         message: commitMessage,
         author: authorInfos,
         parents: [lastCommitSha],
         tree: treeSha
 
-    }, { headers })
+    })
         .then((response) => response.data)
         .then((body) => body)
         .catch((err) => {
@@ -139,11 +137,10 @@ export async function createCommit(commitMessage, authorInfos, lastCommitSha, tr
  * @returns {Promise<object[]>} informations about the reference.
  */
 export async function pushToGitHub(newCommitSha) {
-    const headers = getHeaders()
     return axios.post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/refs/heads/${branch}`, {
         ref: "refs/heads/" + branch,
         sha: newCommitSha
-    }, { headers })
+    })
         .then((response) => response.data)
         .then((body) => body)
         .catch((err) => {
@@ -164,7 +161,6 @@ export async function pushToGitHub(newCommitSha) {
  */
 
 export async function loadRepositoryList(searchText = "", page = 1, perPage = 5) {
-
     try {
         const userId = localStorage.getItem('user');
 
@@ -186,9 +182,7 @@ export async function loadRepositoryList(searchText = "", page = 1, perPage = 5)
         }`
         };
 
-        const response = await axios.post('https://api.github.com/graphql', body, {
-            headers: getHeaders()
-        });
+        const response = await axios.post('https://api.github.com/graphql', body);
 
         if (!response?.data) {
             return [];
@@ -260,9 +254,8 @@ export async function searchRepositoryList(searchString, maxResults = 2, searchR
  */
 
 export async function loadFileTreeOfRepository(repoFullName, branch) {
-    const headers = getHeaders()
 
-    return axios.get(`${BASE_URL_REPO}/${repoFullName}/git/trees/${branch}?recursive=1`, { headers })
+    return axios.get(`${BASE_URL_REPO}/${repoFullName}/git/trees/${branch}?recursive=1`)
         .then((response) => response.data)
         .catch((err) => {
             console.log(err);
@@ -279,9 +272,8 @@ export async function loadFileTreeOfRepository(repoFullName, branch) {
  * @returns {Promise<{ name : string }[]>} the fetched array of branches
  */
 export async function loadBranchesName(repoName, username) {
-    const headers = getHeaders()
     return axios
-        .get(`${BASE_URL_REPO}/${username}/${repoName}/branches?per_page=999`, { headers })
+        .get(`${BASE_URL_REPO}/${username}/${repoName}/branches?per_page=999`)
         .then((response) => response.data)
         .catch((err) => {
             console.log(err);
@@ -299,7 +291,6 @@ export async function loadBranchesName(repoName, username) {
  * @returns {Promise<string>} a promise with the raw content of the specified file
  */
 export async function loadRawFile(repoFullName, branch, filePath) {
-    const headers = getHeaders()
 
     if (typeof branch !== "string" || typeof branch != "string") {
         console.log(
@@ -312,9 +303,7 @@ export async function loadRawFile(repoFullName, branch, filePath) {
         );
     } else {
         return axios
-            .get(`${BASE_URL_REPO}/${repoFullName}/contents/${filePath}?ref=${branch}`, {
-                headers
-            })
+            .get(`${BASE_URL_REPO}/${repoFullName}/contents/${filePath}?ref=${branch}`)
             .then((response) => response.data)
             .then((response) => decodeUnicode(response.content))
             .catch((err) => {

@@ -303,7 +303,6 @@ export default {
         createNewAdr({ repository }) {
             let newAdr = store.createNewAdr(repository.repository);
             // Open the new adr.
-            debugger;
             store.openAdrBy(repository.fullName, newAdr.path.split("/").pop());
         }
     }

@@ -342,7 +342,6 @@ export default {
                             type: value.fileStatus
                         });
                         if (!this.errorRequest) {
-                            debugger;
                             createBlobs(value.value)
                                 .then((res) => {
 
