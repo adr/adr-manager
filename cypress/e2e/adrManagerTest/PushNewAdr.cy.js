@@ -1,4 +1,4 @@
-import { GRAPHQL_URL, REST_BRANCH_URL, REST_COMMIT_URL, TEST_BASE_URL } from "../../support/e2e";
+import { REST_BRANCH_URL, REST_LIST_REPO_URL, REST_COMMIT_URL, TEST_BASE_URL } from "../../support/e2e";
 
 context("Committing, pushing, and remote-deleting an ADR", () => {
     it("Commit and push new ADR, then delete from GitHub", () => {
@@ -6,7 +6,7 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
         const BRANCH_NAME = "testing-branch";
 
         function addRepositoryAndSwitchBranch() {
-            cy.intercept("POST", GRAPHQL_URL).as("getRepos");
+            cy.intercept("GET", REST_LIST_REPO_URL).as("getRepos");
             cy.get("[data-cy=addRepo]").click();
             cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
             cy.get("[data-cy=search-field-for-adding-repository]").type(REPO_NAME);
@@ -29,13 +29,10 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
             // Reloading the repository typically takes some time ...
             cy.wait(2000);
         }
-
-
         window.localStorage.clear();
         window.localStorage.setItem("authId", Cypress.env("OAUTH_E2E_AUTH_ID"));
         window.localStorage.setItem("user", Cypress.env("USER"))
         cy.visit(TEST_BASE_URL);
-
         addRepositoryAndSwitchBranch();
 
         // add new ADR
@@ -49,9 +46,7 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
         cy.get("[data-cy=mdiAlertCommitMessage]").should("be.visible");
         // set commit message and commit
         cy.get("[data-cy=newFilesCommitMessage]").click();
-
         cy.get("[data-cy=newFileCheckBoxOuter]").contains(/[0-9][0-9][0-9][0-9]-use-x-to-accomplish-y.md/g);
-
         cy.get("[data-cy=newFileCheckBox]").check({ force: true });
         cy.get("[data-cy=mdiCheckSelected]").should("be.visible");
         cy.get("[data-cy=textFieldCommitMessage]").type("[E2ETest] Add a new ADR");
@@ -61,17 +56,6 @@ context("Committing, pushing, and remote-deleting an ADR", () => {
 
         cy.intercept("GET", REST_BRANCH_URL).as("getCommitSha");
         cy.intercept("POST", REST_COMMIT_URL).as("commitRequest");
-
-        // cy.wait("@getCommitSha");
-        // cy.wait("@commitRequest")
-
-        // .then((val) => {
-        //     cy.log(val.request);
-        //     for (let item in val.request) {
-        //         cy.log(item);
-        //     }
-        //     cy.log(val.request.body.author);
-        // });
         cy.contains("OK").click();
 
         // Remove repository

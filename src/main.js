@@ -5,6 +5,7 @@ import "vuetify/dist/vuetify.min.css";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@mdi/font/css/materialdesignicons.css";
 import VueSimpleAlert from "vue-simple-alert";
+import { setHeaders } from "./plugins/apiConfig/config"
 
 import router from "./plugins/router";
 
@@ -43,6 +44,9 @@ Vue.component("tippy", TippyComponent);
 Vue.use(VueSimpleAlert);
 
 Vue.config.productionTip = false;
+
+//axios interceptor for header
+setHeaders()
 
 new Vue({
     router,

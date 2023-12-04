@@ -156,37 +156,12 @@ export async function pushToGitHub(newCommitSha) {
 
 export async function loadRepositoryList(searchText = "", page = 1, perPage = 5) {
     try {
-        const userId = localStorage.getItem('user');
-
-        const body = {
-            query: `query {
-            user(login: "${userId}") {
-                repositories(first: ${perPage}, after: null, orderBy: { field: UPDATED_AT, direction: DESC }) {
-                    nodes {
-                        id
-                        resourcePath
-                        updatedAt
-                        description
-                      defaultBranchRef {
-                            name
-                        }
-                    }
-                }
-            }
-        }`
-        };
-
-        const response = await axios.post('https://api.github.com/graphql', body);
+        const response = await axios.get(`${BASE_URL_USER}/repos?sort=updated&direction=desc&page=${page}&per_page=${perPage}`);
 
         if (!response?.data) {
             return [];
         }
-        return response.data.data.user.repositories.nodes.map(repo => ({
-            ...repo,
-            full_name: repo.resourcePath.substring(1),
-            updated_at: repo.updatedAt,
-            default_branch: repo.defaultBranchRef?.name || ""
-        }));
+        return response.data;
     } catch (error) {
         return error.message;
     }
@@ -207,7 +182,6 @@ export async function searchRepositoryList(searchString, maxResults = 2, searchR
     let perPage = 100;
 
     let hasNextPage = true;
-
     while (searchResults.length < maxResults && hasNextPage) {
         try {
             const repositoryList = await loadRepositoryList("", page, perPage);
@@ -218,12 +192,9 @@ export async function searchRepositoryList(searchString, maxResults = 2, searchR
                         searchResults.push(repo);
                     }
                 });
-                console.log("#### search results ####", searchResults)
-
             } else {
                 hasNextPage = false;
             }
-
             if (repositoryList.length < perPage) {
                 hasNextPage = false;
             }
@@ -233,7 +204,6 @@ export async function searchRepositoryList(searchString, maxResults = 2, searchR
 
         page++;
     }
-
     return searchResults;
 }
 

@@ -7,8 +7,6 @@
 </template>
 
 <script>
-import { setHeaders } from "./plugins/apiConfig/config"
-setHeaders()
 export default {
     name: "App",
 

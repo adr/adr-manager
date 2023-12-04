@@ -1,4 +1,4 @@
-import { GRAPHQL_URL, TEST_BASE_URL } from "../../support/e2e";
+import { TEST_BASE_URL, REST_LIST_REPO_URL } from "../../support/e2e";
 
 context("Adding a new ADR to a repo", () => {
     it("Create a new ADR", () => {
@@ -6,9 +6,8 @@ context("Adding a new ADR to a repo", () => {
         window.localStorage.setItem("authId", Cypress.env("OAUTH_E2E_AUTH_ID"));
         window.localStorage.setItem("user", Cypress.env("USER"))
         cy.visit(TEST_BASE_URL);
-
         // add the ADR-Manager repo
-        cy.intercept('POST', GRAPHQL_URL).as("getRepos");
+        cy.intercept('GET', REST_LIST_REPO_URL).as("getRepos");
         cy.get("[data-cy=addRepo]").click();
         cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
         cy.get("[data-cy=listRepo]").contains("ADR-Manager").click();
