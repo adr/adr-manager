@@ -13,7 +13,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app)
+const auth = getAuth(app);
 const GithubProvider = new GithubAuthProvider();
 
-export { app, auth, GithubProvider }
+export { app, auth, GithubProvider };

@@ -19,7 +19,6 @@
         "core-js": "^3.31.1",
         "firebase": "^10.7.0",
         "marked": "^5.1.1",
-        "pizzly-js": "^0.2.8",
         "roboto-fontface": "*",
         "sanitize-filename": "^1.6.3",
         "splitpanes": "^2.4.1",

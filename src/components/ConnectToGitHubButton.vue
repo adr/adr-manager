@@ -23,7 +23,7 @@ export default {
     methods: {
         hasAuthId() {
             if (localStorage.getItem("authId") === null) {
-                this.signInWithGithub()
+                this.signInWithGithub();
             } else {
                 this.$router.push({
                     name: "Editor",
@@ -32,20 +32,22 @@ export default {
             }
         },
         signInWithGithub: async function () {
-            GithubProvider.addScope('repo read:user gist workflow read:org')
-            return signInWithPopup(auth, GithubProvider).then((result) => {
-                const credential = GithubAuthProvider.credentialFromResult(result);
-                const token = credential.accessToken;
-                const user = result.user
-                localStorage.setItem("authId", token)
-                localStorage.setItem('user', user?.reloadUserInfo?.screenName)
-                this.$router.push({
-                    name: "Editor",
-                    params: { id: this.user }
+            GithubProvider.addScope("repo read:user gist workflow read:org");
+            return signInWithPopup(auth, GithubProvider)
+                .then((result) => {
+                    const credential = GithubAuthProvider.credentialFromResult(result);
+                    const token = credential.accessToken;
+                    const user = result.user;
+                    localStorage.setItem("authId", token);
+                    localStorage.setItem("user", user?.reloadUserInfo?.screenName);
+                    this.$router.push({
+                        name: "Editor",
+                        params: { id: this.user }
+                    });
+                })
+                .catch((error) => {
+                    console.error("SignIn Error", error);
                 });
-            }).catch((error) => {
-                console.error('SignIn Error', error)
-            });
         }
     }
 };

@@ -11,12 +11,12 @@ import { searchRepositoryList } from "../src/plugins/api.js";
 import { searchTermRepoPairs, mockedValues } from "./constants.js";
 import axios from "axios";
 
-jest.mock('axios')
+jest.mock("axios");
 
 for (let i = 0; i < searchTermRepoPairs.length; i++) {
     let searchTerm = searchTermRepoPairs[i].searchTerm;
     let expectedResult = searchTermRepoPairs[i].results;
-    axios.get.mockImplementation(() => Promise.resolve(mockedValues))
+    axios.get.mockImplementation(() => Promise.resolve(mockedValues));
 
     test("Test Searching Repos with list in parameter. Searching for " + searchTerm, async () => {
         let list = [];

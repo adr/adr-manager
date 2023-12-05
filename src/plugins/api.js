@@ -1,8 +1,8 @@
 /* This file contains any calls to the backend. */
 
 import { Repository } from "./classes.js";
-import axios from "axios"
-import { BASE_URL_REPO, BASE_URL_USER } from "./apiConfig/config.js"
+import axios from "axios";
+import { BASE_URL_REPO, BASE_URL_USER } from "./apiConfig/config.js";
 
 let repoOwner = "";
 let repoName = "";
@@ -36,7 +36,8 @@ export async function getUserEmail() {
  * @returns {Promise<object[]>} the array of informations with attributes 'login', 'name', etc.
  */
 export async function getUserName() {
-    return axios.get(BASE_URL_USER)
+    return axios
+        .get(BASE_URL_USER)
         .then((response) => response.data)
         .catch((err) => {
             console.log(err);
@@ -50,7 +51,8 @@ export async function getUserName() {
  * @returns {Promise<object[]>} informations about the branch with attributes 'commit: { sha }', etc.
  */
 export async function getCommitSha() {
-    return axios.get(`${BASE_URL_REPO}/${repoOwner}/${repoName}/branches/${branch}`)
+    return axios
+        .get(`${BASE_URL_REPO}/${repoOwner}/${repoName}/branches/${branch}`)
         .then((response) => response.data)
         .catch((err) => {
             console.log(err);
@@ -65,11 +67,11 @@ export async function getCommitSha() {
  * @returns {Promise<object[]>} informations about the newly created file with attributes 'sha', etc.
  */
 export async function createBlobs(file) {
-    return axios.post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/blobs`,
-        ({
+    return axios
+        .post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/blobs`, {
             content: file,
             encoding: "utf-8"
-        }))
+        })
         .then((response) => response.data)
         .then((body) => body)
         .catch((err) => {
@@ -86,11 +88,11 @@ export async function createBlobs(file) {
  * @returns {Promise<object[]>} informations about the newly created tree with attributes 'sha', etc.
  */
 export async function createFileTree(lastCommitSha, folderTree) {
-    return axios.post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/trees`, {
-        base_tree: lastCommitSha,
-        tree: folderTree
-
-    })
+    return axios
+        .post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/trees`, {
+            base_tree: lastCommitSha,
+            tree: folderTree
+        })
         .then((response) => response.data)
         .then((body) => body)
         .catch((err) => {
@@ -109,13 +111,13 @@ export async function createFileTree(lastCommitSha, folderTree) {
  * @returns {Promise<object[]>} informations about the created commit with attributes 'sha', etc.
  */
 export async function createCommit(commitMessage, authorInfos, lastCommitSha, treeSha) {
-    return axios.post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/commits`, {
-        message: commitMessage,
-        author: authorInfos,
-        parents: [lastCommitSha],
-        tree: treeSha
-
-    })
+    return axios
+        .post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/commits`, {
+            message: commitMessage,
+            author: authorInfos,
+            parents: [lastCommitSha],
+            tree: treeSha
+        })
         .then((response) => response.data)
         .then((body) => body)
         .catch((err) => {
@@ -131,18 +133,17 @@ export async function createCommit(commitMessage, authorInfos, lastCommitSha, tr
  * @returns {Promise<object[]>} informations about the reference.
  */
 export async function pushToGitHub(newCommitSha) {
-    return axios.post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/refs/heads/${branch}`, {
-        ref: "refs/heads/" + branch,
-        sha: newCommitSha
-    })
+    return axios
+        .post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/refs/heads/${branch}`, {
+            ref: "refs/heads/" + branch,
+            sha: newCommitSha
+        })
         .then((response) => response.data)
         .then((body) => body)
         .catch((err) => {
             console.log(err);
         });
 }
-
-
 
 /**
  * Returns a Promise with the list of repositories accessible by the user.
@@ -156,7 +157,9 @@ export async function pushToGitHub(newCommitSha) {
 
 export async function loadRepositoryList(searchText = "", page = 1, perPage = 5) {
     try {
-        const response = await axios.get(`${BASE_URL_USER}/repos?sort=updated&direction=desc&page=${page}&per_page=${perPage}`);
+        const response = await axios.get(
+            `${BASE_URL_USER}/repos?sort=updated&direction=desc&page=${page}&per_page=${perPage}`
+        );
 
         if (!response?.data) {
             return [];
@@ -186,7 +189,7 @@ export async function searchRepositoryList(searchString, maxResults = 2, searchR
         try {
             const repositoryList = await loadRepositoryList("", page, perPage);
             if (repositoryList instanceof Array) {
-                const filteredArr = repositoryList.filter((repo) => repo.full_name.includes(searchString))
+                const filteredArr = repositoryList.filter((repo) => repo.full_name.includes(searchString));
                 filteredArr.map((repo) => {
                     if (searchResults.length < maxResults) {
                         searchResults.push(repo);
@@ -218,14 +221,13 @@ export async function searchRepositoryList(searchString, maxResults = 2, searchR
  */
 
 export async function loadFileTreeOfRepository(repoFullName, branch) {
-
-    return axios.get(`${BASE_URL_REPO}/${repoFullName}/git/trees/${branch}?recursive=1`)
+    return axios
+        .get(`${BASE_URL_REPO}/${repoFullName}/git/trees/${branch}?recursive=1`)
         .then((response) => response.data)
         .catch((err) => {
             console.log(err);
         });
 }
-
 
 /**Returns a list of the names of all branches of the repository.
  *
@@ -255,15 +257,14 @@ export async function loadBranchesName(repoName, username) {
  * @returns {Promise<string>} a promise with the raw content of the specified file
  */
 export async function loadRawFile(repoFullName, branch, filePath) {
-
     if (typeof branch !== "string" || typeof branch != "string") {
         console.log(
             "Invalid values for loadContentsForRepository. Given Repository full name: " +
-            repoFullName +
-            ", Branch:" +
-            branch +
-            ", file path: " +
-            filePath
+                repoFullName +
+                ", Branch:" +
+                branch +
+                ", file path: " +
+                filePath
         );
     } else {
         return axios
