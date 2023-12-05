@@ -4,53 +4,33 @@
             <div style="height: 100%; width: 100%; position: absolute; overflow-y: auto">
                 <v-list multiple dense>
                     <v-list-item-group data-cy="repoNameList" mandatory>
-                        <v-list-group
-                            v-for="(repo, i) in folderTree"
-                            :key="repo.path"
-                            :prepend-icon="fileTypeIconMapping[repo.fileType]"
-                            :value="i === indexOfOpenedRepo"
-                            @click="sendRepo(repo)"
-                        >
+                        <v-list-group v-for="(repo, i) in folderTree" :key="repo.path"
+                            :prepend-icon="fileTypeIconMapping[repo.fileType]" :value="i === indexOfOpenedRepo"
+                            @click="sendRepo(repo)">
                             <template v-slot:activator>
                                 <v-list-item-content>
                                     <v-list-item-title v-text="repo.name"></v-list-item-title>
                                 </v-list-item-content>
                                 <DialogCommit v-bind:repo="repo.name" v-if="repo.fileType === 'repo'">
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn
-                                            content="Commit and push"
-                                            v-tippy="{
-                                                interactive: true,
-                                                animation: 'scale'
-                                            }"
-                                            style="width: 30px; min-width: 30px; height: 100%"
-                                            class="mx-0 px-0"
-                                            v-bind="attrs"
-                                            v-on="on"
-                                        >
+                                        <v-btn content="Commit and push" v-tippy="{
+                                            interactive: true,
+                                            animation: 'scale'
+                                        }" style="width: 30px; min-width: 30px; height: 100%" class="mx-0 px-0"
+                                            v-bind="attrs" v-on="on">
                                             <v-icon data-cy="pushIcon">mdi-publish</v-icon>
                                         </v-btn>
                                     </template>
                                 </DialogCommit>
                                 <!-- Remove Repository Button-->
-                                <DialogRemoveRepository
-                                    v-bind:repo="{ name: repo.name }"
-                                    v-if="repo.fileType === 'repo'"
-                                    @remove-repo="removeRepository(repo.repository)"
-                                >
+                                <DialogRemoveRepository v-bind:repo="{ name: repo.name }" v-if="repo.fileType === 'repo'"
+                                    @remove-repo="removeRepository(repo.repository)">
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn
-                                            content="Remove repository"
-                                            v-tippy="{
-                                                interactive: true,
-                                                animation: 'scale'
-                                            }"
-                                            data-cy="removeRepo"
-                                            style="width: 30px; min-width: 30px; height: 100%"
-                                            class="mx-0 px-0"
-                                            v-bind="attrs"
-                                            v-on="on"
-                                        >
+                                        <v-btn content="Remove repository" v-tippy="{
+                                            interactive: true,
+                                            animation: 'scale'
+                                        }" data-cy="removeRepo" style="width: 30px; min-width: 30px; height: 100%"
+                                            class="mx-0 px-0" v-bind="attrs" v-on="on">
                                             <v-icon>mdi-folder-remove</v-icon>
                                         </v-btn>
                                     </template>
@@ -59,13 +39,8 @@
 
                             <!-- sub list containing the ADRs -->
                             <v-list-item-group v-model="openAdrPath">
-                                <v-list-item
-                                    data-cy="adrList"
-                                    v-for="file in repo.children"
-                                    :key="file.path"
-                                    @click="openFileByPath({ path: file.path })"
-                                    :value="file.path"
-                                >
+                                <v-list-item data-cy="adrList" v-for="file in repo.children" :key="file.path"
+                                    @click="openFileByPath({ path: file.path })" :value="file.path">
                                     <v-tooltip bottom open-delay="500">
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-list-item-icon> </v-list-item-icon>
@@ -79,19 +54,13 @@
                                     <v-list-item-icon>
                                         <DialogDeleteAdr :adr="file.adr" :repo="repo.repository">
                                             <template v-slot:activator="{ on, attrs }">
-                                                <v-btn
-                                                    content="Delete adr"
-                                                    v-tippy="{
-                                                        interactive: true,
-                                                        animation: 'scale'
-                                                    }"
-                                                    data-cy="deleteAdrBtn"
-                                                    style="width: 30px; min-width: 30px; height: 100%"
-                                                    class="mx-0 px-0"
-                                                    v-if="file.fileType === 'adr' || file.fileType === 'md'"
-                                                    v-bind="attrs"
-                                                    v-on="on"
-                                                >
+                                                <v-btn content="Delete adr" v-tippy="{
+                                                    interactive: true,
+                                                    animation: 'scale'
+                                                }" data-cy="deleteAdrBtn"
+                                                    style="width: 30px; min-width: 30px; height: 100%" class="mx-0 px-0"
+                                                    v-if="file.fileType === 'adr' || file.fileType === 'md'" v-bind="attrs"
+                                                    v-on="on">
                                                     <v-icon>mdi-delete</v-icon>
                                                 </v-btn>
                                             </template>
@@ -99,13 +68,8 @@
                                     </v-list-item-icon>
                                 </v-list-item>
                                 <div class="d-flex justify-content-space-around justify-center">
-                                    <v-btn
-                                        data-cy="newADR"
-                                        dark
-                                        class="align-center"
-                                        width="75%"
-                                        @click.native.prevent.stop="createNewAdr({ repository: repo })"
-                                    >
+                                    <v-btn data-cy="newADR" dark class="align-center" width="75%"
+                                        @click.native.prevent.stop="createNewAdr({ repository: repo })">
                                         <v-icon data-cy="NewAdrFile">mdi-plus</v-icon>
                                         New ADR
                                     </v-btn>
@@ -233,7 +197,7 @@ export default {
                     return undefined;
                 }
             },
-            set() {}
+            set() { }
         },
 
         indexOfOpenedRepo: {
@@ -247,11 +211,11 @@ export default {
                     return -1;
                 }
             },
-            set() {}
+            set() { }
         }
     },
     watch: {},
-    mounted() {},
+    mounted() { },
     created() {
         this.dataAuth = this.$route.params.id;
     },
@@ -312,6 +276,7 @@ export default {
             }
             console.log("Open file by path: " + path);
             let file = getFileByPath({ folder: this.folderTree, path });
+            console.log("store edited ADR", store.currentlyEditedAdr)
 
             this.openFile({ file });
         },

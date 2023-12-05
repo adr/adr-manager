@@ -37,7 +37,8 @@ jobs:
           $(npm bin)/cypress verify
       - name: Run Cypress tests
         env:
-          CYPRESS_PIZZLY_E2E_AUTH_ID: ${{ secrets.PIZZLY_E2E_AUTH_ID }}
+          CYPRESS_OAUTH_E2E_AUTH_ID: ${{ secrets.OAUTH_E2E_AUTH_ID }}
+          CYPRESS_USER: ${{ secrets.USER }}
         run: |
           npm start &
           npm run e2e:test-ci

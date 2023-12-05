@@ -8,21 +8,25 @@ global.localStorage = {
     }
 };
 import { searchRepositoryList } from "../src/plugins/api.js";
+import { searchTermRepoPairs, mockedValues } from "./constants.js";
+import axios from "axios";
 
-import { searchTermRepoPairs } from "./constants.js";
+jest.mock("axios");
 
 for (let i = 0; i < searchTermRepoPairs.length; i++) {
     let searchTerm = searchTermRepoPairs[i].searchTerm;
-    let expectedResult = searchTermRepoPairs[i].result;
+    let expectedResult = searchTermRepoPairs[i].results;
+    axios.get.mockImplementation(() => Promise.resolve(mockedValues));
 
     test("Test Searching Repos with list in parameter. Searching for " + searchTerm, async () => {
         let list = [];
-        await searchRepositoryList(searchTerm, 20, list);
-        expect(list).toStrictEqual(expectedResult.slice(0, 20));
+        // Test the function
+        await searchRepositoryList(searchTerm, 2, list);
+        expect(list).toStrictEqual(expectedResult);
     });
     test("Test Searching Repos without passing list. Searching for " + searchTerm, async () => {
         let list = [];
-        await searchRepositoryList(searchTerm, 30).then((res) => {
+        await searchRepositoryList(searchTerm, 3).then((res) => {
             list = res;
         });
         expect(list).toStrictEqual(expectedResult.slice(0, 30));

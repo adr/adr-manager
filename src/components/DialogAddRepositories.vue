@@ -1,16 +1,9 @@
 <template>
-    <v-dialog
-        v-bind:value="showDialog"
-        v-on:input="
-            (value) => {
-                showDialog = value;
-                $emit('input', value);
-            }
-        "
-        width="700"
-        :fullscreen="$vuetify.breakpoint.mobile"
-        scrollable
-    >
+    <v-dialog v-bind:value="showDialog" v-on:input="(value) => {
+        showDialog = value;
+        $emit('input', value);
+    }
+        " width="700" :fullscreen="$vuetify.breakpoint.mobile" scrollable>
         <template v-slot:activator="{ on, attrs }">
             <slot name="activator" v-bind:on="on" v-bind:attrs="attrs"> </slot>
             <v-overlay data-cy="loadReposBool" :value="showLoadingOverlay">
@@ -26,26 +19,14 @@
                         </v-avatar>
                         <span class="dialogTitle"> Add Repositories </span>
                     </div>
-                    <v-text-field
-                        data-cy="search-field-for-adding-repository"
-                        v-model="searchText"
-                        class="pl-8 pr-4 pt-0 mt-0"
-                        hide-details
-                        clearable
-                        append-icon="mdi-magnify"
-                        placeholder="Search..."
-                        @input="searchRepositories"
-                        @click:clear="
+                    <v-text-field data-cy="search-field-for-adding-repository" v-model="searchText"
+                        class="pl-8 pr-4 pt-0 mt-0" hide-details clearable append-icon="mdi-magnify" placeholder="Search..."
+                        @input="searchRepositories" @click:clear="
                             searchText = '';
-                            loadRepositoryList();
-                        "
-                    />
-                    <v-progress-linear
-                        :active="countLoadingPromises > 0"
-                        :indeterminate="countLoadingPromises > 0"
-                        absolute
-                        top
-                    />
+                        loadRepositoryList();
+                        " />
+                    <v-progress-linear :active="countLoadingPromises > 0" :indeterminate="countLoadingPromises > 0" absolute
+                        top />
                 </v-row>
             </v-card-title>
 
@@ -60,22 +41,13 @@
 
             <!-- Unstaged Repositories -->
             <v-card-text class="my-0">
-                <div
-                    data-cy="noRepo"
-                    v-if="unstagedRepositories.length === 0 && countLoadingPromises === 0"
-                    class="text-center"
-                >
+                <div data-cy="noRepo" v-if="unstagedRepositories.length === 0 && countLoadingPromises === 0"
+                    class="text-center">
                     Sorry, no repositories were found!
                 </div>
                 <v-list>
-                    <v-list-item
-                        data-cy="listRepo"
-                        v-for="(item, index) in unstagedRepositories"
-                        class="my-0 py-0"
-                        :key="`item-${index}`"
-                        :value="item"
-                        @click="stageRepostiory(item)"
-                    >
+                    <v-list-item data-cy="listRepo" v-for="(item, index) in unstagedRepositories" class="my-0 py-0"
+                        :key="`item-${index}`" :value="item" @click="stageRepostiory(item)">
                         <v-list-item-content class="my-0 py-0">
                             <v-list-item-title class="d-flex">
                                 {{ item.name }} <v-spacer></v-spacer>
@@ -96,13 +68,8 @@
             <v-card-title>Repositories to be added</v-card-title>
             <v-card-text class="my-0 flex-grow-0 flex-shrink-0" :style="{ 'max-height': '25%' }">
                 <v-list>
-                    <v-list-item
-                        v-for="(item, index) in repositoriesSelected"
-                        class="my-0 py-0"
-                        :key="`item-${index}`"
-                        :value="item"
-                        @click="unstageRepostiory(item)"
-                    >
+                    <v-list-item v-for="(item, index) in repositoriesSelected" class="my-0 py-0" :key="`item-${index}`"
+                        :value="item" @click="unstageRepostiory(item)">
                         <v-list-item-content class="my-0 py-0">
                             <v-list-item-title v-text="item.name"></v-list-item-title>
                             <v-list-item-subtitle v-text="item.description"></v-list-item-subtitle>
@@ -117,18 +84,11 @@
             <v-divider></v-divider>
             <v-card-actions class="buttonPadding">
                 <v-spacer></v-spacer>
-                <v-btn
-                    data-cy="addRepoDialog"
-                    text
-                    color="success"
-                    :disabled="repositoriesSelected.length === 0"
-                    @click="
-                        () => {
-                            showDialog = false;
-                            addRepositories();
-                        }
-                    "
-                >
+                <v-btn data-cy="addRepoDialog" text color="success" :disabled="repositoriesSelected.length === 0" @click="() => {
+                    showDialog = false;
+                    addRepositories();
+                }
+                    ">
                     Add Repositories
                 </v-btn>
                 <v-btn text color="error" @click="showDialog = false"> Cancel </v-btn>
@@ -207,9 +167,9 @@ export default {
         /**
          * Loads all (added and unadded) repositories the user is authorized to access into repositoriesCurrentPage.
          */
-        loadRepositoryList() {
+        async loadRepositoryList() {
             this.countLoadingPromises++;
-            loadRepositoryList(this.searchText, this.page, this.perPage)
+            loadRepositoryList()
                 .then((res) => {
                     if (!Array.isArray(res)) {
                         throw "Could not load repository list.";
@@ -240,6 +200,7 @@ export default {
                 searchRepositoryList(this.searchText, this.perPage, this.repositoriesCurrentPage)
                     .then((repos) => {
                         console.log("Loaded Repos", repos);
+
                         if (!Array.isArray(repos)) {
                             throw "Could not search repository list.";
                         }
@@ -307,6 +268,7 @@ export default {
          */
         addRepositories: async function () {
             this.showLoadingOverlay = true;
+            console.log(this.repositoriesSelected)
             loadAllRepositoryContent(
                 this.repositoriesSelected.map((repo) => ({
                     fullName: repo.repoData.full_name,

@@ -17,7 +17,7 @@ An automatic test checking whether an ADR can be parsed was implemented.
 
    ```[JavaScript]
    {
-      "PIZZLY_E2E_AUTH_ID": "abcdefg-123456"
+      "OAUTH_E2E_AUTH_ID": "abcdefg-123456"
    }
    ```
 

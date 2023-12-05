@@ -1,17 +1,16 @@
-import { TEST_BASE_URL } from "../../support/e2e";
-
+import { REST_LIST_REPO_URL, TEST_BASE_URL } from "../../support/e2e";
 context("Routing and correct URLs", () => {
     beforeEach(() => {
         window.localStorage.clear();
-        window.localStorage.setItem("authId", Cypress.env("PIZZLY_E2E_AUTH_ID"));
+        window.localStorage.setItem("authId", Cypress.env("OAUTH_E2E_AUTH_ID"));
+        window.localStorage.setItem("user", Cypress.env("USER"));
         cy.visit(TEST_BASE_URL);
     });
-
     it("URL corresponds to opened repo and ADR", () => {
         cy.url().should("equal", TEST_BASE_URL);
 
         // add the ADR-Manager repo
-        cy.intercept("GET", "**/user/repos**").as("getRepos");
+        cy.intercept("GET", REST_LIST_REPO_URL).as("getRepos");
         cy.get("[data-cy=addRepo]").click();
         cy.wait("@getRepos").its("response.statusCode").should("eq", 200);
         cy.get("[data-cy=listRepo]").contains("ADR-Manager").click();
@@ -22,7 +21,6 @@ context("Routing and correct URLs", () => {
             "equal",
             `${TEST_BASE_URL}/adr/adr-manager/main/0000-use-markdown-architectural-decision-records.md`
         );
-
         cy.get("[data-cy=adrList]").then((adrList) => {
             // get number of ADRs in repo
             const adrCount = Cypress.$(adrList).length;

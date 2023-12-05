@@ -1,15 +1,9 @@
 <template>
-    <v-dialog
-        v-bind:value="showDialog"
-        v-model="dialogVisible"
-        v-on:input="
-            (value) => {
-                showDialog = value;
-                $emit('input', value);
-            }
-        "
-        width="700px"
-    >
+    <v-dialog v-bind:value="showDialog" v-model="dialogVisible" v-on:input="(value) => {
+        showDialog = value;
+        $emit('input', value);
+    }
+        " width="700px">
         <template v-slot:activator="{ on, attrs }">
             <slot name="activator" v-bind:on="on" v-bind:attrs="attrs"> </slot>
             <v-overlay :value="loading">
@@ -29,20 +23,12 @@
                 <div class="cardTextPos">
                     <v-icon>mdi-file</v-icon><span class="spanAfterIcon spanTitle"> Select files</span>
                     <template>
-                        <v-icon
-                            data-cy="mdiCheckSelected"
-                            style="position: absolute; right: 0; bottom: 0"
-                            v-if="fileSelected"
-                            color="teal"
-                        >
+                        <v-icon data-cy="mdiCheckSelected" style="position: absolute; right: 0; bottom: 0"
+                            v-if="fileSelected" color="teal">
                             mdi-check
                         </v-icon>
-                        <v-icon
-                            data-cy="mdiAlertNotSelected"
-                            style="position: absolute; right: 0; bottom: 0"
-                            v-if="!fileSelected"
-                            color="error"
-                        >
+                        <v-icon data-cy="mdiAlertNotSelected" style="position: absolute; right: 0; bottom: 0"
+                            v-if="!fileSelected" color="error">
                             mdi-alert-circle-outline
                         </v-icon>
                     </template>
@@ -51,22 +37,17 @@
                     <v-expansion-panel v-if="newFileBool">
                         <v-expansion-panel-header>
                             <div>
-                                <v-icon>mdi-plus</v-icon
-                                ><span data-cy="newFilesCommitMessage" class="spanAfterIcon spanSubTitle">
-                                    New files</span
-                                >
+                                <v-icon>mdi-plus</v-icon><span data-cy="newFilesCommitMessage"
+                                    class="spanAfterIcon spanSubTitle">
+                                    New files</span>
                             </div>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <div v-for="(newFile, indexNew) in newFiles" :key="indexNew">
                                 <v-flex data-cy="newFileCheckBoxOuter">
-                                    <v-checkbox
-                                        data-cy="newFileCheckBox"
-                                        :input-value="newFile.fileSelected"
-                                        @change="checkboxAction($event, newFile.path, newFiles)"
-                                        :label="newFile.title"
-                                        class="stuff"
-                                    ></v-checkbox>
+                                    <v-checkbox data-cy="newFileCheckBox" :input-value="newFile.fileSelected"
+                                        @change="checkboxAction($event, newFile.path, newFiles)" :label="newFile.title"
+                                        class="stuff"></v-checkbox>
                                 </v-flex>
                             </div>
                         </v-expansion-panel-content>
@@ -74,19 +55,16 @@
                     <v-expansion-panel v-if="changedFileBool">
                         <v-expansion-panel-header>
                             <div>
-                                <v-icon>mdi-file-document-edit</v-icon
-                                ><span class="spanAfterIcon spanSubTitle"> Changed files</span>
+                                <v-icon>mdi-file-document-edit</v-icon><span class="spanAfterIcon spanSubTitle"> Changed
+                                    files</span>
                             </div>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <div v-for="(changedFile, indexChange) in changedFiles" :key="indexChange">
                                 <v-flex>
-                                    <v-checkbox
-                                        :input-value="changedFile.fileSelected"
-                                        @change="checkboxAction($event, changedFile.path, changedFiles)"
-                                        class="stuff"
-                                        :label="changedFile.title"
-                                    ></v-checkbox>
+                                    <v-checkbox :input-value="changedFile.fileSelected"
+                                        @change="checkboxAction($event, changedFile.path, changedFiles)" class="stuff"
+                                        :label="changedFile.title"></v-checkbox>
                                 </v-flex>
                             </div>
                         </v-expansion-panel-content>
@@ -94,22 +72,17 @@
                     <v-expansion-panel v-if="deletedFileBool">
                         <v-expansion-panel-header>
                             <div>
-                                <v-icon>mdi-delete</v-icon
-                                ><span data-cy="deletedFilesAdr" class="spanAfterIcon spanSubTitle">
-                                    Deleted files</span
-                                >
+                                <v-icon>mdi-delete</v-icon><span data-cy="deletedFilesAdr"
+                                    class="spanAfterIcon spanSubTitle">
+                                    Deleted files</span>
                             </div>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <div v-for="(deletedFile, index) in deletedFiles" :key="index">
                                 <v-flex>
-                                    <v-checkbox
-                                        data-cy="deletedFileCheckBox"
-                                        :input-value="deletedFile.fileSelected"
-                                        @change="checkboxAction($event, deletedFile.path, deletedFiles)"
-                                        class="stuff"
-                                        :label="deletedFile.title"
-                                    ></v-checkbox>
+                                    <v-checkbox data-cy="deletedFileCheckBox" :input-value="deletedFile.fileSelected"
+                                        @change="checkboxAction($event, deletedFile.path, deletedFiles)" class="stuff"
+                                        :label="deletedFile.title"></v-checkbox>
                                 </v-flex>
                             </div>
                         </v-expansion-panel-content>
@@ -118,58 +91,36 @@
                 <div class="distanceToExpPanels">
                     <v-icon>mdi-message-text</v-icon><span class="spanAfterIcon spanTitle"> Enter commit message</span>
                     <template>
-                        <v-icon
-                            data-cy="mdiCheckCommitMessage"
-                            style="position: absolute; right: 0; bottom: 0"
-                            v-if="!textFieldError"
-                            color="teal"
-                        >
+                        <v-icon data-cy="mdiCheckCommitMessage" style="position: absolute; right: 0; bottom: 0"
+                            v-if="!textFieldError" color="teal">
                             mdi-check
                         </v-icon>
-                        <v-icon
-                            data-cy="mdiAlertCommitMessage"
-                            style="position: absolute; right: 0; bottom: 0"
-                            v-if="textFieldError"
-                            color="error"
-                        >
+                        <v-icon data-cy="mdiAlertCommitMessage" style="position: absolute; right: 0; bottom: 0"
+                            v-if="textFieldError" color="error">
                             mdi-alert-circle-outline
                         </v-icon>
                     </template>
                 </div>
-                <v-textarea
-                    data-cy="textFieldCommitMessage"
-                    label="Commit message"
-                    auto-grow
-                    rows="1"
-                    v-model="comMessage"
-                    :error-messages="isTextfieldValid()"
-                    @input="handleCommitMessage($event)"
-                ></v-textarea>
+                <v-textarea data-cy="textFieldCommitMessage" label="Commit message" auto-grow rows="1" v-model="comMessage"
+                    :error-messages="isTextfieldValid()" @input="handleCommitMessage($event)"></v-textarea>
 
                 <div class="distanceToTextField">
                     <v-icon color="primary">mdi-information-outline</v-icon>
                     <span class="spanAfterIcon">
-                        Your selected files will be pushed to {{ repo }} on {{ branch }} branch.</span
-                    >
+                        Your selected files will be pushed to {{ repo }} on {{ branch }} branch.</span>
                 </div>
             </v-card-text>
 
             <v-divider></v-divider>
             <v-card-actions class="buttonPadding">
                 <v-spacer></v-spacer>
-                <v-btn
-                    data-cy="btnOfDialogCommitForPush"
-                    text
-                    color="success"
-                    :disabled="textFieldError || !fileSelected"
-                    @click="
-                        () => {
-                            handleCommitButtonAction();
-                            dialogVisible = false;
-                            $emit('commit');
-                        }
-                    "
-                >
+                <v-btn data-cy="btnOfDialogCommitForPush" text color="success" :disabled="textFieldError || !fileSelected"
+                    @click="() => {
+                        handleCommitButtonAction();
+                        dialogVisible = false;
+                        $emit('commit');
+                    }
+                        ">
                     Commit & Push
                 </v-btn>
                 <v-btn text color="error" @click="dialogVisible = false"> Cancel </v-btn>
@@ -393,6 +344,7 @@ export default {
                         if (!this.errorRequest) {
                             createBlobs(value.value)
                                 .then((res) => {
+
                                     countForEach++;
                                     this.blobSha[value.title] = {
                                         blobSha: res.sha,
@@ -511,7 +463,7 @@ export default {
         errorDialog(currentError) {
             this.$alert(
                 "Error during pushing. Your changes were not pushed. Please try again later. \nError code: " +
-                    currentError,
+                currentError,
                 "Error",
                 "error",
                 {
@@ -557,38 +509,48 @@ export default {
 .v-application .mb-6 {
     margin-top: 2% !important;
 }
+
 .spanAfterIcon {
     vertical-align: middle;
 }
+
 .stuff .v-messages {
     min-height: 0% !important;
 }
+
 .stuff label {
     margin-bottom: 0%;
     font-size: 0.8rem;
 }
-.v-dialog > .v-card > .v-card__subtitle,
-.v-dialog > .v-card > .v-card__text {
+
+.v-dialog>.v-card>.v-card__subtitle,
+.v-dialog>.v-card>.v-card__text {
     padding-top: 0%;
     padding-bottom: 0%;
 }
+
 .dialogTitle {
     font-size: 2rem;
     vertical-align: middle;
 }
+
 .spanTitle {
     font-size: 1rem;
 }
+
 .spanSubTitle {
     font-size: 0.8rem;
 }
+
 .cardTextPos {
     position: relative;
 }
+
 .distanceToExpPanels {
     position: relative;
     padding-top: 3%;
 }
+
 .distanceToTextField {
     padding-top: 10%;
 }
@@ -596,18 +558,22 @@ export default {
 .textFieldFontSize .v-label {
     font-size: 0.9rem;
 }
+
 .textFieldHelpFontSize .v-messages__message {
     font-size: 0.8rem;
 }
+
 .v-card__actions {
     padding-top: 1%;
     padding-right: 3%;
     padding-bottom: 1%;
     padding-left: 3%;
 }
+
 .divSpan {
     white-space: pre;
 }
+
 textarea {
     font-family: roboto;
 }

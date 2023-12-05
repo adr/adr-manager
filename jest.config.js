@@ -20,8 +20,7 @@ export default {
     // A map from regular expressions to module names that allow to stub out resources with a single module
     moduleNameMapper: {
         vue$: "vue/dist/vue.common.js",
-        "^@/(.*)$": "<rootDir>/src/$1",
-        "pizzly-js": "<rootDir>/tests/pizzly-mock.js"
+        "^@/(.*)$": "<rootDir>/src/$1"
     },
     // The test environment that will be used for testing
     testEnvironment: "node",

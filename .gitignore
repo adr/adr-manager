@@ -35,6 +35,7 @@ bower_components
 
 # cypress
 cypress.env.json
+cypress/downloads
 
 # node-waf configuration
 .lock-wscript

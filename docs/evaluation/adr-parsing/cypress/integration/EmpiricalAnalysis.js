@@ -72,7 +72,7 @@ context("Empirically test if ADRs can be opened by the ADR-Manager and count how
         window.localStorage.clear();
         window.localStorage.setItem(
             "authId",
-            Cypress.env("PIZZLY_E2E_AUTH_ID")
+            Cypress.env("OAUTH_E2E_AUTH_ID")
         );
 
         cy.intercept("GET", "**/user/repos**").as("getRepos");

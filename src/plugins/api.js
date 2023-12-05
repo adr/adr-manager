@@ -1,15 +1,8 @@
 /* This file contains any calls to the backend. */
 
-import Pizzly from "pizzly-js";
 import { Repository } from "./classes.js";
-import config from "../config";
-
-// API-Calls (functions return promises)
-// A pizzy-object to make request to github
-let pizzly = new Pizzly({
-    host: config.pizzlyHost,
-    publishableKey: config.pizzlyPublishableKey
-});
+import axios from "axios";
+import { BASE_URL_REPO, BASE_URL_USER } from "./apiConfig/config.js";
 
 let repoOwner = "";
 let repoName = "";
@@ -28,11 +21,9 @@ export function setInfosForApi(currRepoOwner, currRepoName, currBranch) {
  * @returns {Promise<object[]>} the array of emails with attributes 'email', 'primary', 'verified', 'visibility'
  */
 export async function getUserEmail() {
-    return pizzly
-        .integration("github")
-        .auth(localStorage.getItem("authId"))
-        .get("/user/public_emails")
-        .then((response) => response.json())
+    return axios
+        .get(`${BASE_URL_USER}/public_emails`)
+        .then((response) => response.data)
         .catch((err) => {
             console.log(err);
         });
@@ -45,11 +36,9 @@ export async function getUserEmail() {
  * @returns {Promise<object[]>} the array of informations with attributes 'login', 'name', etc.
  */
 export async function getUserName() {
-    return pizzly
-        .integration("github")
-        .auth(localStorage.getItem("authId"))
-        .get("/user")
-        .then((response) => response.json())
+    return axios
+        .get(BASE_URL_USER)
+        .then((response) => response.data)
         .catch((err) => {
             console.log(err);
         });
@@ -62,11 +51,9 @@ export async function getUserName() {
  * @returns {Promise<object[]>} informations about the branch with attributes 'commit: { sha }', etc.
  */
 export async function getCommitSha() {
-    return pizzly
-        .integration("github")
-        .auth(localStorage.getItem("authId"))
-        .get("/repos/" + repoOwner + "/" + repoName + "/branches/" + branch)
-        .then((response) => response.json())
+    return axios
+        .get(`${BASE_URL_REPO}/${repoOwner}/${repoName}/branches/${branch}`)
+        .then((response) => response.data)
         .catch((err) => {
             console.log(err);
         });
@@ -80,16 +67,12 @@ export async function getCommitSha() {
  * @returns {Promise<object[]>} informations about the newly created file with attributes 'sha', etc.
  */
 export async function createBlobs(file) {
-    return pizzly
-        .integration("github")
-        .auth(localStorage.getItem("authId"))
-        .post("/repos/" + repoOwner + "/" + repoName + "/git/blobs", {
-            body: JSON.stringify({
-                content: file,
-                encoding: "utf-8"
-            })
+    return axios
+        .post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/blobs`, {
+            content: file,
+            encoding: "utf-8"
         })
-        .then((response) => response.json())
+        .then((response) => response.data)
         .then((body) => body)
         .catch((err) => {
             console.log(err);
@@ -105,16 +88,12 @@ export async function createBlobs(file) {
  * @returns {Promise<object[]>} informations about the newly created tree with attributes 'sha', etc.
  */
 export async function createFileTree(lastCommitSha, folderTree) {
-    return pizzly
-        .integration("github")
-        .auth(localStorage.getItem("authId"))
-        .post("/repos/" + repoOwner + "/" + repoName + "/git/trees", {
-            body: JSON.stringify({
-                base_tree: lastCommitSha,
-                tree: folderTree
-            })
+    return axios
+        .post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/trees`, {
+            base_tree: lastCommitSha,
+            tree: folderTree
         })
-        .then((response) => response.json())
+        .then((response) => response.data)
         .then((body) => body)
         .catch((err) => {
             console.log(err);
@@ -132,18 +111,14 @@ export async function createFileTree(lastCommitSha, folderTree) {
  * @returns {Promise<object[]>} informations about the created commit with attributes 'sha', etc.
  */
 export async function createCommit(commitMessage, authorInfos, lastCommitSha, treeSha) {
-    return pizzly
-        .integration("github")
-        .auth(localStorage.getItem("authId"))
-        .post("/repos/" + repoOwner + "/" + repoName + "/git/commits", {
-            body: JSON.stringify({
-                message: commitMessage,
-                author: authorInfos,
-                parents: [lastCommitSha],
-                tree: treeSha
-            })
+    return axios
+        .post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/commits`, {
+            message: commitMessage,
+            author: authorInfos,
+            parents: [lastCommitSha],
+            tree: treeSha
         })
-        .then((response) => response.json())
+        .then((response) => response.data)
         .then((body) => body)
         .catch((err) => {
             console.log(err);
@@ -158,16 +133,12 @@ export async function createCommit(commitMessage, authorInfos, lastCommitSha, tr
  * @returns {Promise<object[]>} informations about the reference.
  */
 export async function pushToGitHub(newCommitSha) {
-    return pizzly
-        .integration("github")
-        .auth(localStorage.getItem("authId"))
-        .post("/repos/" + repoOwner + "/" + repoName + "/git/refs/heads/" + branch, {
-            body: JSON.stringify({
-                ref: "refs/heads/" + branch,
-                sha: newCommitSha
-            })
+    return axios
+        .post(`${BASE_URL_REPO}/${repoOwner}/${repoName}/git/refs/heads/${branch}`, {
+            ref: "refs/heads/" + branch,
+            sha: newCommitSha
         })
-        .then((response) => response.json())
+        .then((response) => response.data)
         .then((body) => body)
         .catch((err) => {
             console.log(err);
@@ -183,35 +154,19 @@ export async function pushToGitHub(newCommitSha) {
  * @param {number} per_page - the number of repositories per page
  * @returns {Promise<object[]>} the array of repos with attributes 'full_name', 'default_branch', etc.
  */
-export async function loadRepositoryList(searchText = "", page = 1, per_page = 5) {
-    let auth = localStorage.getItem("authId");
-    if (typeof searchText === "string" && searchText.startsWith("https://github.com/")) {
-        let repoRegExp = new RegExp("https:\\/\\/github\\.com\\/([^/]+)\\/([^/]+)");
-        let match = repoRegExp.exec(searchText);
-        let url = "/repos/" + match[1] + "/" + match[2];
-        console.log("url: " + url);
-        // auth entered URL
-        let repoInfo = pizzly
-            .integration("github")
-            .auth(auth)
-            .get(url)
-            .then((response) => {
-                return response.json();
-            })
-            .catch((err) => {
-                console.log(err);
-                return "[]";
-            });
-        return repoInfo.then((repoInfo) => Array.of(repoInfo));
-    } else {
-        return pizzly
-            .integration("github")
-            .auth(auth)
-            .get("/user/repos?sort=updated&page=" + page + "&per_page=" + per_page)
-            .then((response) => response.json())
-            .catch((err) => {
-                console.log(err);
-            });
+
+export async function loadRepositoryList(searchText = "", page = 1, perPage = 5) {
+    try {
+        const response = await axios.get(
+            `${BASE_URL_USER}/repos?sort=updated&direction=desc&page=${page}&per_page=${perPage}`
+        );
+
+        if (!response?.data) {
+            return [];
+        }
+        return response.data;
+    } catch (error) {
+        return error.message;
     }
 }
 
@@ -229,30 +184,27 @@ export async function searchRepositoryList(searchString, maxResults = 2, searchR
     let page = 1;
     let perPage = 100;
 
-    let promise;
     let hasNextPage = true;
     while (searchResults.length < maxResults && hasNextPage) {
-        promise = loadRepositoryList("", page, perPage)
-            .then((repositoryList) => {
-                if (repositoryList instanceof Array) {
-                    repositoryList
-                        .filter((repo) => repo.full_name.includes(searchString))
-                        .forEach((repo) => {
-                            if (searchResults.length < maxResults) {
-                                searchResults.push(repo);
-                            }
-                        });
-                } else {
-                    hasNextPage = false;
-                }
-                if (repositoryList.length < perPage) {
-                    hasNextPage = false;
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-        await promise;
+        try {
+            const repositoryList = await loadRepositoryList("", page, perPage);
+            if (repositoryList instanceof Array) {
+                const filteredArr = repositoryList.filter((repo) => repo.full_name.includes(searchString));
+                filteredArr.map((repo) => {
+                    if (searchResults.length < maxResults) {
+                        searchResults.push(repo);
+                    }
+                });
+            } else {
+                hasNextPage = false;
+            }
+            if (repositoryList.length < perPage) {
+                hasNextPage = false;
+            }
+        } catch (err) {
+            hasNextPage = false; // Stop the loop on error
+        }
+
         page++;
     }
     return searchResults;
@@ -267,13 +219,11 @@ export async function searchRepositoryList(searchString, maxResults = 2, searchR
  * @param {string} user - the authID of user'
  * @returns {Promise<object>} where the object has a tree attribute containing an array of all files in the repository
  */
+
 export async function loadFileTreeOfRepository(repoFullName, branch) {
-    let user = localStorage.getItem("authId");
-    return pizzly
-        .integration("github")
-        .auth(user)
-        .get("/repos/" + repoFullName + "/git/trees/" + branch + "?recursive=1")
-        .then((response) => response.json())
+    return axios
+        .get(`${BASE_URL_REPO}/${repoFullName}/git/trees/${branch}?recursive=1`)
+        .then((response) => response.data)
         .catch((err) => {
             console.log(err);
         });
@@ -288,13 +238,9 @@ export async function loadFileTreeOfRepository(repoFullName, branch) {
  * @returns {Promise<{ name : string }[]>} the fetched array of branches
  */
 export async function loadBranchesName(repoName, username) {
-    let dataAuth = localStorage.getItem("authId");
-
-    return pizzly
-        .integration("github")
-        .auth(dataAuth)
-        .get("/repos/" + username + "/" + repoName + "/branches?per_page=999")
-        .then((response) => response.json())
+    return axios
+        .get(`${BASE_URL_REPO}/${username}/${repoName}/branches?per_page=999`)
+        .then((response) => response.data)
         .catch((err) => {
             console.log(err);
         });
@@ -311,7 +257,6 @@ export async function loadBranchesName(repoName, username) {
  * @returns {Promise<string>} a promise with the raw content of the specified file
  */
 export async function loadRawFile(repoFullName, branch, filePath) {
-    let user = localStorage.getItem("authId");
     if (typeof branch !== "string" || typeof branch != "string") {
         console.log(
             "Invalid values for loadContentsForRepository. Given Repository full name: " +
@@ -322,11 +267,9 @@ export async function loadRawFile(repoFullName, branch, filePath) {
                 filePath
         );
     } else {
-        return pizzly
-            .integration("github")
-            .auth(user)
-            .get("/repos/" + repoFullName + "/contents/" + filePath + "?ref=" + branch)
-            .then((response) => response.json())
+        return axios
+            .get(`${BASE_URL_REPO}/${repoFullName}/contents/${filePath}?ref=${branch}`)
+            .then((response) => response.data)
             .then((response) => decodeUnicode(response.content))
             .catch((err) => {
                 console.log(err);
@@ -435,7 +378,7 @@ export async function loadARepositoryContent(repoFullName, branchName) {
                 };
                 repoObject.adrs.push(adrObject);
                 adrPromises.push(
-                    loadRawFile(repoFullName, branchName, adr.path, user, pizzly).then((rawMd) => {
+                    loadRawFile(repoFullName, branchName, adr.path, user).then((rawMd) => {
                         adrObject.originalMd = rawMd;
                         adrObject.editedMd = rawMd;
                     })
