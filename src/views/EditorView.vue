@@ -5,31 +5,22 @@
             <v-spacer></v-spacer>
             <ToolbarMenuMode v-if="showEditor" class="mx-0 px-0 pt-0 mt-0 flex-grow-0" />
             <v-spacer></v-spacer>
-            <v-btn class="align-self-center" @click="logOut">Disconnect</v-btn>
+            <v-btn data-cy="disconnect" class="align-self-center" @click="logOut">Disconnect</v-btn>
         </v-toolbar>
 
         <v-card-text class="mx-0 my-0 px-0 py-0" style="-webkit-flex-grow: 1; flex-grow: 1; position: relative">
             <div v-if="!showFileExplorer" class="d-flex align-center justify-center" style="height: 75%; width: 100%">
                 <DialogAddRepositories>
                     <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                            data-cy="addRepo"
-                            x-large
-                            class="align-center justify-center secondary"
-                            v-on="on"
-                            v-bind="attrs"
-                        >
+                        <v-btn data-cy="addRepo" x-large class="align-center justify-center secondary" v-on="on"
+                            v-bind="attrs">
                             Add Repositories
                         </v-btn>
                     </template>
                 </DialogAddRepositories>
             </div>
             <splitpanes v-else class="default-theme" style="height: 100%; width: 100%">
-                <pane
-                    size="30%"
-                    class="d-flex flex-column"
-                    style="-webkit-flex-grow: 1; flex-grow: 1; position: relative"
-                >
+                <pane size="30%" class="d-flex flex-column" style="-webkit-flex-grow: 1; flex-grow: 1; position: relative">
                     <FileExplorer v-on:repo-name="updateBranches" v-on:active-branch="setActiveBranch" />
                 </pane>
 
@@ -45,15 +36,8 @@
             </div>
             <v-spacer></v-spacer>
             Current branch:
-            <select
-                data-cy="branchSelect"
-                @change="onSelectedBranch"
-                v-model="selected"
-                name="current-branch"
-                id="current-branch"
-                style="width: 20%"
-                @click="clickForBranches"
-            >
+            <select data-cy="branchSelect" @change="onSelectedBranch" v-model="selected" name="current-branch"
+                id="current-branch" style="width: 20%" @click="clickForBranches">
                 <option data-cy="branchSelectOption" v-for="(branchName, index) in branchesName" :key="index">
                     {{ branchName }}
                 </option>

@@ -1,18 +1,23 @@
 <template>
     <div>
-        <v-btn @click="hasAuthId()">Connect to GitHub</v-btn>
+        <v-btn data-cy="connectToGithub" @click="connectClick()">
+            Connect to GitHub
+        </v-btn>
+        <DialogShowOptions v-if="dialogComponentVisible" @close-dialog="onDialogClose" />
     </div>
 </template>
 
 <script>
-import { signInWithPopup, GithubAuthProvider } from "firebase/auth";
-import { auth, GithubProvider } from "../plugins/firebase/client";
+import DialogShowOptions from "./sourceControlOptions/DialogShowOptions.vue"
 export default {
     name: "connectGitHub",
-    components: {},
+    components: {
+        DialogShowOptions
+    },
     data: () => ({
         user: null,
-        repositories: []
+        repositories: [],
+        dialogComponentVisible: false,
     }),
     mounted() {
         console.log("mounted");
@@ -21,9 +26,13 @@ export default {
         console.log("Bye from the git login github component!");
     },
     methods: {
+        connectClick() {
+            this.hasAuthId()
+        },
         hasAuthId() {
             if (localStorage.getItem("authId") === null) {
-                this.signInWithGithub();
+                this.dialogComponentVisible = true
+                // this.signInWithGithub();
             } else {
                 this.$router.push({
                     name: "Editor",
@@ -31,24 +40,9 @@ export default {
                 });
             }
         },
-        signInWithGithub: async function () {
-            GithubProvider.addScope("repo read:user gist workflow read:org");
-            return signInWithPopup(auth, GithubProvider)
-                .then((result) => {
-                    const credential = GithubAuthProvider.credentialFromResult(result);
-                    const token = credential.accessToken;
-                    const user = result.user;
-                    localStorage.setItem("authId", token);
-                    localStorage.setItem("user", user?.reloadUserInfo?.screenName);
-                    this.$router.push({
-                        name: "Editor",
-                        params: { id: this.user }
-                    });
-                })
-                .catch((error) => {
-                    console.error("SignIn Error", error);
-                });
-        }
+        onDialogClose() {
+            this.dialogComponentVisible = false
+        },
     }
 };
 </script>
