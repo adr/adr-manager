@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import DialogShowOptions from "./sourceControlOptions/DialogShowOptions.vue"
+import DialogShowOptions from "./DialogShowOptions.vue"
 export default {
     name: "connectGitHub",
     components: {

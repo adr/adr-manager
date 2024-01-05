@@ -1,7 +1,7 @@
 <template>
-    <v-btn @click="signIn" color="primary" class="my-2" data-cy="signInWithgithubFree">
+    <v-btn @click="signIn" color="primary" class="my-2" data-cy="signInWithGithubFree">
         <v-icon left>mdi-github</v-icon>
-        Sign In with GitHub Free Version
+        Sign In with GitHub
     </v-btn>
 </template>
 

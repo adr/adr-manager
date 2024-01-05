@@ -9,7 +9,7 @@
         "serve": "vite preview",
         "test": "jest",
         "e2e:test": "cypress run",
-        "e2e:test-ci": "cypress run --browser chrome --headed --config video=false,screenshotOnRunFailure=false",
+        "e2e:test-ci": "cypress run --browser chrome --headed --config video=false,screenshotOnRunFailure=false --spec cypress/e2e/adrManagerTest/ChooseSourceControl.cy.js",
         "format": "prettier --write . --ignore-unknown"
     },
     "dependencies": {

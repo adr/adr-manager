@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import { loadRepositoryList, searchRepositoryList, loadAllRepositoryContent } from "/src/plugins/api.js";
+import { loadRepositoryList, searchRepositoryList, loadAllRepositoryContent } from "/src/plugins/githubApis/api";
 import { store } from "/src/plugins/store.js";
 import _ from "lodash";
 

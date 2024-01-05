@@ -1,8 +1,8 @@
 /* This file contains any calls to the backend. */
 
-import { Repository } from "./classes.js";
+import { Repository } from "../classes.js";
 import axios from "axios";
-import { BASE_URL_REPO, BASE_URL_USER } from "./apiConfig/config.js";
+import { BASE_URL_REPO, BASE_URL_USER } from "../apiConfig/config.js";
 
 let repoOwner = "";
 let repoName = "";
@@ -260,11 +260,11 @@ export async function loadRawFile(repoFullName, branch, filePath) {
     if (typeof branch !== "string" || typeof branch != "string") {
         console.log(
             "Invalid values for loadContentsForRepository. Given Repository full name: " +
-                repoFullName +
-                ", Branch:" +
-                branch +
-                ", file path: " +
-                filePath
+            repoFullName +
+            ", Branch:" +
+            branch +
+            ", file path: " +
+            filePath
         );
     } else {
         return axios

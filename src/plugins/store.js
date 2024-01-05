@@ -14,7 +14,7 @@ import _ from "lodash";
 import sanitize from "sanitize-filename";
 import { ArchitecturalDecisionRecord, Repository } from "./classes";
 import { adr2md, naturalCase2snakeCase } from "./parser";
-import { setInfosForApi, getUserName, getUserEmail } from "./api";
+import { setInfosForApi, getUserName, getUserEmail } from "./githubApis/api";
 
 export const store = new Vue({
     data: {

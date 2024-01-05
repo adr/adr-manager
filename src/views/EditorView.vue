@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { loadBranchesName, loadARepositoryContent } from "/src/plugins/api.js";
+import { loadBranchesName, loadARepositoryContent } from "/src/plugins/githubApis/api";
 import { store } from "/src/plugins/store.js";
 
 import { Splitpanes, Pane } from "splitpanes";

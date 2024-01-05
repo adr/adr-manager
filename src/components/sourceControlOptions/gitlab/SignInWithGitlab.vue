@@ -1,21 +1,21 @@
 <template>
     <v-btn @click="signIn" color="primary" class="my-2">
-        <v-icon left>mdi-github</v-icon>
-        Sign In with GitHub Enterprise Version
+        <v-icon left>mdi-gitlab</v-icon>
+        Sign In with Gitlab
     </v-btn>
 </template>
 
 <script>
-import { signInWithGithub } from './signInWithGithub';
+import { signInWithGitlab } from './signInWithGitlab';
+
 export default {
-    name: "SignInWithGithubEnterprise",
+    name: "SignInWithGitlab",
     methods: {
         signIn() {
-            console.log('came here')
-            signInWithGithub("https://your-github-enterprise-instance.com")
+            signInWithGitlab()
                 .then(({ token, user }) => {
                     localStorage.setItem("authId", token);
-                    localStorage.setItem("user", user?.reloadUserInfo?.screenName);
+                    localStorage.setItem("user", user?.reloadUserInfo?.localId);
                     this.$router.push({
                         name: "Editor",
                         params: { id: user }
@@ -25,8 +25,6 @@ export default {
                     console.error("Sign In Error", error);
                 });
         }
-
     }
-
 }
 </script>

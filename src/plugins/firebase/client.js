@@ -3,14 +3,13 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GithubAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDLeDiHmseMx-w9Ba7TI4lL8Lvc0M7Zpeg",
-    authDomain: "adr-manager.firebaseapp.com",
-    projectId: "adr-manager",
-    storageBucket: "adr-manager.appspot.com",
-    messagingSenderId: "313525337788",
-    appId: "1:313525337788:web:0834a7a168fe39352adab9"
+    apiKey: "AIzaSyCzIScILC86RUQtYh6d3kjzpHphVhaQpGg",
+    authDomain: "moneeza-adr.firebaseapp.com",
+    projectId: "moneeza-adr",
+    storageBucket: "moneeza-adr.appspot.com",
+    messagingSenderId: "788415806002",
+    appId: "1:788415806002:web:00adb948f863c057e8da2b"
 };
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);

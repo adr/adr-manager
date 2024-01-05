@@ -130,7 +130,7 @@
 </template>
 
 <script>
-import { getCommitSha, createBlobs, createFileTree, createCommit, pushToGitHub } from "/src/plugins/api.js";
+import { getCommitSha, createBlobs, createFileTree, createCommit, pushToGitHub } from "/src/plugins/githubApis/api.js";
 import { store } from "../plugins/store";
 
 /**

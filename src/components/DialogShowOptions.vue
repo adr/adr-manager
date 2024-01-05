@@ -13,15 +13,15 @@
                 </v-btn>
             </div>
             <div class="d-flex flex-column justify-content-center align-items-center m-5">
-                <SignInWithGithubFree />
-                <SignInWithGithubEnterprise />
+                <SignInWithGithub />
+                <SignInWithGitlab />
             </div>
         </v-card>
     </v-dialog>
 </template>
 <script>
-import SignInWithGithubFree from './github/SignInWithGithubFree.vue';
-import SignInWithGithubEnterprise from './github/SignInWithGithubEnterprise.vue';
+import SignInWithGithub from './sourceControlOptions/github/SignInWithGithubFree.vue';
+import SignInWithGitlab from './sourceControlOptions/gitlab/SignInWithGitlab.vue';
 export default {
     data() {
         return {
@@ -36,6 +36,6 @@ export default {
             this.$emit('close-dialog');
         },
     },
-    components: { SignInWithGithubFree, SignInWithGithubEnterprise }
+    components: { SignInWithGithub, SignInWithGitlab }
 };
 </script>
