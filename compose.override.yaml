@@ -1,0 +1,18 @@
+services:
+  frontend:
+    build:
+      target: dev-stage
+    networks:
+      default: {}
+    ports:
+      - "127.0.0.1:${UI_PORT:-8000}:8000"
+    volumes:
+      - "./:/app"
+
+  pocketbase:
+    image: spectado/pocketbase:${POCKETBASE_VERSION_TAG:-latest}
+    ports:
+      - "127.0.0.1:${API_PORT:-8090}:80"
+    restart: "unless-stopped"
+    volumes:
+      - "./data:/pb_data"

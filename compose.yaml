@@ -1,0 +1,8 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: adr/adr-manager:${ADR_VERSION_TAG:-latest}
+    networks: {}
+    restart: "unless-stopped"
