@@ -8,6 +8,7 @@ services:
       - "127.0.0.1:${UI_PORT:-8000}:8000"
     volumes:
       - "./:/app"
+      - "/app/node_modules"
 
   pocketbase:
     image: spectado/pocketbase:${POCKETBASE_VERSION_TAG:-latest}
