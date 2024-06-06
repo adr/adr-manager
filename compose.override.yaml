@@ -9,6 +9,7 @@ services:
     volumes:
       - "./:/app"
       - "/app/node_modules"
+    container_name: frontend
 
   pocketbase:
     image: spectado/pocketbase:${POCKETBASE_VERSION_TAG:-latest}
@@ -17,3 +18,4 @@ services:
     restart: "unless-stopped"
     volumes:
       - "./data:/pb_data"
+    container_name: pocketbase
