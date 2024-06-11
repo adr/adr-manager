@@ -1,11 +1,14 @@
-import { cloneDeep } from "lodash";
+import { cloneDeep } from 'lodash'
 
-import antlr4 from "antlr4";
-import MADRLexer from "@/infrastructure/service/parser/MADRLexer";
-import MADRParser from "@/infrastructure/service/parser/MADRParser";
-import MADRListener from "@/infrastructure/service/parser/MADRListener";
+import antlr4 from 'antlr4'
+import MADRLexer from '@/infrastructure/service/parser/MADRLexer'
+import MADRParser from '@/infrastructure/service/parser/MADRParser'
+import MADRListener from '@/infrastructure/service/parser/MADRListener'
 
-import { ArchitecturalDecisionRecord, createShortTitle } from "@/infrastructure/service/parser/classes";
+import {
+  ArchitecturalDecisionRecord,
+  createShortTitle
+} from '@/infrastructure/service/parser/classes'
 
 /**
  * Creates an ADR from a ParseTree by listening to a ParseTreeWalker.
@@ -19,114 +22,114 @@ import { ArchitecturalDecisionRecord, createShortTitle } from "@/infrastructure/
  */
 class MADRGenerator extends MADRListener {
   constructor() {
-    super();
-    this.adr = new ArchitecturalDecisionRecord();
+    super()
+    this.adr = new ArchitecturalDecisionRecord()
   }
 
   enterTitle(ctx) {
-    this.adr.title = ctx.getText();
+    this.adr.title = ctx.getText()
   }
 
   enterStatus(ctx) {
-    this.adr.status = ctx.getText();
+    this.adr.status = ctx.getText()
   }
 
   enterDeciders(ctx) {
-    this.adr.deciders = ctx.getText();
+    this.adr.deciders = ctx.getText()
   }
 
   enterDate(ctx) {
-    this.adr.date = ctx.getText();
+    this.adr.date = ctx.getText()
   }
 
   enterTechnicalStory(ctx) {
-    this.adr.technicalStory = ctx.getText();
+    this.adr.technicalStory = ctx.getText()
   }
 
   enterContextAndProblemStatement(ctx) {
-    this.adr.contextAndProblemStatement = ctx.getText();
+    this.adr.contextAndProblemStatement = ctx.getText()
   }
 
   enterDecisionDrivers(ctx) {
-    this.addListItemsFromListToList(ctx.children[0], this.adr.decisionDrivers);
+    this.addListItemsFromListToList(ctx.children[0], this.adr.decisionDrivers)
   }
 
   enterConsideredOptions(ctx) {
-    let tmpOptionList = [];
-    this.addListItemsFromListToList(ctx.children[0], tmpOptionList);
+    const tmpOptionList = []
+    this.addListItemsFromListToList(ctx.children[0], tmpOptionList)
     tmpOptionList.forEach((opt) => {
-      if (opt.trim() !== "") {
-        this.adr.addOption({ title: opt });
+      if (opt.trim() !== '') {
+        this.adr.addOption({ title: opt })
       }
-    });
+    })
   }
 
   /**
    * Handles "Decision outcome"
    */
   enterChosenOptionAndExplanation(ctx) {
-    let rawDecisionOutcome = ctx.getText();
+    let rawDecisionOutcome = ctx.getText()
 
-    if (rawDecisionOutcome.startsWith("Chosen option: ")) {
-      rawDecisionOutcome = rawDecisionOutcome.split(/, because */);
-      rawDecisionOutcome[0] = rawDecisionOutcome[0].substring("Chosen option: ".length).trim(); // Remove 'Chosen option: '
-      let delim = rawDecisionOutcome[0].charAt(0);
-      let chosenOption = "";
+    if (rawDecisionOutcome.startsWith('Chosen option: ')) {
+      rawDecisionOutcome = rawDecisionOutcome.split(/, because */)
+      rawDecisionOutcome[0] = rawDecisionOutcome[0].substring('Chosen option: '.length).trim() // Remove 'Chosen option: '
+      const delim = rawDecisionOutcome[0].charAt(0)
+      let chosenOption = ''
 
       if (delim === rawDecisionOutcome[0].charAt(rawDecisionOutcome[0].length - 1)) {
-        chosenOption = rawDecisionOutcome[0].substring(1, rawDecisionOutcome[0].length - 1);
+        chosenOption = rawDecisionOutcome[0].substring(1, rawDecisionOutcome[0].length - 1)
       } else {
-        chosenOption = rawDecisionOutcome[0];
+        chosenOption = rawDecisionOutcome[0]
       }
-      let explanation = rawDecisionOutcome.slice(1).join();
-      this.adr.decisionOutcome.chosenOption = chosenOption;
-      this.adr.decisionOutcome.explanation = explanation.trim();
+      const explanation = rawDecisionOutcome.slice(1).join()
+      this.adr.decisionOutcome.chosenOption = chosenOption
+      this.adr.decisionOutcome.explanation = explanation.trim()
     } else {
-      console.log("Couldn't find chosen option.");
+      console.log("Couldn't find chosen option.")
     }
   }
 
   enterPositiveConsequences(ctx) {
-    this.addListItemsFromListToList(ctx.children[0], this.adr.decisionOutcome.positiveConsequences);
+    this.addListItemsFromListToList(ctx.children[0], this.adr.decisionOutcome.positiveConsequences)
   }
 
   enterNegativeConsequences(ctx) {
-    this.addListItemsFromListToList(ctx.children[0], this.adr.decisionOutcome.negativeConsequences);
+    this.addListItemsFromListToList(ctx.children[0], this.adr.decisionOutcome.negativeConsequences)
   }
 
   /**
    * Header after "Pros and Cons of the Options"
    */
   enterOptionTitle(ctx) {
-    let title = ctx.getText();
-    this.currentOption = this.getMostSimilarOptionTo(title);
+    const title = ctx.getText()
+    this.currentOption = this.getMostSimilarOptionTo(title)
     if (!this.currentOption) {
       // No matching option found?
       // Create a new one (otherwise the content of the pro/con list will get missing)
-      this.currentOption = this.adr.addOption({ title: title });
+      this.currentOption = this.adr.addOption({ title: title })
     }
   }
 
   enterOptionDescription(ctx) {
     if (this.currentOption) {
-      this.currentOption.description = ctx.getText();
+      this.currentOption.description = ctx.getText()
     }
   }
 
   enterProlist(ctx) {
     if (this.currentOption) {
-      this.addListItemsFromListToList(ctx, this.currentOption.pros);
+      this.addListItemsFromListToList(ctx, this.currentOption.pros)
     }
   }
 
   enterConlist(ctx) {
     if (this.currentOption) {
-      this.addListItemsFromListToList(ctx, this.currentOption.cons);
+      this.addListItemsFromListToList(ctx, this.currentOption.cons)
     }
   }
 
   enterLinks(ctx) {
-    this.addListItemsFromListToList(ctx.children[0], this.adr.links);
+    this.addListItemsFromListToList(ctx.children[0], this.adr.links)
   }
   /**
    *
@@ -135,22 +138,22 @@ class MADRGenerator extends MADRListener {
   getMostSimilarOptionTo(optTitle) {
     // Find the option with a very similar title.
     let opt = this.adr.consideredOptions.find(function (opt) {
-      return this.matchOptionTitleAlmostExactly(opt.title, optTitle);
-    }, this);
+      return this.matchOptionTitleAlmostExactly(opt.title, optTitle)
+    }, this)
     if (opt) {
       // If a fitting option was found, return it.
-      return opt;
+      return opt
     }
     // Else check if there is another (less) similar title.
     opt = this.adr.consideredOptions.find(function (opt) {
-      return matchOptionTitleMoreRelaxed(opt.title, optTitle);
-    }, this);
+      return matchOptionTitleMoreRelaxed(opt.title, optTitle)
+    }, this)
     if (opt) {
       // If a fitting option was found, return it.
-      return opt;
+      return opt
     }
     // just set the option to not found
-    return null;
+    return null
   }
 
   /**
@@ -163,9 +166,9 @@ class MADRGenerator extends MADRListener {
    * @returns {boolean} True, iff the option titles are very similar.
    */
   matchOptionTitleAlmostExactly(optTitle1, optTitle2) {
-    let trimmed1 = optTitle1.replace(/ /g, "").toLowerCase(); // Remove whitespaces and lower-case heading
-    let trimmed2 = optTitle2.replace(/ /g, "").toLowerCase();
-    return trimmed1 === trimmed2;
+    const trimmed1 = optTitle1.replace(/ /g, '').toLowerCase() // Remove whitespaces and lower-case heading
+    const trimmed2 = optTitle2.replace(/ /g, '').toLowerCase()
+    return trimmed1 === trimmed2
   }
 
   /**
@@ -176,10 +179,10 @@ class MADRGenerator extends MADRListener {
   addListItemsFromListToList(parseTreeList, targetList) {
     for (let i = 0; i < parseTreeList.children.length; i++) {
       if (
-        parseTreeList.children[i].ruleIndex === MADRParser.ruleNames.indexOf("textLine") && // if it is a text line
-        parseTreeList.children[i].getText().trim() !== ""
+        parseTreeList.children[i].ruleIndex === MADRParser.ruleNames.indexOf('textLine') && // if it is a text line
+        parseTreeList.children[i].getText().trim() !== ''
       ) {
-        targetList.push(parseTreeList.children[i].getText());
+        targetList.push(parseTreeList.children[i].getText())
       }
     }
   }
@@ -191,107 +194,117 @@ class MADRGenerator extends MADRListener {
  * @returns {ArchitecturalDecisionRecord}
  */
 export function md2adr(md) {
-  const chars = new antlr4.InputStream(md);
-  const lexer = new MADRLexer(chars);
-  const tokens = new antlr4.CommonTokenStream(lexer);
-  const parser = new MADRParser(tokens);
-  parser.buildParseTrees = true;
-  parser.removeErrorListeners();
+  const chars = new antlr4.InputStream(md)
+  const lexer = new MADRLexer(chars)
+  const tokens = new antlr4.CommonTokenStream(lexer)
+  const parser = new MADRParser(tokens)
+  parser.buildParseTrees = true
+  parser.removeErrorListeners()
 
-  const tree = parser.start(); // 'start' is the name of the starting rule.
+  const tree = parser.start() // 'start' is the name of the starting rule.
   // console.log('Created Parse Tree! ', tree)
-  const printer = new MADRGenerator();
-  antlr4.tree.ParseTreeWalker.DEFAULT.walk(printer, tree);
+  const printer = new MADRGenerator()
+  antlr4.tree.ParseTreeWalker.DEFAULT.walk(printer, tree)
   // console.log('Result ADR ', printer.adr)
-  printer.adr.cleanUp();
-  return printer.adr;
+  printer.adr.cleanUp()
+  return printer.adr
 }
 
 export function adr2md(adrToParse) {
-  let adr = cloneDeep(adrToParse);
-  adr.cleanUp();
-  var md = "# " + adr.title + "\n";
+  const adr = cloneDeep(adrToParse)
+  adr.cleanUp()
+  let md = '# ' + adr.title + '\n'
 
-  if ((adr.status !== "" && adr.status !== "null") || adr.deciders.length > 0 || adr.date !== "") {
-    if (adr.status !== "" && adr.status !== "null") {
-      md = md.concat("\n* Status: " + adr.status.trim());
+  if ((adr.status !== '' && adr.status !== 'null') || adr.deciders.length > 0 || adr.date !== '') {
+    if (adr.status !== '' && adr.status !== 'null') {
+      md = md.concat('\n* Status: ' + adr.status.trim())
     }
     if (adr.deciders.length > 0) {
-      md = md.concat("\n* Deciders: " + adr.deciders);
+      md = md.concat('\n* Deciders: ' + adr.deciders)
     }
-    if (adr.date !== "") {
-      md = md.concat("\n* Date: " + adr.date);
+    if (adr.date !== '') {
+      md = md.concat('\n* Date: ' + adr.date)
     }
-    md = md.concat("\n");
+    md = md.concat('\n')
   }
 
-  if (adr.technicalStory !== "") {
-    md = md.concat("\nTechnical Story: " + adr.technicalStory + "\n");
+  if (adr.technicalStory !== '') {
+    md = md.concat('\nTechnical Story: ' + adr.technicalStory + '\n')
   }
 
-  if (adr.contextAndProblemStatement !== "") {
-    md = md.concat("\n## Context and Problem Statement\n\n" + adr.contextAndProblemStatement + "\n");
+  if (adr.contextAndProblemStatement !== '') {
+    md = md.concat('\n## Context and Problem Statement\n\n' + adr.contextAndProblemStatement + '\n')
   }
 
   if (adr.decisionDrivers.length > 0) {
-    md = md.concat("\n## Decision Drivers\n\n");
-    for (let i in adr.decisionDrivers) {
-      md = md.concat("* " + adr.decisionDrivers[i] + "\n");
+    md = md.concat('\n## Decision Drivers\n\n')
+    for (const i in adr.decisionDrivers) {
+      md = md.concat('* ' + adr.decisionDrivers[i] + '\n')
     }
   }
 
   if (adr.consideredOptions.length > 0) {
-    md = md.concat("\n## Considered Options\n\n");
-    md = adr.consideredOptions.reduce((total, opt) => total + "* " + opt.title + "\n", md);
+    md = md.concat('\n## Considered Options\n\n')
+    md = adr.consideredOptions.reduce((total, opt) => total + '* ' + opt.title + '\n', md)
   }
 
-  md = md.concat('\n## Decision Outcome\n\nChosen option: "' + adr.decisionOutcome.chosenOption);
+  md = md.concat('\n## Decision Outcome\n\nChosen option: "' + adr.decisionOutcome.chosenOption)
 
-  if (adr.decisionOutcome.explanation.trim() !== "") {
-    let isList = adr.decisionOutcome.explanation.trim().match(/^[*-+]/);
+  if (adr.decisionOutcome.explanation.trim() !== '') {
+    const isList = adr.decisionOutcome.explanation.trim().match(/^[*-+]/)
     if (isList) {
-      md = md.concat('", because\n\n' + adr.decisionOutcome.explanation + "\n");
+      md = md.concat('", because\n\n' + adr.decisionOutcome.explanation + '\n')
     } else {
-      md = md.concat('", because ' + adr.decisionOutcome.explanation + "\n");
+      md = md.concat('", because ' + adr.decisionOutcome.explanation + '\n')
     }
   } else {
-    md = md.concat('"\n');
+    md = md.concat('"\n')
   }
 
   if (adr.decisionOutcome.positiveConsequences.length > 0) {
-    md = md.concat("\n### Positive Consequences\n\n");
-    md = adr.decisionOutcome.positiveConsequences.reduce((total, con) => total + "* " + con + "\n", md);
+    md = md.concat('\n### Positive Consequences\n\n')
+    md = adr.decisionOutcome.positiveConsequences.reduce(
+      (total, con) => total + '* ' + con + '\n',
+      md
+    )
   }
   if (adr.decisionOutcome.negativeConsequences.length > 0) {
-    md = md.concat("\n### Negative Consequences\n\n");
-    md = adr.decisionOutcome.negativeConsequences.reduce((total, con) => total + "* " + con + "\n", md);
+    md = md.concat('\n### Negative Consequences\n\n')
+    md = adr.decisionOutcome.negativeConsequences.reduce(
+      (total, con) => total + '* ' + con + '\n',
+      md
+    )
   }
 
-  if (adr.consideredOptions.some((opt) => opt.description !== "" || opt.pros.length > 0 || opt.cons.length > 0)) {
-    md = md.concat("\n## Pros and Cons of the Options\n");
+  if (
+    adr.consideredOptions.some(
+      (opt) => opt.description !== '' || opt.pros.length > 0 || opt.cons.length > 0
+    )
+  ) {
+    md = md.concat('\n## Pros and Cons of the Options\n')
     md = adr.consideredOptions.reduce((total, opt) => {
-      if (opt.description !== "" || opt.pros.length > 0 || opt.cons.length > 0) {
-        let res = total.concat("\n### " + createShortTitle(opt.title) + "\n");
-        if (opt.description !== "") {
-          res = res.concat("\n" + opt.description + "\n");
+      if (opt.description !== '' || opt.pros.length > 0 || opt.cons.length > 0) {
+        let res = total.concat('\n### ' + createShortTitle(opt.title) + '\n')
+        if (opt.description !== '') {
+          res = res.concat('\n' + opt.description + '\n')
         }
-        res = opt.pros.reduce((total, arg) => total.concat("\n* Good, because " + arg), res);
-        res = opt.cons.reduce((total, arg) => total.concat("\n* Bad, because " + arg), res);
+        res = opt.pros.reduce((total, arg) => total.concat('\n* Good, because ' + arg), res)
+        res = opt.cons.reduce((total, arg) => total.concat('\n* Bad, because ' + arg), res)
         if (opt.pros.length > 0 || opt.cons.length > 0) {
           // insert final new line
-          res = res + "\n";
+          res = res + '\n'
         }
-        return res;
+        return res
       } else {
-        return total;
+        return total
       }
-    }, md);
+    }, md)
   }
   if (adr.links.length > 0) {
-    md = md.concat("\n## Links\n\n");
-    md = adr.links.reduce((total, link) => total + "* " + link + "\n", md);
+    md = md.concat('\n## Links\n\n')
+    md = adr.links.reduce((total, link) => total + '* ' + link + '\n', md)
   }
-  return md;
+  return md
 }
 
 /**
@@ -302,7 +315,9 @@ export function adr2md(adrToParse) {
  * @param {string} snake
  */
 export function snakeCase2naturalCase(snake) {
-  return snake.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace("-", " ").replace("_", " "));
+  return snake.replace(/([-_][a-z])/g, (group) =>
+    group.toUpperCase().replace('-', ' ').replace('_', ' ')
+  )
 }
 
 /**
@@ -315,7 +330,7 @@ export function snakeCase2naturalCase(snake) {
  * @param {string} snake
  */
 export function naturalCase2snakeCase(natural) {
-  return natural.toLowerCase().split(" ").join("-");
+  return natural.toLowerCase().split(' ').join('-')
 }
 
 /**
@@ -333,15 +348,15 @@ export function naturalCase2snakeCase(natural) {
  * @returns {boolean} True, iff the option titles are similar
  */
 export function matchOptionTitleMoreRelaxed(titleFromOptionList, titleFromChosenOption) {
-  let trimmedTitleFromOptionList = titleFromOptionList.replace(/ /g, "").toLowerCase(); // Remove whitespaces and lower-case heading
-  let trimmedTitleFromChosenOption = titleFromChosenOption.replace(/ /g, "").toLowerCase();
-  let res =
+  const trimmedTitleFromOptionList = titleFromOptionList.replace(/ /g, '').toLowerCase() // Remove whitespaces and lower-case heading
+  const trimmedTitleFromChosenOption = titleFromChosenOption.replace(/ /g, '').toLowerCase()
+  const res =
     trimmedTitleFromOptionList === trimmedTitleFromChosenOption ||
     trimmedTitleFromOptionList.startsWith(trimmedTitleFromChosenOption) ||
     trimmedTitleFromChosenOption.startsWith(trimmedTitleFromOptionList) ||
     titleFromChosenOption === createShortTitle(titleFromOptionList) ||
     // in case we have issues with the short title generation, we at least check for a match of the first letters
     // Example: "Include in [adr-tools](https://github.com/npryce/adr-tools), 924 stars as of 2018-06-14", we currently don't strip ", ..."
-    createShortTitle(titleFromOptionList).startsWith(titleFromChosenOption);
-  return res;
+    createShortTitle(titleFromOptionList).startsWith(titleFromChosenOption)
+  return res
 }
