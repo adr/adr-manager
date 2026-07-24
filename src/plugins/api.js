@@ -3,6 +3,7 @@
 import { Repository } from "./classes.js";
 import axios from "axios";
 import { BASE_URL_REPO, BASE_URL_USER } from "./apiConfig/config.js";
+import { ADR_ROOT_FOLDER } from "./config.js";
 
 let repoOwner = "";
 let repoName = "";
@@ -337,14 +338,17 @@ export async function loadARepositoryContent(repoFullName, branchName) {
         loadFileTreeOfRepository(repoFullName, branchName).then((data) => {
             let adrPath = undefined;
             let adrList = data.tree.filter((file) => {
-                let matchedPaths = Array.of(
-                    "/docs/adr/",
-                    "/docs/adrs/",
-                    "/docs/ADR/",
-                    "/doc/adr/",
-                    "/docs/decisions/",
-                    "/docs/design/",
-                    "/technical-overview/adr/"
+                let matchedPaths = Array.from(
+                    new Set([
+                        "/" + ADR_ROOT_FOLDER,
+                        "/docs/adr/",
+                        "/docs/adrs/",
+                        "/docs/ADR/",
+                        "/doc/adr/",
+                        "/docs/decisions/",
+                        "/docs/design/",
+                        "/technical-overview/adr/"
+                    ])
                 ).filter((path) => {
                     let res = ("/" + file.path).includes(path) || file.path.startsWith("adr/");
                     return res;
@@ -364,7 +368,7 @@ export async function loadARepositoryContent(repoFullName, branchName) {
                 let res = matchedPaths.length > 0;
                 return res;
             });
-            repoObject.adrPath = adrPath || "docs/decisions/";
+            repoObject.adrPath = adrPath || ADR_ROOT_FOLDER;
 
             // Load the content of each ADR.
             adrList.forEach((adr) => {

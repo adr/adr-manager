@@ -1,3 +1,5 @@
+import { ADR_ROOT_FOLDER } from "./config.js";
+
 /**
  * This models a single MADR. A MADR is parsed using `MADR.g4` and parser.js
  */
@@ -167,7 +169,7 @@ export class Repository {
         this.activeBranch = activeBranch || "";
         this.branches = branches || [];
         this.adrs = adrs || [];
-        this.adrPath = adrPath || "docs/decisions/";
+        this.adrPath = adrPath || ADR_ROOT_FOLDER;
         this.addedAdrs = [];
         this.deletedAdrs = [];
     }

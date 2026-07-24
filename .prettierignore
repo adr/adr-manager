@@ -1,9 +1,7 @@
 # Ignore artifacts:
 dist
-coverage
 node_modules
 src/assets
 src/plugins/parser
 package-lock.json
 public
-docs
