@@ -14,8 +14,7 @@ export default ({ mode }) => {
             host: "localhost",
             port: 8000
         },
-        // URL base for production
-        base: "/adr-manager/",
+        base: "/",
         // Inject the (build-time) ADR root folder as a compile-time constant that
         // src/plugins/config.js reads and normalizes.
         define: {
