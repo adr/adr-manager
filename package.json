@@ -14,7 +14,6 @@
         "antlr4": "^4.13.0",
         "axios": "^1.4.0",
         "core-js": "^3.31.1",
-        "firebase": "^10.7.0",
         "lodash": "^4.17.21",
         "marked": "^5.1.1",
         "roboto-fontface": "*",

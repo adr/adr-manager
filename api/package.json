@@ -1,0 +1,13 @@
+{
+    "name": "adr-manager-api",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Azure Static Web Apps managed functions for the ADR Manager GitHub OAuth flow.",
+    "main": "src/functions/*.js",
+    "engines": {
+        "node": ">=20"
+    },
+    "dependencies": {
+        "@azure/functions": "^4.5.0"
+    }
+}

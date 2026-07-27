@@ -1,0 +1,9 @@
+{
+    "platform": {
+        "apiRuntime": "node:20"
+    },
+    "navigationFallback": {
+        "rewrite": "/index.html",
+        "exclude": ["/api/*", "/assets/*", "/favicon.ico", "*.{js,css,png,jpg,jpeg,gif,svg,ico,woff,woff2,ttf,eot,map}"]
+    }
+}

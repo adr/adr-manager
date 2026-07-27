@@ -1,0 +1,5 @@
+.vscode
+local.settings.json
+node_modules
+test
+*.md
