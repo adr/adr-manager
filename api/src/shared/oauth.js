@@ -11,37 +11,11 @@ const SCOPES = "repo read:user gist workflow read:org";
 /** Name of the short-lived cookie used to protect the OAuth flow against CSRF. */
 const STATE_COOKIE = "adr_oauth_state";
 
-/**
- * Derive the public origin (scheme + host) of the incoming request.
- * Azure Static Web Apps sits behind a reverse proxy, so the original host is
- * exposed through the `x-forwarded-*` headers rather than `host` alone.
- *
- * @param {import("@azure/functions").HttpRequest} request
- * @returns {string} e.g. "https://white-sky-123.azurestaticapps.net"
- */
-function getOrigin(request) {
-    const proto = request.headers.get("x-forwarded-proto") || "https";
-    const host = request.headers.get("x-forwarded-host") || request.headers.get("host") || "";
-    return `${proto}://${host}`;
-}
-
 // Returning null omits redirect_uri so GitHub uses the OAuth App's registered
 // callback URL. Set GITHUB_REDIRECT_URI to pin it when serving from multiple hosts.
 function getConfiguredRedirectUri() {
     const value = process.env.GITHUB_REDIRECT_URI;
     return value && value.trim() ? value.trim() : null;
-}
-
-function getAppOrigin(request) {
-    const configured = getConfiguredRedirectUri();
-    if (configured) {
-        try {
-            return new URL(configured).origin;
-        } catch {
-            // Malformed GITHUB_REDIRECT_URI: fall through to the request host.
-        }
-    }
-    return getOrigin(request);
 }
 
 /** Generate a cryptographically-random state value. */
@@ -89,50 +63,72 @@ function parseCookies(cookieHeader) {
     return cookies;
 }
 
-/**
- * Build the HTML response returned inside the OAuth popup. It relays the result
- * (token + login, or an error) to the application window via `postMessage` and
- * then closes itself. The state cookie is cleared on the way out.
- *
- * The payload is serialized with `<`, `>`, `&` and the JS line separators
- * escaped so it is safe to embed inside an inline `<script>` block.
- *
- * @param {string} targetOrigin - the exact origin allowed to receive the message
- * @param {{ token?: string, login?: string | null, error?: string }} payload
- */
-function popupResultResponse(targetOrigin, payload) {
-    const serialized = JSON.stringify(payload)
+function escapeForScript(value) {
+    return JSON.stringify(value)
         .replace(/</g, "\\u003c")
         .replace(/>/g, "\\u003e")
         .replace(/&/g, "\\u0026")
         .replace(/\u2028/g, "\\u2028")
         .replace(/\u2029/g, "\\u2029");
+}
 
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+function appRedirectResponse(token, login) {
     const body = `<!doctype html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Connecting to GitHub…</title>
+        <title>Signing in…</title>
     </head>
     <body>
-        <p>Completing GitHub sign-in… you can close this window.</p>
+        <p>Completing GitHub sign-in…</p>
         <script>
             (function () {
-                var payload = ${serialized};
-                var targetOrigin = ${JSON.stringify(targetOrigin)};
                 try {
-                    if (window.opener) {
-                        window.opener.postMessage(
-                            Object.assign({ source: "adr-github-oauth" }, payload),
-                            targetOrigin
-                        );
+                    localStorage.setItem("authId", ${escapeForScript(token)});
+                    var login = ${escapeForScript(login || "")};
+                    if (login) {
+                        localStorage.setItem("user", login);
                     }
                 } catch (e) {
-                    /* If we cannot reach the opener there is nothing more to do. */
+                    console.error("Could not persist GitHub token.", e);
                 }
-                window.close();
+                window.location.replace("/");
             })();
         </script>
+    </body>
+</html>`;
+
+    return {
+        status: 200,
+        headers: {
+            "Content-Type": "text/html; charset=utf-8",
+            "Cache-Control": "no-store",
+            "Set-Cookie": clearStateCookie()
+        },
+        body
+    };
+}
+
+function errorPageResponse(message) {
+    const body = `<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Sign-in failed</title>
+    </head>
+    <body style="font-family: sans-serif; text-align: center; padding: 2rem;">
+        <h1>GitHub sign-in failed</h1>
+        <p>${escapeHtml(message)}</p>
+        <p><a href="/">Return to ADR Manager</a></p>
     </body>
 </html>`;
 
@@ -150,12 +146,10 @@ function popupResultResponse(targetOrigin, payload) {
 module.exports = {
     SCOPES,
     STATE_COOKIE,
-    getOrigin,
-    getAppOrigin,
     getConfiguredRedirectUri,
     createState,
     buildStateCookie,
-    clearStateCookie,
     parseCookies,
-    popupResultResponse
+    appRedirectResponse,
+    errorPageResponse
 };
