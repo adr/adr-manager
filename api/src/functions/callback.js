@@ -1,7 +1,13 @@
 "use strict";
 
 const { app } = require("@azure/functions");
-const { getOrigin, getRedirectUri, parseCookies, popupResultResponse, STATE_COOKIE } = require("../shared/oauth");
+const {
+    getAppOrigin,
+    getConfiguredRedirectUri,
+    parseCookies,
+    popupResultResponse,
+    STATE_COOKIE
+} = require("../shared/oauth");
 
 const GITHUB_TOKEN_URL = "https://github.com/login/oauth/access_token";
 const GITHUB_USER_URL = "https://api.github.com/user";
@@ -19,7 +25,7 @@ app.http("callback", {
     authLevel: "anonymous",
     route: "callback",
     handler: async (request, context) => {
-        const origin = getOrigin(request);
+        const origin = getAppOrigin(request);
         const requestUrl = new URL(request.url);
         const code = requestUrl.searchParams.get("code");
         const state = requestUrl.searchParams.get("state");
@@ -47,6 +53,16 @@ app.http("callback", {
             });
         }
 
+        const tokenRequestBody = {
+            client_id: clientId,
+            client_secret: clientSecret,
+            code
+        };
+        const redirectUri = getConfiguredRedirectUri();
+        if (redirectUri) {
+            tokenRequestBody.redirect_uri = redirectUri;
+        }
+
         try {
             const tokenResponse = await fetch(GITHUB_TOKEN_URL, {
                 method: "POST",
@@ -55,12 +71,7 @@ app.http("callback", {
                     Accept: "application/json",
                     "User-Agent": "adr-manager"
                 },
-                body: JSON.stringify({
-                    client_id: clientId,
-                    client_secret: clientSecret,
-                    code,
-                    redirect_uri: getRedirectUri(request)
-                })
+                body: JSON.stringify(tokenRequestBody)
             });
 
             const tokenData = await tokenResponse.json().catch(() => ({}));

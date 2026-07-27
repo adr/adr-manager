@@ -25,15 +25,23 @@ function getOrigin(request) {
     return `${proto}://${host}`;
 }
 
-/**
- * The redirect URI GitHub calls back after authorization.
- * Must match (or be a sub-path of) the OAuth App's "Authorization callback URL".
- *
- * @param {import("@azure/functions").HttpRequest} request
- * @returns {string}
- */
-function getRedirectUri(request) {
-    return `${getOrigin(request)}/api/callback`;
+// Returning null omits redirect_uri so GitHub uses the OAuth App's registered
+// callback URL. Set GITHUB_REDIRECT_URI to pin it when serving from multiple hosts.
+function getConfiguredRedirectUri() {
+    const value = process.env.GITHUB_REDIRECT_URI;
+    return value && value.trim() ? value.trim() : null;
+}
+
+function getAppOrigin(request) {
+    const configured = getConfiguredRedirectUri();
+    if (configured) {
+        try {
+            return new URL(configured).origin;
+        } catch {
+            // Malformed GITHUB_REDIRECT_URI: fall through to the request host.
+        }
+    }
+    return getOrigin(request);
 }
 
 /** Generate a cryptographically-random state value. */
@@ -143,7 +151,8 @@ module.exports = {
     SCOPES,
     STATE_COOKIE,
     getOrigin,
-    getRedirectUri,
+    getAppOrigin,
+    getConfiguredRedirectUri,
     createState,
     buildStateCookie,
     clearStateCookie,

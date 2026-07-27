@@ -1,7 +1,7 @@
 "use strict";
 
 const { app } = require("@azure/functions");
-const { SCOPES, getRedirectUri, createState, buildStateCookie } = require("../shared/oauth");
+const { SCOPES, getConfiguredRedirectUri, createState, buildStateCookie } = require("../shared/oauth");
 
 /**
  * GET /api/login
@@ -28,10 +28,14 @@ app.http("login", {
         const state = createState();
         const authorizeUrl = new URL("https://github.com/login/oauth/authorize");
         authorizeUrl.searchParams.set("client_id", clientId);
-        authorizeUrl.searchParams.set("redirect_uri", getRedirectUri(request));
         authorizeUrl.searchParams.set("scope", SCOPES);
         authorizeUrl.searchParams.set("state", state);
         authorizeUrl.searchParams.set("allow_signup", "false");
+
+        const redirectUri = getConfiguredRedirectUri();
+        if (redirectUri) {
+            authorizeUrl.searchParams.set("redirect_uri", redirectUri);
+        }
 
         return {
             status: 302,
