@@ -45,6 +45,15 @@ export async function getUserName() {
         });
 }
 
+export async function getRepositoryInfo(repoFullName) {
+    return axios
+        .get(`${BASE_URL_REPO}/${repoFullName}`)
+        .then((response) => response.data)
+        .catch((err) => {
+            console.log(err);
+        });
+}
+
 /**
  * Returns a Promise with all informations about a branch.
  *
@@ -336,39 +345,8 @@ export async function loadARepositoryContent(repoFullName, branchName) {
 
     repoPromises.push(
         loadFileTreeOfRepository(repoFullName, branchName).then((data) => {
-            let adrPath = undefined;
-            let adrList = data.tree.filter((file) => {
-                let matchedPaths = Array.from(
-                    new Set([
-                        "/" + ADR_ROOT_FOLDER,
-                        "/docs/adr/",
-                        "/docs/adrs/",
-                        "/docs/ADR/",
-                        "/doc/adr/",
-                        "/docs/decisions/",
-                        "/docs/design/",
-                        "/technical-overview/adr/"
-                    ])
-                ).filter((path) => {
-                    let res = ("/" + file.path).includes(path) || file.path.startsWith("adr/");
-                    return res;
-                });
-
-                // Store matched path
-                if (!adrPath && matchedPaths.length == 1) {
-                    adrPath = matchedPaths[0].slice(1); // Remove beginning "/"
-                } else if (
-                    matchedPaths.length > 1 ||
-                    (matchedPaths.length == 1 && matchedPaths[0].slice(1) != adrPath)
-                ) {
-                    const allpaths = matchedPaths + [adrPath];
-                    console.warn("Loading error, unclear ADR path: Found ", allpaths);
-                }
-
-                let res = matchedPaths.length > 0;
-                return res;
-            });
-            repoObject.adrPath = adrPath || ADR_ROOT_FOLDER;
+            let adrList = data.tree.filter((file) => file.path.startsWith(ADR_ROOT_FOLDER));
+            repoObject.adrPath = ADR_ROOT_FOLDER;
 
             // Load the content of each ADR.
             adrList.forEach((adr) => {

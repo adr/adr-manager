@@ -10,7 +10,13 @@
 
         <v-card-text class="mx-0 my-0 px-0 py-0" style="-webkit-flex-grow: 1; flex-grow: 1; position: relative">
             <div v-if="!showFileExplorer" class="d-flex align-center justify-center" style="height: 75%; width: 100%">
-                <DialogAddRepositories>
+                <v-progress-circular
+                    v-if="loadingConfiguredRepo"
+                    indeterminate
+                    size="64"
+                    color="primary"
+                ></v-progress-circular>
+                <DialogAddRepositories v-else>
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
                             data-cy="addRepo"
@@ -63,8 +69,9 @@
 </template>
 
 <script>
-import { loadBranchesName, loadARepositoryContent } from "/src/plugins/api.js";
+import { loadBranchesName, loadARepositoryContent, getRepositoryInfo } from "/src/plugins/api.js";
 import { store } from "/src/plugins/store.js";
+import { ADR_REPOSITORY } from "/src/plugins/config.js";
 
 import { Splitpanes, Pane } from "splitpanes";
 import "splitpanes/dist/splitpanes.css";
@@ -104,7 +111,8 @@ export default {
         oldSelected: "",
         branchesName: [],
         currentRepo: "",
-        boolClick: false
+        boolClick: false,
+        loadingConfiguredRepo: false
     }),
     computed: {
         showFileExplorer() {
@@ -206,11 +214,34 @@ export default {
     mounted() {
         store.reload();
         store.openAdrBy(this.repoFullName, this.adr);
+        this.loadConfiguredRepository();
         this.$nextTick(() => {
             console.log("Route Data from Store", this.routeDataFromStore);
         });
     },
     methods: {
+        async loadConfiguredRepository() {
+            if (!ADR_REPOSITORY) {
+                return;
+            }
+            if (store.addedRepositories.some((repo) => repo.fullName === ADR_REPOSITORY)) {
+                return;
+            }
+            this.loadingConfiguredRepo = true;
+            try {
+                const info = await getRepositoryInfo(ADR_REPOSITORY);
+                if (info && info.default_branch) {
+                    const repoObject = await loadARepositoryContent(ADR_REPOSITORY, info.default_branch);
+                    if (repoObject && !store.addedRepositories.some((repo) => repo.fullName === ADR_REPOSITORY)) {
+                        store.addRepositories([repoObject]);
+                    }
+                }
+            } catch (error) {
+                console.error("Could not auto-load the configured repository.", error);
+            } finally {
+                this.loadingConfiguredRepo = false;
+            }
+        },
         setActiveBranch(activeBranch) {
             store.setActiveBranch(activeBranch);
             this.oldSelected = activeBranch;

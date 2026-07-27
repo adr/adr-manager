@@ -31,6 +31,7 @@ jobs:
       - run: npm run build
         env:
           ADR_ROOT_FOLDER: ${{ vars.ADR_ROOT_FOLDER }}
+          ADR_REPOSITORY: ${{ vars.ADR_REPOSITORY }}
       - name: Deploy to Azure Static Web Apps
         uses: Azure/static-web-apps-deploy@v1
         with:

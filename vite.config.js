@@ -8,6 +8,7 @@ export default ({ mode }) => {
     // Empty prefix (not Vite's default VITE_) so the custom ADR_ROOT_FOLDER var is exposed.
     const env = loadEnv(mode, process.cwd(), "");
     const adrRootFolder = env.ADR_ROOT_FOLDER || process.env.ADR_ROOT_FOLDER || "adr/decisions";
+    const adrRepository = env.ADR_REPOSITORY || process.env.ADR_REPOSITORY || "";
 
     return {
         server: {
@@ -18,7 +19,8 @@ export default ({ mode }) => {
         // Inject the (build-time) ADR root folder as a compile-time constant that
         // src/plugins/config.js reads and normalizes.
         define: {
-            __ADR_ROOT_FOLDER__: JSON.stringify(adrRootFolder)
+            __ADR_ROOT_FOLDER__: JSON.stringify(adrRootFolder),
+            __ADR_REPOSITORY__: JSON.stringify(adrRepository)
         },
         // required for Vuetify (see https://github.com/vuetifyjs/vuetify/discussions/4068#discussioncomment-1357093)
         resolve: {

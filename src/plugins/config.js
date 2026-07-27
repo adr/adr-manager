@@ -1,4 +1,4 @@
-/* global __ADR_ROOT_FOLDER__ */
+/* global __ADR_ROOT_FOLDER__, __ADR_REPOSITORY__ */
 
 /**
  * Root folder (inside a linked repository) where the ADR Manager looks for and
@@ -15,3 +15,7 @@
 const rawAdrRootFolder = typeof __ADR_ROOT_FOLDER__ === "string" ? __ADR_ROOT_FOLDER__ : "adr/decisions";
 
 export const ADR_ROOT_FOLDER = rawAdrRootFolder.trim().replace(/^\/+|\/+$/g, "") + "/";
+
+const rawAdrRepository = typeof __ADR_REPOSITORY__ === "string" ? __ADR_REPOSITORY__ : "";
+
+export const ADR_REPOSITORY = rawAdrRepository.trim().replace(/^\/+|\/+$/g, "");
