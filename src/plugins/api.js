@@ -46,12 +46,8 @@ export async function getUserName() {
 }
 
 export async function getRepositoryInfo(repoFullName) {
-    return axios
-        .get(`${BASE_URL_REPO}/${repoFullName}`)
-        .then((response) => response.data)
-        .catch((err) => {
-            console.log(err);
-        });
+    const response = await axios.get(`${BASE_URL_REPO}/${repoFullName}`);
+    return response.data;
 }
 
 /**

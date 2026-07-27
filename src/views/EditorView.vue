@@ -16,7 +16,12 @@
                     size="64"
                     color="primary"
                 ></v-progress-circular>
-                <DialogAddRepositories v-else>
+                <div v-else-if="configuredRepoError" class="text-center pa-4">
+                    <v-icon large color="error">mdi-alert-circle-outline</v-icon>
+                    <div class="mt-2">{{ configuredRepoError }}</div>
+                    <v-btn class="mt-4" color="primary" @click="loadConfiguredRepository">Retry</v-btn>
+                </div>
+                <DialogAddRepositories v-else-if="!configuredRepositorySet">
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
                             data-cy="addRepo"
@@ -112,9 +117,13 @@ export default {
         branchesName: [],
         currentRepo: "",
         boolClick: false,
-        loadingConfiguredRepo: false
+        loadingConfiguredRepo: false,
+        configuredRepoError: null
     }),
     computed: {
+        configuredRepositorySet() {
+            return Boolean(ADR_REPOSITORY);
+        },
         showFileExplorer() {
             return store.addedRepositories.length > 0;
         },
@@ -228,15 +237,30 @@ export default {
                 return;
             }
             this.loadingConfiguredRepo = true;
+            this.configuredRepoError = null;
             try {
                 const info = await getRepositoryInfo(ADR_REPOSITORY);
-                if (info && info.default_branch) {
-                    const repoObject = await loadARepositoryContent(ADR_REPOSITORY, info.default_branch);
-                    if (repoObject && !store.addedRepositories.some((repo) => repo.fullName === ADR_REPOSITORY)) {
-                        store.addRepositories([repoObject]);
-                    }
+                if (!info || !info.default_branch) {
+                    throw new Error("default branch could not be determined");
+                }
+                const repoObject = await loadARepositoryContent(ADR_REPOSITORY, info.default_branch);
+                if (!repoObject) {
+                    throw new Error("repository content could not be loaded");
+                }
+                if (!store.addedRepositories.some((repo) => repo.fullName === ADR_REPOSITORY)) {
+                    store.addRepositories([repoObject]);
                 }
             } catch (error) {
+                const status = error && error.response && error.response.status;
+                let detail;
+                if (status === 404) {
+                    detail = "not found — check the owner/repo name and that your GitHub account has access.";
+                } else if (status === 401 || status === 403) {
+                    detail = "access denied — the organization may need to approve the OAuth App.";
+                } else {
+                    detail = (error && error.message) || "unknown error.";
+                }
+                this.configuredRepoError = `Could not open the configured repository "${ADR_REPOSITORY}": ${detail}`;
                 console.error("Could not auto-load the configured repository.", error);
             } finally {
                 this.loadingConfiguredRepo = false;
