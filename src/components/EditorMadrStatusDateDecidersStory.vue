@@ -63,6 +63,27 @@
             </v-col>
         </v-row>
 
+        <!-- Category Field -->
+        <v-row class="pl-0 mx-0 my-1">
+            <v-col class="mx-0 my-0 px-0 py-0">
+                <label>Category:</label>
+                <v-combobox
+                    data-cy="categoryPro"
+                    v-model="adr.category"
+                    :items="categoryPresets"
+                    dense
+                    hide-details
+                    outlined
+                    placeholder="Select or type a category"
+                    class="mt-1"
+                    style="max-width: 480px"
+                ></v-combobox>
+                <HelpIcon>
+                    The platform domain this decision belongs to. Used to group decisions in ADRLog.md.
+                </HelpIcon>
+            </v-col>
+        </v-row>
+
         <!-- Technical Story Field-->
         <v-row class="pl-0 mx-0 my-4">
             <v-col class="mx-0 my-0 px-0 py-0 align-self-center" style="max-width: 150px">
@@ -100,6 +121,20 @@ export default {
             { name: "accepted", color: "success" },
             { name: "deprecated" },
             { name: "superseded" }
+        ],
+        categoryPresets: [
+            "Governance & Control Plane",
+            "Identity & Access",
+            "Networking & Connectivity",
+            "Edge & Cloudflare",
+            "Compute & Kubernetes",
+            "Observability & Monitoring",
+            "Logging & SIEM",
+            "Security & Compliance",
+            "FinOps & Cost Management",
+            "Landing Zones & Workloads",
+            "IaC, CI/CD & Tooling",
+            "Cross-Cutting & Process"
         ]
     }),
     props: {

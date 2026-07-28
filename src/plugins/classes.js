@@ -9,6 +9,7 @@ export class ArchitecturalDecisionRecord {
         status,
         deciders,
         date,
+        category,
         technicalStory,
         contextAndProblemStatement,
         decisionDrivers,
@@ -20,6 +21,8 @@ export class ArchitecturalDecisionRecord {
         this.status = status || "";
         this.deciders = deciders || "";
         this.date = date || "";
+        // Not a MADR grammar field: parser.js extracts/emits the `* Category:` bullet around ANTLR.
+        this.category = category || "";
         this.technicalStory = technicalStory || "";
         this.contextAndProblemStatement = contextAndProblemStatement || "";
         this.decisionDrivers = decisionDrivers || [];
@@ -90,6 +93,7 @@ export class ArchitecturalDecisionRecord {
             "title",
             "status",
             "date",
+            "category",
             "deciders",
             "technicalStory",
             "contextAndProblemStatement"

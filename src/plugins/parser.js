@@ -185,23 +185,44 @@ class MADRGenerator extends MADRListener {
 }
 
 /**
+ * Splits the custom `* Category:` metadata bullet out of the markdown.
+ *
+ * The MADR grammar (MADR.g4) has no Category rule, so passing this bullet to ANTLR would
+ * make the parse fail. We remove it here, return its value separately, and re-emit it in
+ * adr2md() — keeping the generated parser untouched while the field still round-trips.
+ *
+ * @param {string} md
+ * @returns {{ category: string, md: string }} the category value and the markdown without the bullet
+ */
+function splitOutCategory(md) {
+    const lines = md.split("\n");
+    const idx = lines.findIndex((line) => /^[ \t]*[*+-][ \t]+Category[ \t]*:/i.test(line));
+    if (idx === -1) {
+        return { category: "", md: md };
+    }
+    const category = lines[idx].replace(/^[ \t]*[*+-][ \t]+Category[ \t]*:[ \t]*/i, "").trim();
+    lines.splice(idx, 1);
+    return { category: category, md: lines.join("\n") };
+}
+
+/**
  * Converts a markdown into a MADR object.
  * @param {string} md
  * @returns {ArchitecturalDecisionRecord}
  */
 export function md2adr(md) {
-    const chars = new antlr4.InputStream(md);
+    const { category, md: mdWithoutCategory } = splitOutCategory(md);
+    const chars = new antlr4.InputStream(mdWithoutCategory);
     const lexer = new MADRLexer(chars);
     const tokens = new antlr4.CommonTokenStream(lexer);
     const parser = new MADRParser(tokens);
     parser.buildParseTrees = true;
     parser.removeErrorListeners();
 
-    const tree = parser.start(); // 'start' is the name of the starting rule.
-    // console.log('Created Parse Tree! ', tree)
+    const tree = parser.start();
     const printer = new MADRGenerator();
     antlr4.tree.ParseTreeWalker.DEFAULT.walk(printer, tree);
-    // console.log('Result ADR ', printer.adr)
+    printer.adr.category = category;
     printer.adr.cleanUp();
     return printer.adr;
 }
@@ -211,7 +232,12 @@ export function adr2md(adrToParse) {
     adr.cleanUp();
     var md = "# " + adr.title + "\n";
 
-    if ((adr.status !== "" && adr.status !== "null") || adr.deciders.length > 0 || adr.date !== "") {
+    if (
+        (adr.status !== "" && adr.status !== "null") ||
+        adr.deciders.length > 0 ||
+        adr.date !== "" ||
+        (adr.category && adr.category.trim() !== "")
+    ) {
         if (adr.status !== "" && adr.status !== "null") {
             md = md.concat("\n* Status: " + adr.status.trim());
         }
@@ -220,6 +246,9 @@ export function adr2md(adrToParse) {
         }
         if (adr.date !== "") {
             md = md.concat("\n* Date: " + adr.date);
+        }
+        if (adr.category && adr.category.trim() !== "") {
+            md = md.concat("\n* Category: " + adr.category.trim());
         }
         md = md.concat("\n");
     }
