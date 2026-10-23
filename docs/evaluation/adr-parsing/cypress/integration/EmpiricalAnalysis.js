@@ -12,7 +12,7 @@ var REPO_NAMES = [
     "adr-manager-anonymous/architectural-decision-records",
     "adr-manager-anonymous/blueprint",
     "adr-manager-anonymous/cloud-on-k8s",
-    "adr-manager-anonymous/complaitkubernetes",
+    "adr-manager-anonymous/compliantkubernetes",
     "adr-manager-anonymous/core",
     "adr-manager-anonymous/digital-paper-edit-client",
     "adr-manager-anonymous/digital-paper-edit-firebase",
